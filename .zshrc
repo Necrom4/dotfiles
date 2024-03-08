@@ -177,7 +177,6 @@ source $HOME/.brewconfig.zsh
 USER=dferreir
 export USER
 
-
 # //VI MODE//
 bindkey -v
 bindkey '^k' up-line-or-beginning-search
@@ -185,32 +184,6 @@ bindkey '^j' down-line-or-beginning-search
 bindkey '^h' vi-backward-char
 bindkey '^l' vi-forward-char
 bindkey '^x' clear-screen
-
-# bindkey -s "^t" 'cmatrix^M'
-
-# function no_up() {
-#     echo "No Up for you!"
-# }
-# zle -N no_up
-# bindkey '^[OA' no_up
-# 
-# function no_down() {
-#     echo "No Down for you!"
-# }
-# zle -N no_down
-# bindkey '^[OB' no_down
-# 
-# function no_left() {
-#     echo "No left for you!"
-# }
-# zle -N no_left
-# bindkey '^[OD' no_left
-# 
-# function no_right() {
-#     echo "No right for you!"
-# }
-# zle -N no_right
-# bindkey '^[OC' no_right
 
 # Yank to the system clipboard
 function vi-yank-xclip {
@@ -226,4 +199,3 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#ff0000           # Hex value
 # //ZSH-AUTOSUGGESTIONS//
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#960000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
-

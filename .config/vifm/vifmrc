@@ -227,10 +227,10 @@ fileviewer {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
 
 " Web
 filetype {*.xhtml,*.html,*.htm},<text/html>
-       \ {Open in Safari}
-       \ open -a Safari.app,
-       \ {Open in Firefox}
-       \ open -a Firefox.app,
+"       \ {Open in Safari}
+"       \ open -a Safari.app,
+"       \ {Open in Firefox}
+"       \ open -a Firefox.app,
        \ {Open in Chrome}
        \ open -a Google\ Chrome.app,
        \ {Open in vim}

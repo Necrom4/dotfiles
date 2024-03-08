@@ -60,10 +60,10 @@ highlight Conditional ctermbg=16 ctermfg=196 cterm=underline
 highlight NonText ctermbg=16 ctermfg=88 cterm=none
 highlight Error ctermfg=196 ctermbg=88 cterm=bold
 highlight Number ctermbg=16 ctermfg=196 cterm=bold
-highlight String ctermbg=16 ctermfg=124 cterm=italic
+highlight String ctermbg=16 ctermfg=196 cterm=italic
 highlight Float ctermbg=16 ctermfg=196 cterm=bold
 highlight Function ctermbg=16 ctermfg=196 cterm=bold
-highlight Special ctermbg=16 ctermfg=196 cterm=bold
+highlight Special ctermbg=16 ctermfg=196 cterm=italic
 highlight Statement ctermbg=16 ctermfg=196 cterm=bold
 highlight Identifier ctermbg=16 ctermfg=196 cterm=none
 " highlight LineNr ctermbg=16 ctermfg=196
