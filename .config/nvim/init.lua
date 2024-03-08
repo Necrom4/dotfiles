@@ -12,14 +12,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
--- 	"vim-syntastic/syntastic",
--- 	{ "alexandregv/norminette-vim", keys = { '<space>lp', mode = { 'n', 'v' }}},
 	{'nvim-telescope/telescope.nvim', dependencies = {'nvim-lua/plenary.nvim'}},
--- 	{ "numToStr/Comment.nvim", config = true },
 	{'s1n7ax/nvim-window-picker'},
 	{'mhinz/vim-startify'},
 	{'dstein64/vim-win'},
--- 	{'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'},
+	-- {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'},
 -- 	{'pseewald/vim-anyfold'},
 -- 	{'vifm/vifm.vim'},
 	{'is0n/fm-nvim',
@@ -38,8 +35,6 @@ require("lazy").setup({
 	}
 	},
 	{'kdheepak/lazygit.nvim'},
--- 	{'ervandew/supertab'},
---	{'neoclide/coc.nvim', branch = 'release'},
 	{'arecarn/vim-crunch'},
 	{'tpope/vim-commentary'},
 	{'hrsh7th/nvim-cmp',
@@ -52,8 +47,8 @@ require("lazy").setup({
 	{"ap/vim-css-color"},
 	{"vim-scripts/ReplaceWithRegister"},
 	{"KabbAmine/vCoolor.vim"},
-	-- {"airblade/vim-gitgutter"},
-	{"voldikss/vim-floaterm"},
+	{"numToStr/FTerm.nvim"},
+
 })
 
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
@@ -62,51 +57,7 @@ vim.cmd.source(vimrc)
 local vimrc = vim.fn.stdpath("config") .. "/stdheader.vim"
 vim.cmd.source(vimrc)
 
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<space>f', ":Telescope<CR>", {})
-vim.keymap.set('v', '<space>f', "y<ESC>:Telescope live_grep default_text=<C-r>0<CR>", {})
-
-local actions = require("telescope.actions")
-
-require("telescope").setup({
-	defaults = {
-		mappings = {
-			i = {
-                ["<esc>"] = actions.close,
-				["<c-q>"] = actions.close,
-				["<c-d>"] = actions.delete_buffer,
-				["<c-r>"] = actions.delete_mark,
-				["<c-k>"] = actions.move_selection_previous,
-				["<c-j>"] = actions.move_selection_next,
-				["<c-l>"] = actions.select_default,
-				--	["<c-b>"] = function() vim.cmd "normal! delmarks" end,
-			},
-		},
-		dynamic_preview_title = true,
-	},
-	pickers = {
-		find_files = {
-			hidden = { true },
-			path_display = { "smart" },
-		},
-	},
-})
-
-require('fm-nvim').setup{
-	ui = {
-		float = {
-			border = "rounded",
-		},
-	},
-	mappings = {
-		vert_split = "<C-v>",
-		horz_split = "<C-s>",
-		tabedit    = "<C-t>",
-		-- edit       = "<C-e>",
-		-- ESC        = "<ESC>"
-	},
-}
-
+-- NVIM-CMP
 local cmp = require'cmp'
 
 -- Global setup.
@@ -162,3 +113,60 @@ cmp.setup.cmdline(':', {
 		{ name = 'cmdline' }
 	})
 })
+
+-- FTERM
+vim.keymap.set('n', '<space>t', '<CMD>lua require("FTerm").toggle()<CR>')
+vim.keymap.set('t', '<c-q>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
+vim.api.nvim_create_user_command('FTermOpen', require('FTerm').open, { bang = true })
+
+require'FTerm'.setup({
+    border = 'rounded',
+})
+
+-- TELESCOPE
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<space>f', ":Telescope<CR>", {})
+vim.keymap.set('v', '<space>f', "y<ESC>:Telescope live_grep default_text=<C-r>0<CR>", {})
+
+local actions = require("telescope.actions")
+
+require("telescope").setup({
+	defaults = {
+		mappings = {
+			i = {
+                ["<esc>"] = actions.close,
+				["<c-q>"] = actions.close,
+				["<c-d>"] = actions.delete_buffer,
+				["<c-r>"] = actions.delete_mark,
+				["<c-k>"] = actions.move_selection_previous,
+				["<c-j>"] = actions.move_selection_next,
+				["<c-l>"] = actions.select_default,
+				--	["<c-b>"] = function() vim.cmd "normal! delmarks" end,
+			},
+		},
+		dynamic_preview_title = true,
+	},
+	pickers = {
+		find_files = {
+			hidden = { true },
+			path_display = { "smart" },
+		},
+	},
+})
+
+-- FM-NVIM
+require('fm-nvim').setup{
+	ui = {
+		float = {
+			border = "rounded",
+		},
+	},
+	mappings = {
+		vert_split = "<C-v>",
+		horz_split = "<C-s>",
+		tabedit    = "<C-t>",
+		-- edit       = "<C-e>",
+		-- ESC        = "<ESC>"
+	},
+}
+

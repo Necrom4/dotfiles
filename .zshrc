@@ -227,4 +227,3 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#ff0000           # Hex value
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#960000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

@@ -210,12 +210,8 @@ autocmd ModeChanged * if mode() != 't' | match ErrorMsg '\s\+$' | else | highlig
 :tnoremap <C-W> <C-\><C-N><C-W>
 :tnoremap <silent> <S-ESC> <C-\><C-N>
 :nnoremap <silent> <C-W>v <C-W>v<C-W>w
-:nnoremap <silent> <space>t :FloatermToggle<CR>
-:tnoremap <silent> <C-Q> <C-\><C-N>:FloatermToggle<CR>
-" :tnoremap <silent> <space>t <c-\><c-n>:FloatermToggle<CR>
 " :map <silent> <space>W <C-W>v<C-W>s:ter<CR><C-W>h<C-W>s<space>w1<ESC>
 autocmd BufWinEnter,WinEnter term://* startinsert
-" :map <silent> <space><enter> :e #<1<CR><C-W>v<C-W>l:e #<3<CR><C-W>s:ter<CR><C-W>h<C-W>s:e #<2<CR><space>w1<ESC>
 augroup toogle_relatie_number
 	au!
 	autocmd InsertEnter * :setlocal norelativenumber
@@ -233,8 +229,8 @@ augroup END
 :noremap <C-T>q :tabclose<CR>
 
 " //Folds//
-autocmd FileType * nnoremap <buffer> <silent> zf :set foldcolumn=1<CR>zf
-autocmd FileType * vnoremap <buffer> <silent> zf :<C-u>set foldcolumn=1<CR>gvzf
+" autocmd FileType * nnoremap <buffer> <silent> zf :set foldcolumn=1<CR>zf
+" autocmd FileType * vnoremap <buffer> <silent> zf :<C-u>set foldcolumn=1<CR>gvzf
 " :nnoremap <silent> Zo zR
 " :nnoremap <silent> Zc zM
 
@@ -295,7 +291,7 @@ let g:startify_commands = [
 	\ {'.': ['  CWD', "execute 'cd ' . g:cwd"]},
 	\ {'r': ['  Recently opened files', ':Telescope oldfiles']},
 	\ {'x': ['  Xplorer', ':Vifm']},
-	\ {'t': ['  Terminal', ':FloatermToggle']},
+	\ {'t': ['  Terminal', ':FTermOpen']},
 	\ {'m': ['  Marks', ':Telescope marks']},
 	\ {'T': ['  Trash', ':! rm -rf /Users/dferreir/.local/share/vifm/Trash']},
     \ ]
@@ -321,20 +317,10 @@ let g:startify_lists = [
     \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
     \ ]
 
-" //CHATGPT//
-" let g:openai_api_key='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'
-
 " //VCOOLOR//
 let g:vcoolor_disable_mappings = 1
 " let g:vcoolor_map = '<space>C'
 noremap <silent> <space>C :VCoolor<CR>
-
-" //FLOATERM//
-let g:floaterm_title=""
-let g:floaterm_width=0.8
-let g:floaterm_height=0.8
-let g:floaterm_borderchars='─│─│╭╮╯╰'
-let g:floaterm_position="center"
 
 " //GITGUTTER//
 " highlight GitGutterAdd guifg=#00FF00 ctermfg=Green
