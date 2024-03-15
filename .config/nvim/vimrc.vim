@@ -9,12 +9,14 @@ set ruler
 set noswapfile
 set hlsearch
 set incsearch
-set ts=4 sw=4
+" set autoindent
+" set noexpandtab
+" set ts=4 sw=4
+" set formatoptions-=cro
 set splitbelow
 set timeoutlen=250
 set linebreak
-" set formatoptions-=cro
-autocmd FileType * set formatoptions-=cro
+autocmd FileType * set formatoptions-=cro ts=2 sw=2 noexpandtab
 " set nowrap
 " set cursorline
 " set cursorcolumn
@@ -54,16 +56,16 @@ autocmd ModeChanged * if mode() == 'i' | highlight LineNr ctermbg=16 ctermfg=88 
 highlight Normal ctermbg=16 ctermfg=196 cterm=none
 highlight Comment ctermbg=16 ctermfg=88 cterm=none
 highlight Include ctermbg=16 ctermfg=196 cterm=bold
-highlight Define ctermbg=16 ctermfg=88 cterm=bold
+highlight Define ctermbg=16 ctermfg=196 cterm=bold
 highlight Constant ctermbg=16 ctermfg=196 cterm=bold
 highlight Conditional ctermbg=16 ctermfg=196 cterm=underline
 highlight NonText ctermbg=16 ctermfg=88 cterm=none
 highlight Error ctermfg=196 ctermbg=88 cterm=bold
-highlight Number ctermbg=16 ctermfg=196 cterm=bold
-highlight String ctermbg=16 ctermfg=196 cterm=italic
+highlight Number ctermbg=16 ctermfg=196 cterm=none
+highlight String ctermbg=16 ctermfg=124 cterm=none
 highlight Float ctermbg=16 ctermfg=196 cterm=bold
 highlight Function ctermbg=16 ctermfg=196 cterm=bold
-highlight Special ctermbg=16 ctermfg=196 cterm=italic
+highlight Special ctermbg=16 ctermfg=196 cterm=none
 highlight Statement ctermbg=16 ctermfg=196 cterm=bold
 highlight Identifier ctermbg=16 ctermfg=196 cterm=none
 " highlight LineNr ctermbg=16 ctermfg=196
@@ -106,8 +108,12 @@ highlight Directory ctermbg=16 ctermfg=196
 highlight VertSplit ctermbg=16 ctermfg=88
 highlight ErrorMsg ctermbg=88 ctermfg=196
 highlight ModeMsg ctermbg=16 ctermfg=196 cterm=underline
+highlight MoreMsg ctermbg=16 ctermfg=196 cterm=underline
+highlight DiffAdd ctermbg=16 ctermfg=40 cterm=none
+highlight DiffChange ctermbg=16 ctermfg=39 cterm=none
+highlight DiffDelete ctermbg=16 ctermfg=88 cterm=none
+highlight DiffText ctermbg=20 ctermfg=51 cterm=none
 highlight SpellBad ctermbg=88 ctermfg=196 cterm=underline
-highlight MoreMsg ctermbg=16 ctermfg=196
 
 " Use an autocmd to trigger the setup function when entering TelescopePrompt
 augroup TelescopeMappings
@@ -150,12 +156,13 @@ augroup END
 " :nnoremap <silent> <BS> i<BS><ESC>l
 " :nnoremap <silent> <TAB> i<TAB><ESC>l
 " :nnoremap <silent> <SPACE> i<SPACE><ESC>l
-:map <space>h :noh<CR>:echo "[Selection cleared]"<CR>
+:map <space>h :noh<CR>:echo '["' . @/ . '" cleared]'<CR>
 :nmap ' `
 :noremap <silent> <c-/> K
 :vnoremap <expr> <silent> <space>= mode() ==# "v" ? "<ESC>:set paste<CR>a<CR><ESC>`<i<CR><ESC>V:!bc<CR>gJkgJ:set nopaste<CR>" : ":!bc<CR>"
 :nnoremap <silent> <space>v :source ~/.config/nvim/vimrc.vim<CR>:noh<CR>:echo "[VIM Reloaded]"<CR>
 " :tnoremap <silent> <S-Space> <ESC>a<space>
+nnoremap <silent> <space>b :silent !open %<CR>
 let g:cwd = system('~/42/Scripts/./cwd.sh')
 
 " //Normal Mode Navigation//

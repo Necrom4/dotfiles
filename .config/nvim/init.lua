@@ -79,7 +79,7 @@ cmp.setup({
 			i = cmp.mapping.abort(),
 			c = cmp.mapping.close(),
 		},
-		["<CR>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i', 'c' }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+		-- ["<CR>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i', 'c' }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 	},
 	sources = cmp.config.sources({
 		{name = 'buffer',

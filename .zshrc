@@ -144,6 +144,7 @@ function x() {
 	cd $(cat ~/42/Scripts/lastdir_vifm)
 }
 alias g=lazygit
+alias y="yadm enter lazygit"
 alias cwd.sh="source ~/42/Scripts/cwd.sh"
 alias copy_selected.sh="source ~/42/Scripts/copy_selected.sh"
 alias Grademe='bash -c "$(curl https://grademe.fr)"'
