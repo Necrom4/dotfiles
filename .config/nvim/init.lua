@@ -48,7 +48,6 @@ require("lazy").setup({
 	{"vim-scripts/ReplaceWithRegister"},
 	{"KabbAmine/vCoolor.vim"},
 	{"numToStr/FTerm.nvim"},
-
 })
 
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
@@ -126,22 +125,23 @@ require'FTerm'.setup({
 -- TELESCOPE
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<space>f', ":Telescope<CR>", {})
-vim.keymap.set('v', '<space>f', "y<ESC>:Telescope live_grep default_text=<C-r>0<CR>", {})
+-- vim.keymap.set('v', '<space>f', "y<ESC>:Telescope live_grep default_text=<C-r>0<CR>", {})
 
 local actions = require("telescope.actions")
 
 require("telescope").setup({
 	defaults = {
+		-- path_display = { "smart" },
 		mappings = {
 			i = {
-                ["<esc>"] = actions.close,
+				["<esc>"] = actions.close,
 				["<c-q>"] = actions.close,
 				["<c-d>"] = actions.delete_buffer,
 				["<c-r>"] = actions.delete_mark,
 				["<c-k>"] = actions.move_selection_previous,
 				["<c-j>"] = actions.move_selection_next,
 				["<c-l>"] = actions.select_default,
-				--	["<c-b>"] = function() vim.cmd "normal! delmarks" end,
+				-- ["<c-b>"] = function() vim.cmd "normal! delmarks" end,
 			},
 		},
 		dynamic_preview_title = true,
@@ -149,7 +149,12 @@ require("telescope").setup({
 	pickers = {
 		find_files = {
 			hidden = { true },
-			path_display = { "smart" },
+		},
+		grep_string = {
+			additional_args = {"--hidden"}
+		},
+		live_grep = {
+			additional_args = {"--hidden"}
 		},
 	},
 })

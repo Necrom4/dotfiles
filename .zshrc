@@ -141,7 +141,7 @@ alias e="~/nvim-macos/bin/nvim"
 function x() {
 	echo $PWD > ~/42/Scripts/lastdir_vifm
 	vifm
-	cd $(cat ~/42/Scripts/lastdir_vifm)
+	cd "$(cat ~/42/Scripts/lastdir_vifm)"
 }
 alias g=lazygit
 alias y="yadm enter lazygit"

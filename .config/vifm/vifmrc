@@ -425,10 +425,9 @@ nnoremap ,w :set wrap!<cr>
 " Example of standard two-panel file managers mappings
 nnoremap <f3> :!less %f<cr>
 nnoremap <f4> :edit<cr>
-" nnoremap c :copy<cr>
+nnoremap <f5> :copy<cr>
 nnoremap <f6> :move<cr>
-nnoremap ad :mkdir<space>
-nnoremap af :touch<space>
+nnoremap <f7> :mmkdir<cr>
 nnoremap <f8> :delete<cr>
 
 " Midnight commander alike mappings
@@ -489,14 +488,16 @@ set vifminfo=dhistory,chistory,state,tui,shistory,
 
 set tuioptions=u
 
-nnoremap e :edit<cr>
-nnoremap q :q<cr>
-nnoremap <C-Q> :q<cr>
+nnoremap e :edit<CR>
+nnoremap q :q<CR>
+nnoremap <C-Q> :q<CR>
+nnoremap ad :let $DIR_NAME = input('mkdir: ', '', 'dir') | execute 'mkdir' fnameescape($DIR_NAME) | cd $DIR_NAME<CR>
+nnoremap af :let $FILE_NAME = input('touch: ') | execute 'touch' fnameescape($FILE_NAME) | sleep 1ms | edit $FILE_NAME<CR>
 " nnoremap ab :bmark<space
-" nnoremap bm :bmarks<cr>
+" nnoremap bm :bmarks<CR>
 " nnoremap gb :bmgo<space>
-nnoremap ta ggVG<cr>
-nnoremap ti :invert s<cr>
+nnoremap ta ggVG<CR>
+nnoremap ti :invert s<CR>
 map i <C-G>
 nnoremap K zz
 nnoremap H za
