@@ -391,7 +391,7 @@ nnoremap yf :!printf %f:p:gs? ?\\ ? | pbcopy<cr>
 
 " View preview in Quick Look
 nnoremap <space> :!qlmanage -p %f > /dev/null 2>&1<cr>
-nnoremap b :!open %c<CR>
+"" nnoremap b :!open %c<CR>
 
 " Mappings for faster renaming
 nnoremap rx cw<c-u>
@@ -470,9 +470,15 @@ nnoremap <c-u> <c-w>x
 " https://github.com/cirala/vifm_devicons
 
 set millerview
-set milleroptions=lsize:1,csize:2,rsize:3,rpreview:all
+set milleroptions=lsize:1,csize:2,rsize:0,rpreview:all
 " set dotdirs=treeleafsparent
-only
+" vsplit
+" view!
+
+nnoremap h :view!<CR>:view<CR>h:if filetype('.') != 'dir' | view! | else | :sync %c<CR>:winrun , tree | endif<CR>
+nnoremap j :view!<CR>:view<CR>j:if filetype('.') != 'dir' | view! | else | :sync %c<CR>:winrun , tree | endif<CR>
+nnoremap k :view!<CR>:view<CR>k:if filetype('.') != 'dir' | view! | else | :sync %c<CR>:winrun , tree | endif<CR>
+nnoremap l :view!<CR>:view<CR>l:if filetype('.') != 'dir' | view! | else | :sync %c<CR>:winrun , tree | endif<CR>
 
 set relativenumber
 set tabstop=2
@@ -511,7 +517,7 @@ nnoremap <silent> <C-J> <C-F>
 nnoremap <silent> <C-K> <C-B>
 nnoremap Mf :!make fclean &<CR>
 nnoremap E :!./%f &<CR>
-vmap :diff :!~/nvim-macos/bin/nvim -d %f %F<CR>
+map :diff :!~/nvim-macos/bin/nvim -d %f %F<CR>
 
 nnoremap <C-T> :tabnew<CR>
 
@@ -535,4 +541,4 @@ highlight User2 ctermbg=16 ctermfg=160
 highlight User3 ctermbg=196 ctermfg=16
 highlight User4 ctermbg=16 ctermfg=196 cterm=bold
 
-set statusline=%3*\ %t\ %1*%=[%E][%A][%d]
+set statusline=%3*\ ["%{filetype('.')}"]\ %t\ %1*%=[%E][%A][%d]

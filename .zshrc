@@ -150,6 +150,7 @@ alias copy_selected.sh="source ~/42/Scripts/copy_selected.sh"
 alias Grademe='bash -c "$(curl https://grademe.fr)"'
 alias z="source ~/.zshrc && echo '[ZSH Reloaded]'"
 alias m='cmatrix'
+alias composer='~/.brew/Cellar/composer.phar'
 
 #RANGER
 # function ranger_cd {
