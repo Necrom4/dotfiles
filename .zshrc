@@ -136,8 +136,13 @@ alias norm="norminette -R CheckForbiddenSourceHeader"
 alias clean='bash ~/42/Scripts/Cleaner_42.sh'
 alias c='bash ~/42/Scripts/Cleaner_42.sh'
 . /Users/dferreir/.asdf/asdf.sh
-alias vim="~/nvim-macos/bin/nvim"
+# alias vim="~/nvim-macos/bin/nvim"
 alias e="~/nvim-macos/bin/nvim"
+alias ls='lsd --color never'
+alias ll='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree'
 function x() {
 	echo $PWD > ~/42/Scripts/lastdir_vifm
 	vifm

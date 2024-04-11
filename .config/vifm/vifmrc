@@ -365,7 +365,7 @@ fileviewer *.jpg,*.png shellpic %c
 " ------------------------------------------------------------------------------
 
 " Start shell in current directory
-" nnoremap Q :shell<cr>
+" nnoremap Q :shell<cr>	
 nnoremap Q :execute '!echo %d > ~/42/Scripts/lastdir_vifm' | quit<CR>
 
 " Display sorting dialog
@@ -374,6 +374,7 @@ nnoremap S :sort<cr>
 " Toggle visibility of preview window
 nnoremap w :view<cr>
 vnoremap w :view<cr>gv
+"" nnoremap W :only<cr>:set milleroptions=lsize:1,csize:2,rsize:3,rpreview:all<CR>:set g:W=1
 
 " Open file in new MacVim tab
 nnoremap o :!mvim --remote-tab-silent %f<cr>
@@ -472,13 +473,11 @@ nnoremap <c-u> <c-w>x
 set millerview
 set milleroptions=lsize:1,csize:2,rsize:0,rpreview:all
 " set dotdirs=treeleafsparent
-" vsplit
-" view!
+" only
+vsplit
+view!
 
-nnoremap h :view!<CR>:view<CR>h:if filetype('.') != 'dir' | view! | else | :sync %c<CR>:winrun , tree | endif<CR>
-nnoremap j :view!<CR>:view<CR>j:if filetype('.') != 'dir' | view! | else | :sync %c<CR>:winrun , tree | endif<CR>
-nnoremap k :view!<CR>:view<CR>k:if filetype('.') != 'dir' | view! | else | :sync %c<CR>:winrun , tree | endif<CR>
-nnoremap l :view!<CR>:view<CR>l:if filetype('.') != 'dir' | view! | else | :sync %c<CR>:winrun , tree | endif<CR>
+fileviewer */,.*/ lsd --tree --depth 10 --group-directories-first --color never --icon always
 
 set relativenumber
 set tabstop=2
@@ -521,24 +520,59 @@ map :diff :!~/nvim-macos/bin/nvim -d %f %F<CR>
 
 nnoremap <C-T> :tabnew<CR>
 
-" file types
-set classify=' :dir:/, :exe:, :reg:, :link:'
-" various file names
-set classify+=' ::../::, ::*.sh::, ::*.[hc]pp::, ::*.[hc]::, ::/^copying|license$/::, ::.git/,,*.git/::, ::*.epub,,*.fb2,,*.djvu::, ::*.pdf::, ::*.htm,,*.html,,**.[sx]html,,*.xml::'
-" archives
+"" types
+set classify=' :dir:/, :exe:, :reg:, :link:'
+"" other
+set classify+=' ::../::, ::.*.sh,,*.sh,,.*.zsh,,*.zsh,,.*.bash,,*.bash::, ::*.pl::, ::lock,,.lock,,*.lock,,.*.lock::, ::*.nix::, ::*.db,,*.sqlite*::,󰡨 ::.*.Dockerile,,Dockerfile,,.dockerignore,,docker-compose.yml,,docker-compose.*.yml::, ::*.key,,key.pem,,*key.pem::,󰄤 ::*.pem,,*.crt,,*.p12::,󰌱 ::*.log::, ::*.otf,,*.ttf::'
+"" git
+set classify+=' ::.gitignore,,.gitattributes::, ::.git/,,*.git/::, ::.gitlab-ci.yml::'
+"" config
+set classify+=' ::.gitconfig,,*.conf,,*.ini,,CMakeLists.txt,,*.cmake,,*.toml,,.*.yml,,.*.yaml,,*.yml,,*.yaml,,vifmrc,,*.vifm::'
+"" editorconfig
+set classify+=' ::.editorconfig::'
+"" cxx
+set classify+=' ::*.cpp,,*.cc,,*.ino::, ::*.h,,*.hpp,,*.hh::, ::*.c::'
+"" golang
+set classify+=' ::*.go::'
+"" json
+set classify+=' ::*.json::'
+"" lua
+set classify+=' ::*.lua::'
+"" javascript
+set classify+=' ::*.js::'
+"" makefile
+set classify+=' ::Makefile,,*.mk::'
+"" php
+set classify+=' ::*.php::'
+"" python
+set classify+=' ::*.py::'
+"" ruby
+set classify+=' ::*.rb,,Gemfile,,*.gemspec,,*.ru::'
+"" vim
+set classify+=' ::.vimrc,,*.vim::'
+"" docs
+set classify+=' ::copying::, ::LICENSE::, ::*.md::,󰈙 ::*.txt::'
+"" ebooks
+set classify+=' ::*.epub,,*.fb2,,*.djvu::, ::*.pdf::'
+"" html
+set classify+=' ::*.htm,,*.html,,*.shtml,,*.xhtml::'
+"" xml
+set classify+='󰗀 ::*.xml::'
+"" archives
 set classify+=' ::*.7z,,*.ace,,*.arj,,*.bz2,,*.cpio,,*.deb,,*.dz,,*.gz,,*.jar,,*.lzh,,*.lzma,,*.rar,,*.rpm,,*.rz,,*.tar,,*.taz,,*.tb2,,*.tbz,,*.tbz2,,*.tgz,,*.tlz,,*.trz,,*.txz,,*.tz,,*.tz2,,*.xz,,*.z,,*.zip,,*.zoo::'
-" images
-set classify+=' ::*.bmp,,*.gif,,*.jpeg,,*.jpg,,*.ico,,*.png,,*.ppm,,*.svg,,*.svgz,,*.tga,,*.tif,,*.tiff,,*.xbm,,*.xcf,,*.xpm,,*.xspf,,*.xwd::'
-" audio
+"" images
+set classify+=' ::*.bmp,,*.gif,,*.jpeg,,*.jpg,,*.ico,,*.png,,*.ppm,,*.tga,,*.tif,,*.tiff,,*.webp,,*.xbm,,*.xcf,,*.xpm,,*.xspf,,*.xwd::, ::*.svg,,*.svgz::'
+"" audio
 set classify+=' ::*.aac,,*.anx,,*.asf,,*.au,,*.axa,,*.flac,,*.m2a,,*.m4a,,*.mid,,*.midi,,*.mp3,,*.mpc,,*.oga,,*.ogg,,*.ogx,,*.ra,,*.ram,,*.rm,,*.spx,,*.wav,,*.wma,,*.ac3::'
-" media
-set classify+=' ::*.avi,,*.ts,,*.axv,,*.divx,,*.m2v,,*.m4p,,*.m4v,,.mka,,*.mkv,,*.mov,,*.mp4,,*.flv,,*.mp4v,,*.mpeg,,*.mpg,,*.nuv,,*.ogv,,*.pbm,,*.pgm,,*.qt,,*.vob,,*.wmv,,*.xvid::'
-" office files
-set classify+=' ::*.doc,,*.docx::, ::*.xls,,*.xls[mx]::, ::*.pptx,,*.ppt::'
+"" media
+set classify+=' ::*.avi,,*.ts,,*.axv,,*.divx,,*.m2v,,*.m4p,,*.m4v,,.mka,,*.mkv,,*.mov,,*.mp4,,*.flv,,*.mp4v,,*.mpeg,,*.mpg,,*.nuv,,*.ogv,,*.pbm,,*.pgm,,*.qt,,*.vob,,*.wmv,,*.xvid,,*.webm::'
+"" office
+set classify+=' ::*.doc,,*.docx::, ::*.xls,,*.xlsm,,*.xlsx::, ::*.pptx,,*.ppt::'
+
 
 highlight User1 ctermbg=16 ctermfg=196
 highlight User2 ctermbg=16 ctermfg=160
 highlight User3 ctermbg=196 ctermfg=16
 highlight User4 ctermbg=16 ctermfg=196 cterm=bold
 
-set statusline=%3*\ ["%{filetype('.')}"]\ %t\ %1*%=[%E][%A][%d]
+set statusline=%3*\ %t\ %1*%=[%E][%A][%d]
