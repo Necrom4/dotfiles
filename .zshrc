@@ -91,8 +91,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-vi-mode)
-# plugins+=(zsh-vi-mode)
+plugins=(git zsh-autosuggestions zsh-vi-mode docker)
 # plugins+=(zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
@@ -136,26 +135,31 @@ alias norm="norminette -R CheckForbiddenSourceHeader"
 alias clean='bash ~/42/Scripts/Cleaner_42.sh'
 alias c='bash ~/42/Scripts/Cleaner_42.sh'
 . /Users/dferreir/.asdf/asdf.sh
-# alias vim="~/nvim-macos/bin/nvim"
-alias e="~/nvim-macos/bin/nvim"
+alias vim="~/nvim-macos-x86_64/bin/nvim"
+alias e="~/nvim-macos-x86_64/bin/nvim"
 alias ls='lsd --color never'
 alias ll='ls -l'
-alias la='ls -a'
-alias lla='ls -la'
+alias la='ls -A'
+alias lla='ls -lA'
 alias lt='ls --tree'
+alias brew="~/.brew/bin/brew"
 function x() {
 	echo $PWD > ~/42/Scripts/lastdir_vifm
-	vifm
+	~/.brew/bin/vifm
 	cd "$(cat ~/42/Scripts/lastdir_vifm)"
 }
-alias g=lazygit
+# alias vifm="x"
+# alias lazygit="~/.brew/bin/lazygit"
+alias g="~/.brew/bin/lazygit"
 alias y="yadm enter lazygit"
 alias cwd.sh="source ~/42/Scripts/cwd.sh"
 alias copy_selected.sh="source ~/42/Scripts/copy_selected.sh"
 alias Grademe='bash -c "$(curl https://grademe.fr)"'
 alias z="source ~/.zshrc && echo '[ZSH Reloaded]'"
 alias m='cmatrix'
-alias composer='~/.brew/Cellar/composer.phar'
+# alias composer='~/.brew/Cellar/composer.phar'
+# alias ripgrep='~/.brew/Cellar/rg'
+# alias rg='~/.brew/Cellar/rg'
 
 #RANGER
 # function ranger_cd {
@@ -200,8 +204,8 @@ function vi-yank-xclip {
 # zle -N vi-yank-xclbindkey -M vicmd 'y' vi-yank-xclip
 bindkey -M vicmd 'y' vi-yank-xclip
 
-ZVM_VI_HIGHLIGHT_FOREGROUND=#000000           # Hex value
-ZVM_VI_HIGHLIGHT_BACKGROUND=#ff0000           # Hex value
+ZVM_VI_HIGHLIGHT_FOREGROUND=#000000
+ZVM_VI_HIGHLIGHT_BACKGROUND=#ff0000
 
 # //ZSH-AUTOSUGGESTIONS//
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#960000"

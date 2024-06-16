@@ -20,6 +20,8 @@ autocmd FileType * set formatoptions-=cro ts=2 sw=2 noexpandtab
 " set nowrap
 " set cursorline
 " set cursorcolumn
+set iskeyword-=_,-
+"set notermguicolors
 
 " //StatusLine//
 set noshowmode
@@ -37,89 +39,99 @@ function! ModeName()
   return get(mode_dict, mode(), 'UNKNOWN')
 endfunction
 
-highlight StatusLineMe ctermbg=160 ctermfg=16 cterm=reverse
-highlight StatusLineNCMe ctermbg=88 ctermfg=16 cterm=reverse
-highlight Italica ctermbg=16 ctermfg=196 cterm=italic
+highlight StatusLine guibg=#FF0000 guifg=#000000 gui=bold
+highlight StatusLineArrow guibg=#262626 guifg=#FF0000
+highlight StatusLineNC guibg=#A60000 guifg=#000000 gui=bold
+highlight StatusLineArrowNC guibg=#262626 guifg=#A60000
+" highlight StatusLineTerm guibg=#FF0000 guifg=#000000
+" highlight StatusLineTermNC guibg=#800000 guifg=#000000
+highlight StatusLinePath guibg=#262626 guifg=#666666 gui=none
+highlight StatusLinePathMain guibg=#262626 guifg=#999999 gui=bold
+" highlight StatusLineMe guibg=#FF0000 guifg=#262626 gui=reverse
+highlight StatusLinePathNC guibg=#262626 guifg=#595959 gui=none
+highlight StatusLinePathMainNC guibg=#262626 guifg=#808080 gui=bold
 
-set statusline=%#StatusLine#\ %{ModeName()}%{IsModified()}%#StatusLineMe#%#Normal#%{eval('g:isInsert')}\ %<%{expand('%:p:h')}/%#Boolean#%{expand('%:t:r')}%#Normal#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
+set statusline=%#StatusLine#\ %{ModeName()}%{IsModified()}%#StatusLineArrow#%{eval('g:isInsert')}\ %#StatusLinePath#%<%{expand('%:p:h')}/%#StatusLinePathMain#%{expand('%:t:r')}%#StatusLinePath#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
 augroup StatusLineChange
   autocmd!
   autocmd InsertEnter * let g:isInsert = ''
   autocmd InsertLeave * let g:isInsert = ' '
-  autocmd WinEnter * setlocal statusline=%#StatusLine#\ %{ModeName()}%{IsModified()}%#StatusLineMe#%#Normal#%{eval('g:isInsert')}\ %<%{expand('%:p:h')}/%#Boolean#%{expand('%:t:r')}%#Normal#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
-  autocmd WinLeave * setlocal statusline=%#StatusLineNC#\ %{ModeName()}%{IsModified()}%#StatusLineNCMe#%{eval('g:isInsert')}\ %<%{expand('%:p:h')}/%#Normal#%{expand('%:t:r')}%#StatusLineNCMe#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
+  autocmd WinEnter * setlocal statusline=%#StatusLine#\ %{ModeName()}%{IsModified()}%#StatusLineArrow#%{eval('g:isInsert')}\ %#StatusLinePath#%<%{expand('%:p:h')}/%#StatusLinePathMain#%{expand('%:t:r')}%#StatusLinePath#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
+	autocmd WinLeave * setlocal statusline=%#StatusLineNC#\ %{ModeName()}%{IsModified()}%#StatusLineArrowNC#\ %#StatusLinePathNC#%<%{expand('%:p:h')}/%#StatusLinePathMainNC#%{expand('%:t:r')}%#StatusLinePathNC#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
 augroup END
 
-autocmd ModeChanged * if mode() == 'i' | highlight LineNr ctermbg=16 ctermfg=88 | else | highlight LineNr ctermbg=16 ctermfg=196 | endif
+autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=#000000 guifg=#800000 | else | highlight LineNr guibg=#000000 guifg=#FF0000 | endif
 
 " //Highlights//
-highlight Normal ctermbg=16 ctermfg=196 cterm=none
-highlight Comment ctermbg=16 ctermfg=88 cterm=none
-highlight Include ctermbg=16 ctermfg=196 cterm=bold
-highlight Define ctermbg=16 ctermfg=196 cterm=bold
-highlight Constant ctermbg=16 ctermfg=196 cterm=bold
-highlight Conditional ctermbg=16 ctermfg=196 cterm=underline
-highlight NonText ctermbg=16 ctermfg=88 cterm=none
-highlight Error ctermfg=196 ctermbg=88 cterm=bold
-highlight Number ctermbg=16 ctermfg=196 cterm=none
-highlight String ctermbg=16 ctermfg=124 cterm=none
-highlight Float ctermbg=16 ctermfg=196 cterm=bold
-highlight Function ctermbg=16 ctermfg=196 cterm=bold
-highlight Special ctermbg=16 ctermfg=196 cterm=none
-highlight Statement ctermbg=16 ctermfg=196 cterm=bold
-highlight Identifier ctermbg=16 ctermfg=196 cterm=none
-" highlight LineNr ctermbg=16 ctermfg=196
-highlight LineNrAbove ctermbg=16 ctermfg=88 cterm=none
-highlight LineNrBelow ctermbg=16 ctermfg=88 cterm=none
-highlight Todo ctermbg=196 ctermfg=88
-highlight WildMenu ctermbg=16 ctermfg=196
-highlight MatchParen ctermbg=88 ctermfg=196 cterm=none
-highlight TabLine ctermbg=16 ctermfg=196 cterm=bold,underline
-highlight TabLineSel ctermbg=196 ctermfg=16 cterm=bold
-highlight TabLineFill ctermbg=16 ctermfg=196 cterm=bold,underline
-highlight Visual ctermbg=196 ctermfg=16 cterm=none
-highlight Repeat ctermbg=16 ctermfg=196 cterm=bold
-highlight IncSearch ctermbg=16 ctermfg=160
-highlight Search ctermbg=88 ctermfg=196
-highlight SpecialKey ctermbg=16 ctermfg=196 cterm=none
-highlight PreProc ctermbg=16 ctermfg=196 cterm=none
-highlight StatusLine ctermbg=16 ctermfg=160
-highlight StatusLineNC ctermbg=16 ctermfg=88
-highlight StatusLineTerm ctermbg=160 ctermfg=16
-highlight StatusLineTermNC ctermbg=88 ctermfg=16
-highlight Operator ctermbg=16 ctermfg=196 cterm=none
-highlight Type ctermbg=16 ctermfg=196 cterm=bold
-highlight Conditional ctermbg=16 ctermfg=196 cterm=bold
-highlight Title ctermbg=16 ctermfg=196 cterm=none
-highlight Boolean ctermbg=16 ctermfg=196 cterm=bold
-highlight Special ctermbg=16 ctermfg=196
-highlight Cursor ctermbg=16 ctermfg=196
-highlight CursorLine ctermbg=none ctermfg=none cterm=none
-highlight CursorLineFold ctermbg=none ctermfg=88 cterm=none
-highlight CursorLineNr ctermbg=none ctermfg=none cterm=none
-highlight CursorColumn ctermbg=none ctermfg=none cterm=none
-highlight Folded ctermbg=16 ctermfg=88 cterm=bold
-highlight FoldColumn ctermbg=none ctermfg=88 cterm=none
-highlight SignColumn ctermbg=16 ctermfg=196
-highlight Pmenu ctermbg=16 ctermfg=196
-highlight PmenuSel ctermbg=196 ctermfg=16
-highlight PmenuSbar ctermbg=16 ctermfg=196
-highlight Directory ctermbg=16 ctermfg=196
-highlight VertSplit ctermbg=16 ctermfg=88
-highlight ErrorMsg ctermbg=88 ctermfg=196
-highlight ModeMsg ctermbg=16 ctermfg=196 cterm=underline
-highlight MoreMsg ctermbg=16 ctermfg=196 cterm=underline
-highlight DiffAdd ctermbg=16 ctermfg=40 cterm=none
-highlight DiffChange ctermbg=16 ctermfg=39 cterm=none
-highlight DiffDelete ctermbg=16 ctermfg=88 cterm=none
-highlight DiffText ctermbg=20 ctermfg=51 cterm=none
-highlight SpellBad ctermbg=88 ctermfg=196 cterm=underline
+highlight Normal guibg=#000000 guifg=#FF0000 gui=none
+highlight Comment guibg=#000000 guifg=#A60000 gui=none
+highlight Include guibg=#000000 guifg=#FF0000 gui=bold
+highlight Define guibg=#000000 guifg=#FF0000 gui=bold
+highlight Bold guibg=#000000 guifg=#FF0000 gui=bold
+highlight Constant guibg=#000000 guifg=#FF0000 gui=bold
+highlight Conditional guibg=#000000 guifg=#FF0000 gui=underline
+highlight NonText guibg=#000000 guifg=#800000 gui=none
+highlight Error guifg=#FF0000 guibg=#800000 gui=bold
+highlight Number guibg=#000000 guifg=#FF0000 gui=none
+highlight String guibg=#000000 guifg=#BF0000 gui=none
+highlight Float guibg=#000000 guifg=#FF0000 gui=bold
+highlight Delimiter guibg=#000000 guifg=#FF0000 gui=bold
+highlight Function guibg=#000000 guifg=#FF0000 gui=bold
+highlight Special guibg=#000000 guifg=#FF0000 gui=none
+highlight Statement guibg=#000000 guifg=#FF0000 gui=bold
+highlight Identifier guibg=#000000 guifg=#FF0000 gui=none
+highlight LineNr guibg=#000000 guifg=#FF0000
+highlight LineNrAbove guibg=#000000 guifg=#800000 gui=none
+highlight LineNrBelow guibg=#000000 guifg=#800000 gui=none
+highlight Todo guibg=#FF0000 guifg=#800000
+highlight WildMenu guibg=#000000 guifg=#FF0000
+highlight MatchParen guibg=#800000 guifg=#FF0000 gui=none
+highlight TabLine guibg=#000000 guifg=#FF0000 gui=bold,underline
+highlight TabLineSel guibg=#FF0000 guifg=#000000 gui=bold
+highlight TabLineFill guibg=#000000 guifg=#FF0000 gui=bold,underline
+highlight Visual guibg=#FF0000 guifg=#000000 gui=none
+highlight Repeat guibg=#000000 guifg=#FF0000 gui=bold
+highlight IncSearch guibg=#800000 guifg=#FF0000
+highlight Search guibg=#800000 guifg=#FF0000
+highlight CurSearch guibg=#800000 guifg=#FF0000
+highlight SpecialKey guibg=#000000 guifg=#FF0000 gui=none
+highlight PreProc guibg=#000000 guifg=#FF0000 gui=none
+highlight Operator guibg=#000000 guifg=#FF0000 gui=none
+highlight Type guibg=#000000 guifg=#FF0000 gui=bold
+highlight Conditional guibg=#000000 guifg=#FF0000 gui=bold
+highlight Title guibg=#000000 guifg=#FF0000 gui=none
+highlight Boolean guibg=#000000 guifg=#FF0000 gui=bold
+highlight Special guibg=#000000 guifg=#FF0000
+highlight Cursor guibg=#000000 guifg=#FF0000
+highlight CursorLine guibg=none guifg=none gui=none
+highlight CursorLineFold guibg=none guifg=#800000 gui=none
+highlight CursorLineNr guibg=none guifg=none gui=none
+highlight CursorColumn guibg=none guifg=none gui=none
+highlight Folded guibg=#000000 guifg=#800000 gui=bold
+highlight FoldColumn guibg=none guifg=#800000 gui=none
+highlight SignColumn guibg=#000000 guifg=#FF0000
+highlight Pmenu guibg=#000000 guifg=#FF0000
+highlight PmenuSel guibg=#FF0000 guifg=#000000
+highlight PmenuSbar guibg=#000000 guifg=#FF0000
+highlight Directory guibg=#000000 guifg=#FF0000
+highlight VertSplit guibg=#000000 guifg=#800000
+highlight ErrorMsg guibg=#800000 guifg=#FF0000
+highlight ModeMsg guibg=#000000 guifg=#FF0000 gui=underline
+highlight MoreMsg guibg=#000000 guifg=#FF0000 gui=underline
+highlight DiffAdd guibg=#000000 guifg=#00FF00 gui=none
+highlight DiffChange guibg=#000000 guifg=#FFF000 gui=none
+highlight DiffDelete guibg=#000000 guifg=#800000 gui=none
+highlight DiffText guibg=#0000FF guifg=#00FFFF gui=none
+highlight SpellBad guibg=#800000 guifg=#FF0000 gui=underline
+highlight Underlined guibg=#000000 guifg=#FF0000 gui=underline
+highlight DiagnosticInfo guibg=#000000 guifg=#FF0000 gui=none
+highlight @variable guibg=#000000 guifg=#FF0000 gui=none
 
 " Use an autocmd to trigger the setup function when entering TelescopePrompt
-augroup TelescopeMappings
-  autocmd!
-  autocmd FileType TelescopePrompt call SetupTelescopeMappings()
-augroup END
+"augroup TelescopeMappings
+"  autocmd!
+"  autocmd FileType TelescopePrompt call SetupTelescopeMappings()
+"augroup END
 
 " //Save/Quit//
 :noremap <silent> <C-S> :w<CR>
@@ -255,10 +267,10 @@ let g:mail42 = 'dferreir@student.42.fr'
 :nnoremap <silent> <space>w :Win<CR>
 
 " //Commentary//
-:xnoremap <space>c <Plug>Commentary
-:nnoremap <space>c <Plug>Commentary
-:onoremap <space>c <Plug>Commentary
-:nnoremap <space>cc <Plug>CommentaryLine
+:xmap <space>c gc
+:nmap <space>c gc
+:omap <space>c gc
+:nmap <space>cc gcc
 
 " //Startify//
 " function! S_Windows()
@@ -293,28 +305,41 @@ let g:startify_custom_header = [
 " │╭─╮╰╯
 
 let g:startify_commands = [
-	\ {'f': ['󰈞  Find file', ':Telescope find_files']},
-	\ {'w': ['󰍉  Find word', ':Telescope live_grep']},
-	\ {'.': ['  CWD', "execute 'cd ' . g:cwd"]},
+	\ {'f': ['󰮗  Find file', ':Telescope find_files']},
+	\ {'w': ['󱎸  Find word', ':Telescope live_grep']},
 	\ {'r': ['  Recently opened files', ':Telescope oldfiles']},
+	\ {'m': ['  Marks', ':Telescope marks']},
+	\ {'.': ['  CWD', "execute 'cd ' . g:cwd"]},
 	\ {'x': ['  Xplorer', ':Vifm']},
 	\ {'t': ['  Terminal', ':FTermOpen']},
-	\ {'m': ['  Marks', ':Telescope marks']},
-	\ {'T': ['  Trash', ':! rm -rf /Users/dferreir/.local/share/vifm/Trash']},
+	\ {'T': ['  Trash', ':Vifm ~/.local/share/vifm/Trash/']},
+	\ {'-': ['  -----------', ':echo "Bookmarks"']},
+	\ {'bv': ['  Nvim', ':edit ~/.config/nvim/vimrc.vim']},
+	\ {'bl': ['  Lazy', ':edit ~/.config/nvim/init.lua']},
+	\ {'bx': ['  Vifm', ':edit ~/.config/vifm/vifmrc']},
+	\ {'bb': ['󰯮  Bash', ':edit ~/.bashrc']},
+	\ {'bz': ['󰰶  Zsh', ':edit ~/.zshrc']},
+	\ {'bp': ['  p10k', ':edit ~/.p10k.zsh']},
+	\ {'bm': ['  Makefile', ':edit ~/42/Templates/Makefile']},
+	\ {'bc': ['  Config', ':Vifm ~/.config/']},
+	\ {'b4': ['󰙱  Trash', ':Vifm ~/42/Cursus/']},
+	\ {'bs': ['  Scripts', ':Vifm ~/42/Scripts/']},
+	\ {'bL': ['󰒲  LazyPlugins', ':Vifm ~/.local/share/nvim/lazy/']},
     \ ]
 
-let g:startify_bookmarks = [
-      \ { 'bv': '~/.config/nvim/vimrc.vim'},
-      \ { 'bl': '~/.config/nvim/init.lua'},
-      \ { 'bx': '~/.config/vifm/vifmrc'},
-      \ { 'bz': '~/.zshrc'},
-      \ { 'bb': '~/.bashrc'},
-      \ { 'bp': '~/.p10k.zsh'},
-      \ { 'bm': '~/42/Templates/Makefile'},
-      \ { 'b4': '~/42/Cursus/'},
-      \ { 'bs': '~/42/Scripts/'},
-      \ { 'blu': '~/.local/share/nvim/lazy/'},
-      \ ]
+	" \ {'T': ['  Trash', ':! rm -rf /Users/dferreir/.local/share/vifm/Trash']},
+" let g:startify_bookmarks = [
+"       \ { 'bv': '~/.config/nvim/vimrc.vim'},
+"       \ { 'bl': '~/.config/nvim/init.lua'},
+"       \ { 'bx': '~/.config/vifm/vifmrc'},
+"       \ { 'bz': '~/.zshrc'},
+"       \ { 'bb': '~/.bashrc'},
+"       \ { 'bp': '~/.p10k.zsh'},
+"       \ { 'bm': '~/42/Templates/Makefile'},
+"       \ { 'b4': '~/42/Cursus/'},
+"       \ { 'bs': '~/42/Scripts/'},
+"       \ { 'blu': '~/.local/share/nvim/lazy/'},
+"       \ ]
 
 let g:startify_lists = [
     \ { 'type': 'commands',  'header': ['   Commands']       },
@@ -330,10 +355,26 @@ let g:vcoolor_disable_mappings = 1
 noremap <silent> <space>C :VCoolor<CR>
 
 " //GITGUTTER//
-" highlight GitGutterAdd guifg=#00FF00 ctermfg=Green
-" highlight GitGutterChange guifg=#FFFF00 ctermfg=Yellow
-" highlight GitGutterDelete guifg=#FF0000 ctermfg=Red
+" highlight GitGutterAdd guifg=#00FF00 guifg=Green
+" highlight GitGutterChange guifg=#FFFF00 guifg=Yellow
+" highlight GitGutterDelete guifg=#FF0000 guifg=Red
 " let g:gitgutter_enabled=1
 " let g:gitgutter_map_keys=0
 " set signcolumn=yes
 " let g:gitgutter_async=0
+
+" //undo-persistence//
+" guard for distributions lacking the 'persistent_undo' feature.
+if has('persistent_undo')
+    " define a path to store persistent undo files.
+    let target_path = expand('~/.config/vim-persisted-undo/')
+    " create the directory and any parent directories
+    " if the location does not exist.
+    if !isdirectory(target_path)
+        call system('mkdir -p ' . target_path)
+    endif
+    " point Vim to the defined undo directory.
+    let &undodir = target_path
+    " finally, enable undo persistence.
+    set undofile
+endif

@@ -36,7 +36,7 @@ require("lazy").setup({
 	},
 	{'kdheepak/lazygit.nvim'},
 	{'arecarn/vim-crunch'},
-	{'tpope/vim-commentary'},
+	-- {'tpope/vim-commentary'},
 	{'hrsh7th/nvim-cmp',
 	dependencies = {
 		"hrsh7th/cmp-buffer",
@@ -48,6 +48,7 @@ require("lazy").setup({
 	{"vim-scripts/ReplaceWithRegister"},
 	{"KabbAmine/vCoolor.vim"},
 	{"numToStr/FTerm.nvim"},
+	-- {"preservim/nerdtree"},
 })
 
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
@@ -125,7 +126,7 @@ require'FTerm'.setup({
 -- TELESCOPE
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<space>f', ":Telescope<CR>", {})
--- vim.keymap.set('v', '<space>f', "y<ESC>:Telescope live_grep default_text=<C-r>0<CR>", {})
+vim.keymap.set('v', '<space>f', "y<ESC>:Telescope live_grep default_text=<C-r>0<CR>", {})
 
 local actions = require("telescope.actions")
 

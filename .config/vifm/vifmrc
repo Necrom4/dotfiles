@@ -17,9 +17,9 @@
 " for opening files via l/Enter keys.  Comment that line out to change the
 " behaviour.
 if executable('vim')
-    set vicmd=~/nvim-macos/bin/nvim
+    set vicmd=~/nvim-macos-x86_64/bin/nvim
 elseif executable('nvim')
-    set vicmd=~/nvim-macos/bin/nvim
+    set vicmd=~/nvim-macos-x86_64/bin/nvim
 elseif executable('elvis')
     set vicmd=elvis\ -G\ termcap
 elseif executable('vile')
@@ -395,20 +395,21 @@ nnoremap <space> :!qlmanage -p %f > /dev/null 2>&1<cr>
 "" nnoremap b :!open %c<CR>
 
 " Mappings for faster renaming
-nnoremap rx cw<c-u>
-nnoremap rr cW<c-u>
-nnoremap re cw<c-w>
-nnoremap rw cW
-nnoremap ri cw<c-a>
-nnoremap ra cw
-vnoremap rr cw
+" nnoremap rx cw<c-u>
+" nnoremap rr cW<c-u>
+" nnoremap re cw<c-w>
+" nnoremap rw cW
+" nnoremap ri cw<c-a>
+" nnoremap ra cw
+" vnoremap rr cw
 
-" nnoremap cw cW<c-u>
-" nnoremap cW cw<c-u>
-" nnoremap ca cW
-" nnoremap cA cw
-" nnoremap cE cw<c-w>
-" nnoremap ce cw<c-a>
+nnoremap cw cW<c-u>
+nnoremap cW cw<c-u>
+nnoremap ca cW
+nnoremap cA cw
+nnoremap ce cw<c-w>
+nnoremap ci cw<c-a>
+vnoremap cw cw
 
 " As above, but without the file extension
 " nnoremap I cW<c-a>
@@ -477,7 +478,9 @@ set milleroptions=lsize:1,csize:2,rsize:0,rpreview:all
 vsplit
 view!
 
-fileviewer */,.*/ lsd --tree --depth 10 --group-directories-first --color never --icon always
+" fileviewer ../ echo "╭────────────────────────────────────────────────────────╮\n│ ███╗   ██╗███████╗ ██████╗██████╗  ██████╗ ███╗   ███╗ │\n│ ████╗  ██║██╔════╝██╔════╝██╔══██╗██╔═══██╗████╗ ████║ │\n│ ██╔██╗ ██║█████╗  ██║     ██████╔╝██║   ██║██╔████╔██║ │\n│ ██║╚██╗██║██╔══╝  ██║     ██╔══██╗██║   ██║██║╚██╔╝██║ │\n│ ██║ ╚████║███████╗╚██████╗██║  ██║╚██████╔╝██║ ╚═╝ ██║ │\n│ ╚═╝  ╚═══╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ │\n╰──────────────────────────────────────────────────────"
+
+fileviewer */,.*/ lsd --tree --depth 5 --group-directories-first --color never --icon always
 
 set relativenumber
 set tabstop=2
@@ -516,7 +519,7 @@ nnoremap <silent> <C-J> <C-F>
 nnoremap <silent> <C-K> <C-B>
 nnoremap Mf :!make fclean &<CR>
 nnoremap E :!./%f &<CR>
-map :diff :!~/nvim-macos/bin/nvim -d %f %F<CR>
+map :diff :!~/nvim-macos-x86_64/bin/nvim -d %f %F<CR>
 
 nnoremap <C-T> :tabnew<CR>
 
@@ -568,7 +571,6 @@ set classify+=' ::*.aac,,*.anx,,*.asf,,*.au,,*.axa,,*.flac,,*.m2a,,*.m4a,,*.m
 set classify+=' ::*.avi,,*.ts,,*.axv,,*.divx,,*.m2v,,*.m4p,,*.m4v,,.mka,,*.mkv,,*.mov,,*.mp4,,*.flv,,*.mp4v,,*.mpeg,,*.mpg,,*.nuv,,*.ogv,,*.pbm,,*.pgm,,*.qt,,*.vob,,*.wmv,,*.xvid,,*.webm::'
 "" office
 set classify+=' ::*.doc,,*.docx::, ::*.xls,,*.xlsm,,*.xlsx::, ::*.pptx,,*.ppt::'
-
 
 highlight User1 ctermbg=16 ctermfg=196
 highlight User2 ctermbg=16 ctermfg=160

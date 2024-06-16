@@ -52,20 +52,41 @@ fi
 echo -ne "\033[0m\n \033[0;30;42m\033[0m $Storage\033[0m"
 
 echo -n " "
-echo -ne "󰅁󰔟󰅂  ...  \033[0;30;42m\033[0m"
+echo -ne "󰄽󱑊󰶻  ...  \033[0;30;42m\033[0m"
 while true; do
-	sleep 0.5
-	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱦠󰶻  ...  \033[0;30;42m\033[0m"
-	sleep 0.5
-	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰅁󰔟󰅂  ...  \033[0;30;42m\033[0m"
-	sleep 0.5
-	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱦠󰶻  ...  \033[0;30;42m\033[0m"
-	sleep 0.5
-	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰅁󰔟󰅂  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱐿󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑀󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑁󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑂󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑃󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑄󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑅󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑅󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑆󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑇󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑈󰶻  ...  \033[0;30;42m\033[0m"
+	sleep 0.1
+	echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱑉󰶻  ...  \033[0;30;42m\033[0m"
 	if df -h "$HOME" &>/dev/null; then
-		echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b"; break
+		break
 	fi
 done
+
+
+	# echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰅁󰔟󰅂  ...  \033[0;30;42m\033[0m"
+	# sleep 0.5
+	# echo -ne "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󱦠󰶻  ...  \033[0;30;42m\033[0m"
 
 #42 Caches
 /bin/rm -rf "$HOME"/Library/*.42* &>/dev/null
@@ -112,7 +133,7 @@ then
 	Storage="0B"
 fi
 sleep 1
-echo -e "\033[0m󰄽󰗡󰶻 $Storage \033[0;30;42m\033[0m\n\033[0m"
+echo -e "\b\b\b\b\b\b\b\b\b\b\b\b󰄽󰗠󰶻 $Storage \033[0;30;42m\033[0m\n\033[0m"
 #
 # echo -e	"\n	       report any issues to me in:"
 # echo -e	"		   GitHub   ~> \033[4;1;34mombhd\033[0m"
