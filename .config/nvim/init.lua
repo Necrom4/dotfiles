@@ -45,16 +45,17 @@ require("lazy").setup({
 		"hrsh7th/cmp-calc",
 	}},
 	{"ap/vim-css-color"},
-	{"vim-scripts/ReplaceWithRegister"},
-	{"KabbAmine/vCoolor.vim"},
 	{"numToStr/FTerm.nvim"},
 	-- {"preservim/nerdtree"},
+	{"nvimdev/indentmini.nvim"},
+	{"nvim-treesitter/nvim-treesitter"},
+	{"lewis6991/gitsigns.nvim"},
 })
 
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
 vim.cmd.source(vimrc)
 
-local vimrc = vim.fn.stdpath("config") .. "/stdheader.vim"
+-- local vimrc = vim.fn.stdpath("config") .. "/stdheader.vim"
 vim.cmd.source(vimrc)
 
 -- NVIM-CMP
@@ -167,12 +168,22 @@ require('fm-nvim').setup{
 			border = "rounded",
 		},
 	},
-	mappings = {
-		vert_split = "<C-v>",
-		horz_split = "<C-s>",
-		tabedit    = "<C-t>",
-		-- edit       = "<C-e>",
-		-- ESC        = "<ESC>"
-	},
+	-- mappings = {
+	-- 	vert_split = "<C-v>",
+	-- 	horz_split = "<C-s>",
+	-- 	tabedit    = "<C-t>",
+	-- 	edit       = "<C-e>",
+	-- 	ESC        = "<ESC>"
+	-- },
 }
 
+-- INDENTMINI
+require("indentmini").setup()
+-- Colors are applied automatically based on user-defined highlight groups.
+-- There is no default value.
+vim.cmd.highlight('IndentLine guifg=#800000')
+-- Current indent line highlight
+vim.cmd.highlight('IndentLineCurrent guifg=#FF0000')
+
+-- GITSIGNS
+require('gitsigns').setup()

@@ -110,7 +110,7 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='nvim'
 # fi
 
-export EDITOR="/Users/dferreir/nvim-macos/bin/nvim"
+export EDITOR="nvim"
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -124,37 +124,31 @@ export EDITOR="/Users/dferreir/nvim-macos/bin/nvim"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # alias vim="nvim"
-alias gcc="gcc -Wall -Werror -Wextra"
-alias norm="norminette -R CheckForbiddenSourceHeader"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 #source /home/diogo/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # source /Users/dferreir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-alias clean='bash ~/42/Scripts/Cleaner_42.sh'
-alias c='bash ~/42/Scripts/Cleaner_42.sh'
-. /Users/dferreir/.asdf/asdf.sh
-alias vim="~/nvim-macos-x86_64/bin/nvim"
-alias e="~/nvim-macos-x86_64/bin/nvim"
+alias vim="nvim"
+alias e="nvim"
 alias ls='lsd --color never'
 alias ll='ls -l'
 alias la='ls -A'
 alias lla='ls -lA'
 alias lt='ls --tree'
-alias brew="~/.brew/bin/brew"
+alias brew="~/.linuxbrew/bin/brew"
 function x() {
-	echo $PWD > ~/42/Scripts/lastdir_vifm
-	~/.brew/bin/vifm
-	cd "$(cat ~/42/Scripts/lastdir_vifm)"
+	echo $PWD > ~/.scripts/lastdir_vifm
+	vifm
+	cd "$(cat ~/.scripts/lastdir_vifm)"
 }
 # alias vifm="x"
-# alias lazygit="~/.brew/bin/lazygit"
-alias g="~/.brew/bin/lazygit"
+alias lazygit="~/.linuxbrew/bin/lazygit"
+alias g="~/.linuxbrew/bin/lazygit"
 alias y="yadm enter lazygit"
 alias cwd.sh="source ~/42/Scripts/cwd.sh"
 alias copy_selected.sh="source ~/42/Scripts/copy_selected.sh"
-alias Grademe='bash -c "$(curl https://grademe.fr)"'
 alias z="source ~/.zshrc && echo '[ZSH Reloaded]'"
 alias m='cmatrix'
 # alias composer='~/.brew/Cellar/composer.phar'
@@ -183,11 +177,6 @@ alias m='cmatrix'
 #alias ranger="Library/Python/2.7/bin/ranger"
 #alias r="Library/Python/2.7/bin/ranger"
 
-# Load Homebrew config script
-source $HOME/.brewconfig.zsh
-USER=dferreir
-export USER
-
 # //VI MODE//
 bindkey -v
 bindkey '^k' up-line-or-beginning-search
@@ -202,7 +191,7 @@ function vi-yank-xclip {
    echo "$CUTBUFFER" | pbcopy -i
 }
 # zle -N vi-yank-xclbindkey -M vicmd 'y' vi-yank-xclip
-bindkey -M vicmd 'y' vi-yank-xclip
+# bindkey -M vicmd 'y' vi-yank-xclip
 
 ZVM_VI_HIGHLIGHT_FOREGROUND=#000000
 ZVM_VI_HIGHLIGHT_BACKGROUND=#ff0000
@@ -210,3 +199,8 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#ff0000
 # //ZSH-AUTOSUGGESTIONS//
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#960000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
+eval "$(/root/.linuxbrew/bin/brew shellenv)"
+
+export HTTP_PROXY="http://p-proxy-01.cp.loc:3128"
+export HTTPS_PROXY="http://p-proxy-01.cp.loc:3128"
+export NO_PROXY="localhost,127.0.0.1,.loc"

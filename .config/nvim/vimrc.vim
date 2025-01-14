@@ -10,13 +10,13 @@ set noswapfile
 set hlsearch
 set incsearch
 " set autoindent
-" set noexpandtab
-" set ts=4 sw=4
+set expandtab
+set ts=2 sw=2
 " set formatoptions-=cro
 set splitbelow
 set timeoutlen=250
 set linebreak
-autocmd FileType * set formatoptions-=cro ts=2 sw=2 noexpandtab
+autocmd FileType * set formatoptions-=cro ts=2 sw=2 expandtab
 " set nowrap
 " set cursorline
 " set cursorcolumn
@@ -175,7 +175,7 @@ highlight @variable guibg=#000000 guifg=#FF0000 gui=none
 :nnoremap <silent> <space>v :source ~/.config/nvim/vimrc.vim<CR>:noh<CR>:echo "[VIM Reloaded]"<CR>
 " :tnoremap <silent> <S-Space> <ESC>a<space>
 nnoremap <silent> <space>b :silent !open %<CR>
-let g:cwd = system('~/42/Scripts/./cwd.sh')
+let g:cwd = system('~/.scripts/./cwd.sh')
 
 " //Normal Mode Navigation//
 :noremap <silent> MM zz
@@ -312,32 +312,31 @@ let g:startify_commands = [
 	\ {'.': ['  CWD', "execute 'cd ' . g:cwd"]},
 	\ {'x': ['  Xplorer', ':Vifm']},
 	\ {'t': ['  Terminal', ':FTermOpen']},
-	\ {'T': ['  Trash', ':Vifm ~/.local/share/vifm/Trash/']},
+	\ {'T': ['  Trash', ':Vifm ~/../.vifm-Trash-0/']},
 	\ {'-': ['  -----------', ':echo "Bookmarks"']},
 	\ {'bv': ['  Nvim', ':edit ~/.config/nvim/vimrc.vim']},
 	\ {'bl': ['  Lazy', ':edit ~/.config/nvim/init.lua']},
-	\ {'bx': ['  Vifm', ':edit ~/.config/vifm/vifmrc']},
+	\ {'bx': ['  Vifm', ':edit ~/.vifm/vifmrc']},
 	\ {'bb': ['󰯮  Bash', ':edit ~/.bashrc']},
 	\ {'bz': ['󰰶  Zsh', ':edit ~/.zshrc']},
 	\ {'bp': ['  p10k', ':edit ~/.p10k.zsh']},
 	\ {'bm': ['  Makefile', ':edit ~/42/Templates/Makefile']},
 	\ {'bc': ['  Config', ':Vifm ~/.config/']},
-	\ {'b4': ['󰙱  Trash', ':Vifm ~/42/Cursus/']},
-	\ {'bs': ['  Scripts', ':Vifm ~/42/Scripts/']},
+	\ {'bs': ['  Scripts', ':Vifm ~/.scripts/']},
 	\ {'bL': ['󰒲  LazyPlugins', ':Vifm ~/.local/share/nvim/lazy/']},
     \ ]
 
-	" \ {'T': ['  Trash', ':! rm -rf /Users/dferreir/.local/share/vifm/Trash']},
+	" \ {'T': ['  Trash', ':! rm -rf ~/../.vifm-Trash-0/']},
 " let g:startify_bookmarks = [
 "       \ { 'bv': '~/.config/nvim/vimrc.vim'},
 "       \ { 'bl': '~/.config/nvim/init.lua'},
-"       \ { 'bx': '~/.config/vifm/vifmrc'},
+"       \ { 'bx': '~/.vifm/vifmrc'},
 "       \ { 'bz': '~/.zshrc'},
 "       \ { 'bb': '~/.bashrc'},
 "       \ { 'bp': '~/.p10k.zsh'},
 "       \ { 'bm': '~/42/Templates/Makefile'},
 "       \ { 'b4': '~/42/Cursus/'},
-"       \ { 'bs': '~/42/Scripts/'},
+"       \ { 'bs': '~/.scripts/'},
 "       \ { 'blu': '~/.local/share/nvim/lazy/'},
 "       \ ]
 
@@ -362,6 +361,13 @@ noremap <silent> <space>C :VCoolor<CR>
 " let g:gitgutter_map_keys=0
 " set signcolumn=yes
 " let g:gitgutter_async=0
+
+" //GITSIGNS//
+ highlight GitSignsAdd guifg=#FF0000
+ highlight GitSignsChange guifg=#800000
+ highlight GitSignsDelete guifg=#FF0000
+ highlight GitSignsAddLn guibg=#202020
+ highlight GitSignsChangeLn guibg=#202020
 
 " //undo-persistence//
 " guard for distributions lacking the 'persistent_undo' feature.
