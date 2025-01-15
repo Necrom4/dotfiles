@@ -20,8 +20,8 @@ autocmd FileType * set formatoptions-=cro ts=2 sw=2 expandtab
 " set nowrap
 " set cursorline
 " set cursorcolumn
-set iskeyword-=_,-
-"set notermguicolors
+"set iskeyword-=_,-
+set termguicolors
 
 " //StatusLine//
 set noshowmode
@@ -39,15 +39,15 @@ function! ModeName()
   return get(mode_dict, mode(), 'UNKNOWN')
 endfunction
 
-highlight StatusLine guibg=#FF0000 guifg=#000000 gui=bold
-highlight StatusLineArrow guibg=#262626 guifg=#FF0000
-highlight StatusLineNC guibg=#A60000 guifg=#000000 gui=bold
+highlight StatusLine guibg=#D00000 guifg=#000000 gui=bold
+highlight StatusLineArrow guibg=#262626 guifg=#D00000
+highlight StatusLineNC guibg=#900000 guifg=#000000 gui=bold
 highlight StatusLineArrowNC guibg=#262626 guifg=#900000
-" highlight StatusLineTerm guibg=#FF0000 guifg=#000000
+" highlight StatusLineTerm guibg=#D00000 guifg=#000000
 " highlight StatusLineTermNC guibg=#600000 guifg=#000000
 highlight StatusLinePath guibg=#262626 guifg=#666666 gui=none
 highlight StatusLinePathMain guibg=#262626 guifg=#999999 gui=bold
-" highlight StatusLineMe guibg=#FF0000 guifg=#262626 gui=reverse
+" highlight StatusLineMe guibg=#D00000 guifg=#262626 gui=reverse
 highlight StatusLinePathNC guibg=#262626 guifg=#595959 gui=none
 highlight StatusLinePathMainNC guibg=#262626 guifg=#808080 gui=bold
 
@@ -63,69 +63,68 @@ augroup END
 autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=#000000 guifg=#800000 | else | highlight LineNr guibg=#000000 guifg=#D00000 | endif
 
 " //Highlights//
-highlight Normal guibg=#000000 guifg=#FF0000 gui=none
-highlight Comment guibg=#000000 guifg=#900000 gui=none
-highlight Include guibg=#000000 guifg=#FF0000 gui=bold
-highlight Define guibg=#000000 guifg=#FF0000 gui=bold
-highlight Bold guibg=#000000 guifg=#FF0000 gui=bold
+highlight Normal guibg=#000000 guifg=#D00000 gui=none
+highlight Comment guibg=#000000 guifg=#900000 gui=italic
+highlight Include guibg=#000000 guifg=#D00000 gui=none
+highlight Define guibg=#000000 guifg=#D00000 gui=underline
+highlight Bold guibg=#000000 guifg=#D00000 gui=bold
 highlight Constant guibg=#000000 guifg=#FF0000 gui=bold
-highlight Conditional guibg=#000000 guifg=#FF0000 gui=underline
+highlight Conditional guibg=#000000 guifg=#D00000 gui=underline
 highlight NonText guibg=#000000 guifg=#600000 gui=none
-highlight Error guifg=#FF0000 guibg=#600000 gui=bold
-highlight Number guibg=#000000 guifg=#FF0000 gui=none
-highlight String guibg=#000000 guifg=#BF0000 gui=none
-highlight Float guibg=#000000 guifg=#FF0000 gui=bold
-highlight Delimiter guibg=#000000 guifg=#FF0000 gui=bold
+highlight Error guifg=#D00000 guibg=#600000 gui=bold,underline
+highlight Number guibg=#000000 guifg=#FF0000 gui=bold
+highlight String guibg=#000000 guifg=#A00000 gui=none
+highlight Float guibg=#000000 guifg=#D00000 gui=underline
+highlight Delimiter guibg=#000000 guifg=#900000 gui=none
 highlight Function guibg=#000000 guifg=#FF0000 gui=bold
-highlight Special guibg=#000000 guifg=#FF0000 gui=none
-highlight Statement guibg=#000000 guifg=#FF0000 gui=bold
-highlight Identifier guibg=#000000 guifg=#FF0000 gui=none
+highlight Special guibg=#000000 guifg=#FF0000 gui=bold
+highlight Statement guibg=#000000 guifg=#D00000 gui=none
+highlight Identifier guibg=#000000 guifg=#D00000 gui=none
 highlight LineNr guibg=#000000 guifg=#D00000
 highlight LineNrAbove guibg=#000000 guifg=#800000 gui=none
 highlight LineNrBelow guibg=#000000 guifg=#800000 gui=none
-highlight Todo guibg=#FF0000 guifg=#600000
-highlight WildMenu guibg=#000000 guifg=#FF0000
-highlight MatchParen guibg=#600000 guifg=#FF0000 gui=none
-highlight TabLine guibg=#000000 guifg=#FF0000 gui=bold,underline
-highlight TabLineSel guibg=#FF0000 guifg=#000000 gui=bold
-highlight TabLineFill guibg=#000000 guifg=#FF0000 gui=bold,underline
-highlight Visual guibg=#FF0000 guifg=#000000 gui=none
-highlight Repeat guibg=#000000 guifg=#FF0000 gui=bold
-highlight IncSearch guibg=#600000 guifg=#FF0000
-highlight Search guibg=#600000 guifg=#FF0000
-highlight CurSearch guibg=#600000 guifg=#FF0000
-highlight SpecialKey guibg=#000000 guifg=#FF0000 gui=none
-highlight PreProc guibg=#000000 guifg=#FF0000 gui=none
-highlight Operator guibg=#000000 guifg=#FF0000 gui=none
-highlight Type guibg=#000000 guifg=#FF0000 gui=bold
-highlight Conditional guibg=#000000 guifg=#FF0000 gui=bold
-highlight Title guibg=#000000 guifg=#FF0000 gui=none
-highlight Boolean guibg=#000000 guifg=#FF0000 gui=bold
-highlight Special guibg=#000000 guifg=#FF0000
-highlight Cursor guibg=#000000 guifg=#FF0000
-highlight CursorLine guibg=none guifg=none gui=none
+highlight Todo guibg=#D00000 guifg=#600000
+highlight WildMenu guibg=#000000 guifg=#D00000
+highlight MatchParen guibg=#600000 guifg=#D00000 gui=none
+highlight TabLine guibg=#000000 guifg=#D00000 gui=bold,underline
+highlight TabLineSel guibg=#D00000 guifg=#000000 gui=bold
+highlight TabLineFill guibg=#000000 guifg=#D00000 gui=bold,underline
+highlight Visual guibg=#D00000 guifg=#000000 gui=none
+highlight Repeat guibg=#000000 guifg=#D00000 gui=bold
+highlight IncSearch guibg=#600000 guifg=#D00000
+highlight Search guibg=#600000 guifg=#D00000
+highlight CurSearch guibg=#600000 guifg=#D00000
+highlight SpecialKey guibg=#000000 guifg=#D00000 gui=none
+highlight PreProc guibg=#000000 guifg=#D00000 gui=none
+highlight Operator guibg=#000000 guifg=#800000 gui=none
+highlight Type guibg=#000000 guifg=#D00000 gui=bold
+highlight Conditional guibg=#000000 guifg=#D00000 gui=bold
+highlight Title guibg=#000000 guifg=#D00000 gui=none
+highlight Boolean guibg=#000000 guifg=#D00000 gui=bold
+highlight Cursor guibg=#000000 guifg=#D00000
+highlight CursorLine guibg=#300000
 highlight CursorLineFold guibg=none guifg=#600000 gui=none
 highlight CursorLineNr guibg=none guifg=none gui=none
 highlight CursorColumn guibg=none guifg=none gui=none
 highlight Folded guibg=#000000 guifg=#600000 gui=bold
-highlight FoldColumn guibg=none guifg=#FF0000 gui=none
-highlight SignColumn guibg=#000000 guifg=#FF0000
-highlight Pmenu guibg=#000000 guifg=#FF0000
-highlight PmenuSel guibg=#FF0000 guifg=#000000
-highlight PmenuSbar guibg=#000000 guifg=#FF0000
-highlight Directory guibg=#000000 guifg=#FF0000
+highlight FoldColumn guibg=none guifg=#800000 gui=none
+highlight SignColumn guibg=#000000 guifg=#D00000
+highlight Pmenu guibg=#000000 guifg=#D00000
+highlight PmenuSel guibg=#D00000 guifg=#000000
+highlight PmenuSbar guibg=#000000 guifg=#D00000
+highlight Directory guibg=#000000 guifg=#D00000
 highlight VertSplit guibg=#000000 guifg=#600000
-highlight ErrorMsg guibg=#600000 guifg=#FF0000
-highlight ModeMsg guibg=#000000 guifg=#FF0000 gui=underline
-highlight MoreMsg guibg=#000000 guifg=#FF0000 gui=underline
+highlight ErrorMsg guibg=#600000 guifg=#D00000
+highlight ModeMsg guibg=#000000 guifg=#D00000 gui=underline
+highlight MoreMsg guibg=#000000 guifg=#D00000 gui=underline
 highlight DiffAdd guibg=#000000 guifg=#00FF00 gui=none
 highlight DiffChange guibg=#000000 guifg=#FFF000 gui=none
 highlight DiffDelete guibg=#000000 guifg=#600000 gui=none
 highlight DiffText guibg=#0000FF guifg=#00FFFF gui=none
-highlight SpellBad guibg=#600000 guifg=#FF0000 gui=underline
-highlight Underlined guibg=#000000 guifg=#FF0000 gui=underline
-highlight DiagnosticInfo guibg=#000000 guifg=#FF0000 gui=none
-highlight @variable guibg=#000000 guifg=#FF0000 gui=none
+highlight SpellBad guibg=#600000 guifg=#D00000 gui=underline
+highlight Underlined guibg=#000000 guifg=#D00000 gui=underline
+highlight DiagnosticInfo guibg=#000000 guifg=#D00000 gui=none
+highlight @variable guibg=#000000 guifg=#D00000 gui=none
 
 " Use an autocmd to trigger the setup function when entering TelescopePrompt
 "augroup TelescopeMappings
@@ -356,16 +355,16 @@ noremap <silent> <space>C :VCoolor<CR>
 " //GITGUTTER//
 " highlight GitGutterAdd guifg=#00FF00 guifg=Green
 " highlight GitGutterChange guifg=#FFFF00 guifg=Yellow
-" highlight GitGutterDelete guifg=#FF0000 guifg=Red
+" highlight GitGutterDelete guifg=#D00000 guifg=Red
 " let g:gitgutter_enabled=1
 " let g:gitgutter_map_keys=0
 " set signcolumn=yes
 " let g:gitgutter_async=0
 
 " //GITSIGNS//
- highlight GitSignsAdd guifg=#FF0000
+ highlight GitSignsAdd guifg=#D00000
  highlight GitSignsChange guifg=#600000
- highlight GitSignsDelete guifg=#FF0000
+ highlight GitSignsDelete guifg=#D00000
  highlight GitSignsAddLn guibg=#202020
  highlight GitSignsChangeLn guibg=#202020
 
