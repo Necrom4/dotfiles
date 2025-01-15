@@ -12,13 +12,10 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	{'nvim-telescope/telescope.nvim', dependencies = {'nvim-lua/plenary.nvim'}},
-	{'s1n7ax/nvim-window-picker'},
-	{'mhinz/vim-startify'},
-	{'dstein64/vim-win'},
-	-- {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'},
--- 	{'pseewald/vim-anyfold'},
--- 	{'vifm/vifm.vim'},
+  {'nvim-telescope/telescope.nvim', dependencies = {'nvim-lua/plenary.nvim'}},
+  {'s1n7ax/nvim-window-picker'},
+  {'mhinz/vim-startify'},
+  {'dstein64/vim-win'},
 	{'is0n/fm-nvim',
 		keys = {
 		{
@@ -34,28 +31,25 @@ require("lazy").setup({
 		}
 	}
 	},
-	{'kdheepak/lazygit.nvim'},
-	{'arecarn/vim-crunch'},
-	-- {'tpope/vim-commentary'},
-	{'hrsh7th/nvim-cmp',
-	dependencies = {
-		"hrsh7th/cmp-buffer",
-		"hrsh7th/cmp-path",
-		"hrsh7th/cmp-cmdline",
-		"hrsh7th/cmp-calc",
-	}},
-	{"ap/vim-css-color"},
-	{"numToStr/FTerm.nvim"},
-	-- {"preservim/nerdtree"},
-	{"nvimdev/indentmini.nvim"},
-	{"nvim-treesitter/nvim-treesitter"},
-	{"lewis6991/gitsigns.nvim"},
+  {'kdheepak/lazygit.nvim'},
+  {'arecarn/vim-crunch'},
+  {'hrsh7th/nvim-cmp',
+  dependencies = {
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/cmp-path",
+    "hrsh7th/cmp-cmdline",
+    "hrsh7th/cmp-calc",
+  }},
+  {"norcalli/nvim-colorizer.lua"},
+  {"numToStr/FTerm.nvim"},
+  {"nvimdev/indentmini.nvim"},
+  {"nvim-treesitter/nvim-treesitter"},
+  {"lewis6991/gitsigns.nvim"},
+  {"petertriho/nvim-scrollbar"},
+  {"kevinhwang91/nvim-hlslens"},
 })
 
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
-vim.cmd.source(vimrc)
-
--- local vimrc = vim.fn.stdpath("config") .. "/stdheader.vim"
 vim.cmd.source(vimrc)
 
 -- NVIM-CMP
@@ -168,22 +162,47 @@ require('fm-nvim').setup{
 			border = "rounded",
 		},
 	},
-	-- mappings = {
-	-- 	vert_split = "<C-v>",
-	-- 	horz_split = "<C-s>",
-	-- 	tabedit    = "<C-t>",
-	-- 	edit       = "<C-e>",
-	-- 	ESC        = "<ESC>"
-	-- },
+	mappings = {
+		vert_split = "<C-v>",
+		horz_split = "<C-s>",
+		tabedit    = "<C-t>",
+		edit       = "<C-e>",
+		ESC        = "<ESC>"
+	},
+}
+
+-- NVIM-TREESITTER
+require('nvim-treesitter.configs').setup {
+  highlight = {
+    enable = true,  -- Enable Treesitter-based syntax highlighting
+  }
 }
 
 -- INDENTMINI
 require("indentmini").setup()
 -- Colors are applied automatically based on user-defined highlight groups.
 -- There is no default value.
-vim.cmd.highlight('IndentLine guifg=#800000')
+vim.cmd.highlight('IndentLine guifg=#400000')
 -- Current indent line highlight
-vim.cmd.highlight('IndentLineCurrent guifg=#FF0000')
+vim.cmd.highlight('IndentLineCurrent guifg=#800000')
 
 -- GITSIGNS
 require('gitsigns').setup()
+
+-- COLORIZER
+require('colorizer').setup()
+
+require("scrollbar").setup({
+  handle = {
+    color = '#600000',
+  },
+  marks = {
+    Search = { color = '#600000' },
+    Error = { color = '#600000' },
+    Warn = { color = '#600000' },
+    Info = { color = '#600000' },
+    Hint = { color = '#600000' },
+    Misc = { color = '#600000' },
+  },
+  handlers = { search = true },
+})
