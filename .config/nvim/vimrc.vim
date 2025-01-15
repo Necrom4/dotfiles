@@ -42,9 +42,9 @@ endfunction
 highlight StatusLine guibg=#FF0000 guifg=#000000 gui=bold
 highlight StatusLineArrow guibg=#262626 guifg=#FF0000
 highlight StatusLineNC guibg=#A60000 guifg=#000000 gui=bold
-highlight StatusLineArrowNC guibg=#262626 guifg=#A60000
+highlight StatusLineArrowNC guibg=#262626 guifg=#900000
 " highlight StatusLineTerm guibg=#FF0000 guifg=#000000
-" highlight StatusLineTermNC guibg=#800000 guifg=#000000
+" highlight StatusLineTermNC guibg=#600000 guifg=#000000
 highlight StatusLinePath guibg=#262626 guifg=#666666 gui=none
 highlight StatusLinePathMain guibg=#262626 guifg=#999999 gui=bold
 " highlight StatusLineMe guibg=#FF0000 guifg=#262626 gui=reverse
@@ -60,18 +60,18 @@ augroup StatusLineChange
 	autocmd WinLeave * setlocal statusline=%#StatusLineNC#\ %{ModeName()}%{IsModified()}%#StatusLineArrowNC#\ %#StatusLinePathNC#%<%{expand('%:p:h')}/%#StatusLinePathMainNC#%{expand('%:t:r')}%#StatusLinePathNC#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
 augroup END
 
-autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=#000000 guifg=#800000 | else | highlight LineNr guibg=#000000 guifg=#FF0000 | endif
+autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=#000000 guifg=#800000 | else | highlight LineNr guibg=#000000 guifg=#D00000 | endif
 
 " //Highlights//
 highlight Normal guibg=#000000 guifg=#FF0000 gui=none
-highlight Comment guibg=#000000 guifg=#A60000 gui=none
+highlight Comment guibg=#000000 guifg=#900000 gui=none
 highlight Include guibg=#000000 guifg=#FF0000 gui=bold
 highlight Define guibg=#000000 guifg=#FF0000 gui=bold
 highlight Bold guibg=#000000 guifg=#FF0000 gui=bold
 highlight Constant guibg=#000000 guifg=#FF0000 gui=bold
 highlight Conditional guibg=#000000 guifg=#FF0000 gui=underline
-highlight NonText guibg=#000000 guifg=#800000 gui=none
-highlight Error guifg=#FF0000 guibg=#800000 gui=bold
+highlight NonText guibg=#000000 guifg=#600000 gui=none
+highlight Error guifg=#FF0000 guibg=#600000 gui=bold
 highlight Number guibg=#000000 guifg=#FF0000 gui=none
 highlight String guibg=#000000 guifg=#BF0000 gui=none
 highlight Float guibg=#000000 guifg=#FF0000 gui=bold
@@ -80,20 +80,20 @@ highlight Function guibg=#000000 guifg=#FF0000 gui=bold
 highlight Special guibg=#000000 guifg=#FF0000 gui=none
 highlight Statement guibg=#000000 guifg=#FF0000 gui=bold
 highlight Identifier guibg=#000000 guifg=#FF0000 gui=none
-highlight LineNr guibg=#000000 guifg=#FF0000
+highlight LineNr guibg=#000000 guifg=#D00000
 highlight LineNrAbove guibg=#000000 guifg=#800000 gui=none
 highlight LineNrBelow guibg=#000000 guifg=#800000 gui=none
-highlight Todo guibg=#FF0000 guifg=#800000
+highlight Todo guibg=#FF0000 guifg=#600000
 highlight WildMenu guibg=#000000 guifg=#FF0000
-highlight MatchParen guibg=#800000 guifg=#FF0000 gui=none
+highlight MatchParen guibg=#600000 guifg=#FF0000 gui=none
 highlight TabLine guibg=#000000 guifg=#FF0000 gui=bold,underline
 highlight TabLineSel guibg=#FF0000 guifg=#000000 gui=bold
 highlight TabLineFill guibg=#000000 guifg=#FF0000 gui=bold,underline
 highlight Visual guibg=#FF0000 guifg=#000000 gui=none
 highlight Repeat guibg=#000000 guifg=#FF0000 gui=bold
-highlight IncSearch guibg=#800000 guifg=#FF0000
-highlight Search guibg=#800000 guifg=#FF0000
-highlight CurSearch guibg=#800000 guifg=#FF0000
+highlight IncSearch guibg=#600000 guifg=#FF0000
+highlight Search guibg=#600000 guifg=#FF0000
+highlight CurSearch guibg=#600000 guifg=#FF0000
 highlight SpecialKey guibg=#000000 guifg=#FF0000 gui=none
 highlight PreProc guibg=#000000 guifg=#FF0000 gui=none
 highlight Operator guibg=#000000 guifg=#FF0000 gui=none
@@ -104,25 +104,25 @@ highlight Boolean guibg=#000000 guifg=#FF0000 gui=bold
 highlight Special guibg=#000000 guifg=#FF0000
 highlight Cursor guibg=#000000 guifg=#FF0000
 highlight CursorLine guibg=none guifg=none gui=none
-highlight CursorLineFold guibg=none guifg=#800000 gui=none
+highlight CursorLineFold guibg=none guifg=#600000 gui=none
 highlight CursorLineNr guibg=none guifg=none gui=none
 highlight CursorColumn guibg=none guifg=none gui=none
-highlight Folded guibg=#000000 guifg=#800000 gui=bold
-highlight FoldColumn guibg=none guifg=#800000 gui=none
+highlight Folded guibg=#000000 guifg=#600000 gui=bold
+highlight FoldColumn guibg=none guifg=#FF0000 gui=none
 highlight SignColumn guibg=#000000 guifg=#FF0000
 highlight Pmenu guibg=#000000 guifg=#FF0000
 highlight PmenuSel guibg=#FF0000 guifg=#000000
 highlight PmenuSbar guibg=#000000 guifg=#FF0000
 highlight Directory guibg=#000000 guifg=#FF0000
-highlight VertSplit guibg=#000000 guifg=#800000
-highlight ErrorMsg guibg=#800000 guifg=#FF0000
+highlight VertSplit guibg=#000000 guifg=#600000
+highlight ErrorMsg guibg=#600000 guifg=#FF0000
 highlight ModeMsg guibg=#000000 guifg=#FF0000 gui=underline
 highlight MoreMsg guibg=#000000 guifg=#FF0000 gui=underline
 highlight DiffAdd guibg=#000000 guifg=#00FF00 gui=none
 highlight DiffChange guibg=#000000 guifg=#FFF000 gui=none
-highlight DiffDelete guibg=#000000 guifg=#800000 gui=none
+highlight DiffDelete guibg=#000000 guifg=#600000 gui=none
 highlight DiffText guibg=#0000FF guifg=#00FFFF gui=none
-highlight SpellBad guibg=#800000 guifg=#FF0000 gui=underline
+highlight SpellBad guibg=#600000 guifg=#FF0000 gui=underline
 highlight Underlined guibg=#000000 guifg=#FF0000 gui=underline
 highlight DiagnosticInfo guibg=#000000 guifg=#FF0000 gui=none
 highlight @variable guibg=#000000 guifg=#FF0000 gui=none
@@ -248,10 +248,10 @@ augroup END
 :noremap <C-T>q :tabclose<CR>
 
 " //Folds//
-" autocmd FileType * nnoremap <buffer> <silent> zf :set foldcolumn=1<CR>zf
-" autocmd FileType * vnoremap <buffer> <silent> zf :<C-u>set foldcolumn=1<CR>gvzf
-" :nnoremap <silent> Zo zR
-" :nnoremap <silent> Zc zM
+autocmd FileType * nnoremap <buffer> <silent> zf :set foldcolumn=1<CR>zf
+autocmd FileType * vnoremap <buffer> <silent> zf :<C-u>set foldcolumn=1<CR>gvzf
+:nnoremap <silent> Zo zR
+:nnoremap <silent> Zc zM
 
 " //42 header//
 let g:user42 = 'dferreir'
@@ -364,7 +364,7 @@ noremap <silent> <space>C :VCoolor<CR>
 
 " //GITSIGNS//
  highlight GitSignsAdd guifg=#FF0000
- highlight GitSignsChange guifg=#800000
+ highlight GitSignsChange guifg=#600000
  highlight GitSignsDelete guifg=#FF0000
  highlight GitSignsAddLn guibg=#202020
  highlight GitSignsChangeLn guibg=#202020

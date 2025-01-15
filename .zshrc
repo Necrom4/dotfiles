@@ -193,11 +193,11 @@ function vi-yank-xclip {
 # zle -N vi-yank-xclbindkey -M vicmd 'y' vi-yank-xclip
 # bindkey -M vicmd 'y' vi-yank-xclip
 
-ZVM_VI_HIGHLIGHT_FOREGROUND=#000000
-ZVM_VI_HIGHLIGHT_BACKGROUND=#ff0000
+ZVM_VI_HIGHLIGHT_FOREGROUND=#FF0000
+ZVM_VI_HIGHLIGHT_BACKGROUND=#600000
 
 # //ZSH-AUTOSUGGESTIONS//
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#960000"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#800000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
 eval "$(/root/.linuxbrew/bin/brew shellenv)"
 
