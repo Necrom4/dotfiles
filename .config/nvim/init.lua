@@ -35,6 +35,7 @@ require("lazy").setup({
   {'arecarn/vim-crunch'},
   {'hrsh7th/nvim-cmp',
   dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-cmdline",
@@ -47,6 +48,11 @@ require("lazy").setup({
   {"lewis6991/gitsigns.nvim"},
   {"petertriho/nvim-scrollbar"},
   {"kevinhwang91/nvim-hlslens"},
+  {
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig",
+  },
 })
 
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
@@ -205,4 +211,28 @@ require("scrollbar").setup({
     Misc = { color = '#600000' },
   },
   handlers = { search = true },
+})
+
+-- LSP
+require("mason").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "ast_grep",
+    "harper_ls",
+    "pyright",
+    "clangd",
+    "lua_ls",
+  },
+  automatic_installation = true,
+})
+local lspconfig = require("lspconfig")
+require("mason-lspconfig").setup_handlers({
+  function(server_name)
+    lspconfig[server_name].setup {}
+  end,
+})
+cmp.setup({
+  sources = {
+    { name = "nvim_lsp" },
+  },
 })
