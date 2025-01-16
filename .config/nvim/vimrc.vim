@@ -271,20 +271,6 @@ let g:mail42 = 'dferreir@student.42.fr'
 :omap <space>c gc
 :nmap <space>cc gcc
 
-" //Startify//
-" function! S_Windows()
-" 	wincmd v
-" 	wincmd l
-" 	normal gg
-" 	wincmd s
-" 	ter
-" 	wincmd h
-" 	normal gg
-" 	wincmd s
-" 	normal gg
-" 	wincmd k
-" endfunction
-
 :nnoremap <silent> <space>e :Startify<CR>
 
 let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
@@ -312,37 +298,26 @@ let g:startify_commands = [
 	\ {'x': ['  Xplorer', ':Vifm']},
 	\ {'t': ['  Terminal', ':FTermOpen']},
 	\ {'T': ['  Trash', ':Vifm ~/../.vifm-Trash-0/']},
-	\ {'-': ['  -----------', ':echo "Bookmarks"']},
-	\ {'bv': ['  Nvim', ':edit ~/.config/nvim/vimrc.vim']},
-	\ {'bl': ['  Lazy', ':edit ~/.config/nvim/init.lua']},
-	\ {'bx': ['  Vifm', ':edit ~/.vifm/vifmrc']},
-	\ {'bb': ['󰯮  Bash', ':edit ~/.bashrc']},
-	\ {'bz': ['󰰶  Zsh', ':edit ~/.zshrc']},
-	\ {'bp': ['  p10k', ':edit ~/.p10k.zsh']},
-	\ {'bm': ['  Makefile', ':edit ~/42/Templates/Makefile']},
-	\ {'bc': ['  Config', ':Vifm ~/.config/']},
-	\ {'bs': ['  Scripts', ':Vifm ~/.scripts/']},
-	\ {'bL': ['󰒲  LazyPlugins', ':Vifm ~/.local/share/nvim/lazy/']},
-    \ ]
+  \ ]
 
 	" \ {'T': ['  Trash', ':! rm -rf ~/../.vifm-Trash-0/']},
-" let g:startify_bookmarks = [
-"       \ { 'bv': '~/.config/nvim/vimrc.vim'},
-"       \ { 'bl': '~/.config/nvim/init.lua'},
-"       \ { 'bx': '~/.vifm/vifmrc'},
-"       \ { 'bz': '~/.zshrc'},
-"       \ { 'bb': '~/.bashrc'},
-"       \ { 'bp': '~/.p10k.zsh'},
-"       \ { 'bm': '~/42/Templates/Makefile'},
-"       \ { 'b4': '~/42/Cursus/'},
-"       \ { 'bs': '~/.scripts/'},
-"       \ { 'blu': '~/.local/share/nvim/lazy/'},
-"       \ ]
+let g:startify_bookmarks = [
+       \ { 'bv': '~/.config/nvim/vimrc.vim'},
+       \ { 'bl': '~/.config/nvim/init.lua'},
+       \ { 'bx': '~/.vifm/vifmrc'},
+       \ { 'bz': '~/.zshrc'},
+       \ { 'bb': '~/.bashrc'},
+       \ { 'bp': '~/.p10k.zsh'},
+       \ { 'bm': '~/42/Templates/Makefile'},
+       \ { 'b4': '~/42/Cursus/'},
+       \ { 'bs': '~/.scripts/'},
+       \ { 'blu': '~/.local/share/nvim/lazy/'},
+       \ ]
 
 let g:startify_lists = [
-    \ { 'type': 'commands',  'header': ['   Commands']       },
     \ { 'type': 'files',     'header': ['   MRU']            },
     \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+    \ { 'type': 'commands',  'header': ['   Commands']       },
     "\ { 'type': 'sessions',  'header': ['   Sessions']       },
     \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
     \ ]
