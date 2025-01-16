@@ -203,12 +203,12 @@ require("scrollbar").setup({
     color = '#600000',
   },
   marks = {
-    Search = { color = '#600000' },
-    Error = { color = '#600000' },
-    Warn = { color = '#600000' },
-    Info = { color = '#600000' },
-    Hint = { color = '#600000' },
-    Misc = { color = '#600000' },
+    Search = { color = '#D00000' },
+    Error = { color = '#D00000' },
+    Warn = { color = '#D00000' },
+    Info = { color = '#D00000' },
+    Hint = { color = '#D00000' },
+    Misc = { color = '#D00000' },
   },
   handlers = { search = true },
 })
@@ -222,6 +222,7 @@ require("mason-lspconfig").setup({
     "pyright",
     "clangd",
     "lua_ls",
+    "yamlls",
   },
   automatic_installation = true,
 })
@@ -235,4 +236,8 @@ cmp.setup({
   sources = {
     { name = "nvim_lsp" },
   },
+})
+
+vim.diagnostic.config({
+  signs = false,
 })

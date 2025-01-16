@@ -343,6 +343,19 @@ noremap <silent> <space>C :VCoolor<CR>
  highlight GitSignsAddLn guibg=#202020
  highlight GitSignsChangeLn guibg=#202020
 
+" //DIAGNOSTICS//
+highlight DiagnosticError guibg=#300000 guifg=#D00000
+highlight DiagnosticWarn guibg=#300000 guifg=#D00000 gui=italic
+highlight DiagnosticInfo guifg=#0000ff
+highlight DiagnosticHint guifg=#00ff00
+
+highlight DiagnosticSignError guibg=none guifg=#D00000
+highlight DiagnosticSignWarn guibg=none guifg=#D00000
+highlight! link DiagnosticSignInfo DiagnosticInfo
+highlight! link DiagnosticSignHint DiagnosticHint
+
+highlight DiagnosticUnderlineError guisp=#ff0000
+
 " //undo-persistence//
 " guard for distributions lacking the 'persistent_undo' feature.
 if has('persistent_undo')
