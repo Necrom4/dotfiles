@@ -53,6 +53,18 @@ require("lazy").setup({
     "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig",
   },
+  {
+    "rachartier/tiny-devicons-auto-colors.nvim",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons"
+    },
+    event = "VeryLazy",
+    config = function()
+      require('tiny-devicons-auto-colors').setup({
+        colors = {"#D00000"},
+      })
+    end
+  },
 })
 
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
@@ -241,3 +253,10 @@ cmp.setup({
 vim.diagnostic.config({
   signs = false,
 })
+
+-- STARTIFY
+function _G.webDevIcons(path)
+  local filename = vim.fn.fnamemodify(path, ':t')
+  local extension = vim.fn.fnamemodify(path, ':e')
+  return require'nvim-web-devicons'.get_icon(filename, extension, { default = true })
+end

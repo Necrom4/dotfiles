@@ -273,6 +273,10 @@ let g:mail42 = 'dferreir@student.42.fr'
 
 :nnoremap <silent> <space>e :Startify<CR>
 
+function! StartifyEntryFormat() abort
+  return 'v:lua.webDevIcons(absolute_path) . " " . entry_path'
+endfunction
+
 let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 
 let g:startify_fortune_use_unicode = 0
