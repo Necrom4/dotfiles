@@ -139,11 +139,27 @@ alias lla='ls -lA'
 alias lt='ls --tree'
 alias brew="~/.linuxbrew/bin/brew"
 function x() {
-	echo $PWD > ~/.scripts/lastdir_vifm
-	vifm
-	cd "$(cat ~/.scripts/lastdir_vifm)"
+  if [ "$2" != "" ]; then
+    vifm "$@"
+  elif [ "$1" != "" ]; then
+    if [ -d "$1" ]; then
+      vifm "$1"
+    elif [ -f "$1" ]; then
+      vifm "$1"
+    else
+      out="$(autojump $1)"
+      vifm "$out"
+    fi
+  else
+    dst="$(command vifm --choose-dir -)"
+    if [ -z "$dst" ]; then
+      echo 'Directory picking cancelled/failed'
+      return 1
+    fi
+    cd "$dst"
+  fi
+  return $?
 }
-# alias vifm="x"
 alias lazygit="~/.linuxbrew/bin/lazygit"
 alias g="~/.linuxbrew/bin/lazygit"
 alias y="yadm enter lazygit"
@@ -154,28 +170,6 @@ alias m='cmatrix'
 # alias composer='~/.brew/Cellar/composer.phar'
 # alias ripgrep='~/.brew/Cellar/rg'
 # alias rg='~/.brew/Cellar/rg'
-
-#RANGER
-# function ranger_cd {
-#     local IFS=$'\t\n'
-#     local tempfile="$(mktemp -t tmp.XXXXXX)"
-#     local ranger_cmd=(
-#         command
-#         ~/Library/Python/2.7/bin/ranger
-#         --cmd="map Q chain shell echo %d > "$tempfile"; quitall"
-#     )
-#
-#     ${ranger_cmd[@]} "$@"
-#     if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
-#         cd -- "$(cat "$tempfile")" || return
-#     fi
-#     command rm -f -- "$tempfile" 2>/dev/null
-# }
-#
-# alias ranger=ranger_cd
-
-#alias ranger="Library/Python/2.7/bin/ranger"
-#alias r="Library/Python/2.7/bin/ranger"
 
 # //VI MODE//
 bindkey -v
@@ -201,6 +195,6 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#800000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
 eval "$(/root/.linuxbrew/bin/brew shellenv)"
 
-export HTTP_PROXY="http://p-proxy-01.cp.loc:3128"
-export HTTPS_PROXY="http://p-proxy-01.cp.loc:3128"
-export NO_PROXY="localhost,127.0.0.1,.loc"
+# export HTTP_PROXY="http://p-proxy-01.cp.loc:3128"
+# export HTTPS_PROXY="http://p-proxy-01.cp.loc:3128"
+# export NO_PROXY="localhost,127.0.0.1,.loc"

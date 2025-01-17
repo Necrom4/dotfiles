@@ -366,7 +366,7 @@ fileviewer *.jpg,*.png shellpic %c
 
 " Start shell in current directory
 " nnoremap Q :shell<cr>
-nnoremap Q :execute '!echo %d > ~/.scripts/lastdir_vifm' | quit<CR>
+nnoremap Q :quit<CR>
 
 " Display sorting dialog
 nnoremap S :sort<cr>

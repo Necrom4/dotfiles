@@ -89,7 +89,7 @@ highlight MatchParen guibg=#600000 guifg=#D00000 gui=none
 highlight TabLine guibg=#000000 guifg=#D00000 gui=bold,underline
 highlight TabLineSel guibg=#D00000 guifg=#000000 gui=bold
 highlight TabLineFill guibg=#000000 guifg=#D00000 gui=bold,underline
-highlight Visual guibg=#D00000 guifg=#000000 gui=none
+highlight Visual guibg=#600000 guifg=#FF0000 gui=none
 highlight Repeat guibg=#000000 guifg=#D00000 gui=bold
 highlight IncSearch guibg=#600000 guifg=#D00000
 highlight Search guibg=#600000 guifg=#D00000

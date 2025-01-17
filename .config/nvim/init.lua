@@ -13,24 +13,10 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {'nvim-telescope/telescope.nvim', dependencies = {'nvim-lua/plenary.nvim'}},
-  {'s1n7ax/nvim-window-picker'},
+  -- {'s1n7ax/nvim-window-picker'},
   {'mhinz/vim-startify'},
   {'dstein64/vim-win'},
-	{'is0n/fm-nvim',
-		keys = {
-		{
-			'<space>x',
-			function()
-				if vim.api.nvim_buf_get_name(0) == '' then
-					vim.cmd [[Vifm --select %:p:h]]
-				else
-					vim.cmd [[Vifm --select %]]
-				end
-			end,
-			desc = 'Open File Manager (vifm)',
-		}
-	}
-	},
+	{'is0n/fm-nvim'},
   {'kdheepak/lazygit.nvim'},
   {'arecarn/vim-crunch'},
   {'hrsh7th/nvim-cmp',
@@ -129,7 +115,7 @@ cmp.setup.cmdline(':', {
 
 -- FTERM
 vim.keymap.set('n', '<space>t', '<CMD>lua require("FTerm").toggle()<CR>')
-vim.keymap.set('t', '<c-q>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
+-- vim.keymap.set('t', '<c-q>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
 vim.api.nvim_create_user_command('FTermOpen', require('FTerm').open, { bang = true })
 
 require'FTerm'.setup({
@@ -181,19 +167,36 @@ require('fm-nvim').setup{
 		},
 	},
 	mappings = {
-		vert_split = "<C-v>",
-		horz_split = "<C-s>",
+		vert_split = "<C-s>",
+		horz_split = "<C-h>",
 		tabedit    = "<C-t>",
 		edit       = "<C-e>",
 		ESC        = "<ESC>"
 	},
 }
 
+vim.keymap.set('n', '<space>x', function()
+  if vim.api.nvim_buf_get_name(0) == '' then
+    vim.cmd [[Vifm --select %:p:h]]
+  else
+    vim.cmd [[Vifm --select %]]
+  end
+end, { desc = 'Open File Manager (vifm)' })
+
 -- NVIM-TREESITTER
 require('nvim-treesitter.configs').setup {
   highlight = {
     enable = true,  -- Enable Treesitter-based syntax highlighting
-  }
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = 'vs',
+      scope_incremental = '<CR>',
+      node_incremental = '<TAB>',
+      node_decremental = '<S-TAB>',
+    },
+  },
 }
 
 -- INDENTMINI
