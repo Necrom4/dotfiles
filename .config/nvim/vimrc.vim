@@ -271,6 +271,7 @@ let g:mail42 = 'dferreir@student.42.fr'
 :omap <space>c gc
 :nmap <space>cc gcc
 
+" //STARTIFY//
 :nnoremap <silent> <space>e :Startify<CR>
 
 function! StartifyEntryFormat() abort
@@ -282,14 +283,14 @@ let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 let g:startify_fortune_use_unicode = 0
 
 let g:startify_custom_header = [
-	\ '  ╭────────────────────────────────────────────────────────╮',
-	\ '  │ ███╗   ██╗███████╗ ██████╗██████╗  ██████╗ ███╗   ███╗ │',
-	\ '  │ ████╗  ██║██╔════╝██╔════╝██╔══██╗██╔═══██╗████╗ ████║ │',
-	\ '  │ ██╔██╗ ██║█████╗  ██║     ██████╔╝██║   ██║██╔████╔██║ │',
-	\ '  │ ██║╚██╗██║██╔══╝  ██║     ██╔══██╗██║   ██║██║╚██╔╝██║ │',
-	\ '  │ ██║ ╚████║███████╗╚██████╗██║  ██║╚██████╔╝██║ ╚═╝ ██║ │',
-	\ '  │ ╚═╝  ╚═══╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ │',
-	\ '  ╰────────────────────────────────────────────────────────╯',
+	"\ '  ╭────────────────────────────────────────────────────────╮',
+	"\ '  │ ███╗   ██╗███████╗ ██████╗██████╗  ██████╗ ███╗   ███╗ │',
+	"\ '  │ ████╗  ██║██╔════╝██╔════╝██╔══██╗██╔═══██╗████╗ ████║ │',
+	"\ '  │ ██╔██╗ ██║█████╗  ██║     ██████╔╝██║   ██║██╔████╔██║ │',
+	"\ '  │ ██║╚██╗██║██╔══╝  ██║     ██╔══██╗██║   ██║██║╚██╔╝██║ │',
+	"\ '  │ ██║ ╚████║███████╗╚██████╗██║  ██║╚██████╔╝██║ ╚═╝ ██║ │',
+	"\ '  │ ╚═╝  ╚═══╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ │',
+	"\ '  ╰────────────────────────────────────────────────────────╯',
 	\]
 " │╭─╮╰╯
 
@@ -326,20 +327,6 @@ let g:startify_lists = [
     \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
     \ ]
 
-" //VCOOLOR//
-let g:vcoolor_disable_mappings = 1
-" let g:vcoolor_map = '<space>C'
-noremap <silent> <space>C :VCoolor<CR>
-
-" //GITGUTTER//
-" highlight GitGutterAdd guifg=#00FF00 guifg=Green
-" highlight GitGutterChange guifg=#FFFF00 guifg=Yellow
-" highlight GitGutterDelete guifg=#D00000 guifg=Red
-" let g:gitgutter_enabled=1
-" let g:gitgutter_map_keys=0
-" set signcolumn=yes
-" let g:gitgutter_async=0
-
 " //GITSIGNS//
  highlight GitSignsAdd guifg=#D00000
  highlight GitSignsChange guifg=#600000
@@ -349,16 +336,18 @@ noremap <silent> <space>C :VCoolor<CR>
 
 " //DIAGNOSTICS//
 highlight DiagnosticError guibg=#300000 guifg=#D00000
-highlight DiagnosticWarn guibg=#300000 guifg=#D00000 gui=italic
-highlight DiagnosticInfo guifg=#0000ff
-highlight DiagnosticHint guifg=#00ff00
+highlight DiagnosticWarn guibg=#300000 guifg=#ff7f7f
+highlight DiagnosticInfo guifg=#ffbf7f
+highlight DiagnosticHint guibg=#301818 guifg=#A00000 gui=italic
 
 highlight DiagnosticSignError guibg=none guifg=#D00000
 highlight DiagnosticSignWarn guibg=none guifg=#D00000
 highlight! link DiagnosticSignInfo DiagnosticInfo
 highlight! link DiagnosticSignHint DiagnosticHint
 
-highlight DiagnosticUnderlineError guisp=#ff0000
+highlight DiagnosticUnderlineError guibg=none guifg=none guisp=#A00000
+highlight DiagnosticUnderlineWarn guibg=none guifg=none guisp=#ff7f7f
+highlight DiagnosticUnderlineHint guibg=none guifg=none guisp=#A00000
 
 " //undo-persistence//
 " guard for distributions lacking the 'persistent_undo' feature.

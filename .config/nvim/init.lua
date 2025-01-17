@@ -73,7 +73,6 @@ vim.cmd.source(vimrc)
 -- NVIM-CMP
 local cmp = require'cmp'
 
--- Global setup.
 cmp.setup({
 	window = {
 		completion = cmp.config.window.bordered(),
@@ -95,15 +94,16 @@ cmp.setup({
 		-- ["<CR>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i', 'c' }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 	},
 	sources = cmp.config.sources({
-		{name = 'buffer',
+		{ name = 'buffer',
 			option = {
 				get_bufnrs = function()
 					return vim.api.nvim_list_bufs()
 				end
 			}
 		},
-		{name = 'calc'},
-		{name = 'path'},
+		{ name = 'calc' },
+		{ name = 'path' },
+    { name = "nvim_lsp" },
 	}),
 	experimental = {
 		ghost_text = true,
@@ -292,11 +292,6 @@ require("mason-lspconfig").setup_handlers({
   function(server_name)
     lspconfig[server_name].setup {}
   end,
-})
-cmp.setup({
-  sources = {
-    { name = "nvim_lsp" },
-  },
 })
 
 vim.diagnostic.config({
