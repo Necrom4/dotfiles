@@ -272,60 +272,60 @@ let g:mail42 = 'dferreir@student.42.fr'
 :nmap <space>cc gcc
 
 " //STARTIFY//
-:nnoremap <silent> <space>e :Startify<CR>
-
-function! StartifyEntryFormat() abort
-  return 'v:lua.webDevIcons(absolute_path) . " " . entry_path'
-endfunction
-
-let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
-
-let g:startify_fortune_use_unicode = 0
-
-let g:startify_custom_header = [
-	"\ '  ╭────────────────────────────────────────────────────────╮',
-	"\ '  │ ███╗   ██╗███████╗ ██████╗██████╗  ██████╗ ███╗   ███╗ │',
-	"\ '  │ ████╗  ██║██╔════╝██╔════╝██╔══██╗██╔═══██╗████╗ ████║ │',
-	"\ '  │ ██╔██╗ ██║█████╗  ██║     ██████╔╝██║   ██║██╔████╔██║ │',
-	"\ '  │ ██║╚██╗██║██╔══╝  ██║     ██╔══██╗██║   ██║██║╚██╔╝██║ │',
-	"\ '  │ ██║ ╚████║███████╗╚██████╗██║  ██║╚██████╔╝██║ ╚═╝ ██║ │',
-	"\ '  │ ╚═╝  ╚═══╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ │',
-	"\ '  ╰────────────────────────────────────────────────────────╯',
-	\]
-" │╭─╮╰╯
-
-let g:startify_commands = [
-	\ {'f': ['󰮗  Find file', ':Telescope find_files']},
-	\ {'w': ['󱎸  Find word', ':Telescope live_grep']},
-	\ {'r': ['  Recently opened files', ':Telescope oldfiles']},
-	\ {'m': ['  Marks', ':Telescope marks']},
-	\ {'.': ['  CWD', "execute 'cd ' . g:cwd"]},
-	\ {'x': ['  Xplorer', ':Vifm']},
-	\ {'t': ['  Terminal', ':FTermOpen']},
-	\ {'T': ['  Trash', ':Vifm ~/../.vifm-Trash-0/']},
-  \ ]
-
-	" \ {'T': ['  Trash', ':! rm -rf ~/../.vifm-Trash-0/']},
-let g:startify_bookmarks = [
-       \ { 'bv': '~/.config/nvim/vimrc.vim'},
-       \ { 'bl': '~/.config/nvim/init.lua'},
-       \ { 'bx': '~/.vifm/vifmrc'},
-       \ { 'bz': '~/.zshrc'},
-       \ { 'bb': '~/.bashrc'},
-       \ { 'bp': '~/.p10k.zsh'},
-       \ { 'bm': '~/42/Templates/Makefile'},
-       \ { 'b4': '~/42/Cursus/'},
-       \ { 'bs': '~/.scripts/'},
-       \ { 'blu': '~/.local/share/nvim/lazy/'},
-       \ ]
-
-let g:startify_lists = [
-    \ { 'type': 'files',     'header': ['   MRU']            },
-    \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
-    \ { 'type': 'commands',  'header': ['   Commands']       },
-    "\ { 'type': 'sessions',  'header': ['   Sessions']       },
-    \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
-    \ ]
+":nnoremap <silent> <space>e :Startify<CR>
+"
+"function! StartifyEntryFormat() abort
+"  return 'v:lua.webDevIcons(absolute_path) . " " . entry_path'
+"endfunction
+"
+"let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
+"
+"let g:startify_fortune_use_unicode = 0
+"
+"let g:startify_custom_header = [
+"	"\ '  ╭────────────────────────────────────────────────────────╮',
+"	"\ '  │ ███╗   ██╗███████╗ ██████╗██████╗  ██████╗ ███╗   ███╗ │',
+"	"\ '  │ ████╗  ██║██╔════╝██╔════╝██╔══██╗██╔═══██╗████╗ ████║ │',
+"	"\ '  │ ██╔██╗ ██║█████╗  ██║     ██████╔╝██║   ██║██╔████╔██║ │',
+"	"\ '  │ ██║╚██╗██║██╔══╝  ██║     ██╔══██╗██║   ██║██║╚██╔╝██║ │',
+"	"\ '  │ ██║ ╚████║███████╗╚██████╗██║  ██║╚██████╔╝██║ ╚═╝ ██║ │',
+"	"\ '  │ ╚═╝  ╚═══╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ │',
+"	"\ '  ╰────────────────────────────────────────────────────────╯',
+"	\]
+"" │╭─╮╰╯
+"
+"let g:startify_commands = [
+"	\ {'f': ['󰮗  Find file', ':Telescope find_files']},
+"	\ {'w': ['󱎸  Find word', ':Telescope live_grep']},
+"	\ {'r': ['  Recently opened files', ':Telescope oldfiles']},
+"	\ {'m': ['  Marks', ':Telescope marks']},
+"	\ {'.': ['  CWD', "execute 'cd ' . g:cwd"]},
+"	\ {'x': ['  Xplorer', ':Vifm']},
+"	\ {'t': ['  Terminal', ':FTermOpen']},
+"	\ {'T': ['  Trash', ':Vifm ~/../.vifm-Trash-0/']},
+"  \ ]
+"
+"	" \ {'T': ['  Trash', ':! rm -rf ~/../.vifm-Trash-0/']},
+"let g:startify_bookmarks = [
+"       \ { 'bv': '~/.config/nvim/vimrc.vim'},
+"       \ { 'bl': '~/.config/nvim/init.lua'},
+"       \ { 'bx': '~/.vifm/vifmrc'},
+"       \ { 'bz': '~/.zshrc'},
+"       \ { 'bb': '~/.bashrc'},
+"       \ { 'bp': '~/.p10k.zsh'},
+"       \ { 'bm': '~/42/Templates/Makefile'},
+"       \ { 'b4': '~/42/Cursus/'},
+"       \ { 'bs': '~/.scripts/'},
+"       \ { 'blu': '~/.local/share/nvim/lazy/'},
+"       \ ]
+"
+"let g:startify_lists = [
+"    \ { 'type': 'files',     'header': ['   MRU']            },
+"    \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+"    \ { 'type': 'commands',  'header': ['   Commands']       },
+"    "\ { 'type': 'sessions',  'header': ['   Sessions']       },
+"    \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+"    \ ]
 
 " //GITSIGNS//
  highlight GitSignsAdd guifg=#D00000

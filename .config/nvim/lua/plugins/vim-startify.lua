@@ -1,5 +1,6 @@
 return {
   "mhinz/vim-startify",
+  enabled = false,
   config = function()
     -- Function definition for webDevIcons
     function _G.webDevIcons(path)

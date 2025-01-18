@@ -1,51 +1,44 @@
 return {
   "goolord/alpha-nvim",
-  enabled = false,
-  config = function ()
-    require'alpha'.setup(require'alpha.themes.dashboard'.config)
-  end
+  event = "VimEnter",  -- Lazy load on startup
+  opts = function()
+    local dashboard = require("alpha.themes.dashboard")
 
-  -- config = function()
-  --   local status_ok, alpha = pcall(require, "alpha")
-  --   if not status_ok then
-  --     return
-  --   end
-  --
-  --   local dashboard = require("alpha.themes.dashboard")
-  --   dashboard.section.header.val = {
-  --
-  --     [[          ▀████▀▄▄              ▄█ ]],
-  --     [[            █▀    ▀▀▄▄▄▄▄    ▄▄▀▀█ ]],
-  --     [[    ▄        █          ▀▀▀▀▄  ▄▀  ]],
-  --     [[   ▄▀ ▀▄      ▀▄              ▀▄▀  ]],
-  --     [[  ▄▀    █     █▀   ▄█▀▄      ▄█    ]],
-  --     [[  ▀▄     ▀▄  █     ▀██▀     ██▄█   ]],
-  --     [[   ▀▄    ▄▀ █   ▄██▄   ▄  ▄  ▀▀ █  ]],
-  --     [[    █  ▄▀  █    ▀██▀    ▀▀ ▀▀  ▄▀  ]],
-  --     [[   █   █  █      ▄▄           ▄▀   ]],
-  --
-  --   }
-  --
-  --   dashboard.section.buttons.val = {
-  --     dashboard.button("f", "  Find file", ":Telescope find_files <CR>"),
-  --     dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
-  --     dashboard.button("r", "  Recently used files", ":Telescope oldfiles <CR>"),
-  --     dashboard.button("t", "  Find text", ":Telescope live_grep <CR>"),
-  --     dashboard.button("c", "  Configuration", ":e ~/.config/nvim/init.vim<CR>"),
-  --     dashboard.button("q", "  Quit Neovim", ":qa<CR>"),
-  --   }
-  --
-  --   local function footer()
-  --     return "Don't Stop Until You are Proud..."
-  --   end
-  --
-  --   dashboard.section.footer.val = footer()
-  --
-  --   dashboard.section.footer.opts.hl = "Type"
-  --   dashboard.section.header.opts.hl = "Include"
-  --   dashboard.section.buttons.opts.hl = "Keyword"
-  --
-  --   dashboard.opts.opts.noautocmd = true
-  --   alpha.setup(dashboard.opts)
-  -- end,
+    -- Header Art
+    dashboard.section.header.val = {
+      [[╭────────────────────────────────────────────────────────╮]],
+      [[│ ███╗   ██╗███████╗ ██████╗██████╗  ██████╗ ███╗   ███╗ │]],
+      [[│ ████╗  ██║██╔════╝██╔════╝██╔══██╗██╔═══██╗████╗ ████║ │]],
+      [[│ ██╔██╗ ██║█████╗  ██║     ██████╔╝██║   ██║██╔████╔██║ │]],
+      [[│ ██║╚██╗██║██╔══╝  ██║     ██╔══██╗██║   ██║██║╚██╔╝██║ │]],
+      [[│ ██║ ╚████║███████╗╚██████╗██║  ██║╚██████╔╝██║ ╚═╝ ██║ │]],
+      [[│ ╚═╝  ╚═══╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ │]],
+      [[╰────────────────────────────────────────────────────────╯]],
+    }
+
+    -- Dashboard Buttons
+    dashboard.section.buttons.val = {
+      dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
+      dashboard.button("f", "󰮗  Find file", ":Telescope find_files <CR>"),
+      dashboard.button("w", "󱎸  Find word", ":Telescope live_grep <CR>"),
+      dashboard.button("r", "  Recently opened files (cwd)", ":Telescope oldfiles cwd_only=true<CR>"),
+      dashboard.button("R", "  Recently opened files (all)", ":Telescope oldfiles <CR>"),
+      dashboard.button(".", "  CWD", ":execute 'cd ' . g:cwd<CR>"),
+      dashboard.button("t", "  Trash", ":Vifm ~/../.vifm-Trash-0/ <CR>"),
+      dashboard.button("q", "󰈆  Exit", ":qa<CR>"),
+    }
+
+    -- Highlights
+    dashboard.section.footer.opts.hl = "Type"
+    dashboard.section.header.opts.hl = "Include"
+    dashboard.section.buttons.opts.hl = "Keyword"
+
+    dashboard.opts.opts.noautocmd = true
+
+    return dashboard.opts
+  end,
+
+  keys = {
+    { "<leader>e", "<cmd>Alpha<CR>", desc = "Open Alpha Dashboard" },
+  },
 }
