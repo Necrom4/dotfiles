@@ -123,7 +123,7 @@ highlight DiffDelete guibg=#000000 guifg=#600000 gui=none
 highlight DiffText guibg=#0000FF guifg=#00FFFF gui=none
 highlight SpellBad guibg=#600000 guifg=#D00000 gui=underline
 highlight Underlined guibg=#000000 guifg=#D00000 gui=underline
-highlight DiagnosticInfo guibg=#000000 guifg=#D00000 gui=none
+highlight NormalFloat guibg=#000000
 highlight @variable guibg=#000000 guifg=#D00000 gui=none
 
 " Use an autocmd to trigger the setup function when entering TelescopePrompt

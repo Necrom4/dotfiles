@@ -6,13 +6,13 @@ return {
       -- path_display = { "smart" },
       mappings = {
         i = {
-          ["<esc>"] = require("telescope.actions").close,
-          ["<c-q>"] = require("telescope.actions").close,
-          ["<c-d>"] = require("telescope.actions").delete_buffer,
-          ["<c-r>"] = require("telescope.actions").delete_mark,
-          ["<c-k>"] = require("telescope.actions").move_selection_previous,
-          ["<c-j>"] = require("telescope.actions").move_selection_next,
-          ["<c-l>"] = require("telescope.actions").select_default,
+          ["<esc>"] = "close",
+          ["<c-q>"] = "close",
+          ["<c-d>"] = "delete_buffer",
+          ["<c-r>"] = "delete_mark",
+          ["<c-k>"] = "move_selection_previous",
+          ["<c-j>"] = "move_selection_next",
+          ["<c-l>"] = "select_default",
           -- ["<c-b>"] = function() vim.cmd "normal! delmarks" end,
         },
       },
@@ -34,4 +34,5 @@ return {
     { '<leader>f', ":Telescope<CR>" },
     { '<leader>f', "y<ESC>:Telescope live_grep default_text=<C-r>0<CR>", mode = 'v' },
   },
+  cmd = 'Telescope',
 }
