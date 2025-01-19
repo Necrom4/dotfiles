@@ -39,25 +39,22 @@ function! ModeName()
   return get(mode_dict, mode(), 'UNKNOWN')
 endfunction
 
-highlight StatusLine guibg=#D00000 guifg=#000000 gui=bold
-highlight StatusLineArrow guibg=#262626 guifg=#D00000
-highlight StatusLineNC guibg=#900000 guifg=#000000 gui=bold
-highlight StatusLineArrowNC guibg=#262626 guifg=#900000
-" highlight StatusLineTerm guibg=#D00000 guifg=#000000
-" highlight StatusLineTermNC guibg=#600000 guifg=#000000
-highlight StatusLinePath guibg=#262626 guifg=#666666 gui=none
-highlight StatusLinePathMain guibg=#262626 guifg=#999999 gui=bold
-" highlight StatusLineMe guibg=#D00000 guifg=#262626 gui=reverse
-highlight StatusLinePathNC guibg=#262626 guifg=#595959 gui=none
-highlight StatusLinePathMainNC guibg=#262626 guifg=#808080 gui=bold
+highlight SLMode guibg=#D00000 guifg=#000000 gui=bold
+highlight SLArrow guibg=#200000 guifg=#D00000
+highlight SLOMode guibg=#900000 guifg=#000000 gui=bold
+highlight SLOArrow guibg=#160000 guifg=#900000
+highlight SLInfo guibg=#200000 guifg=#800000 gui=none
+highlight SLInfoMain guibg=#200000 guifg=#D00000 gui=bold
+highlight SLOInfo guibg=#160000 guifg=#600000 gui=none
+highlight SLOInfoMain guibg=#160000 guifg=#A00000 gui=bold
 
-set statusline=%#StatusLine#\ %{ModeName()}%{IsModified()}%#StatusLineArrow#%{eval('g:isInsert')}\ %#StatusLinePath#%<%{expand('%:p:h')}/%#StatusLinePathMain#%{expand('%:t:r')}%#StatusLinePath#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
-augroup StatusLineChange
+set statusline=%#SLMode#\ %{ModeName()}%{IsModified()}%#SLArrow#%{eval('g:isInsert')}\ %#SLInfo#%<%{expand('%:p:h')}/%#SLInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#SLInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
+augroup SLChange
   autocmd!
   autocmd InsertEnter * let g:isInsert = ''
   autocmd InsertLeave * let g:isInsert = ' '
-  autocmd WinEnter * setlocal statusline=%#StatusLine#\ %{ModeName()}%{IsModified()}%#StatusLineArrow#%{eval('g:isInsert')}\ %#StatusLinePath#%<%{expand('%:p:h')}/%#StatusLinePathMain#%{expand('%:t:r')}%#StatusLinePath#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
-	autocmd WinLeave * setlocal statusline=%#StatusLineNC#\ %{ModeName()}%{IsModified()}%#StatusLineArrowNC#\ %#StatusLinePathNC#%<%{expand('%:p:h')}/%#StatusLinePathMainNC#%{expand('%:t:r')}%#StatusLinePathNC#.%{expand('%:e')}\ %=%h%r%w[%n][%c:%l][%p%%/%L]
+  autocmd WinEnter * setlocal statusline=%#SLMode#\ %{ModeName()}%{IsModified()}%#SLArrow#%{eval('g:isInsert')}\ %#SLInfo#%<%{expand('%:p:h')}/%#SLInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#SLInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
+	autocmd WinLeave * setlocal statusline=%#SLOMode#\ %{ModeName()}%{IsModified()}%#SLOArrow#\ %#SLOInfo#%<%{expand('%:p:h')}/%#SLOInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#SLOInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
 augroup END
 
 autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=#000000 guifg=#800000 | else | highlight LineNr guibg=#000000 guifg=#D00000 | endif
