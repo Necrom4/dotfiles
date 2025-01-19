@@ -1,5 +1,6 @@
 return {
   "goolord/alpha-nvim",
+  enabled = false,
   event = "VimEnter",  -- Lazy load on startup
   opts = function()
     local dashboard = require("alpha.themes.dashboard")
@@ -19,10 +20,11 @@ return {
     -- Dashboard Buttons
     dashboard.section.buttons.val = {
       dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
-      dashboard.button("f", "󰮗  Find file", ":Telescope find_files <CR>"),
-      dashboard.button("w", "󱎸  Find word", ":Telescope live_grep <CR>"),
-      dashboard.button("r", "  Recently opened files (cwd)", ":Telescope oldfiles cwd_only=true<CR>"),
-      dashboard.button("R", "  Recently opened files (all)", ":Telescope oldfiles <CR>"),
+      dashboard.button("f", "󰥨  Find file", ":Telescope find_files <CR>"),
+      dashboard.button("w", "󰈞  Find word", ":Telescope live_grep <CR>"),
+      dashboard.button("r", "  Recently opened files (CWD)", ":Telescope oldfiles cwd_only=true<CR>"),
+      dashboard.button("R", "  Recently opened files (ALL)", ":Telescope oldfiles <CR>"),
+      dashboard.button("c", "  Config", ":Telescope find_files cwd=.config/nvim <CR>"),
       dashboard.button(".", "  CWD", ":execute 'cd ' . g:cwd<CR>"),
       dashboard.button("t", "  Trash", ":Vifm ~/../.vifm-Trash-0/ <CR>"),
       dashboard.button("q", "󰈆  Exit", ":qa<CR>"),
