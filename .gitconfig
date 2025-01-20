@@ -1,0 +1,10 @@
+[user]
+	name = Diogo Pombeiro
+[color "diff"]
+  context = "#A50000"
+  commit = "#800000"
+  newMoved = "#00f000"
+  frag = "#800000"
+  meta = "#800000"
+  new = "#FF0000"
+  old = "#7F0000"

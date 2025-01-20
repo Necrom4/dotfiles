@@ -582,7 +582,7 @@ set classify+=' ::*.avi,,*.ts,,*.axv,,*.divx,,*.m2v,,*.m4p,,*.m4v,,.mka,,*.mk
 "" office
 set classify+=' ::*.doc,,*.docx::, ::*.xls,,*.xlsm,,*.xlsx::, ::*.pptx,,*.ppt::'
 
-highlight User1 ctermbg=16 ctermfg=196
+highlight User1 ctermbg=none ctermfg=196
 highlight User2 ctermbg=16 ctermfg=160
 highlight User3 ctermbg=196 ctermfg=16
 highlight User4 ctermbg=16 ctermfg=196 cterm=bold

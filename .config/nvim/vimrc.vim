@@ -57,71 +57,71 @@ augroup SLChange
 	autocmd WinLeave * setlocal statusline=%#SLOMode#\ %{ModeName()}%{IsModified()}%#SLOArrow#\ %#SLOInfo#%<%{expand('%:p:h')}/%#SLOInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#SLOInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
 augroup END
 
-autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=#000000 guifg=#800000 | else | highlight LineNr guibg=#000000 guifg=#D00000 | endif
+autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=none guifg=#800000 | else | highlight LineNr guibg=none guifg=#D00000 | endif
 
 " //Highlights//
-highlight Normal guibg=#000000 guifg=#D00000 gui=none
-highlight Comment guibg=#000000 guifg=#900000 gui=italic
-highlight Include guibg=#000000 guifg=#D00000 gui=none
-highlight Define guibg=#000000 guifg=#D00000 gui=underline
-highlight Bold guibg=#000000 guifg=#D00000 gui=bold
-highlight Constant guibg=#000000 guifg=#FF0000 gui=bold
-highlight Conditional guibg=#000000 guifg=#D00000 gui=underline
-highlight NonText guibg=#000000 guifg=#600000 gui=none
+highlight Normal guibg=none guifg=#D00000 gui=none
+highlight Comment guibg=none guifg=#900000 gui=italic
+highlight Include guibg=none guifg=#D00000 gui=none
+highlight Define guibg=none guifg=#D00000 gui=underline
+highlight Bold guibg=none guifg=#D00000 gui=bold
+highlight Constant guibg=none guifg=#FF0000 gui=bold
+highlight Conditional guibg=none guifg=#D00000 gui=underline
+highlight NonText guibg=none guifg=#600000 gui=none
 highlight Error guifg=#D00000 guibg=#600000 gui=bold,underline
-highlight Number guibg=#000000 guifg=#FF0000 gui=bold
-highlight String guibg=#000000 guifg=#A00000 gui=none
-highlight Float guibg=#000000 guifg=#D00000 gui=underline
-highlight Delimiter guibg=#000000 guifg=#900000 gui=none
-highlight Function guibg=#000000 guifg=#FF0000 gui=bold
-highlight Special guibg=#000000 guifg=#FF0000 gui=bold
-highlight Statement guibg=#000000 guifg=#D00000 gui=none
-highlight Identifier guibg=#000000 guifg=#D00000 gui=none
-highlight LineNr guibg=#000000 guifg=#D00000
-highlight LineNrAbove guibg=#000000 guifg=#800000 gui=none
-highlight LineNrBelow guibg=#000000 guifg=#800000 gui=none
+highlight Number guibg=none guifg=#FF0000 gui=bold
+highlight String guibg=none guifg=#A00000 gui=none
+highlight Float guibg=none guifg=#D00000 gui=underline
+highlight Delimiter guibg=none guifg=#900000 gui=none
+highlight Function guibg=none guifg=#FF0000 gui=bold
+highlight Special guibg=none guifg=#FF0000 gui=bold
+highlight Statement guibg=none guifg=#D00000 gui=none
+highlight Identifier guibg=none guifg=#D00000 gui=none
+highlight LineNr guibg=none guifg=#D00000
+highlight LineNrAbove guibg=none guifg=#800000 gui=none
+highlight LineNrBelow guibg=none guifg=#800000 gui=none
 highlight Todo guibg=#D00000 guifg=#600000
-highlight WildMenu guibg=#000000 guifg=#D00000
+highlight WildMenu guibg=none guifg=#D00000
 highlight MatchParen guibg=#600000 guifg=#D00000 gui=none
-highlight TabLine guibg=#000000 guifg=#D00000 gui=bold,underline
+highlight TabLine guibg=none guifg=#D00000 gui=bold,underline
 highlight TabLineSel guibg=#D00000 guifg=#000000 gui=bold
-highlight TabLineFill guibg=#000000 guifg=#D00000 gui=bold,underline
+highlight TabLineFill guibg=none guifg=#D00000 gui=bold,underline
 highlight Visual guibg=#600000 guifg=#FF0000 gui=none
-highlight Repeat guibg=#000000 guifg=#D00000 gui=bold
+highlight Repeat guibg=none guifg=#D00000 gui=bold
 highlight IncSearch guibg=#600000 guifg=#D00000
 highlight Search guibg=#600000 guifg=#D00000
 highlight CurSearch guibg=#600000 guifg=#D00000
-highlight SpecialKey guibg=#000000 guifg=#D00000 gui=none
-highlight PreProc guibg=#000000 guifg=#D00000 gui=none
-highlight Operator guibg=#000000 guifg=#800000 gui=none
-highlight Type guibg=#000000 guifg=#D00000 gui=bold
-highlight Conditional guibg=#000000 guifg=#D00000 gui=bold
-highlight Title guibg=#000000 guifg=#D00000 gui=none
-highlight Boolean guibg=#000000 guifg=#D00000 gui=bold
-highlight Cursor guibg=#000000 guifg=#D00000
+highlight SpecialKey guibg=none guifg=#D00000 gui=none
+highlight PreProc guibg=none guifg=#D00000 gui=none
+highlight Operator guibg=none guifg=#800000 gui=none
+highlight Type guibg=none guifg=#D00000 gui=bold
+highlight Conditional guibg=none guifg=#D00000 gui=bold
+highlight Title guibg=none guifg=#D00000 gui=none
+highlight Boolean guibg=none guifg=#D00000 gui=bold
+highlight Cursor guibg=none guifg=#D00000
 highlight CursorLine guibg=#300000
 highlight CursorLineFold guibg=none guifg=#600000 gui=none
 highlight CursorLineNr guibg=none guifg=none gui=none
 highlight CursorColumn guibg=none guifg=none gui=none
-highlight Folded guibg=#000000 guifg=#600000 gui=bold
+highlight Folded guibg=none guifg=#600000 gui=bold
 highlight FoldColumn guibg=none guifg=#800000 gui=none
-highlight SignColumn guibg=#000000 guifg=#D00000
-highlight Pmenu guibg=#000000 guifg=#D00000
+highlight SignColumn guibg=none guifg=#D00000
+highlight Pmenu guibg=none guifg=#D00000
 highlight PmenuSel guibg=#D00000 guifg=#000000
-highlight PmenuSbar guibg=#000000 guifg=#D00000
-highlight Directory guibg=#000000 guifg=#D00000
-highlight VertSplit guibg=#000000 guifg=#600000
+highlight PmenuSbar guibg=none guifg=#D00000
+highlight Directory guibg=none guifg=#D00000
+highlight VertSplit guibg=none guifg=#600000
 highlight ErrorMsg guibg=#600000 guifg=#D00000
-highlight ModeMsg guibg=#000000 guifg=#D00000 gui=underline
-highlight MoreMsg guibg=#000000 guifg=#D00000 gui=underline
-highlight DiffAdd guibg=#000000 guifg=#00FF00 gui=none
-highlight DiffChange guibg=#000000 guifg=#FFF000 gui=none
-highlight DiffDelete guibg=#000000 guifg=#600000 gui=none
+highlight ModeMsg guibg=none guifg=#D00000 gui=underline
+highlight MoreMsg guibg=none guifg=#D00000 gui=underline
+highlight DiffAdd guibg=none guifg=#00FF00 gui=none
+highlight DiffChange guibg=none guifg=#FFF000 gui=none
+highlight DiffDelete guibg=none guifg=#600000 gui=none
 highlight DiffText guibg=#0000FF guifg=#00FFFF gui=none
 highlight SpellBad guibg=#600000 guifg=#D00000 gui=underline
-highlight Underlined guibg=#000000 guifg=#D00000 gui=underline
-highlight NormalFloat guibg=#000000
-highlight @variable guibg=#000000 guifg=#D00000 gui=none
+highlight Underlined guibg=none guifg=#D00000 gui=underline
+highlight NormalFloat guibg=none
+highlight @variable guibg=none guifg=#D00000 gui=none
 
 " Use an autocmd to trigger the setup function when entering TelescopePrompt
 "augroup TelescopeMappings
