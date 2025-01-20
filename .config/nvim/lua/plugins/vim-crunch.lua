@@ -1,3 +1,0 @@
-return {
-  'arecarn/vim-crunch',
-}

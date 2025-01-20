@@ -8,7 +8,7 @@ return {
     { "<leader>t", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
   },
   opts = {
-    bigfile = { enabled = false },
+    bigfile = { enabled = true },
     dashboard = {
       enabled = true,
       preset = {
@@ -42,9 +42,22 @@ return {
           title = "GIT STATUS",
           section = "terminal",
           enabled = function()
+            return Snacks.git.get_root() == nil
+          end,
+          cmd = "cmatrix",
+          height = 5,
+          padding = 2,
+          ttl = 5 * 60,
+          indent = 2,
+        },
+        {
+          icon = " ",
+          title = "GIT STATUS [" .. vim.fn.trim(vim.fn.system("git branch --show-current")) .. "]",
+          section = "terminal",
+          enabled = function()
             return Snacks.git.get_root() ~= nil
           end,
-          cmd = "git --no-pager diff --stat -B -M -C",
+          cmd = "git --no-pager diff --stat -B -M -C && git status --short --renames",
           height = 5,
           padding = 2,
           ttl = 5 * 60,
