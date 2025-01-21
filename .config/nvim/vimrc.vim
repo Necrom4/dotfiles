@@ -9,17 +9,17 @@ set ruler
 set noswapfile
 set hlsearch
 set incsearch
-" set autoindent
+set autoindent
 set expandtab
 set ts=2 sw=2
-" set formatoptions-=cro
+set formatoptions-=cro
 set splitbelow
 set timeoutlen=250
 set linebreak
-autocmd FileType * set formatoptions-=cro ts=2 sw=2 expandtab
-" set nowrap
-" set cursorline
-" set cursorcolumn
+"autocmd FileType * set formatoptions-=cro ts=2 sw=2 expandtab
+"set nowrap
+"set cursorline
+"set cursorcolumn
 "set iskeyword-=_,-
 set termguicolors
 
@@ -99,10 +99,10 @@ highlight Conditional guibg=none guifg=#D00000 gui=bold
 highlight Title guibg=none guifg=#D00000 gui=none
 highlight Boolean guibg=none guifg=#D00000 gui=bold
 highlight Cursor guibg=none guifg=#D00000
-highlight CursorLine guibg=#300000
+highlight CursorLine guibg=#202020
 highlight CursorLineFold guibg=none guifg=#600000 gui=none
 highlight CursorLineNr guibg=none guifg=none gui=none
-highlight CursorColumn guibg=none guifg=none gui=none
+highlight CursorColumn guibg=#202020
 highlight Folded guibg=none guifg=#600000 gui=bold
 highlight FoldColumn guibg=none guifg=#800000 gui=none
 highlight SignColumn guibg=none guifg=#D00000
@@ -130,40 +130,16 @@ highlight @variable guibg=none guifg=#D00000 gui=none
 "augroup END
 
 " //Save/Quit//
-:noremap <silent> <C-S> :w<CR>
-:vnoremap <silent> <C-S> <C-C>:w<CR>
-:inoremap <silent> <C-S> <C-O>:w<CR>
-:noremap <silent> <C-Q> :q<CR>
-:vnoremap <silent> <C-Q> <C-C>:q<CR>
-:inoremap <silent> <C-Q> <C-O>:q<CR>
-" :tnoremap <silent> <C-Q> <C-\><C-N>:q!<CR>
-:noremap <silent> <C-S><C-A> :wa<CR>
-:vnoremap <silent> <C-S><C-A> <C-C>:wa<CR>
-:inoremap <silent> <C-S><C-A> <C-O>:wa<CR>
-:noremap <silent> <C-Q><C-A> :qa<CR>
-:vnoremap <silent> <C-Q><C-A> <C-C>:qa<CR>
-:inoremap <silent> <C-Q><C-A> <C-O>:qa<CR>
-:tnoremap <silent> <C-Q><C-A> <C-\><C-N>:qa<CR>
-:noremap <silent> <C-Q><C-Q> :q!<CR>
-:vnoremap <silent> <C-Q><C-Q> <C-C>:q!<CR>
-:inoremap <silent> <C-Q><C-Q> <C-O>:q!<CR>
-:noremap <silent> <C-S><C-Q> :wq<CR>
-:vnoremap <silent> <C-S><C-Q> <C-C>:wq<CR>
-:inoremap <silent> <C-S><C-Q> <C-O>:wq<CR>
-:noremap <silent> <C-S><C-Q><C-A> :wqa<CR>
-:vnoremap <silent> <C-S><C-Q><C-A> <C-C>:wqa<CR>
-:inoremap <silent> <C-S><C-Q><C-A> <C-O>:wqa<CR>
-:tnoremap <silent> <C-S><C-A><C-Q> <C-\><C-N>:wqa<CR>
-:noremap <silent> <C-Q><C-A><C-Q> :qa!<CR>
-:vnoremap <silent> <C-Q><C-A><C-Q> <C-C>:qa!<CR>
-:inoremap <silent> <C-Q><C-A><C-Q> <C-O>:qa!<CR>
-:tnoremap <silent> <C-Q><C-A><C-Q> <C-\><C-N>:qa!<CR>
+:map <silent> <C-S> :w<CR>
+:map <silent> <C-S><C-S> :w!<CR>
+:map <silent> <C-S><C-A> :wa<CR>
+:map <silent> <C-S><C-Q> :wq<CR>
+:map <silent> <C-S><C-Q> :waq<CR>
+:map <silent> <C-Q> :q<CR>
+:map <silent> <C-Q><C-Q> :q!<CR>
+:map <silent> <C-Q><C-A> :qa<CR>
+:map <silent> <C-Q><C-A><C-Q> :qa!<CR>
 
-:map <silent> <enter> A<enter><esc>
-:map <silent> <S-enter> I<enter><esc>kcc<esc>
-" :nnoremap <silent> <BS> i<BS><ESC>l
-" :nnoremap <silent> <TAB> i<TAB><ESC>l
-" :nnoremap <silent> <SPACE> i<SPACE><ESC>l
 :map <space>h :noh<CR>:echo '["' . @/ . '" cleared]'<CR>
 :nmap ' `
 :noremap <silent> <c-/> K
@@ -179,37 +155,25 @@ let g:cwd = system('~/.scripts/./cwd.sh')
 :noremap <silent> K H
 :noremap <silent> L $
 :noremap <silent> H 0
-" :noremap <silent> JJ J
 :noremap <silent> gK kgJ
 :nnoremap <silent> <C-J> <C-F>
 :nnoremap <silent> <C-K> <C-B>
 :vnoremap <silent> <C-J> <C-F>
 :vnoremap <silent> <C-K> <C-B>
-" :inoremap <silent> <S-BS> <DEL>
 :nnoremap ;j <C-O>
 :nnoremap ;k <C-I>
 :nnoremap <C-S-K> kzz
 :nmap <C-S-J> jzz
 
 " //Insert Mode Navigation//
-:inoremap <C-h> <Left>
-:inoremap <C-S-H> <Esc>bi
-:inoremap <C-j> <Down>
-:inoremap <C-S-J> <Esc>gja
-:inoremap <C-k> <Up>
-:inoremap <C-S-K> <Esc>gka
-:inoremap <C-l> <Right>
-:inoremap <C-S-L> <Esc>lea
-:cnoremap <C-h> <Left>
-:cnoremap <C-j> <Down>
-:cnoremap <C-k> <Up>
-:cnoremap <C-l> <Right>
-" :tnoremap <C-h> <Left>
-" :tnoremap <C-S-H> <Esc>bi
-" :tnoremap <C-j> <Down>
-" :tnoremap <C-k> <Up>
-" :tnoremap <C-l> <Right>
-" :tnoremap <C-S-L> <Esc>lwi
+:inoremap <C-H> <Left>
+:inoremap <C-J> <Down>
+:inoremap <C-K> <Up>
+:inoremap <C-L> <Right>
+:cnoremap <C-H> <Left>
+:cnoremap <C-J> <Down>
+:cnoremap <C-K> <Up>
+:cnoremap <C-L> <Right>
 
 " //Copy Text//
 :vnoremap <expr> <C-C> mode() ==# "v" ? '"+y:echo @+<CR>' : '<ESC>`<v`>"+y'
@@ -221,46 +185,24 @@ let g:cwd = system('~/.scripts/./cwd.sh')
 " //Windows//
 autocmd BufLeave term://* set nonumber norelativenumber
 autocmd ModeChanged * if mode() == 't' | set nonumber norelativenumber | else | set number | endif
-"autocmd ModeChanged * if mode() != 't' | match ErrorMsg '\s\+$' | else | highlight clear ErrorMsg | endif
 :tnoremap <C-W> <C-\><C-N><C-W>
 :tnoremap <silent> <S-ESC> <C-\><C-N>
 :nnoremap <silent> <C-W>v <C-W>v<C-W>w
-" :map <silent> <space>W <C-W>v<C-W>s:ter<CR><C-W>h<C-W>s<space>w1<ESC>
 autocmd BufWinEnter,WinEnter term://* startinsert
 augroup toogle_relatie_number
 	au!
 	autocmd InsertEnter * :setlocal norelativenumber
 	autocmd InsertLeave * :setlocal relativenumber
 augroup END
-" augroup TerminalInsertMode
-" 	autocmd!
-" 	autocmd BufEnter term://* startinsert
-" augroup END
 
 " //Tabs//
-:noremap <C-T>n :tabnew \| Startify<CR>
+:noremap <silent> <C-T>n :tabnew \| lua Snacks.dashboard.open()<CR>
 :noremap <C-T>l gt
 :noremap <C-T>h gT
 :noremap <C-T>q :tabclose<CR>
 
-" //Folds//
-autocmd FileType * nnoremap <buffer> <silent> zf :set foldcolumn=1<CR>zf
-autocmd FileType * vnoremap <buffer> <silent> zf :<C-u>set foldcolumn=1<CR>gvzf
-:nnoremap <silent> Zo zR
-:nnoremap <silent> Zc zM
-
-" //42 header//
-let g:user42 = 'dferreir'
-let g:mail42 = 'dferreir@student.42.fr'
-
 " //LazyVim//
 :map <silent> <space>l :Lazy<CR>
-
-" //LazyGit//
-:nnoremap <silent> <space>g :LazyGit<CR>
-
-" //vim-win//
-:nnoremap <silent> <space>w :Win<CR>
 
 " //Commentary//
 :xmap <space>c gc
