@@ -1,6 +1,8 @@
 return {
   {
     "williamboman/mason.nvim",
+    cmd = { 'Mason', 'MasonLog', 'MasonUpdate', 'MasonInstall', 'MasonUninstall', 'MasonUninstallAll' },
+    build = ':MasonUpdate', -- :MasonUpdate updates registry contents
     opts = {
       ensure_installed = {
         "ast_grep",
@@ -15,6 +17,7 @@ return {
   },
   {
     "williamboman/mason-lspconfig.nvim",
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = {
       handlers = {
         function(server_name)
@@ -24,6 +27,7 @@ return {
     }
   },
   "neovim/nvim-lspconfig",
+  event = { 'BufReadPre', 'BufNewFile' },
   vim.diagnostic.config({
     signs = false,
   })
