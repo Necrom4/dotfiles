@@ -169,7 +169,7 @@
   fi
 
   # Default background color.
-  typeset -g POWERLEVEL9K_BACKGROUND='#000000'
+  typeset -g POWERLEVEL9K_BACKGROUND='none'
 
   # Separator between same-color segments on the left.
   typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='%0F\uE0B1'
@@ -574,7 +574,6 @@
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=1
   # Execution time color.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#D00000'
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='#000000'
   # Duration format: 1d 2h 3m 4s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FORMAT='d h m s'
   # Custom icon.
@@ -840,7 +839,6 @@
   ######################################[ ram: free RAM ]#######################################
   # RAM color.
   typeset -g POWERLEVEL9K_RAM_FOREGROUND='#D00000'
-  typeset -g POWERLEVEL9K_RAM_BACKGROUND='#000000'
   # Custom icon.
   typeset -g POWERLEVEL9K_RAM_VISUAL_IDENTIFIER_EXPANSION=
 
@@ -1679,7 +1677,6 @@
   ####################################[ time: current time ]####################################
   # Current time color.
   typeset -g POWERLEVEL9K_TIME_FOREGROUND='#D00000'
-  typeset -g POWERLEVEL9K_TIME_BACKGROUND='#000000'
   # Format for the current time: 09:51:02. See `man 3 strftime`.
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M:%S}'
   # If set to true, time will update when you hit enter. This way prompts for the past
