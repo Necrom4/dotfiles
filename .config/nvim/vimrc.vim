@@ -43,7 +43,7 @@ highlight SLMode guibg=#D00000 guifg=#000000 gui=bold
 highlight SLArrow guibg=#200000 guifg=#D00000
 highlight SLOMode guibg=#900000 guifg=#000000 gui=bold
 highlight SLOArrow guibg=#160000 guifg=#900000
-highlight SLInfo guibg=#200000 guifg=#800000 gui=none
+highlight SLInfo guibg=#200000 guifg=#A00000 gui=none
 highlight SLInfoMain guibg=#200000 guifg=#D00000 gui=bold
 highlight SLOInfo guibg=#160000 guifg=#600000 gui=none
 highlight SLOInfoMain guibg=#160000 guifg=#A00000 gui=bold
@@ -121,6 +121,9 @@ highlight DiffText guibg=#0000FF guifg=#00FFFF gui=none
 highlight SpellBad guibg=#600000 guifg=#D00000 gui=underline
 highlight Underlined guibg=none guifg=#D00000 gui=underline
 highlight NormalFloat guibg=none
+highlight WinActive guibg=#D00000 guifg=#000000 gui=bold
+highlight WinInactive guibg=#300000 guifg=#D00000
+highlight! link WinNeighbor WinInactive
 highlight @variable guibg=none guifg=#D00000 gui=none
 
 " Use an autocmd to trigger the setup function when entering TelescopePrompt
