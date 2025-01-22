@@ -25,6 +25,7 @@ set termguicolors
 
 " //StatusLine//
 set noshowmode
+set laststatus=3
 let g:isInsert = ''
 
 function! IsModified()
@@ -89,7 +90,7 @@ highlight TabLineFill guibg=none guifg=#D00000 gui=bold,underline
 highlight Visual guibg=#600000 guifg=#FF0000 gui=none
 highlight Repeat guibg=none guifg=#D00000 gui=bold
 highlight IncSearch guibg=#600000 guifg=#D00000
-highlight Search guibg=#600000 guifg=#D00000
+highlight Search guibg=#300000 guifg=#D00000
 highlight CurSearch guibg=#600000 guifg=#D00000
 highlight SpecialKey guibg=none guifg=#D00000 gui=none
 highlight PreProc guibg=none guifg=#D00000 gui=none
