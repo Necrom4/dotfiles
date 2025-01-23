@@ -19,8 +19,6 @@ return {
         ["<C-K>"] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
         ["<C-J>"] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
         ["<TAB>"] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
-        ["<C-S-K>"] = cmp.mapping(cmp.mapping.select_prev_item({count = 5}), {'i', 'c'}),
-        ["<C-S-J>"] = cmp.mapping(cmp.mapping.select_next_item({count = 5}), {'i', 'c'}),
         ["<C-P>"] = cmp.mapping(cmp.mapping.scroll_docs(-5), {'i', 'c'}),
         ["<C-N>"] = cmp.mapping(cmp.mapping.scroll_docs(5), {'i', 'c'}),
         ["<C-d>"] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -28,7 +26,7 @@ return {
           i = cmp.mapping.abort(),
           c = cmp.mapping.close(),
         },
-        -- ["<CR>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i', 'c' }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ["<C-l>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i', 'c' }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
       },
       sources = cmp.config.sources({
         { name = 'buffer',
