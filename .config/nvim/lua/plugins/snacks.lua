@@ -66,7 +66,16 @@ return {
         { section = "startup" },
       },
     },
-    indent = { enabled = true },
+    indent = {
+      indent = {
+        enabled = false,
+      },
+      scope = {
+        enabled = true,
+        only_current = true,
+        hl = "Operator",
+      },
+    },
     input = { enabled = false },
     lazygit = {
       enabled = true,
