@@ -89,9 +89,9 @@ highlight TabLineSel guibg=#D00000 guifg=#000000 gui=bold
 highlight TabLineFill guibg=none guifg=#D00000 gui=bold,underline
 highlight Visual guibg=#600000 guifg=#FF0000 gui=none
 highlight Repeat guibg=none guifg=#D00000 gui=bold
-highlight IncSearch guibg=#600000 guifg=#D00000
-highlight Search guibg=#300000 guifg=#D00000
-highlight CurSearch guibg=#600000 guifg=#D00000
+highlight IncSearch guibg=#600000 guifg=#D00000 gui=underline
+highlight Search guibg=#300000 guifg=#A00000 gui=underline
+highlight CurSearch guibg=#600000 guifg=#D00000 gui=underline
 highlight SpecialKey guibg=none guifg=#D00000 gui=none
 highlight PreProc guibg=none guifg=#D00000 gui=none
 highlight Operator guibg=none guifg=#800000 gui=none
@@ -100,16 +100,17 @@ highlight Conditional guibg=none guifg=#D00000 gui=bold
 highlight Title guibg=none guifg=#D00000 gui=none
 highlight Boolean guibg=none guifg=#D00000 gui=bold
 highlight Cursor guibg=none guifg=#D00000
-highlight CursorLine guibg=#202020
+highlight CursorLine guibg=#300000
 highlight CursorLineFold guibg=none guifg=#600000 gui=none
 highlight CursorLineNr guibg=none guifg=none gui=none
 highlight CursorColumn guibg=#202020
 highlight Folded guibg=none guifg=#600000 gui=bold
-highlight FoldColumn guibg=none guifg=#800000 gui=none
+highlight FoldColumn guibg=none guifg=#D00000 gui=none
 highlight SignColumn guibg=none guifg=#D00000
 highlight Pmenu guibg=none guifg=#D00000
 highlight PmenuSel guibg=#D00000 guifg=#000000
 highlight PmenuSbar guibg=none guifg=#D00000
+highlight PmenuThumb guibg=#D00000 guifg=none
 highlight Directory guibg=none guifg=#D00000
 highlight VertSplit guibg=none guifg=#600000
 highlight ErrorMsg guibg=#600000 guifg=#D00000
