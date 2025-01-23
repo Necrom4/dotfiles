@@ -1,9 +1,15 @@
 return {
   'nvim-telescope/telescope.nvim',
-  dependencies = { 'nvim-lua/plenary.nvim' },
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    {
+      "nvim-telescope/telescope-live-grep-args.nvim" ,
+      version = "^1.0.0",
+    },
+  },
   opts = {
     defaults = {
-      -- path_display = { "smart" },
+      path_display = { "smart" },
       mappings = {
         i = {
           ["<esc>"] = "close",
@@ -29,10 +35,13 @@ return {
         additional_args = { "--hidden" },
       },
     },
+    extension = {
+      live_grep_args = {},
+    },
   },
   keys = {
     { '<leader>f', ":Telescope<CR>" },
-    { '<leader>f', "y<ESC>:Telescope live_grep default_text=<C-r>0<CR>", mode = 'v' },
+    { '<leader>f', "y<ESC>:Telescope live_grep_args default_text=<C-r>0<CR>", mode = 'v' },
   },
   cmd = 'Telescope',
 }
