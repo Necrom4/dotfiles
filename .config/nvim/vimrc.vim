@@ -58,11 +58,9 @@ augroup StatusLineChange
 	autocmd WinLeave * setlocal statusline=%#StatusLineNC#\ %{ModeName()}%{IsModified()}%#StatusLineNCArrow#\ %#StatusLineNCInfo#%<%{expand('%:p:h')}/%#StatusLineNCInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#StatusLineNCInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
 augroup END
 
-autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=none guifg=#800000 | else | highlight LineNr guibg=none guifg=#D00000 | endif
-
 " //Highlights//
 highlight Normal guibg=none guifg=#D00000 gui=none
-highlight Comment guibg=none guifg=#900000 gui=italic
+highlight Comment guibg=none guifg=#900000 gui=none
 highlight Include guibg=none guifg=#D00000 gui=none
 highlight Define guibg=none guifg=#D00000 gui=underline
 highlight Bold guibg=none guifg=#D00000 gui=bold
@@ -129,12 +127,6 @@ highlight! link WinNeighbor WinInactive
 highlight @variable guibg=none guifg=#D00000 gui=none
 highlight QuickFixLine guibg=#400000 guifg=#D00000 gui=none
 
-" Use an autocmd to trigger the setup function when entering TelescopePrompt
-"augroup TelescopeMappings
-"  autocmd!
-"  autocmd FileType TelescopePrompt call SetupTelescopeMappings()
-"augroup END
-
 " //Save/Quit//
 :map <silent> <C-S> :w<CR>
 :map <silent> <C-S><C-S> :w!<CR>
@@ -149,9 +141,7 @@ highlight QuickFixLine guibg=#400000 guifg=#D00000 gui=none
 :map <space>h :noh<CR>:echo '["' . @/ . '" cleared]'<CR>
 :nmap ' `
 :noremap <silent> <c-/> K
-:vnoremap <expr> <silent> <space>= mode() ==# "v" ? "<ESC>:set paste<CR>a<CR><ESC>`<i<CR><ESC>V:!bc<CR>gJkgJ:set nopaste<CR>" : ":!bc<CR>"
 :nnoremap <silent> <space>v :source ~/.config/nvim/vimrc.vim<CR>:noh<CR>:echo "[VIM Reloaded]"<CR>
-" :tnoremap <silent> <S-Space> <ESC>a<space>
 nnoremap <silent> <space>b :silent !open %<CR>
 let g:cwd = system('~/.scripts/./cwd.sh')
 
@@ -189,17 +179,12 @@ let g:cwd = system('~/.scripts/./cwd.sh')
 :nnoremap <silent> yc :let @" = @:<CR>p
 
 " //Windows//
-autocmd BufLeave term://* set nonumber norelativenumber
-autocmd ModeChanged * if mode() == 't' | set nonumber norelativenumber | else | set number | endif
+:tnoremap <silent> <C-Q> <C-\><C-N>:q<CR>
 :tnoremap <C-W> <C-\><C-N><C-W>
 :tnoremap <silent> <S-ESC> <C-\><C-N>
 :nnoremap <silent> <C-W>v <C-W>v<C-W>w
-autocmd BufWinEnter,WinEnter term://* startinsert
-augroup toogle_relatie_number
-	au!
-	autocmd InsertEnter * :setlocal norelativenumber
-	autocmd InsertLeave * :setlocal relativenumber
-augroup END
+autocmd InsertEnter * :setlocal norelativenumber
+autocmd InsertLeave * :setlocal relativenumber
 
 " //Tabs//
 :noremap <silent> <C-T>n :tabnew \| lua Snacks.dashboard.open()<CR>

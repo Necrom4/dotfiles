@@ -1,11 +1,19 @@
 return {
   "folke/snacks.nvim",
+  dependencies = {
+    "levouh/tint.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
   priority = 1000,
   lazy = false,
   keys = {
-    { "<leader>e", ":lua Snacks.dashboard.open()<CR>", desc = "Open Snacks Dashboard", silent = true },
+    { "<leader>e", ":lua Snacks.dashboard.open()<CR>", desc = "Open Dashboard", silent = true },
     { "<leader>g", ":lua Snacks.lazygit.open()<CR>", desc = "Open LazyGit", silent = true },
     { "<leader>t", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
+    { "<leader>s", ":lua Snacks.scratch()<CR>", desc = "Open Scratch", silent = true },
+    { "<leader>d", ":lua Snacks.dim.enable()<CR>", desc = "Enable Dim", silent = true },
+    { "<leader>dd", ":lua Snacks.dim.disable()<CR>", desc = "Disable Dim", silent = true },
   },
   opts = {
     bigfile = { enabled = true },
@@ -64,6 +72,9 @@ return {
         },
         { section = "startup" },
       },
+    },
+    dim = {
+      enabled = true,
     },
     indent = {
       indent = {
