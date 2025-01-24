@@ -40,22 +40,22 @@ function! ModeName()
   return get(mode_dict, mode(), 'UNKNOWN')
 endfunction
 
-highlight SLMode guibg=#D00000 guifg=#000000 gui=bold
-highlight SLArrow guibg=#200000 guifg=#D00000
-highlight SLOMode guibg=#900000 guifg=#000000 gui=bold
-highlight SLOArrow guibg=#160000 guifg=#900000
-highlight SLInfo guibg=#200000 guifg=#A00000 gui=none
-highlight SLInfoMain guibg=#200000 guifg=#D00000 gui=bold
-highlight SLOInfo guibg=#160000 guifg=#600000 gui=none
-highlight SLOInfoMain guibg=#160000 guifg=#A00000 gui=bold
+highlight StatusLine guibg=#D00000 guifg=#000000 gui=bold
+highlight StatusLineArrow guibg=#200000 guifg=#D00000
+highlight StatusLineNC guibg=#900000 guifg=#000000 gui=bold
+highlight StatusLineNCArrow guibg=#160000 guifg=#900000
+highlight StatusLineInfo guibg=#200000 guifg=#A00000 gui=none
+highlight StatusLineInfoMain guibg=#200000 guifg=#D00000 gui=bold
+highlight StatusLineNCInfo guibg=#160000 guifg=#600000 gui=none
+highlight StatusLineNCInfoMain guibg=#160000 guifg=#A00000 gui=bold
 
-set statusline=%#SLMode#\ %{ModeName()}%{IsModified()}%#SLArrow#%{eval('g:isInsert')}\ %#SLInfo#%<%{expand('%:p:h')}/%#SLInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#SLInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
-augroup SLChange
+set statusline=%#StatusLine#\ %{ModeName()}%{IsModified()}%#StatusLineArrow#%{eval('g:isInsert')}\ %#StatusLineInfo#%<%{expand('%:p:h')}/%#StatusLineInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#StatusLineInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
+augroup StatusLineChange
   autocmd!
   autocmd InsertEnter * let g:isInsert = ''
   autocmd InsertLeave * let g:isInsert = ' '
-  autocmd WinEnter * setlocal statusline=%#SLMode#\ %{ModeName()}%{IsModified()}%#SLArrow#%{eval('g:isInsert')}\ %#SLInfo#%<%{expand('%:p:h')}/%#SLInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#SLInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
-	autocmd WinLeave * setlocal statusline=%#SLOMode#\ %{ModeName()}%{IsModified()}%#SLOArrow#\ %#SLOInfo#%<%{expand('%:p:h')}/%#SLOInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#SLOInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
+  autocmd WinEnter * setlocal statusline=%#StatusLine#\ %{ModeName()}%{IsModified()}%#StatusLineArrow#%{eval('g:isInsert')}\ %#StatusLineInfo#%<%{expand('%:p:h')}/%#StatusLineInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#StatusLineInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
+	autocmd WinLeave * setlocal statusline=%#StatusLineNC#\ %{ModeName()}%{IsModified()}%#StatusLineNCArrow#\ %#StatusLineNCInfo#%<%{expand('%:p:h')}/%#StatusLineNCInfoMain#%{expand('%:t:r')}.%{expand('%:e')}\ %#StatusLineNCInfo#%=%h%r%w[%n][%c:%l][%p%%/%L]
 augroup END
 
 autocmd ModeChanged * if mode() == 'i' | highlight LineNr guibg=none guifg=#800000 | else | highlight LineNr guibg=none guifg=#D00000 | endif
@@ -127,6 +127,7 @@ highlight WinActive guibg=#D00000 guifg=#000000 gui=bold
 highlight WinInactive guibg=#300000 guifg=#D00000
 highlight! link WinNeighbor WinInactive
 highlight @variable guibg=none guifg=#D00000 gui=none
+highlight QuickFixLine guibg=#400000 guifg=#D00000 gui=none
 
 " Use an autocmd to trigger the setup function when entering TelescopePrompt
 "augroup TelescopeMappings

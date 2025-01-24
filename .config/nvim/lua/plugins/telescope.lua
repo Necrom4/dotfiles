@@ -2,46 +2,65 @@ return {
   'nvim-telescope/telescope.nvim',
   dependencies = {
     'nvim-lua/plenary.nvim',
+    'kevinhwang91/nvim-bqf',
     {
       "nvim-telescope/telescope-live-grep-args.nvim" ,
-      version = "^1.0.0",
+      version = "^1.1.0",
     },
   },
-  opts = {
-    defaults = {
-      path_display = { "smart" },
-      mappings = {
-        i = {
-          ["<esc>"] = "close",
-          ["<c-q>"] = "close",
-          ["<c-d>"] = "delete_buffer",
-          ["<c-r>"] = "delete_mark",
-          ["<c-k>"] = "move_selection_previous",
-          ["<c-j>"] = "move_selection_next",
-          ["<c-l>"] = "select_default",
-          -- ["<c-b>"] = function() vim.cmd "normal! delmarks" end,
+  enabled = false,
+  config = function()
+    local telescope = require('telescope')
+    local actions = require('telescope.actions')
+    local action_state = require('telescope.actions.state')
+    local lga_actions = require("telescope-live-grep-args.actions")
+
+    telescope.setup{
+      defaults = {
+        path_display = { "smart" },
+        mappings = {
+          i = {
+            ["<esc>"] = "close",
+            ["<c-q>"] = "close",
+            ["<c-d>"] = "delete_buffer",
+            ["<c-r>"] = "delete_mark",
+            ["<c-k>"] = "move_selection_previous",
+            ["<c-j>"] = "move_selection_next",
+            ["<c-o>"] = actions.send_to_qflist + actions.open_qflist,
+            ["<m-o>"] = actions.send_selected_to_qflist + actions.open_qflist,
+          },
+        },
+        dynamic_preview_title = true,
+      },
+      pickers = {
+        find_files = {
+          hidden = { true },
+        },
+        grep_string = {
+          additional_args = { "--hidden" },
+        },
+        live_grep = {
+          additional_args = { "--hidden" },
         },
       },
-      dynamic_preview_title = true,
-    },
-    pickers = {
-      find_files = {
-        hidden = { true },
+      extensions = {
+        live_grep_args = {
+          auto_quoting = true,
+          mappings = {
+            i = {
+              ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+              ["<C-space>"] = require("telescope.actions").to_fuzzy_refine,
+            },
+          },
+        },
       },
-      grep_string = {
-        additional_args = { "--hidden" },
-      },
-      live_grep = {
-        additional_args = { "--hidden" },
-      },
-    },
-    extension = {
-      live_grep_args = {},
-    },
-  },
+    }
+    telescope.load_extension("live_grep_args")
+  end,
   keys = {
     { '<leader>f', ":Telescope<CR>" },
     { '<leader>f', "y<ESC>:Telescope live_grep_args default_text=<C-r>0<CR>", mode = 'v' },
   },
   cmd = 'Telescope',
 }
+
