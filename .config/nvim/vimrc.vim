@@ -60,13 +60,14 @@ augroup END
 
 " //Highlights//
 highlight Normal guibg=none guifg=#CC0000 gui=none
+highlight NormalNC guibg=none guifg=#CC0000 gui=none
 highlight Comment guibg=none guifg=#770000 gui=none
 highlight Include guibg=none guifg=#D00000 gui=none
 highlight Define guibg=none guifg=#D00000 gui=underline
 highlight Bold guibg=none guifg=#D00000 gui=bold
 highlight Constant guibg=none guifg=#CC0000 gui=none
 highlight Conditional guibg=none guifg=#D00000 gui=underline
-highlight NonText guibg=none guifg=#600000 gui=none
+highlight NonText guibg=none guifg=#880000 gui=none
 highlight Error guifg=#FF0000 guibg=#600000 gui=bold,underline
 highlight Number guibg=none guifg=#FF0000 gui=bold
 highlight Float guibg=none guifg=#FF0000 gui=bold
@@ -85,7 +86,7 @@ highlight MatchParen guibg=#600000 guifg=#FF0000 gui=bold
 highlight TabLine guibg=none guifg=#D00000 gui=bold,underline
 highlight TabLineSel guibg=#D00000 guifg=#000000 gui=bold
 highlight TabLineFill guibg=none guifg=#D00000 gui=bold,underline
-highlight Visual guibg=#600000 guifg=#FF0000 gui=none
+highlight Visual guibg=#440000 guifg=#FF0000 gui=none
 highlight Repeat guibg=none guifg=#D00000 gui=bold
 highlight IncSearch guibg=#600000 guifg=#FF0000 gui=underline
 highlight Search guibg=#300000 guifg=#BB0000 gui=underline

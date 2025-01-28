@@ -1,9 +1,12 @@
 return {
   "folke/snacks.nvim",
   dependencies = {
-    "sunjon/shade.nvim",
+    "levouh/tint.nvim",
     event = "VeryLazy",
     opts = {},
+    keys = {
+      { "<leader>D", ":lua require('tint').toggle()<CR>", desc = "Toggle Tint", silent = true },
+    },
   },
   priority = 1000,
   lazy = false,
@@ -127,9 +130,6 @@ return {
       },
       lazygit = {
         border = "rounded",
-      },
-      scratch = {
-        zindex = 50,
       },
       terminal = {
         border = "rounded",
