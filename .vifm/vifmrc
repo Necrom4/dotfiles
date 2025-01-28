@@ -137,7 +137,7 @@ mark h ~/
 "  see `:help vifm-macros` and `:help vifm-filename-modifiers` for more
 
 command! df df -h %m 2> /dev/null
-command! diff vim -d %f %F
+command! diff nvim -d %f %F
 command! zip zip -r %c.zip %f
 command! run !! ./%f
 command! make !!make %a
@@ -529,7 +529,6 @@ nnoremap <silent> <C-J> <C-F>
 nnoremap <silent> <C-K> <C-B>
 nnoremap Mf :!make fclean &<CR>
 nnoremap E :!./%f &<CR>
-map :diff :!~/nvim-macos-x86_64/bin/nvim -d %f %F<CR>
 
 nnoremap <C-T> :tabnew<CR>
 
