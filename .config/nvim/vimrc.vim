@@ -23,6 +23,11 @@ set linebreak
 "set iskeyword-=_,-
 set termguicolors
 
+" //TabLine//
+highlight TabLine guibg=#330000 guifg=#CC0000
+highlight TabLineSel guibg=#CC0000 guifg=#000000
+highlight TabLineFill guibg=#000000 guifg=#330000
+
 " //StatusLine//
 set noshowmode
 set laststatus=3
@@ -83,9 +88,6 @@ highlight LineNrBelow guibg=none guifg=#800000 gui=none
 highlight Todo guibg=#D00000 guifg=#600000
 highlight WildMenu guibg=none guifg=#D00000
 highlight MatchParen guibg=#600000 guifg=#FF0000 gui=bold
-highlight TabLine guibg=none guifg=#D00000 gui=bold,underline
-highlight TabLineSel guibg=#D00000 guifg=#000000 gui=bold
-highlight TabLineFill guibg=none guifg=#D00000 gui=bold,underline
 highlight Visual guibg=#440000 guifg=#FF0000 gui=none
 highlight Repeat guibg=none guifg=#D00000 gui=bold
 highlight IncSearch guibg=#600000 guifg=#FF0000 gui=underline
