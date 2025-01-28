@@ -1,7 +1,6 @@
 return {
   "ibhagwan/fzf-lua",
   dependencies = {
-    "nvim-tree/nvim-web-devicons",
     'kevinhwang91/nvim-bqf',
   },
   opts = {
