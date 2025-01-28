@@ -40,12 +40,12 @@ function! ModeName()
   return get(mode_dict, mode(), 'UNKNOWN')
 endfunction
 
-highlight StatusLine guibg=#D00000 guifg=#000000 gui=bold
-highlight StatusLineArrow guibg=#200000 guifg=#D00000
+highlight StatusLine guibg=#CC0000 guifg=#000000 gui=bold
+highlight StatusLineArrow guibg=#200000 guifg=#CC0000
 highlight StatusLineNC guibg=#900000 guifg=#000000 gui=bold
 highlight StatusLineNCArrow guibg=#160000 guifg=#900000
-highlight StatusLineInfo guibg=#200000 guifg=#A00000 gui=none
-highlight StatusLineInfoMain guibg=#200000 guifg=#D00000 gui=bold
+highlight StatusLineInfo guibg=#220000 guifg=#990000 gui=none
+highlight StatusLineInfoMain guibg=#220000 guifg=#EE0000 gui=bold
 highlight StatusLineNCInfo guibg=#160000 guifg=#600000 gui=none
 highlight StatusLineNCInfoMain guibg=#160000 guifg=#A00000 gui=bold
 
@@ -59,61 +59,61 @@ augroup StatusLineChange
 augroup END
 
 " //Highlights//
-highlight Normal guibg=none guifg=#D00000 gui=none
-highlight Comment guibg=none guifg=#900000 gui=none
+highlight Normal guibg=none guifg=#CC0000 gui=none
+highlight Comment guibg=none guifg=#770000 gui=none
 highlight Include guibg=none guifg=#D00000 gui=none
 highlight Define guibg=none guifg=#D00000 gui=underline
 highlight Bold guibg=none guifg=#D00000 gui=bold
-highlight Constant guibg=none guifg=#FF0000 gui=bold
+highlight Constant guibg=none guifg=#CC0000 gui=none
 highlight Conditional guibg=none guifg=#D00000 gui=underline
 highlight NonText guibg=none guifg=#600000 gui=none
-highlight Error guifg=#D00000 guibg=#600000 gui=bold,underline
+highlight Error guifg=#FF0000 guibg=#600000 gui=bold,underline
 highlight Number guibg=none guifg=#FF0000 gui=bold
-highlight String guibg=none guifg=#A00000 gui=none
-highlight Float guibg=none guifg=#D00000 gui=underline
-highlight Delimiter guibg=none guifg=#900000 gui=none
-highlight Function guibg=none guifg=#FF0000 gui=bold
-highlight Special guibg=none guifg=#FF0000 gui=bold
-highlight Statement guibg=none guifg=#D00000 gui=none
-highlight Identifier guibg=none guifg=#D00000 gui=none
+highlight Float guibg=none guifg=#FF0000 gui=bold
+highlight String guibg=none guifg=#990000 gui=none
+highlight Delimiter guibg=none guifg=#770000 gui=none
+highlight Function guibg=none guifg=#CC0000 gui=none
+highlight Special guibg=none guifg=#CC0000 gui=none
+highlight Statement guibg=none guifg=#FF0000 gui=bold
+highlight Identifier guibg=none guifg=#DD0000 gui=bold
 highlight LineNr guibg=none guifg=#D00000
 highlight LineNrAbove guibg=none guifg=#800000 gui=none
 highlight LineNrBelow guibg=none guifg=#800000 gui=none
 highlight Todo guibg=#D00000 guifg=#600000
 highlight WildMenu guibg=none guifg=#D00000
-highlight MatchParen guibg=#600000 guifg=#D00000 gui=none
+highlight MatchParen guibg=#600000 guifg=#FF0000 gui=bold
 highlight TabLine guibg=none guifg=#D00000 gui=bold,underline
 highlight TabLineSel guibg=#D00000 guifg=#000000 gui=bold
 highlight TabLineFill guibg=none guifg=#D00000 gui=bold,underline
 highlight Visual guibg=#600000 guifg=#FF0000 gui=none
 highlight Repeat guibg=none guifg=#D00000 gui=bold
-highlight IncSearch guibg=#600000 guifg=#D00000 gui=underline
-highlight Search guibg=#300000 guifg=#A00000 gui=underline
-highlight CurSearch guibg=#600000 guifg=#D00000 gui=underline
+highlight IncSearch guibg=#600000 guifg=#FF0000 gui=underline
+highlight Search guibg=#300000 guifg=#BB0000 gui=underline
+highlight CurSearch guibg=#600000 guifg=#FF0000 gui=underline
 highlight SpecialKey guibg=none guifg=#D00000 gui=none
 highlight PreProc guibg=none guifg=#D00000 gui=none
-highlight Operator guibg=none guifg=#800000 gui=none
-highlight Type guibg=none guifg=#D00000 gui=bold
+highlight Operator guibg=none guifg=#990000 gui=none
+highlight Type guibg=none guifg=#CC0000 gui=none
 highlight Conditional guibg=none guifg=#D00000 gui=bold
-highlight Title guibg=none guifg=#D00000 gui=none
-highlight Boolean guibg=none guifg=#D00000 gui=bold
+highlight Title guibg=none guifg=#FF0000 gui=bold
+highlight Boolean guibg=none guifg=#FF0000 gui=bold
 highlight Cursor guibg=none guifg=#D00000
 highlight CursorLine guibg=#300000
 highlight CursorLineFold guibg=none guifg=#600000 gui=none
 highlight CursorLineNr guibg=none guifg=none gui=none
 highlight CursorColumn guibg=#202020
-highlight Folded guibg=none guifg=#600000 gui=bold
+highlight Folded guibg=none guifg=#440000 gui=bold
 highlight FoldColumn guibg=none guifg=#D00000 gui=none
 highlight SignColumn guibg=none guifg=#D00000
 highlight Pmenu guibg=none guifg=#D00000
 highlight PmenuSel guibg=#D00000 guifg=#000000
 highlight PmenuSbar guibg=none guifg=#D00000
 highlight PmenuThumb guibg=#D00000 guifg=none
-highlight Directory guibg=none guifg=#D00000
+highlight Directory guibg=none guifg=#770000
 highlight VertSplit guibg=none guifg=#600000
 highlight ErrorMsg guibg=#600000 guifg=#D00000
 highlight ModeMsg guibg=none guifg=#D00000 gui=underline
-highlight MoreMsg guibg=none guifg=#D00000 gui=underline
+highlight MoreMsg guibg=none guifg=#EE0000 gui=underline
 highlight DiffAdd guibg=none guifg=#00FF00 gui=none
 highlight DiffChange guibg=none guifg=#FFF000 gui=none
 highlight DiffDelete guibg=none guifg=#600000 gui=none
@@ -124,8 +124,10 @@ highlight NormalFloat guibg=none
 highlight WinActive guibg=#D00000 guifg=#000000 gui=bold
 highlight WinInactive guibg=#300000 guifg=#D00000
 highlight! link WinNeighbor WinInactive
-highlight @variable guibg=none guifg=#D00000 gui=none
+highlight @variable guibg=none guifg=#CC0000 gui=none
 highlight QuickFixLine guibg=#400000 guifg=#D00000 gui=none
+highlight markdownCode guibg=#330000 guifg=#FF0000 gui=none
+highlight markdownCodeBlock guibg=#220000 guifg=#CC0000 gui=none
 
 " //Save/Quit//
 :map <silent> <C-S> :w<CR>
