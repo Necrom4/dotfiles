@@ -117,10 +117,10 @@ highlight VertSplit guibg=none guifg=#600000
 highlight ErrorMsg guibg=#600000 guifg=#D00000
 highlight ModeMsg guibg=none guifg=#D00000 gui=underline
 highlight MoreMsg guibg=none guifg=#EE0000 gui=underline
-highlight DiffAdd guibg=none guifg=#00FF00 gui=none
-highlight DiffChange guibg=none guifg=#FFF000 gui=none
-highlight DiffDelete guibg=none guifg=#600000 gui=none
-highlight DiffText guibg=#0000FF guifg=#00FFFF gui=none
+highlight DiffAdd guibg=none guifg=#00BF00 gui=none
+highlight DiffChange guibg=none guifg=#FFFF00 gui=none
+highlight DiffDelete guibg=none guifg=#880000 gui=none
+highlight DiffText guibg=#3F3F00 guifg=#FFFF00 gui=none
 highlight SpellBad guibg=#600000 guifg=#D00000 gui=underline
 highlight Underlined guibg=none guifg=#D00000 gui=underline
 highlight NormalFloat guibg=none
