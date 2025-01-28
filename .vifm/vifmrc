@@ -366,7 +366,10 @@ fileviewer *.jpg,*.png shellpic %c
 
 " Start shell in current directory
 " nnoremap Q :shell<cr>
+nnoremap q :cquit<CR>
 nnoremap Q :quit<CR>
+nnoremap <C-Q> :cquit<CR>
+
 
 " Display sorting dialog
 nnoremap S :sort<cr>
@@ -497,8 +500,6 @@ set vifminfo=dhistory,chistory,state,tui,shistory,
 set tuioptions=u
 
 nnoremap e :edit<CR>
-nnoremap q :q<CR>
-nnoremap <C-Q> :q<CR>
 command create :
 \|  let $last_char = expand(system("str=\"%a\"; echo \"${str: -1}\""))
 \|  if $last_char == "/"

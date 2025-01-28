@@ -153,7 +153,6 @@ function x() {
   else
     dst="$(command vifm --choose-dir -)"
     if [ -z "$dst" ]; then
-      echo 'Directory picking cancelled/failed'
       return 1
     fi
     cd "$dst"
@@ -194,6 +193,7 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#600000
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#800000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
 eval "$(/root/.linuxbrew/bin/brew shellenv)"
+eval "$(/root/.local/bin/mise activate zsh)"
 
 # export HTTP_PROXY="http://p-proxy-01.cp.loc:3128"
 # export HTTPS_PROXY="http://p-proxy-01.cp.loc:3128"
