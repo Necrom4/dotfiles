@@ -1,7 +1,7 @@
 return {
   "folke/snacks.nvim",
   dependencies = {
-    "levouh/tint.nvim",
+    "sunjon/shade.nvim",
     event = "VeryLazy",
     opts = {},
   },
@@ -127,6 +127,9 @@ return {
       },
       lazygit = {
         border = "rounded",
+      },
+      scratch = {
+        zindex = 50,
       },
       terminal = {
         border = "rounded",
