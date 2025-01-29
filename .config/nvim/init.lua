@@ -17,6 +17,11 @@ vim.g.maplocalleader = "\\"
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
 vim.cmd.source(vimrc)
 
+require("core.settings")
+require("core.appearence")
+require("core.autocmds")
+require("core.keymaps")
+
 require("lazy").setup({
   spec = {
     { import = "plugins" }

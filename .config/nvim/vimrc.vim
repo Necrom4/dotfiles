@@ -146,7 +146,6 @@ highlight markdownCodeBlock guibg=#220000 guifg=#CC0000 gui=none
 :map <space>h :noh<CR>:echo '["' . @/ . '" cleared]'<CR>
 :nmap ' `
 :noremap <silent> <c-/> K
-:nnoremap <silent> <space>v :source ~/.config/nvim/vimrc.vim<CR>:noh<CR>:echo "[VIM Reloaded]"<CR>
 nnoremap <silent> <space>b :silent !open %<CR>
 let g:cwd = system('~/.scripts/./cwd.sh')
 
@@ -227,19 +226,3 @@ highlight! link DiagnosticSignHint DiagnosticHint
 highlight DiagnosticUnderlineError guibg=none guifg=none guisp=#A00000
 highlight DiagnosticUnderlineWarn guibg=none guifg=none guisp=#ff7f7f
 highlight DiagnosticUnderlineHint guibg=none guifg=none guisp=#A00000
-
-" //undo-persistence//
-" guard for distributions lacking the 'persistent_undo' feature.
-if has('persistent_undo')
-    " define a path to store persistent undo files.
-    let target_path = expand('~/.config/vim-persisted-undo/')
-    " create the directory and any parent directories
-    " if the location does not exist.
-    if !isdirectory(target_path)
-        call system('mkdir -p ' . target_path)
-    endif
-    " point Vim to the defined undo directory.
-    let &undodir = target_path
-    " finally, enable undo persistence.
-    set undofile
-endif
