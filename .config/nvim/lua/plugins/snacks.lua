@@ -12,6 +12,7 @@ return {
   lazy = false,
   keys = {
     { "<leader>e", ":lua Snacks.dashboard.open()<CR>", desc = "Open Dashboard", silent = true },
+    { "<leader>f", ":lua Snacks.picker()<CR>", desc = "Open Picker", silent = true },
     { "<leader>g", ":lua Snacks.lazygit.open()<CR>", desc = "Open LazyGit", silent = true },
     { "<leader>t", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
     { "<leader>s", ":lua Snacks.scratch()<CR>", desc = "Open Scratch", silent = true },
@@ -106,6 +107,21 @@ return {
       },
     },
     notifier = { enabled = false },
+    picker = {
+      enabled = true,
+      win = {
+        input = {
+          keys = {
+            ["<Esc>"] = { "close", mode = { "n", "i" } },
+            ["<c-q>"] = { "close", mode = { "n", "i" } },
+            ["<F1>"] = { "toggle_help", mode = { "n", "i" } },
+            ["<c-p>"] = { "preview_scroll_up", mode = { "i", "n" } },
+            ["<c-n>"] = { "preview_scroll_down", mode = { "i", "n" } },
+            ["<a-q>"] = { "qflist", mode = { "i", "n" } },
+          },
+        },
+      },
+    },
     quickfile = { enabled = true },
     scope = { enabled = false },
     scroll = { enabled = false },

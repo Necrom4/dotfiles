@@ -3,6 +3,7 @@ return {
   dependencies = {
     'kevinhwang91/nvim-bqf',
   },
+  enabled = false,
   opts = {
     -- fzf_opts = { ["--layout"] = "default" },
     fzf_colors = {
