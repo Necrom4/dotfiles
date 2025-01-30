@@ -172,7 +172,7 @@
   typeset -g POWERLEVEL9K_BACKGROUND='none'
 
   # Separator between same-color segments on the left.
-  typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='%0F\uE0B1'
+  typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='%196F\uE0B1'
   # Separator between same-color segments on the right.
   typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='%160F\uE0B3'
   # Separator between different-color segments on the left.
@@ -203,9 +203,9 @@
   # Transparent background.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_BACKGROUND=
   # Green prompt symbol if the last command succeeded.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#D00000'
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#FF0000'
   # Red prompt symbol if the last command failed.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#600000'
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#7F0000'
   # Default prompt symbol.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION='❯'
   # Prompt symbol in command vi mode.
@@ -224,20 +224,20 @@
 
   ##################################[ dir: current directory ]##################################
   # Default current directory color.
-  typeset -g POWERLEVEL9K_DIR_FOREGROUND='#000000'
-  typeset -g POWERLEVEL9K_DIR_BACKGROUND='#D00000'
+  typeset -g POWERLEVEL9K_DIR_FOREGROUND='#A50000'
+  typeset -g POWERLEVEL9K_DIR_BACKGROUND='#330000'
   # If directory is too long, shorten some of its segments to the shortest possible unique
   # prefix. The shortened directory can be tab-completed to the original.
   typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
   # Replace removed segment suffixes with this symbol.
   typeset -g POWERLEVEL9K_SHORTEN_DELIMITER=
   # Color of the shortened directory segments.
-  typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND='#000000'
+  typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND='#A50000'
   # Color of the anchor directory segments. Anchor segments are never shortened. The first
   # segment is always an anchor.
-  typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND='#000000'
+  typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND='#FF0000'
   # Display anchor directory segments in bold.
-  typeset -g POWERLEVEL9K_DIR_ANCHOR_BOLD=true
+  typeset -g POWERLEVEL9K_DIR_ANCHOR_BOLD=false
   # Don't shorten directories that contain any of these files. They are anchors.
   local anchor_files=(
     .bzr
@@ -356,15 +356,15 @@
   typeset -g POWERLEVEL9K_DIR_CLASSES=()
 
   # Custom prefix.
-  typeset -g POWERLEVEL9K_DIR_PREFIX=' '
+  typeset -g POWERLEVEL9K_DIR_PREFIX='%196F '
 
   #####################################[ vcs: git status ]######################################
   # Version control background colors.
-  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND='#D00000'
-  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='#D00000'
-  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='#D00000'
-  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND='#D00000'
-  typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND='#D00000'
+  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND='#330000'
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='#330000'
+  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='#330000'
+  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND='#330000'
+  typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND='#330000'
 
   # Branch icon. Set this parameter to '\UE0A0 ' for the popular Powerline branch icon.
   typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=' '
@@ -394,10 +394,10 @@
     if (( $1 )); then
       # Styling for up-to-date Git status.
       local       meta='%250F'  # grey foreground
-      local      clean='%0F'   # green foreground
-      local   modified='%0F'  # yellow foreground
-      local  untracked='%0F'   # blue foreground
-      local conflicted='%0F'  # red foreground
+      local      clean='%196F'   # green foreground
+      local   modified='%196F'  # yellow foreground
+      local  untracked='%196F'   # blue foreground
+      local conflicted='%196F'  # red foreground
     else
       # Styling for incomplete and stale Git status.
       local       meta='%244F'  # grey foreground
@@ -537,7 +537,7 @@
   # it will signify success by turning green.
   typeset -g POWERLEVEL9K_STATUS_OK=false
   typeset -g POWERLEVEL9K_STATUS_OK_VISUAL_IDENTIFIER_EXPANSION='󰸞'
-  typeset -g POWERLEVEL9K_STATUS_OK_FOREGROUND='#D00000'
+  typeset -g POWERLEVEL9K_STATUS_OK_FOREGROUND='#FF0000'
   typeset -g POWERLEVEL9K_STATUS_OK_BACKGROUND=0
 
   # Status when some part of a pipe command fails but the overall exit status is zero. It may look
@@ -573,7 +573,7 @@
   # Show this many fractional digits. Zero means round to seconds.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=1
   # Execution time color.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#D00000'
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#FF0000'
   # Duration format: 1d 2h 3m 4s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FORMAT='d h m s'
   # Custom icon.
@@ -585,7 +585,7 @@
   # Don't show the number of background jobs.
   typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE=true
   # Background jobs color.
-  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND='#D00000'
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND='#FF0000'
   # Custom icon.
   # typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
@@ -820,25 +820,25 @@
 
   ###########[ vi_mode: vi mode (you don't need this if you've enabled prompt_char) ]###########
   # Text and color for normal (a.k.a. command) vi mode.
-  typeset -g POWERLEVEL9K_VI_COMMAND_MODE_STRING='󰴗'
+  typeset -g POWERLEVEL9K_VI_COMMAND_MODE_STRING='NORMAL'
   typeset -g POWERLEVEL9K_VI_MODE_NORMAL_FOREGROUND=0
-  typeset -g POWERLEVEL9K_VI_MODE_NORMAL_BACKGROUND='#D00000'
+  typeset -g POWERLEVEL9K_VI_MODE_NORMAL_BACKGROUND='#FF0000'
   # Text and color for visual vi mode.
-  typeset -g POWERLEVEL9K_VI_VISUAL_MODE_STRING=''
+  typeset -g POWERLEVEL9K_VI_VISUAL_MODE_STRING='VISUAL'
   typeset -g POWERLEVEL9K_VI_MODE_VISUAL_FOREGROUND=0
-  typeset -g POWERLEVEL9K_VI_MODE_VISUAL_BACKGROUND='#D00000'
+  typeset -g POWERLEVEL9K_VI_MODE_VISUAL_BACKGROUND='#FF0000'
   # Text and color for overtype (a.k.a. overwrite and replace) vi mode.
-  typeset -g POWERLEVEL9K_VI_OVERWRITE_MODE_STRING=''
+  typeset -g POWERLEVEL9K_VI_OVERWRITE_MODE_STRING='REPLACE'
   typeset -g POWERLEVEL9K_VI_MODE_OVERWRITE_FOREGROUND=0
-  typeset -g POWERLEVEL9K_VI_MODE_OVERWRITE_BACKGROUND='#D00000'
+  typeset -g POWERLEVEL9K_VI_MODE_OVERWRITE_BACKGROUND='#FF0000'
   # Text and color for insert vi mode.
-  typeset -g POWERLEVEL9K_VI_INSERT_MODE_STRING='󰏫'
+  typeset -g POWERLEVEL9K_VI_INSERT_MODE_STRING='INSERT'
   typeset -g POWERLEVEL9K_VI_MODE_INSERT_FOREGROUND=0
-  typeset -g POWERLEVEL9K_VI_MODE_INSERT_BACKGROUND='#D00000'
+  typeset -g POWERLEVEL9K_VI_MODE_INSERT_BACKGROUND='#FF0000'
 
   ######################################[ ram: free RAM ]#######################################
   # RAM color.
-  typeset -g POWERLEVEL9K_RAM_FOREGROUND='#D00000'
+  typeset -g POWERLEVEL9K_RAM_FOREGROUND='#FF0000'
   # Custom icon.
   typeset -g POWERLEVEL9K_RAM_VISUAL_IDENTIFIER_EXPANSION=
 
@@ -942,7 +942,7 @@
 
   ##################################[ context: user@hostname ]##################################
   # Context color when running with privileges.
-  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND='#D00000'
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND='#FF0000'
   # Context color in SSH without privileges.
   typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND=180
   # Default context color (no privileges, no SSH).
@@ -1343,7 +1343,7 @@
       # '*prod*'  PROD    # These values are examples that are unlikely
       # '*test*'  TEST    # to match your needs. Customize them as needed.
       '*'       DEFAULT)
-  typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_FOREGROUND='#D00000'
+  typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_FOREGROUND='#FF0000'
   # typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   # Use POWERLEVEL9K_KUBECONTEXT_CONTENT_EXPANSION to specify the content displayed by kubecontext
@@ -1676,7 +1676,7 @@
 
   ####################################[ time: current time ]####################################
   # Current time color.
-  typeset -g POWERLEVEL9K_TIME_FOREGROUND='#D00000'
+  typeset -g POWERLEVEL9K_TIME_FOREGROUND='#FF0000'
   # Format for the current time: 09:51:02. See `man 3 strftime`.
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M:%S}'
   # If set to true, time will update when you hit enter. This way prompts for the past
