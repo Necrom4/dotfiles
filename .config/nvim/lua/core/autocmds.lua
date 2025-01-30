@@ -2,17 +2,17 @@
 
 local opt = vim.opt
 
--- Persistent Undo
+-- PERSISTENT UNDO
 
-opt.undofile                  = true
-local vimrc_undofile_augroup  = vim.api.nvim_create_augroup('vimrc_undofile', { clear = true })
+opt.undofile = true
+local vimrc_undofile_augroup = vim.api.nvim_create_augroup('vimrc_undofile', { clear = true })
 vim.api.nvim_create_autocmd('BufWritePre', {
   pattern = '/tmp/*',
   group = vimrc_undofile_augroup,
   command = 'setlocal noundofile',
 })
 
--- Yank to number registers
+-- YANK TO NUMBER REGISTERS
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
@@ -26,3 +26,16 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end
   end
 })
+
+-- TOGGLE COLUMN NUMBER DISPLAY ON MODE SWITCH
+
+vim.api.nvim_create_autocmd('InsertEnter', {
+  pattern = '*',
+  callback = function() vim.opt_local.relativenumber = false end
+})
+
+vim.api.nvim_create_autocmd('InsertLeave', {
+  pattern = '*',
+  callback = function() vim.opt_local.relativenumber = true end
+})
+
