@@ -65,21 +65,7 @@ vim.keymap.set('c', '<c-l>', '<right>', { noremap = true, silent = true })
 -- COPY TEXT
 
 -- Copy to system clipboard
-vim.keymap.set('n', '<c-c>', function()
-  vim.fn.setreg('+', vim.fn.getreg('0'))  -- Set clipboard register to the unnamed register
-  vim.cmd('echo @0')
-end, { noremap = true, silent = true })
-
-vim.keymap.set('v', '<c-c>', function()
-  if vim.fn.mode() == 'v' then
-    -- If in visual mode, yank to clipboard and echo the clipboard
-    vim.fn.setreg('+', vim.fn.getreg('"'))  -- Yank to clipboard register
-    vim.cmd('echo @+')
-  else
-    -- If not in visual mode, go to normal mode, and yank the selection
-    vim.cmd('normal! `<<v`>+y')
-  end
-end, { noremap = true, silent = true })
+vim.keymap.set("v", "<c-c>", '"+y', { noremap = true, silent = true })
 -- Yank filename
 vim.keymap.set('n', 'yp', function()
   vim.fn.setreg('"', vim.fn.expand('%'))  -- Set unnamed register to the file name
@@ -119,6 +105,9 @@ vim.api.nvim_set_keymap('n', '<leader>c', 'gc', { noremap = false })
 vim.api.nvim_set_keymap('x', '<leader>c', 'gc', { noremap = false })
 vim.api.nvim_set_keymap('o', '<leader>c', 'gc', { noremap = false })
 vim.api.nvim_set_keymap('n', '<leader>cc', 'gcc', { noremap = false })
+
+-- BETTER READDABILITY
+vim.keymap.set("n", "<leader>r", ":set nowrap<cr>:LspStop<cr>", { silent = true })
 
 -- LAZYVIM
 vim.keymap.set('n', '<leader>l', ':Lazy<cr>', { noremap = true, silent = true })
