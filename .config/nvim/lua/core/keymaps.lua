@@ -106,8 +106,16 @@ vim.api.nvim_set_keymap('x', '<leader>c', 'gc', { noremap = false })
 vim.api.nvim_set_keymap('o', '<leader>c', 'gc', { noremap = false })
 vim.api.nvim_set_keymap('n', '<leader>cc', 'gcc', { noremap = false })
 
--- BETTER READDABILITY
-vim.keymap.set("n", "<leader>r", ":set nowrap<cr>:LspStop<cr>", { silent = true })
+-- BETTER READABILITY
+vim.keymap.set("n", "<leader>r", function()
+  if vim.wo.wrap then
+    vim.wo.wrap = false
+    vim.cmd("LspStop")
+  else
+    vim.wo.wrap = true
+    vim.cmd("LspStart")
+  end
+end)
 
 -- LAZYVIM
 vim.keymap.set('n', '<leader>l', ':Lazy<cr>', { noremap = true, silent = true })
