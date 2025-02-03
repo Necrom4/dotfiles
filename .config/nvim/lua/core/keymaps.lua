@@ -111,9 +111,11 @@ vim.keymap.set("n", "<leader>r", function()
   if vim.wo.wrap then
     vim.wo.wrap = false
     vim.cmd("LspStop")
+    vim.cmd("echo 'Better readability ON'")
   else
     vim.wo.wrap = true
     vim.cmd("LspStart")
+    vim.cmd("echo 'Better readability OFF'")
   end
 end)
 
