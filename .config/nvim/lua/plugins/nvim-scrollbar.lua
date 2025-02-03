@@ -3,15 +3,15 @@ return {
   dependencies = { "kevinhwang91/nvim-hlslens", },
   opts = {
     handle = {
-      color = '#600000',
+      color = '#7F0000',
     },
     marks = {
-      Search = { color = '#D00000' },
-      Error = { color = '#D00000' },
-      Warn = { color = '#D00000' },
-      Info = { color = '#D00000' },
-      Hint = { color = '#D00000' },
-      Misc = { color = '#D00000' },
+      Search = { color = '#FF0000' },
+      Error = { color = '#FF0000' },
+      Warn = { color = '#7F0000' },
+      Info = { color = '#7F0000' },
+      Hint = { color = '#7F0000' },
+      Misc = { color = '#7F0000' },
     },
     handlers = { search = true },
   }
