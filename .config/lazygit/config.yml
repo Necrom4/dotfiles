@@ -10,5 +10,5 @@ gui:
   spinner:
     frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 git:
-  branchLogCmd: git log --graph --abbrev-commit --decorate --date=format:'%Y-%m-%d %H:%M:%S' --format=format:'%C(bold blue)%>|(15)%h%C(reset) %C(white)[%ar]%C(reset) %C(dim white)%>|(45)%an%C(reset) %C(auto)%d%C(reset) %C(white)%s%C(reset)' --color=always
-  allBranchesLogCmd: git log --graph --abbrev-commit --decorate --date=format:'%Y-%m-%d %H:%M:%S' --format=format:'%C(bold blue)%>|(15)%h%C(reset) %C(white)[%ar]%C(reset) %C(dim white)%>|(45)%an%C(reset) %C(auto)%d%C(reset) %C(white)%s%C(reset)' --all --color=always
+  branchLogCmd: git log --graph --color=always --format=format:'%C(#CC0000)%>|(17)%h%C(reset) %C(#7F0000)[%ar]%C(reset)%x09%C(#FF7F7F)%d%C(reset) %C(#CC0000)%s%C(reset) %C(#7F0000)- %an%C(reset)'
+  allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#CC0000)%>|(17)%h%C(reset) %C(#7F0000)[%ar]%C(reset)%x09%C(#FF7F7F)%d%C(reset) %C(#CC0000)%s%C(reset) %C(#7F0000)- %an%C(reset)'
