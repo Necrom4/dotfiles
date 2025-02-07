@@ -35,7 +35,7 @@ return {
       end,
       static = {
         mode_names = {
-          n = "NORMAL", no = "N?", nov = "N?", noV = "N?", ["no\22"] = "N?", niI = "Ni", niR = "Nr",
+          n = "NORMAL", no = "MOTION", nov = "MOTION", noV = "MOTION", ["no\22"] = "MOTION", niI = "Ni", niR = "Nr",
           niV = "Nv", nt = "Nt", v = "VISUAL", vs = "Vs", V = "V-LINE", Vs = "Vs", ["\22"] = "^V",
           ["\22s"] = "V-BLOCK", s = "SELECT", S = "S-LINE", ["\19"] = "S=BLOCK", i = "INSERT", ic = "Ic", ix = "Ix",
           R = "REPLACE", Rc = "Rc", Rx = "Rx", Rv = "Rv", Rvc = "Rv", Rvx = "Rv", c = "COMMAND", cv = "Ex",
@@ -124,90 +124,83 @@ return {
     FileFlags
     )
 
-    -- local Git = {
-    --   condition = conditions.is_git_repo,
-    --
-    --   init = function(self)
-    --     self.status_dict = vim.b.gitsigns_status_dict
-    --     self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
-    --   end,
-    --   hl = { fg = colors.red_2, bg = colors.red_6 },
-    --
-    --   -- Git status indicators
-    --   {
-    --     condition = function(self)
-    --       return self.has_changes
-    --     end,
-    --     provider = "["
-    --   },
-    --
-    --   -- Added count with separator
-    --   {
-    --     provider = function(self)
-    --       local count = self.status_dict.added or 0
-    --       if count > 0 and (self.status_dict.removed or 0) > 0 then
-    --         return "+" .. count .. "|"
-    --       elseif count > 0 then
-    --         return "+" .. count
-    --       end
-    --     end,
-    --     hl = { fg = colors.red_2 },
-    --   },
-    --
-    --   -- Removed count with separator
-    --   {
-    --     provider = function(self)
-    --       local count = self.status_dict.removed or 0
-    --       if count > 0 and (self.status_dict.changed or 0) > 0 then
-    --         return "-" .. count .. "|"
-    --       elseif count > 0 then
-    --         return "-" .. count
-    --       end
-    --     end,
-    --     hl = { fg = colors.red_2 },
-    --   },
-    --
-    --   -- Changed count
-    --   {
-    --     provider = function(self)
-    --       local count = self.status_dict.changed or 0
-    --       return count > 0 and ("~" .. count)
-    --     end,
-    --     hl = { fg = colors.red_2 },
-    --   },
-    --
-    --   -- Close bracket for changes
-    --   {
-    --     condition = function(self)
-    --       return self.has_changes
-    --     end,
-    --     provider = "]",
-    --   },
-    -- }
+    local Git = {
+      condition = conditions.is_git_repo,
 
+      init = function(self)
+        self.status_dict = vim.b.gitsigns_status_dict
+        self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
+      end,
+      hl = { fg = colors.red_2, bg = colors.red_6 },
+
+      {
+        condition = function(self)
+          return self.has_changes
+        end,
+        provider = "["
+      },
+      {
+        provider = function(self)
+          local count = self.status_dict.added or 0
+          if count > 0 and (self.status_dict.removed or 0) > 0 then
+            return "+" .. count .. " | "
+          elseif count > 0 then
+            return "+" .. count
+          end
+        end,
+        hl = { fg = colors.red_2 },
+      },
+      {
+        provider = function(self)
+          local count = self.status_dict.removed or 0
+          if count > 0 and (self.status_dict.changed or 0) > 0 then
+            return "-" .. count .. " | "
+          elseif count > 0 then
+            return "-" .. count
+          end
+        end,
+        hl = { fg = colors.red_2 },
+      },
+      {
+        provider = function(self)
+          local count = self.status_dict.changed or 0
+          return count > 0 and ("~" .. count)
+        end,
+        hl = { fg = colors.red_2 },
+      },
+      {
+        condition = function(self)
+          return self.has_changes
+        end,
+        provider = "]",
+      },
+    }
 
     local CursorPosition = {
-      provider = "%c:%l/%3L | %p%%",
+      provider = "%c:%l/%L | %p%%",
       hl = { fg = colors.red_2, bg = colors.red_6 },
     }
 
-    local Scroll = {
+    local ScrollBar = {
       static = {
         sbar = { '█', '▇', '▆', '▅', '▄', '▃', '▂', '▁' }
       },
       provider = function(self)
         local curr_line = vim.api.nvim_win_get_cursor(0)[1]
         local lines = vim.api.nvim_buf_line_count(0)
-        local i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
-        return string.rep(self.sbar[i], 1)
+        local i
+        if lines > 0 then
+          i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
+        else
+          i = #self.sbar
+        end
+        return string.rep(self.sbar[i], 2)
       end,
-      hl = { fg = colors.red_6, bg = colors.red_3 },
+      hl = { fg = colors.red_6, bg = colors.red_2 },
     }
+
     return {
-      statusline = { ViMode, FileModified, Separator, InsertIndicator, Space, FileNameBlock, Align, Space, Git, Space, Space, CursorPosition, Space, Scroll },
+      statusline = { ViMode, FileModified, Separator, InsertIndicator, Space, FileNameBlock, Align, Space, Git, Space, CursorPosition, Space, ScrollBar },
     }
-      -- winbar = {},  -- Winbar can be configured here if needed
-      -- tabline = {}, -- Tabline can be configured here if needed
-      -- statuscolumn = {}, -- Statuscolumn configuration can be added here
   end
 }
