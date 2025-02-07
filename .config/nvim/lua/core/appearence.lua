@@ -63,13 +63,13 @@ set_hl(0, "CurSearch", { bg = colors.red_5, fg = colors.red_1, underline = true 
 
 -- StatusLine
 set_hl(0, "StatusLine", { bg = colors.red_2, fg = colors.monochrome_7, bold = true})
-set_hl(0, "StatusLineArrow", { bg = colors.red_6, fg = colors.red_2 })
-set_hl(0, "StatusLineInfo", { bg = colors.red_6, fg = colors.red_3 })
-set_hl(0, "StatusLineInfoMain", { bg = colors.red_6, fg = colors.red_1, bold = true })
+-- set_hl(0, "StatusLineArrow", { bg = colors.red_6, fg = colors.red_2 })
+-- set_hl(0, "StatusLineInfo", { bg = colors.red_6, fg = colors.red_3 })
+-- set_hl(0, "StatusLineInfoMain", { bg = colors.red_6, fg = colors.red_1, bold = true })
 set_hl(0, "StatusLineNC", { bg = colors.red_4, fg = colors.monochrome_7 })
-set_hl(0, "StatusLineNCArrow", { bg = colors.monochrome_7, fg = colors.red_6 })
-set_hl(0, "StatusLineNCInfo", { bg = colors.monochrome_7, fg = colors.red_6 })
-set_hl(0, "StatusLineNCInfoMain", { bg = colors.monochrome_7, fg = colors.red_6 })
+-- set_hl(0, "StatusLineNCArrow", { bg = colors.monochrome_7, fg = colors.red_6 })
+-- set_hl(0, "StatusLineNCInfo", { bg = colors.monochrome_7, fg = colors.red_6 })
+-- set_hl(0, "StatusLineNCInfoMain", { bg = colors.monochrome_7, fg = colors.red_6 })
 
 -- TabLine
 set_hl(0, "TabLine", { bg = colors.red_6, fg = colors.red_2 })
@@ -148,61 +148,3 @@ set_hl(0, "DiagnosticUnderlineHint", { bg = "none", fg = "none", sp = colors.red
 -- Disable showmode and enable global statusline
 vim.opt.showmode = false
 vim.opt.laststatus = 3
-
-function mode_indicator()
-    local mode_map = {
-        n = "NORMAL",
-        i = "INSERT",
-        v = "VISUAL",
-        V = "V-LINE",
-        ["\22"] = "V-BLOCK",
-        c = "COMMAND",
-        R = "REPLACE",
-        s = "SELECT",
-        S = "S-LINE",
-        ["\19"] = "S-BLOCK",
-        t = "TERMINAL"
-    }
-
-    local mode = vim.api.nvim_get_mode().mode
-    return string.format("%s", mode_map[mode] or mode)
-end
-
-function is_modified()
-  return vim.bo.modified and "" or " "
-end
-
-function is_insert()
-  local prefix = vim.api.nvim_get_mode().mode == "i" and "" or " "
-  return string.format("%s", prefix)
-end
-
-function file_info()
-    local full_path = vim.fn.expand("%:p")
-    local file_name = vim.fn.expand("%:t")
-    local path = full_path:gsub(file_name, "") 
-
-    return string.format("%s%%#StatusLineInfoMain#%s", path, file_name)
-end
-
-function cursor_position()
-    return "%h%r%w[%n][%c:%l][%p%%/%L]"
-end
-
-function statusline()
-    return table.concat({
-        "%#StatusLine# ",
-        mode_indicator(),
-        is_modified(),
-        "%#StatusLineArrow#",
-        "%#StatusLineInfo#",
-        is_insert(),
-        " ",
-        file_info(),
-        "%#StatusLineInfo#",
-        "%=",
-        cursor_position()
-    })
-end
-
-vim.o.statusline = "%!v:lua.statusline()"
