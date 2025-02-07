@@ -20,6 +20,9 @@ vim.opt.formatoptions:remove("cro")
 vim.opt.splitbelow = true
 vim.opt.timeoutlen = 250
 vim.opt.linebreak = true
+vim.opt.cursorline = false
+vim.opt.cursorcolumn = false
+vim.opt.wrap = true
 vim.opt.termguicolors = true
 
 -- This makes vim act like all other editors, buffers can exist in the background without being in a window.
