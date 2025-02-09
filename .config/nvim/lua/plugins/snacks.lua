@@ -38,7 +38,7 @@ return {
           { icon = "󰥨 ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
           { icon = "󰈞 ", key = "t", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
           { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+          { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.picker.lazy()" },
           { icon = " ", key = "s", desc = "Restore Session", section = "session" },
           { icon = " ", key = ".", desc = "Switch to CWD", action = ":execute 'cd ' . g:cwd" },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },
