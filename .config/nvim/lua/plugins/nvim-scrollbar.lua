@@ -1,6 +1,7 @@
 return {
   "petertriho/nvim-scrollbar",
   dependencies = { "kevinhwang91/nvim-hlslens", },
+  event = { "BufNewFile", "BufReadPost" },
   opts = {
     handle = {
       color = '#7F0000',
