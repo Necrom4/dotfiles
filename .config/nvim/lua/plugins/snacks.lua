@@ -121,6 +121,9 @@ return {
           },
         },
       },
+      on_show = function()
+        require('nvim-treesitter')
+      end
     },
     quickfile = { enabled = true },
     scope = {
