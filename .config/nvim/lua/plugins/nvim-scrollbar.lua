@@ -15,5 +15,8 @@ return {
       Misc = { color = '#7F0000' },
     },
     handlers = { search = true },
+    excluded_buftypes = {
+      "nofile",
+    },
   }
 }
