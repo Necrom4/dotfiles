@@ -7,6 +7,7 @@ return {
       lazy = true,
     },
     'hrsh7th/cmp-calc',
+    'folke/lazydev.nvim',
   },
   version = '*',
   event = 'InsertEnter',
@@ -48,12 +49,17 @@ return {
     },
     signature = { enabled = true },
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer', 'calc' },
+      default = { 'lsp', 'path', 'snippets', 'buffer', 'calc', 'lazydev' },
       providers = {
         calc = {
           name = 'calc',
           module = 'blink.compat.source',
-        }
+        },
+        lazydev = {
+          name = "LazyDev",
+          module = "lazydev.integrations.blink",
+          score_offset = 100, -- show at a higher priority than lsp
+        },
       }
     },
   },
