@@ -143,6 +143,11 @@ set_hl(0, "DiagnosticUnderlineError", { bg = "none", fg = "none", sp = colors.re
 set_hl(0, "DiagnosticUnderlineWarn", { bg = "none", fg = "none", sp = colors.bright_pink, underline = true })
 set_hl(0, "DiagnosticUnderlineHint", { bg = "none", fg = "none", sp = colors.red_3, underline = true })
 
+-- Blink
+set_hl(0, "BlinkCmpGhostText", { fg = colors.red_5 })
+set_hl(0, "BlinkCmpScrollBarThumb", { bg = colors.red_3 })
+set_hl(0, "BlinkCmpMenuSelection", { bg = colors.red_5, fg = colors.red_1, bold = true })
+
 -- STATUSLINE CONFIG
 
 -- Disable showmode and enable global statusline
