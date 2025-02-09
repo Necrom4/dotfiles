@@ -13,14 +13,16 @@ return {
   event = 'InsertEnter',
   opts = {
     keymap = {
-      preset = 'default',
+      preset = 'none',
       ['<C-K>'] = { 'select_prev', 'fallback' },
       ['<C-J>'] = { 'select_next', 'fallback' },
+      ['<S-TAB>'] = { 'select_prev', 'fallback' },
       ['<TAB>'] = { 'select_next', 'fallback' },
-      ['<C-L>'] = { 'select_and_accept', 'fallback' },
-      ['<C-E>'] = { 'cancel' },
+      ['<CR>'] = { 'select_and_accept', 'fallback' },
+      ['<C-U>'] = { 'cancel' },
+      ['<C-E>'] = { 'hide' },
       ['<C-D>'] = { 'show', 'show_documentation', 'hide_documentation' },
-      ['<C-space>'] = { function(cmp) cmp.show({ providers = { 'snippets' } }) end },
+      ['<C-S>'] = { function(cmp) cmp.show({ providers = { 'snippets' } }) end },
     },
     appearance = {
       use_nvim_cmp_as_default = true,
@@ -39,10 +41,15 @@ return {
           border = 'rounded'
         }
       },
-      ghost_text = { enabled = true },
+      list = { selection = { preselect = false } },
+      ghost_text = { enabled = true, show_without_selection = true },
       menu = {
         draw = {
           treesitter = { 'lsp' },
+          columns = {
+            { "label", "label_description", gap = 1 },
+            { "kind_icon" }
+          },
         },
         border = 'rounded'
       },
