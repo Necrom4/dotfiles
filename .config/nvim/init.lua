@@ -14,10 +14,12 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
-require("core.settings")
-require("core.appearence")
-require("core.autocmds")
-require("core.keymaps")
+local vimsettings = "~/.config/nvim/lua/core"
+local settingsfiles = vim.fn.split(vim.fn.globpath(vimsettings, "*.lua"), "\n")
+
+for _, fpath in ipairs(settingsfiles) do
+  dofile(fpath)
+end
 
 require("lazy").setup({
   spec = {
