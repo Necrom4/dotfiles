@@ -142,31 +142,34 @@ return {
       {
         provider = function(self)
           local count = self.status_dict.added or 0
-          if count > 0 and (self.status_dict.removed or 0) > 0 then
-            return "+" .. count .. " | "
-          elseif count > 0 then
-            return "+" .. count
+          return count > 0 and ("+" .. count)
+        end,
+      },
+      {
+        provider = function(self)
+          if (self.status_dict.added or 0) > 0 and ((self.status_dict.changed or 0) > 0 or (self.status_dict.removed or 0) > 0) then
+            return  "|"
           end
         end,
-        hl = { fg = colors.red_2 },
       },
       {
         provider = function(self)
           local count = self.status_dict.removed or 0
-          if count > 0 and (self.status_dict.changed or 0) > 0 then
-            return "-" .. count .. " | "
-          elseif count > 0 then
-            return "-" .. count
+          return count > 0 and ("-" .. count)
+        end,
+      },
+      {
+        provider = function(self)
+          if (self.status_dict.removed or 0) > 0 and (self.status_dict.changed or 0) > 0 then
+            return  "|"
           end
         end,
-        hl = { fg = colors.red_2 },
       },
       {
         provider = function(self)
           local count = self.status_dict.changed or 0
           return count > 0 and ("~" .. count)
         end,
-        hl = { fg = colors.red_2 },
       },
       {
         condition = function(self)
