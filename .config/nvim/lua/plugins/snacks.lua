@@ -41,7 +41,7 @@ return {
           { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.picker.lazy()" },
           { icon = " ", key = "s", desc = "Restore Session", section = "session" },
           { icon = " ", key = ".", desc = "Switch to CWD", action = ":execute 'cd ' . g:cwd" },
-          { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          { icon = " ", key = "q", desc = "Quit", action = ":quit" },
         },
       },
       sections = {
