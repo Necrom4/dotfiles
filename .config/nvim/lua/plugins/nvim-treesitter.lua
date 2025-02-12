@@ -1,5 +1,9 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  build = function()
+    local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
+    ts_update()
+  end,
   event = { 'BufReadPost', 'BufNewFile', 'BufWritePre' },
   lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
   opts = {
@@ -29,7 +33,10 @@ return {
       'yaml',
     },
     highlight = {
-      enable = false,
+      enable = true,
+    },
+    indent = {
+      enable = true,
     },
     incremental_selection = {
       enable = true,
@@ -39,6 +46,7 @@ return {
       },
     },
   },
+  cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
   config = function(_, opts)
     require('nvim-treesitter.configs').setup(opts)
   end,
