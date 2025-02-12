@@ -10,7 +10,7 @@ return {
     'folke/lazydev.nvim',
   },
   version = '*',
-  event = 'InsertEnter',
+  event = { 'InsertEnter', 'CmdlineEnter' },
   opts = {
     keymap = {
       preset = 'none',
