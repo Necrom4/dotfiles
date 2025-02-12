@@ -99,6 +99,8 @@ end, { noremap = true, silent = true })
 vim.keymap.set('n', '<c-e>l', 'gt', { noremap = true })
 vim.keymap.set('n', '<c-e>h', 'gT', { noremap = true })
 vim.keymap.set('n', '<c-e>q', ':tabclose<cr>', { noremap = true, silent = true })
+vim.keymap.set('n', '<c-e>-', ':-tabmove<cr>', { noremap = true, silent = true })
+vim.keymap.set('n', '<c-e>=', ':+tabmove<cr>', { noremap = true, silent = true })
 
 -- COMMMENT
 vim.api.nvim_set_keymap('n', '<leader>c', 'gc', { noremap = false })
