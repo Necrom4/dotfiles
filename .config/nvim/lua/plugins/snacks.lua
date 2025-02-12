@@ -1,3 +1,15 @@
+local function pickDotfiles()
+  local original_git_dir = vim.env.GIT_DIR
+  local home_dir = vim.fn.expand("~")
+  local git_dir = vim.fn.expand("~/.local/share/yadm/repo.git") -- Hardcoded for speed
+
+  vim.env.GIT_DIR = git_dir
+  Snacks.dashboard.pick('git_files', {cwd = home_dir})
+  vim.schedule(function()
+    vim.env.GIT_DIR = original_git_dir
+  end)
+end
+
 return {
   "folke/snacks.nvim",
   dependencies = {
@@ -36,9 +48,10 @@ return {
         keys = {
           { icon = " ", key = "e", desc = "New File", action = ":ene | startinsert" },
           { icon = "󰥨 ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-          { icon = "󰈞 ", key = "t", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+          { icon = "󰈞 ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
           { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.picker.lazy()" },
+          { icon = " ", key = "c", desc = "Config", action = function() pickDotfiles() end },
+          { icon = " ", key = "l", desc = "Lazy Config", action = ":lua Snacks.picker.lazy()" },
           { icon = " ", key = "s", desc = "Restore Session", section = "session" },
           { icon = " ", key = ".", desc = "Switch to CWD", action = ":execute 'cd ' . g:cwd" },
           { icon = " ", key = "q", desc = "Quit", action = ":quit" },
