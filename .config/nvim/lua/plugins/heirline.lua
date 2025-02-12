@@ -113,7 +113,7 @@ return {
           return not vim.bo.modifiable or vim.bo.readonly
         end,
         provider = "",
-        hl = { fg = colors.red_2 },
+        hl = { fg = colors.red_2, bg = colors.red_6 }
       },
     }
     FileNameBlock = utils.insert(FileNameBlock,
@@ -144,6 +144,7 @@ return {
           local count = self.status_dict.added or 0
           return count > 0 and ("+" .. count)
         end,
+        hl = { fg = colors.green, bg = colors.red_6 },
       },
       {
         provider = function(self)
@@ -151,6 +152,7 @@ return {
             return  "|"
           end
         end,
+        hl = { fg = colors.red_1, bg = colors.red_6 },
       },
       {
         provider = function(self)
@@ -164,12 +166,14 @@ return {
             return  "|"
           end
         end,
+        hl = { fg = colors.red_1, bg = colors.red_6 },
       },
       {
         provider = function(self)
           local count = self.status_dict.changed or 0
           return count > 0 and ("~" .. count)
         end,
+        hl = { fg = colors.yellow, bg = colors.red_6 },
       },
       {
         condition = function(self)
