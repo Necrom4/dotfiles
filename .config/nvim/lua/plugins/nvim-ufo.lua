@@ -55,9 +55,8 @@ return {
         end
         curWidth = curWidth + chunkWidth
       end
-      table.insert(newVirtText, {suffix, 'Comment'})
+      table.insert(newVirtText, {suffix, 'FoldedLinesAmount'})
       return newVirtText
     end,
   },
 }
-

@@ -81,7 +81,9 @@ set_hl(0, "Cursor", { bg = "none", fg = colors.red_2 })
 set_hl(0, "CursorLine", { bg = colors.red_6 })
 set_hl(0, "CursorLineFold", { bg = "none", fg = colors.red_4 })
 
-set_hl(0, "Folded", { bg = "none", fg = colors.red_5, bold = true })
+-- Folds
+set_hl(0, "Folded", { bg = "none", fg = colors.red_1, bold = true })
+set_hl(0, "FoldedLinesAmount", { fg = colors.red_2, bg = "none" })
 
 -- Columns
 set_hl(0, "LineNr", { bg = "none", fg = colors.red_2 })
