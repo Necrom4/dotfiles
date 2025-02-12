@@ -39,3 +39,8 @@ vim.api.nvim_create_autocmd('InsertLeave', {
   callback = function() vim.opt_local.relativenumber = true end
 })
 
+-- Set embedded templating languages
+vim.cmd [[
+  autocmd BufRead,BufNewFile *.tpl.yaml set filetype=helm
+]]
+
