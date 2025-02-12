@@ -1,5 +1,7 @@
 [user]
 	name = Diogo Pombeiro
+[diff]
+  tool = nvimdiff
 [color "diff"]
   context = "#A50000"
   commit = "#800000"
