@@ -39,3 +39,8 @@ vim.cmd [[
   autocmd BufRead,BufNewFile *.tpl.yaml set filetype=helm
 ]]
 
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    vim.cmd("colorscheme Red")
+  end
+})
