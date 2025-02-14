@@ -5,6 +5,6 @@ return {
   },
   event = "VeryLazy",
   opts = {
-    colors = {"#D00000"},
+    colors = {"#CC0000"},
   }
 }
