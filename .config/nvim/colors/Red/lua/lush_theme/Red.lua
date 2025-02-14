@@ -43,14 +43,14 @@ local theme = lush(function(injected_functions)
     LineNrBelow                                 { fg=hsl(0, 100, 25), }, -- LineNrBelow    xxx guifg=#3b4261
     CursorLineNr                                { fg="#ff9e64", gui="bold", }, -- CursorLineNr   xxx cterm=bold gui=bold guifg=#ff9e64
     Question                                    { fg="#7aa2f7", }, -- Question       xxx guifg=#7aa2f7
-    StatusLine                                  { bg="#16161e", fg="#a9b1d6", }, -- StatusLine     xxx guifg=#a9b1d6 guibg=#16161e
+    StatusLine                                  { bg=hsl(0, 100, 40), fg=hsl(0, 0, 0), }, -- StatusLine     xxx guifg=#a9b1d6 guibg=#16161e
     MsgSeparator                                { StatusLine }, -- MsgSeparator   xxx links to StatusLine
     WinBar                                      { StatusLine }, -- WinBar         xxx links to StatusLine
     StatusLineNC                                { bg="#16161e", fg="#3b4261", }, -- StatusLineNC   xxx guifg=#3b4261 guibg=#16161e
     WinBarNC                                    { StatusLineNC }, -- WinBarNC       xxx links to StatusLineNC
     WinSeparator                                { fg="#15161e", gui="bold", }, -- WinSeparator   xxx cterm=bold gui=bold guifg=#15161e
     VertSplit                                   { fg="#15161e", }, -- VertSplit      xxx guifg=#15161e
-    Title                                       { fg="#7aa2f7", gui="bold", }, -- Title          xxx cterm=bold gui=bold guifg=#7aa2f7
+    Title                                       { fg=hsl(0, 100, 50), gui="bold", }, -- Title          xxx cterm=bold gui=bold guifg=#7aa2f7
     sym"@markup.heading"                        { Title }, -- @markup.heading xxx links to Title
     SnacksDashboardTitle                        { Title }, -- SnacksDashboardTitle xxx links to Title
     SnacksPickerGitType                         { Title }, -- SnacksPickerGitType xxx links to Title
@@ -144,7 +144,7 @@ local theme = lush(function(injected_functions)
     Boolean                                     { Constant }, -- Boolean        xxx links to Constant
     sym"@constant"                              { Constant }, -- @constant      xxx links to Constant
     SnacksPickerAuEvent                         { Constant }, -- SnacksPickerAuEvent xxx links to Constant
-    Statement                                   { fg=hsl(0, 100, 40), }, -- Statement      xxx guifg=#bb9af7
+    Statement                                   { fg=hsl(0, 100, 50), gui="bold" }, -- Statement      xxx guifg=#bb9af7
     Conditional                                 { Statement }, -- Conditional    xxx links to Statement
     Repeat                                      { Statement }, -- Repeat         xxx links to Statement
     Label                                       { Statement }, -- Label          xxx links to Statement
@@ -159,7 +159,7 @@ local theme = lush(function(injected_functions)
     sym"@attribute"                             { PreProc }, -- @attribute     xxx links to PreProc
     sym"@annotation"                            { PreProc }, -- @annotation    xxx links to PreProc
     sym"@keyword.directive"                     { PreProc }, -- @keyword.directive xxx links to PreProc
-    Type                                        { fg="#2ac3de", }, -- Type           xxx guifg=#2ac3de
+    Type                                        { fg=hsl(120, 100, 50), }, -- Type           xxx guifg=#2ac3de
     StorageClass                                { Type }, -- StorageClass   xxx links to Type
     Structure                                   { Type }, -- Structure      xxx links to Type
     Typedef                                     { Type }, -- Typedef        xxx links to Type
@@ -168,13 +168,13 @@ local theme = lush(function(injected_functions)
     NvimOptionSigil                             { Type }, -- NvimOptionSigil xxx links to Type
     SnacksPickerAuGroup                         { Type }, -- SnacksPickerAuGroup xxx links to Type
     sym"@markup.environment.name"               { Type }, -- @markup.environment.name xxx links to Type
-    Special                                     { fg="#2ac3de", }, -- Special        xxx guifg=#2ac3de
+    Special                                     { fg=hsl(50, 100, 50), }, -- Special        xxx guifg=#2ac3de
     Tag                                         { Special }, -- Tag            xxx links to Special
     SpecialChar                                 { Special }, -- SpecialChar    xxx links to Special
     SpecialComment                              { Special }, -- SpecialComment xxx links to Special
     sym"@constant.builtin"                      { Special }, -- @constant.builtin xxx links to Special
     sym"@function.builtin"                      { Special }, -- @function.builtin xxx links to Special
-    Delimiter                                   { Special }, -- Delimiter      xxx links to Special
+    Delimiter                                   { fg=hsl(0, 100, 25) }, -- Delimiter      xxx links to Special
     SnacksDashboardFile                         { Special }, -- SnacksDashboardFile xxx links to Special
     SnacksPickerIconEvent                       { Special }, -- SnacksPickerIconEvent xxx links to Special
     SnacksPickerManPage                         { Special }, -- SnacksPickerManPage xxx links to Special
@@ -247,7 +247,7 @@ local theme = lush(function(injected_functions)
     sym"@lsp.type.namespace.python"             { sym"@variable" }, -- @lsp.type.namespace.python xxx links to @variable
     sym"@lsp.type.generic"                      { sym"@variable" }, -- @lsp.type.generic xxx links to @variable
     sym"@lsp.typemod.variable.injected"         { sym"@variable" }, -- @lsp.typemod.variable.injected xxx links to @variable
-    sym"@variable.builtin"                      { fg="#f7768e", }, -- @variable.builtin xxx guifg=#f7768e
+    sym"@variable.builtin"                      { fg=hsl(0, 100, 40), }, -- @variable.builtin xxx guifg=#f7768e
     SnacksPickerGitCommit                       { sym"@variable.builtin" }, -- SnacksPickerGitCommit xxx links to @variable.builtin
     SnacksPickerUndoCurrent                     { sym"@variable.builtin" }, -- SnacksPickerUndoCurrent xxx links to @variable.builtin
     SnacksPickerKeymapNowait                    { sym"@variable.builtin" }, -- SnacksPickerKeymapNowait xxx links to @variable.builtin
@@ -270,7 +270,7 @@ local theme = lush(function(injected_functions)
     sym"@lsp.type.regexp"                       { sym"@string.regexp" }, -- @lsp.type.regexp xxx links to @string.regexp
     sym"@string.escape"                         { fg="#bb9af7", }, -- @string.escape xxx guifg=#bb9af7
     sym"@lsp.type.escapeSequence"               { sym"@string.escape" }, -- @lsp.type.escapeSequence xxx links to @string.escape
-    sym"@type.builtin"                          { fg="#27a1b9", }, -- @type.builtin  xxx guifg=#27a1b9
+    sym"@type.builtin"                          { fg=hsl(0, 100, 40), gui="bold" }, -- @type.builtin  xxx guifg=#27a1b9
     sym"@lsp.type.builtinType"                  { sym"@type.builtin" }, -- @lsp.type.builtinType xxx links to @type.builtin
     sym"@lsp.typemod.struct.defaultLibrary"     { sym"@type.builtin" }, -- @lsp.typemod.struct.defaultLibrary xxx links to @type.builtin
     sym"@lsp.typemod.enum.defaultLibrary"       { sym"@type.builtin" }, -- @lsp.typemod.enum.defaultLibrary xxx links to @type.builtin
@@ -284,7 +284,7 @@ local theme = lush(function(injected_functions)
     Identifier                                  { fg="#bb9af7", }, -- Identifier     xxx guifg=#bb9af7
     NvimIdentifier                              { Identifier }, -- NvimIdentifier xxx links to Identifier
     sym"@markup.link.label.symbol"              { Identifier }, -- @markup.link.label.symbol xxx links to Identifier
-    Function                                    { fg="#7aa2f7", }, -- Function       xxx guifg=#7aa2f7
+    Function                                    { fg=hsl(0, 100, 50), gui="bold" }, -- Function       xxx guifg=#7aa2f7
     sym"@function"                              { Function }, -- @function      xxx links to Function
     sym"@function.method"                       { Function }, -- @function.method xxx links to Function
     SnacksPickerCmd                             { Function }, -- SnacksPickerCmd xxx links to Function
@@ -293,16 +293,16 @@ local theme = lush(function(injected_functions)
     SnacksPickerCmdBuiltin                      { sym"@constructor" }, -- SnacksPickerCmdBuiltin xxx links to @constructor
     SnacksPickerIconConstructor                 { sym"@constructor" }, -- SnacksPickerIconConstructor xxx links to @constructor
     LspKindConstructor                          { sym"@constructor" }, -- LspKindConstructor xxx links to @constructor
-    sym"@operator"                              { fg="#89ddff", }, -- @operator      xxx guifg=#89ddff
+    Operator                                    { fg=hsl(0, 100, 25), }, -- Operator       xxx guifg=#89ddff
+    NvimAssignment                              { Operator }, -- NvimAssignment xxx links to Operator
+    NvimOperator                                { Operator }, -- NvimOperator   xxx links to Operator
+    sym"@operator"                              { Operator }, -- @operator      xxx guifg=#89ddff
     sym"@lsp.type.operator"                     { sym"@operator" }, -- @lsp.type.operator xxx links to @operator
     SnacksPickerIconOperator                    { sym"@operator" }, -- SnacksPickerIconOperator xxx links to @operator
     sym"@keyword.operator"                      { sym"@operator" }, -- @keyword.operator xxx links to @operator
     LspKindOperator                             { sym"@operator" }, -- LspKindOperator xxx links to @operator
     sym"@lsp.typemod.operator.injected"         { sym"@operator" }, -- @lsp.typemod.operator.injected xxx links to @operator
-    Operator                                    { fg="#89ddff", }, -- Operator       xxx guifg=#89ddff
-    NvimAssignment                              { Operator }, -- NvimAssignment xxx links to Operator
-    NvimOperator                                { Operator }, -- NvimOperator   xxx links to Operator
-    sym"@keyword"                               { fg="#9d7cd8", gui="italic", }, -- @keyword       xxx cterm=italic gui=italic guifg=#9d7cd8
+    sym"@keyword"                               { Statement }, -- @keyword       xxx cterm=italic gui=italic guifg=#9d7cd8
     sym"@lsp.type.keyword"                      { sym"@keyword" }, -- @lsp.type.keyword xxx links to @keyword
     sym"@type.qualifier"                        { sym"@keyword" }, -- @type.qualifier xxx links to @keyword
     sym"@keyword.return"                        { sym"@keyword" }, -- @keyword.return xxx links to @keyword
@@ -335,7 +335,7 @@ local theme = lush(function(injected_functions)
     DiagnosticDeprecated                        { sp="nvimlightred", gui="strikethrough", }, -- DiagnosticDeprecated xxx cterm=strikethrough gui=strikethrough guisp=NvimLightRed
     FloatShadow                                 { bg="nvimdarkgrey4", blend=80, }, -- FloatShadow    xxx ctermbg=0 guibg=NvimDarkGrey4 blend=80
     FloatShadowThrough                          { bg="nvimdarkgrey4", blend=100, }, -- FloatShadowThrough xxx ctermbg=0 guibg=NvimDarkGrey4 blend=100
-    MatchParen                                  { fg="#ff9e64", gui="bold", }, -- MatchParen     xxx cterm=bold gui=bold guifg=#ff9e64
+    MatchParen                                  { bg=hsl(0, 100, 15), fg=hsl(0, 100, 50), gui="bold", }, -- MatchParen     xxx cterm=bold gui=bold guifg=#ff9e64
     RedrawDebugClear                            { bg="nvimdarkyellow", }, -- RedrawDebugClear xxx ctermfg=0 ctermbg=11 guibg=NvimDarkYellow
     RedrawDebugComposed                         { bg="nvimdarkgreen", }, -- RedrawDebugComposed xxx ctermfg=0 ctermbg=10 guibg=NvimDarkGreen
     RedrawDebugRecompose                        { bg="nvimdarkred", }, -- RedrawDebugRecompose xxx ctermfg=0 ctermbg=9 guibg=NvimDarkRed
@@ -407,10 +407,10 @@ local theme = lush(function(injected_functions)
     UfoFoldedBg                                 { bg="#3b4261", }, -- UfoFoldedBg    xxx guibg=#3b4261
     UfoPreviewWinBar                            { UfoFoldedBg }, -- UfoPreviewWinBar xxx links to UfoFoldedBg
     UfoFoldedFg                                 { fg="#c0caf5", }, -- UfoFoldedFg    xxx guifg=#c0caf5
-    sym"@punctuation.bracket"                   { fg="#a9b1d6", }, -- @punctuation.bracket xxx guifg=#a9b1d6
+    sym"@punctuation.bracket"                   { Delimiter, }, -- @punctuation.bracket xxx guifg=#a9b1d6
     SnacksPickerIconArray                       { sym"@punctuation.bracket" }, -- SnacksPickerIconArray xxx links to @punctuation.bracket
     LspKindArray                                { sym"@punctuation.bracket" }, -- LspKindArray   xxx links to @punctuation.bracket
-    sym"@punctuation.delimiter"                 { fg="#89ddff", }, -- @punctuation.delimiter xxx guifg=#89ddff
+    sym"@punctuation.delimiter"                 { Delimiter }, -- @punctuation.delimiter xxx guifg=#89ddff
     sym"@variable.member"                       { fg="#73daca", }, -- @variable.member xxx guifg=#73daca
     SnacksPickerIconField                       { sym"@variable.member" }, -- SnacksPickerIconField xxx links to @variable.member
     LspKindField                                { sym"@variable.member" }, -- LspKindField   xxx links to @variable.member
