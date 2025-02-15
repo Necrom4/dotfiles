@@ -22,7 +22,7 @@ vim.api.nvim_set_keymap('n', '<c-s><c-a>', ':wa<cr>', { noremap = true, silent =
 -- Save and quit
 vim.api.nvim_set_keymap('n', '<c-s><c-q>', ':wq<cr>', { noremap = true, silent = true })
 -- Save all files and quit
-vim.api.nvim_set_keymap('n', '<c-s><c-q>', ':waq<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<c-s><c-a><c-q>', ':waq<cr>', { noremap = true, silent = true })
 -- Quit the current file
 vim.api.nvim_set_keymap('n', '<c-q>', ':q<cr>', { noremap = true, silent = true })
 -- Force quit the current file
