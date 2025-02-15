@@ -26,9 +26,8 @@ return {
       },
     }
   },
-  "neovim/nvim-lspconfig",
-  event = { 'BufReadPre', 'BufNewFile' },
-  vim.diagnostic.config({
-    signs = false,
-  })
+  {
+    "neovim/nvim-lspconfig",
+    event = { 'BufReadPre', 'BufNewFile' },
+  }
 }
