@@ -121,13 +121,14 @@ local theme = lush(function(injected_functions)
     NormalNC                               { fg=hsl(0, 100, 40), }, -- NormalNC       xxx guifg=#cc0000
     WinBar                                 { fg="nvimlightgrey4", gui="bold", bg="nvimdarkgrey1", }, -- WinBar         xxx cterm=bold gui=bold guifg=NvimLightGrey4 guibg=NvimDarkGrey1
     WinBarNC                               { fg="nvimlightgrey4", bg="nvimdarkgrey1", }, -- WinBarNC       xxx cterm=bold guifg=NvimLightGrey4 guibg=NvimDarkGrey1
+    NormalFloat                            { bg="none", },
     Cursor                                 { fg=hsl(0, 100, 40), }, -- Cursor         xxx guifg=#cc0000
     CursorIM                               { Cursor }, -- CursorIM       xxx links to Cursor
     RedrawDebugNormal                      { gui="reverse", }, -- RedrawDebugNormal xxx cterm=reverse gui=reverse
     Underlined                             { fg=hsl(0, 100, 40), gui="underline", }, -- Underlined     xxx cterm=underline gui=underline guifg=#cc0000
     sym"@string.special.url"               { Underlined }, -- @string.special.url xxx links to Underlined
     sym"@markup.link"                      { Underlined }, -- @markup.link   xxx links to Underlined
-    lCursor                                { fg="bg", bg="fg", }, -- lCursor        xxx guifg=bg guibg=fg
+    lCursor                                { bg="#FFFF00", }, -- lCursor        xxx guifg=bg guibg=fg
     Normal                                 { fg=hsl(0, 100, 40), }, -- Normal         xxx guifg=#cc0000
     WinSeparator                           { Normal }, -- WinSeparator   xxx links to Normal
     Ignore                                 { Normal }, -- Ignore         xxx links to Normal
@@ -207,7 +208,7 @@ local theme = lush(function(injected_functions)
     SnacksPickerDiagnosticCode             { Special }, -- SnacksPickerDiagnosticCode xxx links to Special
     SnacksPickerSpinner                    { Special }, -- SnacksPickerSpinner xxx links to Special
     SnacksIndentScope                      { Special }, -- SnacksIndentScope xxx links to Special
-    DiagnosticError                        { fg=hsl(0, 100, 50), gui="bold", bg=hsl(0, 100, 10), }, -- DiagnosticError xxx cterm=bold gui=bold guifg=#ff0000 guibg=#330000
+    DiagnosticError                        { fg=hsl(0, 100, 50), bg=hsl(0, 100, 10), }, -- DiagnosticError xxx cterm=bold gui=bold guifg=#ff0000 guibg=#330000
     DiagnosticFloatingError                { DiagnosticError }, -- DiagnosticFloatingError xxx links to DiagnosticError
     DiagnosticVirtualTextError             { DiagnosticError }, -- DiagnosticVirtualTextError xxx links to DiagnosticError
     sym"@comment.error"                    { DiagnosticError }, -- @comment.error xxx links to DiagnosticError
@@ -234,7 +235,7 @@ local theme = lush(function(injected_functions)
     SnacksPickerLspAttachedBuf             { DiagnosticInfo }, -- SnacksPickerLspAttachedBuf xxx links to DiagnosticInfo
     SnacksIndent1                          { DiagnosticInfo }, -- SnacksIndent1  xxx links to DiagnosticInfo
     SnacksIndent5                          { DiagnosticInfo }, -- SnacksIndent5  xxx links to DiagnosticInfo
-    DiagnosticHint                         { fg=hsl(0, 100, 15), gui="italic", }, -- DiagnosticHint xxx cterm=italic gui=italic guifg=#4c0000
+    DiagnosticHint                         { fg=hsl(0, 100, 20), gui="italic", }, -- DiagnosticHint xxx cterm=italic gui=italic guifg=#4c0000
     DiagnosticFloatingHint                 { DiagnosticHint }, -- DiagnosticFloatingHint xxx links to DiagnosticHint
     DiagnosticVirtualTextHint              { DiagnosticHint }, -- DiagnosticVirtualTextHint xxx links to DiagnosticHint
     DiagnosticSignHint                     { DiagnosticHint }, -- DiagnosticSignHint xxx links to DiagnosticHint
@@ -263,7 +264,7 @@ local theme = lush(function(injected_functions)
     SnacksPickerGitCommit                  { sym"@variable.builtin" }, -- SnacksPickerGitCommit xxx links to @variable.builtin
     SnacksPickerUndoCurrent                { sym"@variable.builtin" }, -- SnacksPickerUndoCurrent xxx links to @variable.builtin
     SnacksPickerKeymapNowait               { sym"@variable.builtin" }, -- SnacksPickerKeymapNowait xxx links to @variable.builtin
-    String                                 { fg=hsl(0, 100, 32), }, -- String         xxx guifg=#a50000
+    String                                 { fg=hsl(0, 100, 25), }, -- String         xxx guifg=#a50000
     sym"@string"                           { String }, -- @string        xxx links to String
     NvimString                             { String }, -- NvimString     xxx links to String
     SnacksPickerAuPattern                  { String }, -- SnacksPickerAuPattern xxx links to String
@@ -314,7 +315,7 @@ local theme = lush(function(injected_functions)
     NvimInvalid                            { Error }, -- NvimInvalid    xxx links to Error
     MiniTrailspace                         { Error }, -- MiniTrailspace xxx links to Error
     SnacksPickerGitBreaking                { Error }, -- SnacksPickerGitBreaking xxx links to Error
-    DiagnosticUnderlineError               { sp=hsl(0, 100, 32), gui="underline", }, -- DiagnosticUnderlineError xxx cterm=underline gui=underline guisp=#a50000
+    DiagnosticUnderlineError               { sp=hsl(0, 100, 50), gui="undercurl", }, -- DiagnosticUnderlineError xxx cterm=underline gui=underline guisp=#a50000
     DiagnosticUnderlineWarn                { sp=hsl(0, 100, 75), gui="underline", }, -- DiagnosticUnderlineWarn xxx cterm=underline gui=underline guisp=#ff7f7f
     DiagnosticUnderlineInfo                { sp="nvimlightcyan", gui="underline", }, -- DiagnosticUnderlineInfo xxx cterm=underline gui=underline guisp=NvimLightCyan
     DiagnosticUnderlineHint                { sp=hsl(0, 100, 32), gui="underline", }, -- DiagnosticUnderlineHint xxx cterm=underline gui=underline guisp=#a50000
@@ -327,6 +328,9 @@ local theme = lush(function(injected_functions)
     SnacksPickerBold                       { Bold }, -- SnacksPickerBold xxx links to Bold
     markdownCode                           { fg=hsl(0, 100, 50), bg=hsl(0, 100, 15), }, -- markdownCode   xxx guifg=#ff0000 guibg=#4c0000
     markdownCodeBlock                      { fg=hsl(0, 100, 40), bg=hsl(0, 100, 10), }, -- markdownCodeBlock xxx guifg=#cc0000 guibg=#330000
+    sym"@markup.raw.markdown_inline"       { fg=hsl(0, 100, 40), bg=hsl(0, 100, 15), },
+    sym"@markup.raw.block.markdown"        { bg=hsl(0, 100, 10), },
+    sym"@markup.link.label.markdown_inline"{ underline = false, },
     FoldedLinesAmount                      { fg=hsl(0, 100, 40), }, -- FoldedLinesAmount xxx guifg=#cc0000
     WinActive                              { fg=hsl(0, 0, 0), gui="bold", bg=hsl(0, 100, 40), }, -- WinActive      xxx cterm=bold gui=bold guifg=#000000 guibg=#cc0000
     WinInactive                            { fg=hsl(0, 100, 40), bg=hsl(0, 100, 10), }, -- WinInactive    xxx guifg=#cc0000 guibg=#330000
@@ -1074,6 +1078,7 @@ local theme = lush(function(injected_functions)
     Stl00BF00_330000__                     { fg=hsl(120, 100, 37), bg=hsl(0, 100, 10), }, -- Stl00BF00_330000__ xxx guifg=#00bf00 guibg=#330000
     StlFF0000_330000__                     { fg=hsl(0, 100, 50), bg=hsl(0, 100, 10), }, -- StlFF0000_330000__ xxx guifg=#ff0000 guibg=#330000
     StlFFFF00_330000__                     { fg=hsl(60, 100, 50), bg=hsl(0, 100, 10), }, -- StlFFFF00_330000__ xxx guifg=#ffff00 guibg=#330000
+    TreesitterContextBottom                { sp=hsl(0, 100, 30), gui="underline" },
   }
 end)
 return theme
