@@ -1,8 +1,14 @@
 return {
   {
     "williamboman/mason.nvim",
-    cmd = { 'Mason', 'MasonLog', 'MasonUpdate', 'MasonInstall', 'MasonUninstall', 'MasonUninstallAll' },
-    build = ':MasonUpdate', -- :MasonUpdate updates registry contents
+    cmd = { "Mason", "MasonLog", "MasonUpdate", "MasonInstall", "MasonUninstall", "MasonUninstallAll" },
+    build = ":MasonUpdate", -- Updates registry contents
+    opts = {},
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = { "williamboman/mason.nvim" },
     opts = {
       ensure_installed = {
         "ast_grep",
@@ -13,21 +19,16 @@ return {
         "yamlls",
       },
       automatic_installation = true,
-    },
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    event = { 'BufReadPre', 'BufNewFile' },
-    opts = {
       handlers = {
         function(server_name)
           require("lspconfig")[server_name].setup {}
         end,
       },
-    }
+    },
   },
   {
     "neovim/nvim-lspconfig",
-    event = { 'BufReadPre', 'BufNewFile' },
-  }
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = { "williamboman/mason-lspconfig.nvim" },
+  },
 }
