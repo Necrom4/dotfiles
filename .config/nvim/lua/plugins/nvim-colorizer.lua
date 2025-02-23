@@ -1,6 +1,11 @@
 return {
-  "norcalli/nvim-colorizer.lua",
-  config = function()
-    require('colorizer').setup()
-  end,
+  "catgoose/nvim-colorizer.lua",
+  opts = {
+    filetypes = {
+      "*",
+    },
+    user_default_options = {
+      always_update = true,
+    }
+  }
 }
