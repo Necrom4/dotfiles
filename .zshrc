@@ -91,8 +91,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-vi-mode docker)
-# plugins+=(zsh-syntax-highlighting)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-vi-mode zsh-history-substring-search colored-man-pages command-not-found docker docker-compose kubectl minikube helm jsontools ruby rails rake)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -172,8 +171,8 @@ alias m='cmatrix'
 
 # //VI MODE//
 bindkey -v
-bindkey '^k' up-line-or-beginning-search
-bindkey '^j' down-line-or-beginning-search
+bindkey '^k' history-substring-search-up
+bindkey '^j' history-substring-search-down
 bindkey '^h' vi-backward-char
 bindkey '^l' vi-forward-char
 bindkey '^x' clear-screen
@@ -187,10 +186,10 @@ function vi-yank-xclip {
 # bindkey -M vicmd 'y' vi-yank-xclip
 
 ZVM_VI_HIGHLIGHT_FOREGROUND=#FF0000
-ZVM_VI_HIGHLIGHT_BACKGROUND=#600000
+ZVM_VI_HIGHLIGHT_BACKGROUND=#4C0000
 
 # //ZSH-AUTOSUGGESTIONS//
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#800000"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#7F0000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
 eval "$(/root/.linuxbrew/bin/brew shellenv)"
 eval "$(/root/.local/bin/mise activate zsh)"
