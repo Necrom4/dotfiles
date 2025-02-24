@@ -161,13 +161,7 @@ function x() {
 alias lazygit="~/.linuxbrew/bin/lazygit"
 alias g="~/.linuxbrew/bin/lazygit"
 alias y="yadm enter lazygit"
-alias cwd.sh="source ~/42/Scripts/cwd.sh"
-alias copy_selected.sh="source ~/42/Scripts/copy_selected.sh"
-alias z="source ~/.zshrc && echo '[ZSH Reloaded]'"
-alias m='cmatrix'
-# alias composer='~/.brew/Cellar/composer.phar'
-# alias ripgrep='~/.brew/Cellar/rg'
-# alias rg='~/.brew/Cellar/rg'
+alias z="omz reload"
 
 # //VI MODE//
 bindkey -v
