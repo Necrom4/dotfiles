@@ -102,12 +102,6 @@ vim.keymap.set('n', '<c-e>q', ':tabclose<cr>', { noremap = true, silent = true }
 vim.keymap.set('n', '<c-e>-', ':-tabmove<cr>', { noremap = true, silent = true })
 vim.keymap.set('n', '<c-e>=', ':+tabmove<cr>', { noremap = true, silent = true })
 
--- COMMMENT
-vim.api.nvim_set_keymap('n', '<leader>c', 'gc', { noremap = false })
-vim.api.nvim_set_keymap('x', '<leader>c', 'gc', { noremap = false })
-vim.api.nvim_set_keymap('o', '<leader>c', 'gc', { noremap = false })
-vim.api.nvim_set_keymap('n', '<leader>cc', 'gcc', { noremap = false })
-
 -- BETTER READABILITY
 vim.keymap.set("n", "<leader>r", function()
   if vim.wo.wrap then
