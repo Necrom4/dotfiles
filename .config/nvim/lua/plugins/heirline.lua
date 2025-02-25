@@ -36,7 +36,7 @@ return {
       static = {
         mode_names = {
           n = "NORMAL", no = "MOTION", nov = "Mv", noV = "MV", ["no\22"] = "^M", niI = "Ni", niR = "Nr",
-          niV = "Nv", nt = "Nt", v = "VISUAL", vs = "Vs", V = "V-LINE", Vs = "Vs", ["\22"] = "V-BLOCK",
+          niV = "Nv", nt = "WINDOW", v = "VISUAL", vs = "Vs", V = "V-LINE", Vs = "Vs", ["\22"] = "V-BLOCK",
           ["\22s"] = "^V", s = "SELECT", S = "S-LINE", ["\19"] = "S-BLOCK", i = "INSERT", ic = "Ic", ix = "Ix",
           R = "REPLACE", Rc = "Rc", Rx = "Rx", Rv = "Rv", Rvc = "Rv", Rvx = "Rv", c = "COMMAND", cv = "Ex",
           r = "...", rm = "M", ["r?"] = "?", ["!"] = "!", t = "TERMINAL",
