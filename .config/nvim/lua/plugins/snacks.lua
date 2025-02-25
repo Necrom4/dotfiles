@@ -1,3 +1,15 @@
+local dim_enabled = false
+
+local function toggle_dim()
+  if dim_enabled then
+    Snacks.dim.disable()
+    dim_enabled = false
+  else
+    Snacks.dim.enable()
+    dim_enabled = true
+  end
+end
+
 local function pickDotfiles()
   local original_git_dir = vim.env.GIT_DIR
   local home_dir = vim.fn.expand("~")
@@ -28,8 +40,7 @@ return {
     { "<leader>g", ":lua Snacks.lazygit.open()<CR>", desc = "Open LazyGit", silent = true },
     { "<leader>t", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
     { "<leader>s", ":lua Snacks.scratch()<CR>", desc = "Open Scratch", silent = true },
-    { "<leader>d", ":lua Snacks.dim.enable()<CR>", desc = "Enable Dim", silent = true },
-    { "<leader>dd", ":lua Snacks.dim.disable()<CR>", desc = "Disable Dim", silent = true },
+    { "<leader>d", function() toggle_dim() end, desc = "Toggle Dim", silent = true },
   },
   opts = {
     bigfile = { enabled = true },
