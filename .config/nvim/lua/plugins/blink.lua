@@ -6,6 +6,7 @@ return {
       'saghen/blink.compat',
       lazy = true,
     },
+    'mikavilpas/blink-ripgrep.nvim',
     'hrsh7th/cmp-calc',
     'folke/lazydev.nvim',
   },
@@ -56,8 +57,12 @@ return {
     },
     signature = { enabled = true },
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer', 'calc', 'lazydev' },
+      default = { 'lsp', 'path', 'snippets', 'buffer', 'ripgrep', 'calc', 'lazydev' },
       providers = {
+        ripgrep = {
+          name = "Ripgrep",
+          module = "blink-ripgrep",
+        },
         calc = {
           name = 'calc',
           module = 'blink.compat.source',
