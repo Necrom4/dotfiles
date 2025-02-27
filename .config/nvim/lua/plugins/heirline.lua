@@ -14,8 +14,9 @@ return {
       red_2 = "#CC0000",
       red_3 = "#A50000",
       red_4 = "#7F0000",
-      red_5 = "#4C0000",
-      red_6 = "#330000",
+      red_5 = "#590000",
+      red_6 = "#4C0000",
+      red_7 = "#330000",
       yellow = "#FFFF00",
       green = "#00BF00",
       brown = "#595900",
@@ -24,8 +25,8 @@ return {
 
     local utils = require("heirline.utils")
     local conditions = require("heirline.conditions")
-    local Align = { provider = "%=", hl = { bg = colors.red_6 }}
-    local Space = { provider = " ", hl = { bg = colors.red_6 } }
+    local Align = { provider = "%=" }
+    local Space = { provider = " " }
 
     -- Mode Indicator Section
     local ViMode = {
@@ -54,7 +55,7 @@ return {
       provider = function(self)
         return self.is_insert and "" or " "
       end,
-      hl = { fg = colors.red_2, bg = colors.red_6 },
+      hl = { fg = colors.red_2, bg = colors.red_7 },
       update = {
         "ModeChanged",
         pattern = "*:*",
@@ -69,9 +70,9 @@ return {
       end,
       hl = { fg = colors.monochrome_7, bg = colors.red_2 },
     }
-    local Separator = {
-      provider = "",  -- Separator
-      hl = { fg = colors.red_2, bg = colors.red_6 },
+    local LeftSeparator = {
+      provider = "",
+      hl = { fg = colors.red_2, bg = colors.red_7 },
     }
 
     local FileNameBlock = {
@@ -80,21 +81,27 @@ return {
         self.filename = vim.api.nvim_buf_get_name(0)
       end,
     }
-    -- We can now define some children separately and add them later
+    local FileNameWin = {
+      -- let's first set up some attributes needed by this component and its children
+      init = function(self)
+        self.filename = vim.api.nvim_buf_get_name(0)
+      end,
+    }
 
+    -- We can now define some children separately and add them later
     local FilePath = {
       provider = function(self)
         local path = vim.fn.fnamemodify(self.filename, ":h")
         return path .. "/"
       end,
-      hl = { fg = colors.red_3, bg = colors.red_6 },
+      hl = { fg = colors.red_3, bg = colors.red_7 },
     }
     local FileName = {
       provider = function(self)
         local name = vim.fn.fnamemodify(self.filename, ":t")
         return name
       end,
-      hl = { fg = colors.red_1, bg = colors.red_6, bold = true },
+      hl = { fg = colors.red_1, bg = colors.red_7, bold = true },
     }
     local FileIcon = {
       init = function(self)
@@ -105,7 +112,7 @@ return {
       provider = function(self)
         return self.icon and (" " .. self.icon .. " ")
       end,
-      hl = { fg = colors.red_2, bg = colors.red_6 }
+      hl = { fg = colors.red_2, bg = colors.red_7 }
     }
     local FileFlags = {
       {
@@ -113,7 +120,7 @@ return {
           return not vim.bo.modifiable or vim.bo.readonly
         end,
         provider = "",
-        hl = { fg = colors.red_2, bg = colors.red_6 }
+        hl = { fg = colors.red_2, bg = colors.red_7 }
       },
     }
     FileNameBlock = utils.insert(FileNameBlock,
@@ -123,6 +130,10 @@ return {
     FileIcon,
     FileFlags
     )
+    FileNameWin = utils.insert(FileNameWin,
+      { provider = '%<'},
+      FileName
+    )
 
     local Git = {
       condition = conditions.is_git_repo,
@@ -131,61 +142,47 @@ return {
         self.status_dict = vim.b.gitsigns_status_dict
         self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
       end,
-      hl = { fg = colors.red_2, bg = colors.red_6 },
+      hl = { fg = colors.red_2, bg = colors.red_7 },
 
       {
         condition = function(self)
           return self.has_changes
         end,
-        provider = "["
+        provider = ""
       },
       {
         provider = function(self)
           local count = self.status_dict.added or 0
-          return count > 0 and ("+" .. count)
+          return count > 0 and ("  " .. count)
         end,
-        hl = { fg = colors.green, bg = colors.red_6 },
-      },
-      {
-        provider = function(self)
-          if (self.status_dict.added or 0) > 0 and ((self.status_dict.changed or 0) > 0 or (self.status_dict.removed or 0) > 0) then
-            return  "|"
-          end
-        end,
-        hl = { fg = colors.red_1, bg = colors.red_6 },
+        hl = { fg = colors.green, bg = colors.red_7 },
       },
       {
         provider = function(self)
           local count = self.status_dict.removed or 0
-          return count > 0 and ("-" .. count)
+          return count > 0 and ("  " .. count)
         end,
-      },
-      {
-        provider = function(self)
-          if (self.status_dict.removed or 0) > 0 and (self.status_dict.changed or 0) > 0 then
-            return  "|"
-          end
-        end,
-        hl = { fg = colors.red_1, bg = colors.red_6 },
       },
       {
         provider = function(self)
           local count = self.status_dict.changed or 0
-          return count > 0 and ("~" .. count)
+          return count > 0 and (" 󰏬 " .. count)
         end,
-        hl = { fg = colors.yellow, bg = colors.red_6 },
-      },
-      {
-        condition = function(self)
-          return self.has_changes
-        end,
-        provider = "]",
+        hl = { fg = colors.yellow, bg = colors.red_7 },
       },
     }
 
+    local RightSeparator = {
+      provider = "",
+      hl = { fg = colors.red_5, bg = colors.red_7 },
+    }
+    local RightSeparatorMini = {
+      provider = "",
+      hl = { fg = colors.red_2, bg = colors.red_7 },
+    }
     local CursorPosition = {
-      provider = "%c:%l/%L | %p%%",
-      hl = { fg = colors.red_2, bg = colors.red_6 },
+      provider = "%c:%l/%L | %p%% ",
+      hl = { fg = colors.red_1, bg = colors.red_5 },
     }
 
     local ScrollBar = {
@@ -203,11 +200,35 @@ return {
         end
         return string.rep(self.sbar[i], 2)
       end,
-      hl = { fg = colors.red_6, bg = colors.red_2 },
+      hl = { fg = colors.red_5, bg = colors.red_2 },
+    }
+
+    local WinBars = {
+      fallthrough = false,
+      {   -- An inactive winbar for regular files
+        condition = function()
+          return not conditions.is_active()
+        end,
+        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, FileNameWin }),
+      },
+      -- A winbar for regular files
+      utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_2, force = true }, FileNameWin }),
     }
 
     return {
-      statusline = { ViMode, FileModified, Separator, InsertIndicator, Space, FileNameBlock, Align, Space, Git, Space, CursorPosition, Space, ScrollBar },
+      statusline = { ViMode, FileModified, LeftSeparator,
+        InsertIndicator, { Space, hl = { bg = colors.red_7 }}, FileNameBlock, { Align, hl = { bg = colors.red_7 }},
+        { Space, hl = { bg = colors.red_7 }}, Git, { Space, hl = { bg = colors.red_7 }},
+        RightSeparator, { Space, hl = { bg = colors.red_5 }}, CursorPosition, ScrollBar },
+      winbar = { WinBars },
+      opts = {
+        disable_winbar_cb = function(args)
+          return conditions.buffer_matches({
+            buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
+            filetype = { "^git.*", "fugitive", "Trouble", "dashboard" },
+          }, args.buf)
+        end,
+      }
     }
   end
 }
