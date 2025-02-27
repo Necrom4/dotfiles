@@ -48,7 +48,7 @@
 
 highlight clear
 
-highlight Win cterm=none ctermfg=196 ctermbg=none
+highlight Win cterm=none ctermfg=160 ctermbg=none
 highlight Directory cterm=none ctermfg=160 ctermbg=none
 highlight Link cterm=none ctermfg=196 ctermbg=default
 highlight BrokenLink cterm=bold ctermfg=196 ctermbg=default

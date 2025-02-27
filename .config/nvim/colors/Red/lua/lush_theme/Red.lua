@@ -65,7 +65,7 @@ local theme = lush(function(injected_functions)
     SnacksPickerGitType                    { Title }, -- SnacksPickerGitType xxx links to Title
     SnacksPickerGitBranch                  { Title }, -- SnacksPickerGitBranch xxx links to Title
     SnacksWinBar                           { Title }, -- SnacksWinBar   xxx links to Title
-    Visual                                 { fg=hsl(0, 100, 50), bg=hsl(0, 100, 15), }, -- Visual         xxx guifg=#ff0000 guibg=#4c0000
+    Visual                                 { bg=hsl(0, 100, 15), }, -- Visual         xxx guifg=#ff0000 guibg=#4c0000
     VisualNOS                              { Visual }, -- VisualNOS      xxx links to Visual
     LspReferenceText                       { Visual }, -- LspReferenceText xxx links to Visual
     LspSignatureActiveParameter            { Visual }, -- LspSignatureActiveParameter xxx links to Visual
@@ -318,7 +318,7 @@ local theme = lush(function(injected_functions)
     DiagnosticUnderlineError               { sp=hsl(0, 100, 50), gui="undercurl", }, -- DiagnosticUnderlineError xxx cterm=underline gui=underline guisp=#a50000
     DiagnosticUnderlineWarn                { sp=hsl(0, 100, 75), gui="underline", }, -- DiagnosticUnderlineWarn xxx cterm=underline gui=underline guisp=#ff7f7f
     DiagnosticUnderlineInfo                { sp="nvimlightcyan", gui="underline", }, -- DiagnosticUnderlineInfo xxx cterm=underline gui=underline guisp=NvimLightCyan
-    DiagnosticUnderlineHint                { sp=hsl(0, 100, 32), gui="underline", }, -- DiagnosticUnderlineHint xxx cterm=underline gui=underline guisp=#a50000
+    DiagnosticUnderlineHint                { sp=hsl(0, 100, 20), gui="underline", }, -- DiagnosticUnderlineHint xxx cterm=underline gui=underline guisp=#a50000
     DiagnosticUnderlineOk                  { sp="nvimlightgreen", gui="underline", }, -- DiagnosticUnderlineOk xxx cterm=underline gui=underline guisp=NvimLightGreen
     NvimInternalError                      { fg="red", bg="red", }, -- NvimInternalError xxx ctermfg=9 ctermbg=9 guifg=Red guibg=Red
     NvimFigureBrace                        { NvimInternalError }, -- NvimFigureBrace xxx links to NvimInternalError
@@ -331,7 +331,7 @@ local theme = lush(function(injected_functions)
     sym"@markup.raw.markdown_inline"       { fg=hsl(0, 100, 40), bg=hsl(0, 100, 15), },
     sym"@markup.raw.block.markdown"        { bg=hsl(0, 100, 10), },
     sym"@markup.link.label.markdown_inline"{ underline = false, },
-    FoldedLinesAmount                      { fg=hsl(0, 100, 40), }, -- FoldedLinesAmount xxx guifg=#cc0000
+    FoldedLinesAmount                      { fg=hsl(0, 100, 25), }, -- FoldedLinesAmount xxx guifg=#cc0000
     WinActive                              { fg=hsl(0, 0, 0), gui="bold", bg=hsl(0, 100, 40), }, -- WinActive      xxx cterm=bold gui=bold guifg=#000000 guibg=#cc0000
     WinInactive                            { fg=hsl(0, 100, 40), bg=hsl(0, 100, 10), }, -- WinInactive    xxx guifg=#cc0000 guibg=#330000
     WinNeighbor                            { WinInactive }, -- WinNeighbor    xxx links to WinInactive
