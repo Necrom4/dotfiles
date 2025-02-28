@@ -2,11 +2,22 @@
 	name = Diogo Pombeiro
 [diff]
   tool = nvimdiff
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
+	algorithm = histogram
 [color "diff"]
-  context = "#A50000"
-  commit = "#800000"
-  newMoved = "#00f000"
-  frag = "#800000"
+  context = "#7F0000"
+  commit = "#80f000"
+  newMoved = "#FFAA00"
+  oldMoved = "#7F5500"
+  frag = "#FF8080"
   meta = "#800000"
-  new = "#FF0000"
-  old = "#7F0000"
+  new = "#00BF00"
+  old = "#FF0000"
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
