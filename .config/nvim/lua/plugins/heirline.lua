@@ -223,14 +223,13 @@ return {
         local bufname = vim.api.nvim_buf_get_name(buf) -- Get buffer name
         local shortname = vim.fn.fnamemodify(bufname, ":t") -- Get short name
 
-        return string.format("%s • %s", self.tabpage, shortname)
+        return "%" .. self.tabnr .. "T" .. self.tabpage .. " • " .. shortname .. "%T"
       end,
     }
 
     local TabpageClose = {
       provider = function(self)
-        local position = vim.fn.index(vim.api.nvim_list_tabpages(), self.tabpage) + 1
-        return "%" .. position .. "X %X"
+        return "%" .. self.tabnr .. "X %X"
       end,
       hl = { fg = colors.red_2 },
     }
@@ -244,7 +243,7 @@ return {
         fallthrough = false,
         {
           condition = function(self)  -- Pass the tab data to the condition
-            return self.tabpage == 1
+            return self.tabnr == 1
           end,
           utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, Tab, TabpageClose }),
         },
@@ -252,7 +251,7 @@ return {
       },
       {
         condition = function(self)  -- Pass the tab data to the condition
-          return self.tabpage == 1
+          return self.tabnr == 1
         end,
         utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, Tab, TabpageClose }),
       },
