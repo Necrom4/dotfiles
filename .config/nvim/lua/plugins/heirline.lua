@@ -208,8 +208,33 @@ return {
         utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName }),
       },
       -- A winbar for regular files
-      utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_2, force = true }, BuffName }),
+      utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, BuffName }),
     }
+
+    local Tab = {
+      provider = function(self)
+        local win = vim.api.nvim_tabpage_get_win(self.tabpage) -- Get window associated with tab
+        local buf = vim.api.nvim_win_get_buf(win) -- Get buffer associated with window
+        local bufname = vim.api.nvim_buf_get_name(buf) -- Get buffer name
+        local shortname = vim.fn.fnamemodify(bufname, ":t") -- Get short name
+
+        return string.format("%s %s", self.tabpage, shortname)
+      end,
+    }
+
+    local TabBlock = {
+      fallthrough = false,
+      {
+        condition = function(self)  -- Pass the tab data to the condition
+          return self.is_active
+        end,
+        utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, Tab }),
+      },
+      utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, Tab }),
+    }
+
+    local TabLine = {
+      utils.make_tablist(TabBlock)
     }
 
     return {
@@ -218,6 +243,7 @@ return {
         { Space, hl = { bg = colors.red_7 }}, Git, { Space, hl = { bg = colors.red_7 }},
         RightSeparator, { Space, hl = { bg = colors.red_5 }}, CursorPosition, ScrollBar },
       winbar = { WinBars },
+      tabline = { TabLine },
       opts = {
         disable_winbar_cb = function(args)
           return conditions.buffer_matches({
