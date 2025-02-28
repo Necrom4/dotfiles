@@ -17,6 +17,7 @@ return {
       red_6 = "#4C0000",
       red_7 = "#330000",
       yellow = "#FFFF00",
+      orange = "#FFAA00",
       green = "#00BF00",
       brown = "#595900",
       bright_pink = "#FF7F7F",
@@ -203,23 +204,19 @@ return {
         provider = function(self)
           return self.info > 0 and (self.info_icon .. self.info .. " ")
         end,
-        hl = { fg = colors.bright_pink },
+        hl = { fg = colors.red_4 },
       },
       {
         provider = function(self)
           return self.hints > 0 and (self.hint_icon .. self.hints)
         end,
-        hl = { fg = colors.red_3 },
+        hl = { fg = colors.orange },
       },
     }
 
     local RightSeparator = {
       provider = "",
       hl = { fg = colors.red_5, bg = colors.red_7 },
-    }
-    local RightSeparatorMini = {
-      provider = "",
-      hl = { fg = colors.red_2, bg = colors.red_7 },
     }
     local CursorPosition = {
       provider = "%c:%l/%L | %p%% ",

@@ -227,7 +227,7 @@ local theme = lush(function(injected_functions)
     SnacksPickerGitDetached                { DiagnosticWarn }, -- SnacksPickerGitDetached xxx links to DiagnosticWarn
     SnacksIndent3                          { DiagnosticWarn }, -- SnacksIndent3  xxx links to DiagnosticWarn
     SnacksIndent7                          { DiagnosticWarn }, -- SnacksIndent7  xxx links to DiagnosticWarn
-    DiagnosticInfo                         { fg=hsl(0, 100, 75), }, -- DiagnosticInfo xxx guifg=#ff7f7f
+    DiagnosticInfo                         { fg=hsl(0, 100, 25), }, -- DiagnosticInfo xxx guifg=#ff7f7f
     DiagnosticFloatingInfo                 { DiagnosticInfo }, -- DiagnosticFloatingInfo xxx links to DiagnosticInfo
     DiagnosticVirtualTextInfo              { DiagnosticInfo }, -- DiagnosticVirtualTextInfo xxx links to DiagnosticInfo
     DiagnosticSignInfo                     { DiagnosticInfo }, -- DiagnosticSignInfo xxx links to DiagnosticInfo
@@ -235,7 +235,7 @@ local theme = lush(function(injected_functions)
     SnacksPickerLspAttachedBuf             { DiagnosticInfo }, -- SnacksPickerLspAttachedBuf xxx links to DiagnosticInfo
     SnacksIndent1                          { DiagnosticInfo }, -- SnacksIndent1  xxx links to DiagnosticInfo
     SnacksIndent5                          { DiagnosticInfo }, -- SnacksIndent5  xxx links to DiagnosticInfo
-    DiagnosticHint                         { fg=hsl(0, 100, 20), gui="italic", }, -- DiagnosticHint xxx cterm=italic gui=italic guifg=#4c0000
+    DiagnosticHint                         { fg=hsl(40, 100, 50), gui="italic", }, -- DiagnosticHint xxx cterm=italic gui=italic guifg=#4c0000
     DiagnosticFloatingHint                 { DiagnosticHint }, -- DiagnosticFloatingHint xxx links to DiagnosticHint
     DiagnosticVirtualTextHint              { DiagnosticHint }, -- DiagnosticVirtualTextHint xxx links to DiagnosticHint
     DiagnosticSignHint                     { DiagnosticHint }, -- DiagnosticSignHint xxx links to DiagnosticHint
@@ -318,7 +318,7 @@ local theme = lush(function(injected_functions)
     DiagnosticUnderlineError               { sp=hsl(0, 100, 50), gui="undercurl", }, -- DiagnosticUnderlineError xxx cterm=underline gui=underline guisp=#a50000
     DiagnosticUnderlineWarn                { sp=hsl(0, 100, 75), gui="underline", }, -- DiagnosticUnderlineWarn xxx cterm=underline gui=underline guisp=#ff7f7f
     DiagnosticUnderlineInfo                { sp="nvimlightcyan", gui="underline", }, -- DiagnosticUnderlineInfo xxx cterm=underline gui=underline guisp=NvimLightCyan
-    DiagnosticUnderlineHint                { sp=hsl(0, 100, 20), gui="underline", }, -- DiagnosticUnderlineHint xxx cterm=underline gui=underline guisp=#a50000
+    DiagnosticUnderlineHint                { sp=hsl(40, 100, 50), gui="underline", }, -- DiagnosticUnderlineHint xxx cterm=underline gui=underline guisp=#a50000
     DiagnosticUnderlineOk                  { sp="nvimlightgreen", gui="underline", }, -- DiagnosticUnderlineOk xxx cterm=underline gui=underline guisp=NvimLightGreen
     NvimInternalError                      { fg="red", bg="red", }, -- NvimInternalError xxx ctermfg=9 ctermbg=9 guifg=Red guibg=Red
     NvimFigureBrace                        { NvimInternalError }, -- NvimFigureBrace xxx links to NvimInternalError
@@ -1049,10 +1049,10 @@ local theme = lush(function(injected_functions)
     ScrollbarHandle                        { blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarHandle xxx ctermbg=15 guibg=#7f0000 blend=30
     ScrollbarWarn                          { fg=hsl(0, 100, 75), }, -- ScrollbarWarn  xxx ctermfg=0 guifg=#7f0000
     ScrollbarWarnHandle                    { fg=hsl(0, 100, 75), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarWarnHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
-    ScrollbarInfo                          { fg=hsl(0, 100, 75), }, -- ScrollbarInfo  xxx ctermfg=0 guifg=#7f0000
-    ScrollbarInfoHandle                    { fg=hsl(0, 100, 75), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarInfoHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
-    ScrollbarHint                          { fg=hsl(0, 100, 25), }, -- ScrollbarHint  xxx ctermfg=0 guifg=#7f0000
-    ScrollbarHintHandle                    { fg=hsl(0, 100, 25), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarHintHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
+    ScrollbarInfo                          { fg=hsl(0, 100, 25), }, -- ScrollbarInfo  xxx ctermfg=0 guifg=#7f0000
+    ScrollbarInfoHandle                    { fg=hsl(0, 100, 25), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarInfoHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
+    ScrollbarHint                          { fg=hsl(40, 100, 50), }, -- ScrollbarHint  xxx ctermfg=0 guifg=#7f0000
+    ScrollbarHintHandle                    { fg=hsl(40, 100, 50), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarHintHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
     ScrollbarMisc                          { fg=hsl(0, 100, 25), }, -- ScrollbarMisc  xxx ctermfg=0 guifg=#7f0000
     ScrollbarMiscHandle                    { fg=hsl(0, 100, 25), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarMiscHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
     ScrollbarCursor                        { fg=hsl(0, 100, 35), }, -- ScrollbarCursor xxx ctermfg=0 guifg=#cc0000
