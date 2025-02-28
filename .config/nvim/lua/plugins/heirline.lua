@@ -81,12 +81,6 @@ return {
         self.filename = vim.api.nvim_buf_get_name(0)
       end,
     }
-    local FileNameWin = {
-      -- let's first set up some attributes needed by this component and its children
-      init = function(self)
-        self.filename = vim.api.nvim_buf_get_name(0)
-      end,
-    }
 
     -- We can now define some children separately and add them later
     local FilePath = {
@@ -129,10 +123,6 @@ return {
     FileName,
     FileIcon,
     FileFlags
-    )
-    FileNameWin = utils.insert(FileNameWin,
-      { provider = '%<'},
-      FileName
     )
 
     local Git = {
@@ -203,16 +193,23 @@ return {
       hl = { fg = colors.red_5, bg = colors.red_2 },
     }
 
+    local BuffName = {
+      provider = function()
+        return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+      end
+    }
+
     local WinBars = {
       fallthrough = false,
       {   -- An inactive winbar for regular files
         condition = function()
           return not conditions.is_active()
         end,
-        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, FileNameWin }),
+        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName }),
       },
       -- A winbar for regular files
-      utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_2, force = true }, FileNameWin }),
+      utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_2, force = true }, BuffName }),
+    }
     }
 
     return {
