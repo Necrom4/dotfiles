@@ -64,7 +64,7 @@ return {
         end),
       },
     }
-    local FileModified = {
+    local FileModifiedVi = {
       provider = function()
         return vim.bo.modified and "" or " "  -- Modified buffer indicator
       end,
@@ -199,16 +199,22 @@ return {
       end
     }
 
+    local FileModifiedWinbar = {
+      provider = function()
+        return vim.bo.modified and " " or ""
+      end,
+    }
+
     local WinBars = {
       fallthrough = false,
       {   -- An inactive winbar for regular files
         condition = function()
           return not conditions.is_active()
         end,
-        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName }),
+        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName, FileModifiedWinbar }),
       },
       -- A winbar for regular files
-      utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, BuffName }),
+      utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, BuffName, FileModifiedWinbar }),
     }
 
     local Tab = {
@@ -251,7 +257,7 @@ return {
     }
 
     return {
-      statusline = { ViMode, FileModified, LeftSeparator,
+      statusline = { ViMode, FileModifiedVi, LeftSeparator,
         InsertIndicator, { Space, hl = { bg = colors.red_7 }}, FileNameBlock, { Align, hl = { bg = colors.red_7 }},
         { Space, hl = { bg = colors.red_7 }}, Git, { Space, hl = { bg = colors.red_7 }},
         RightSeparator, { Space, hl = { bg = colors.red_5 }}, CursorPosition, ScrollBar },
