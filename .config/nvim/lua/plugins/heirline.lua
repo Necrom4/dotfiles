@@ -138,25 +138,25 @@ return {
         condition = function(self)
           return self.has_changes
         end,
-        provider = ""
+        provider = " "
       },
       {
         provider = function(self)
           local count = self.status_dict.added or 0
-          return count > 0 and ("  " .. count)
+          return count > 0 and (" " .. count .. " ")
         end,
         hl = { fg = colors.green },
       },
       {
         provider = function(self)
           local count = self.status_dict.removed or 0
-          return count > 0 and ("  " .. count)
+          return count > 0 and (" " .. count .. " ")
         end,
       },
       {
         provider = function(self)
           local count = self.status_dict.changed or 0
-          return count > 0 and (" 󰏬 " .. count)
+          return count > 0 and ("󰏬 " .. count .. " ")
         end,
         hl = { fg = colors.yellow },
       },
@@ -208,7 +208,7 @@ return {
       },
       {
         provider = function(self)
-          return self.hints > 0 and (self.hint_icon .. self.hints)
+          return self.hints > 0 and (self.hint_icon .. self.hints .. " ")
         end,
         hl = { fg = colors.orange },
       },
@@ -314,7 +314,7 @@ return {
     return {
       statusline = { ViMode, FileModifiedVi, LeftSeparator,
         InsertIndicator, { Space, hl = { bg = colors.red_7 }}, FileNameBlock, { Align, hl = { bg = colors.red_7 }},
-        { Space, hl = { bg = colors.red_7 }}, Git, { Space, hl = { bg = colors.red_7 }}, Diagnostics, { Space, hl = { bg = colors.red_7 }},
+        { Space, hl = { bg = colors.red_7 }}, Git, Diagnostics,
         RightSeparator, { Space, hl = { bg = colors.red_5 }}, CursorPosition, ScrollBar },
       winbar = { WinBars },
       tabline = { TabLine },
