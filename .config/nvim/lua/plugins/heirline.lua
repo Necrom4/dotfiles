@@ -228,7 +228,20 @@ return {
         condition = function(self)  -- Pass the tab data to the condition
           return self.is_active
         end,
+        fallthrough = false,
+        {
+          condition = function(self)  -- Pass the tab data to the condition
+            return self.tabpage == 1
+          end,
+          utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, Tab }),
+        },
         utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, Tab }),
+      },
+      {
+        condition = function(self)  -- Pass the tab data to the condition
+          return self.tabpage == 1
+        end,
+        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, Tab }),
       },
       utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, Tab }),
     }
