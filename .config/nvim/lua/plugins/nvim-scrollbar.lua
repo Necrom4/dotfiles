@@ -4,15 +4,19 @@ return {
   event = { "BufNewFile", "BufReadPost" },
   opts = {
     handle = {
-      color = '#7F0000',
+      highlight = 'Cursor',
     },
     marks = {
-      Search = { color = '#FF0000' },
-      Error = { color = '#FF0000' },
-      Warn = { color = '#7F0000' },
-      Info = { color = '#7F0000' },
-      Hint = { color = '#7F0000' },
-      Misc = { color = '#7F0000' },
+      Cursor = { text = '█' },
+      Search = { text = { '', '󰇙' }, highlight = 'ScrollBarSearch' },
+      Error = { text = { '━', '☰' }, highlight = 'ScrollBarError' },
+      Warn = { text = { '━', '☰' }, highlight = 'ScrollBarWarn' },
+      Info = { text = { '━', '☰' }, highlight = 'ScrollBarInfo' },
+      Hint = { text = { '━', '☰' }, highlight = 'ScrollBarHint' },
+      Misc = { text = { '━', '☰' }, highlight = 'ScrollBarMisc' },
+      GitAdd = { text = '┃', highlight = 'ScrollbarGitAdd' },
+      GitChange = { text = '┃', highlight = 'ScrollbarGitChange' },
+      GitDelete = { highlight = 'ScrollbarGitDelete' },
     },
     handlers = { search = true },
     excluded_buftypes = {

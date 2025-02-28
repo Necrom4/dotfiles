@@ -1047,25 +1047,25 @@ local theme = lush(function(injected_functions)
     colorizer_mb_32364e                    { fg="white", bg="#32364e", }, -- colorizer_mb_32364e xxx guifg=White guibg=#32364e
     colorizer_mb_5d7ab8                    { fg="white", bg="#5d7ab8", }, -- colorizer_mb_5d7ab8 xxx guifg=White guibg=#5d7ab8
     ScrollbarHandle                        { blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarHandle xxx ctermbg=15 guibg=#7f0000 blend=30
-    ScrollbarWarn                          { fg=hsl(0, 100, 25), }, -- ScrollbarWarn  xxx ctermfg=0 guifg=#7f0000
-    ScrollbarWarnHandle                    { fg=hsl(0, 100, 25), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarWarnHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
-    ScrollbarInfo                          { fg=hsl(0, 100, 25), }, -- ScrollbarInfo  xxx ctermfg=0 guifg=#7f0000
-    ScrollbarInfoHandle                    { fg=hsl(0, 100, 25), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarInfoHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
+    ScrollbarWarn                          { fg=hsl(0, 100, 75), }, -- ScrollbarWarn  xxx ctermfg=0 guifg=#7f0000
+    ScrollbarWarnHandle                    { fg=hsl(0, 100, 75), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarWarnHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
+    ScrollbarInfo                          { fg=hsl(0, 100, 75), }, -- ScrollbarInfo  xxx ctermfg=0 guifg=#7f0000
+    ScrollbarInfoHandle                    { fg=hsl(0, 100, 75), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarInfoHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
     ScrollbarHint                          { fg=hsl(0, 100, 25), }, -- ScrollbarHint  xxx ctermfg=0 guifg=#7f0000
     ScrollbarHintHandle                    { fg=hsl(0, 100, 25), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarHintHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
     ScrollbarMisc                          { fg=hsl(0, 100, 25), }, -- ScrollbarMisc  xxx ctermfg=0 guifg=#7f0000
     ScrollbarMiscHandle                    { fg=hsl(0, 100, 25), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarMiscHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
-    ScrollbarCursor                        { fg=hsl(0, 100, 40), }, -- ScrollbarCursor xxx ctermfg=0 guifg=#cc0000
-    ScrollbarCursorHandle                  { fg=hsl(0, 100, 40), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarCursorHandle xxx ctermfg=0 ctermbg=15 guifg=#cc0000 guibg=#7f0000 blend=30
-    ScrollbarGitAdd                        { fg=hsl(0, 100, 40), }, -- ScrollbarGitAdd xxx ctermfg=0 guifg=#cc0000
-    ScrollbarGitAddHandle                  { fg=hsl(0, 100, 40), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarGitAddHandle xxx ctermfg=0 ctermbg=15 guifg=#cc0000 guibg=#7f0000 blend=30
+    ScrollbarCursor                        { fg=hsl(0, 100, 35), }, -- ScrollbarCursor xxx ctermfg=0 guifg=#cc0000
+    ScrollbarCursorHandle                  { fg=hsl(0, 100, 35), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarCursorHandle xxx ctermfg=0 ctermbg=15 guifg=#cc0000 guibg=#7f0000 blend=30
+    ScrollbarGitAdd                        { fg=hsl(120, 100, 37), }, -- ScrollbarGitAdd xxx ctermfg=0 guifg=#cc0000
+    ScrollbarGitAddHandle                  { fg=hsl(120, 100, 37), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarGitAddHandle xxx ctermfg=0 ctermbg=15 guifg=#cc0000 guibg=#7f0000 blend=30
     ScrollbarSearch                        { fg=hsl(0, 100, 50), }, -- ScrollbarSearch xxx ctermfg=0 guifg=#ff0000
     ScrollbarSearchHandle                  { fg=hsl(0, 100, 50), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarSearchHandle xxx ctermfg=0 ctermbg=15 guifg=#ff0000 guibg=#7f0000 blend=30
-    ScrollbarGitDelete                     { fg=hsl(0, 100, 40), }, -- ScrollbarGitDelete xxx ctermfg=0 guifg=#cc0000
-    ScrollbarGitDeleteHandle               { fg=hsl(0, 100, 40), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarGitDeleteHandle xxx ctermfg=0 ctermbg=15 guifg=#cc0000 guibg=#7f0000 blend=30
-    ScrollbarGitChange                     { fg=hsl(0, 100, 25), }, -- ScrollbarGitChange xxx ctermfg=0 guifg=#7f0000
-    ScrollbarGitChangeHandle               { fg=hsl(0, 100, 25), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarGitChangeHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
-    ScrollbarError                         { fg=hsl(0, 100, 50), }, -- ScrollbarError xxx ctermfg=0 guifg=#ff0000
+    ScrollbarGitDelete                     { fg=hsl(0, 100, 50), }, -- ScrollbarGitDelete xxx ctermfg=0 guifg=#cc0000
+    ScrollbarGitDeleteHandle               { fg=hsl(0, 100, 50), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarGitDeleteHandle xxx ctermfg=0 ctermbg=15 guifg=#cc0000 guibg=#7f0000 blend=30
+    ScrollbarGitChange                     { fg=hsl(60, 100, 50), }, -- ScrollbarGitChange xxx ctermfg=0 guifg=#7f0000
+    ScrollbarGitChangeHandle               { fg=hsl(60, 100, 50), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarGitChangeHandle xxx ctermfg=0 ctermbg=15 guifg=#7f0000 guibg=#7f0000 blend=30
+    ScrollbarError                         { fg=hsl(0, 100, 50), bold = true }, -- ScrollbarError xxx ctermfg=0 guifg=#ff0000
     ScrollbarErrorHandle                   { fg=hsl(0, 100, 50), blend=30, bg=hsl(0, 100, 25), }, -- ScrollbarErrorHandle xxx ctermfg=0 ctermbg=15 guifg=#ff0000 guibg=#7f0000 blend=30
     UfoFoldedFg                            { fg=hsl(0, 100, 40), }, -- UfoFoldedFg    xxx guifg=#cc0000
     Stl000000_CC0000_bold_                 { fg=hsl(0, 0, 0), gui="bold", bg=hsl(0, 100, 40), }, -- Stl000000_CC0000_bold_ xxx cterm=bold gui=bold guifg=#000000 guibg=#cc0000
