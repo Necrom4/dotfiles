@@ -18,8 +18,8 @@ return {
       red_7 = "#330000",
       yellow = "#FFFF00",
       orange = "#FFAA00",
-      green = "#00BF00",
       brown = "#595900",
+      green = "#00BF00",
       bright_pink = "#FF7F7F",
     }
 
@@ -47,6 +47,19 @@ return {
         return " %2("..self.mode_names[self.mode].."%)"  -- Display the mode with padding and icon
       end,
       hl = { fg = colors.monochrome_7, bg = colors.red_2, bold = true },
+      {
+        condition = function()
+          return not conditions.is_git_repo()
+        end,
+        provider = "",
+        hl = { fg = colors.red_2, bg = colors.red_7 },
+      },
+    }
+    local FileModifiedVi = {
+      provider = function()
+        return vim.bo.modified and "" or " "  -- Modified buffer indicator
+      end,
+      hl = { fg = colors.monochrome_7, bg = colors.red_2 },
     }
     local InsertIndicator = {
       init = function(self)
@@ -64,15 +77,27 @@ return {
         end),
       },
     }
-    local FileModifiedVi = {
-      provider = function()
-        return vim.bo.modified and "" or " "  -- Modified buffer indicator
+    local Branch = {
+      condition = conditions.is_git_repo,
+
+      init = function(self)
+        self.status_dict = vim.b.gitsigns_status_dict
       end,
-      hl = { fg = colors.monochrome_7, bg = colors.red_2 },
-    }
-    local LeftSeparator = {
-      provider = "",
-      hl = { fg = colors.red_2, bg = colors.red_7 },
+
+      {
+        provider = "",
+        hl = { fg = colors.red_2, bg = colors.red_5 },
+      },
+      {   -- git branch name
+        provider = function(self)
+          return "  " .. self.status_dict.head .. " "
+        end,
+        hl = { fg = colors.red_1, bg = colors.red_5 },
+      },
+      {
+        provider = "",
+        hl = { fg = colors.red_5, bg = colors.red_7 },
+      }
     }
 
     local FileNameBlock = {
@@ -312,8 +337,8 @@ return {
     }
 
     return {
-      statusline = { ViMode, FileModifiedVi, LeftSeparator,
-        InsertIndicator, { Space, hl = { bg = colors.red_7 }}, FileNameBlock, { Align, hl = { bg = colors.red_7 }},
+      statusline = { ViMode, FileModifiedVi,
+        Branch, InsertIndicator, { Space, hl = { bg = colors.red_7 }}, FileNameBlock, { Align, hl = { bg = colors.red_7 }},
         { Space, hl = { bg = colors.red_7 }}, Git, Diagnostics,
         RightSeparator, { Space, hl = { bg = colors.red_5 }}, CursorPosition, ScrollBar },
       winbar = { WinBars },
