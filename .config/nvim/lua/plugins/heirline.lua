@@ -106,10 +106,25 @@ return {
         local extension = vim.fn.fnamemodify(filename, ":e")
         self.icon, self.icon_color = require("nvim-web-devicons").get_icon_color(filename, extension, { default = true })
       end,
-      provider = function(self)
-        return vim.bo.modified and (" " .. self.icon .. "") or (" " .. self.icon .. "")
-      end,
-      hl = { fg = colors.red_2, bg = colors.red_7 }
+      hl = { bg = colors.red_7 },
+      {
+        provider = function()
+          return vim.bo.modified and "[" or " "
+        end,
+        hl = { fg = colors.red_1, bold = true },
+      },
+      {
+        provider = function(self)
+          return self.icon
+        end,
+        hl = { fg = colors.red_2 },
+      },
+      {
+        provider = function()
+          return vim.bo.modified and "]" or " "
+        end,
+        hl = { fg = colors.red_1, bold = true },
+      },
     }
     local FileFlags = {
       {
@@ -250,12 +265,6 @@ return {
       end
     }
 
-    local FileModifiedWinbar = {
-      provider = function()
-        return vim.bo.modified and " " or ""
-      end,
-    }
-
     local WinBars = {
       fallthrough = false,
       {   -- An inactive winbar for regular files
@@ -265,7 +274,7 @@ return {
         utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName, FileIcon }),
       },
       -- A winbar for regular files
-      utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, BuffName, FileIcon }),
+      utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_1, force = true }, BuffName, FileIcon }),
     }
 
     local Tab = {
