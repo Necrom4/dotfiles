@@ -44,7 +44,7 @@ return {
         },
       },
       provider = function(self)
-        return " %2("..self.mode_names[self.mode].."%)"  -- Display the mode with padding and icon
+        return " %2("..self.mode_names[self.mode].."%) "  -- Display the mode with padding and icon
       end,
       hl = { fg = colors.monochrome_7, bg = colors.red_2, bold = true },
       {
@@ -53,28 +53,6 @@ return {
         end,
         provider = "",
         hl = { fg = colors.red_2, bg = colors.red_7 },
-      },
-    }
-    local FileModifiedVi = {
-      provider = function()
-        return vim.bo.modified and "" or " "  -- Modified buffer indicator
-      end,
-      hl = { fg = colors.monochrome_7, bg = colors.red_2 },
-    }
-    local InsertIndicator = {
-      init = function(self)
-        self.is_insert = vim.fn.mode(1) == "i"
-      end,
-      provider = function(self)
-        return self.is_insert and "" or " "
-      end,
-      hl = { fg = colors.red_2, bg = colors.red_7 },
-      update = {
-        "ModeChanged",
-        pattern = "*:*",
-        callback = vim.schedule_wrap(function()
-          vim.cmd("redrawstatus")
-        end),
       },
     }
     local Branch = {
@@ -124,12 +102,12 @@ return {
     }
     local FileIcon = {
       init = function(self)
-        local filename = self.filename
+        local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
         local extension = vim.fn.fnamemodify(filename, ":e")
         self.icon, self.icon_color = require("nvim-web-devicons").get_icon_color(filename, extension, { default = true })
       end,
       provider = function(self)
-        return self.icon and (" " .. self.icon .. " ")
+        return vim.bo.modified and (" " .. self.icon .. "") or (" " .. self.icon .. "")
       end,
       hl = { fg = colors.red_2, bg = colors.red_7 }
     }
@@ -138,8 +116,8 @@ return {
         condition = function()
           return not vim.bo.modifiable or vim.bo.readonly
         end,
-        provider = "",
-        hl = { fg = colors.red_2, bg = colors.red_7 }
+        provider = " ",
+        hl = { fg = colors.red_2, bg = colors.red_7 },
       },
     }
     FileNameBlock = utils.insert(FileNameBlock,
@@ -284,10 +262,10 @@ return {
         condition = function()
           return not conditions.is_active()
         end,
-        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName, FileModifiedWinbar }),
+        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName, FileIcon }),
       },
       -- A winbar for regular files
-      utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, BuffName, FileModifiedWinbar }),
+      utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_2, force = true }, BuffName, FileIcon }),
     }
 
     local Tab = {
@@ -337,10 +315,11 @@ return {
     }
 
     return {
-      statusline = { ViMode, FileModifiedVi,
-        Branch, InsertIndicator, { Space, hl = { bg = colors.red_7 }}, FileNameBlock, { Align, hl = { bg = colors.red_7 }},
+      statusline = { ViMode,
+        Branch, { Space, hl = { bg = colors.red_7 }}, FileNameBlock, { Align, hl = { bg = colors.red_7 }},
         { Space, hl = { bg = colors.red_7 }}, Git, Diagnostics,
-        RightSeparator, { Space, hl = { bg = colors.red_5 }}, CursorPosition, ScrollBar },
+        RightSeparator, { Space, hl = { bg = colors.red_5 }},
+        CursorPosition, ScrollBar },
       winbar = { WinBars },
       tabline = { TabLine },
       opts = {
