@@ -243,7 +243,7 @@ return {
 
     local ScrollBar = {
       static = {
-        sbar = { '█', '▇', '▆', '▅', '▄', '▃', '▂', '▁' }
+        sbar = { '▔', '🭶', '🭷', '🭸', '🭹', '🭺', '🭻', '▁' }
       },
       provider = function(self)
         local curr_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -256,7 +256,7 @@ return {
         end
         return string.rep(self.sbar[i], 2)
       end,
-      hl = { fg = colors.red_5, bg = colors.red_2 },
+      hl = { fg = colors.red_2, bg = colors.red_5 },
     }
 
     local BuffName = {
