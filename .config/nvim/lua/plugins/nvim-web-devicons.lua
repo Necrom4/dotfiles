@@ -3,7 +3,7 @@ return {
   dependencies = {
     "nvim-tree/nvim-web-devicons"
   },
-  event = "VeryLazy",
+  event = "BufReadPre",
   opts = {
     colors = {"#CC0000"},
   }
