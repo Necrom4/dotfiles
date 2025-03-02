@@ -2,10 +2,10 @@
 	name = Diogo Pombeiro
 [diff]
   tool = nvimdiff
-	colorMoved = plain
-	mnemonicPrefix = true
-	renames = true
-	algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
+  algorithm = histogram
 [color "diff"]
   context = "#7F0000"
   commit = "#80f000"
@@ -16,8 +16,8 @@
   new = "#00BF00"
   old = "#FF0000"
 [column]
-	ui = auto
+  ui = auto
 [branch]
-	sort = -committerdate
+  sort = -committerdate
 [tag]
-	sort = version:refname
+  sort = version:refname
