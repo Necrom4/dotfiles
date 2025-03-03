@@ -22,7 +22,7 @@ customCommands:
       showOutput: true
       stream: false
       outputTitle: "PRs details"
-      loadingText: "Fetching PRs details"
+      loadingText: "Fetching PRs details..."
     - command: >
         az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv |
         xargs az repos pr show --output table --id
@@ -34,7 +34,7 @@ customCommands:
     - command: 'az repos pr show --id $(az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv) --open'
       context: "localBranches"
       description: "Open PR in Azure DevOps"
-      loadingText: "Opening PR in Azure DevOps"
+      loadingText: "Opening PR in Azure DevOps..."
       stream: true
   - key: "<c-c>"
     context: "global"
@@ -81,12 +81,12 @@ customCommands:
             description: "Incomplete commits"
             value: "wip"
       - type: "input"
-        title: "Scope"
+        title: "(scope)"
         key: "Scope"
         initialValue: ""
       - type: "menu"
         key: "Breaking"
-        title: "Breaking change"
+        title: "!Breaking change!"
         options:
           - name: "no"
             value: ""
