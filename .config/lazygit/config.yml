@@ -99,3 +99,38 @@ customCommands:
         body: "Are you sure you want to commit?"
     command: "git commit --message '{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}'"
     loadingText: "Creating conventional commit..."
+  - key: 'N'
+    context: 'localBranches'
+    description: "Create new conventional branch"
+    prompts:
+      - type: 'menu'
+        title: Branch type'
+        key: 'BranchType'
+        options:
+          - name: 'feature'
+            description: 'new feature'
+            value: 'feature'
+          - name: 'fix'
+            description: 'issue fixes'
+            value: 'fix'
+          - name: 'bugfix'
+            description: 'minor bug fixes'
+            value: 'bugfix'
+          - name: 'hotfix'
+            description: 'urgent fixes'
+            value: 'hotfix'
+          - name: 'release'
+            description: 'prepare new versions'
+            value: 'release'
+          - name: 'refactor'
+            description: 'improve code structure and readability'
+            value: 'refactor'
+          - name: 'experiment'
+            description: 'experimental branch for new ideas'
+            value: 'experiment'
+      - type: 'input'
+        title: 'Branch name'
+        key: 'BranchName'
+        initialValue: ''
+    command: "git flow {{.Form.BranchType}} start {{.Form.BranchName}}"
+    loadingText: 'Creating conventional branch...'
