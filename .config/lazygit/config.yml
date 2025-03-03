@@ -13,6 +13,29 @@ git:
   branchLogCmd: git log --graph --color=always --format=format:'%C(#CC0000)%>|(17)%h%C(reset) %C(#7F0000)[%ar]%C(reset)%x09%C(#FF7F7F)%d%C(reset) %C(#CC0000)%s%C(reset) %C(#7F0000)- %an%C(reset)'
   allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#CC0000)%>|(17)%h%C(reset) %C(#7F0000)[%ar]%C(reset)%x09%C(#FF7F7F)%d%C(reset) %C(#CC0000)%s%C(reset) %C(#7F0000)- %an%C(reset)'
 customCommands:
+  - key: '<c-p>'
+    description: 'PR commands'
+    commandMenu:
+    - command: 'az repos pr list --output table'
+      context: "localBranches"
+      description: "Show all PRs details"
+      showOutput: true
+      stream: false
+      outputTitle: "PRs details"
+      loadingText: "Fetching PRs details"
+    - command: >
+        az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv |
+        xargs az repos pr show --output table --id
+      context: "localBranches"
+      description: "Show PR details"
+      showOutput: true
+      outputTitle: "PR details"
+      loadingText: "Fetching PR details"
+    - command: 'az repos pr show --id $(az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv) --open'
+      context: "localBranches"
+      description: "Open PR in Azure DevOps"
+      loadingText: "Opening PR in Azure DevOps"
+      stream: true
   - key: "<c-c>"
     context: "global"
     description: "Create new conventional commit"
