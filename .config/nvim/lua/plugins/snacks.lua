@@ -24,14 +24,6 @@ end
 
 return {
   "folke/snacks.nvim",
-  dependencies = {
-    "levouh/tint.nvim",
-    event = "VeryLazy",
-    opts = {},
-    keys = {
-      { "<leader>D", ":lua require('tint').toggle()<CR>", desc = "Toggle Tint", silent = true },
-    },
-  },
   priority = 1000,
   lazy = false,
   keys = {
@@ -188,7 +180,7 @@ return {
         },
       }
     },
-    scroll = { enabled = false },
+    scroll = { enabled = true },
     statuscolumn = {
       left = { "git" }, -- priority of signs on the left (high to low)
       right = { "mark", "fold" }, -- priority of signs on the right (high to low)
