@@ -30,7 +30,7 @@ customCommands:
       description: "Show PR details"
       showOutput: true
       outputTitle: "PR details"
-      loadingText: "Fetching PR details"
+      loadingText: "Fetching PR details..."
     - command: 'az repos pr show --id $(az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv) --open'
       context: "localBranches"
       description: "Open PR in Azure DevOps"
@@ -44,41 +44,41 @@ customCommands:
         key: "Type"
         title: "Type of change"
         options:
-          - name: "build"
-            description: "Changes that affect the build system or external dependencies"
-            value: "build"
           - name: "feat"
-            description: "A new feature"
+            description: "Introduces a new feature to the codebase"
             value: "feat"
           - name: "fix"
-            description: "A bug fix"
+            description: "Resolves a bug or issue in the code"
             value: "fix"
           - name: "chore"
-            description: "Other changes that don't modify src or test files"
+            description: "Updates dependencies or performs maintenance tasks"
             value: "chore"
+          - name: "docs"
+            description: "Updates or adds documentation"
+            value: "docs"
+          - name: "perf"
+            description: "Optimizes performance for better efficiency"
+            value: "perf"
+          - name: "test"
+            description: "Adds or modifies tests to ensure code reliability"
+            value: "test"
+          - name: "build"
+            description: "Updates build configuration, development tools or other changes irrelevant to the user"
+            value: "build"
           - name: "ci"
             description: "Changes to CI configuration files and scripts"
             value: "ci"
-          - name: "docs"
-            description: "Documentation only changes"
-            value: "docs"
-          - name: "perf"
-            description: "A code change that improves performance"
-            value: "perf"
           - name: "refactor"
-            description: "A code change that neither fixes a bug nor adds a feature"
+            description: "Improves code structure without changing functionality"
             value: "refactor"
+          - name: "style"
+            description: "Improves code formatting or style without affecting behavior"
+            value: "style"
           - name: "revert"
             description: "Reverts a previous commit"
             value: "revert"
-          - name: "style"
-            description: "Changes that do not affect the meaning of the code"
-            value: "style"
-          - name: "test"
-            description: "Adding missing tests or correcting existing tests"
-            value: "test"
           - name: "wip"
-            description: "Incomplete commits"
+            description: "For incomplete work"
             value: "wip"
       - type: "input"
         title: "(scope)"
@@ -111,26 +111,29 @@ customCommands:
         key: 'BranchType'
         options:
           - name: 'feature'
-            description: 'new feature'
+            description: 'A new feature under developmentfeature'
             value: 'feature'
-          - name: 'fix'
-            description: 'issue fixes'
-            value: 'fix'
           - name: 'bugfix'
-            description: 'minor bug fixes'
+            description: 'A fix for a specific bug or issue'
             value: 'bugfix'
           - name: 'hotfix'
-            description: 'urgent fixes'
+            description: 'An urgent fix for a critical issue in production'
             value: 'hotfix'
           - name: 'release'
-            description: 'prepare new versions'
+            description: 'Prepares a new version for deployment'
             value: 'release'
+          - name: 'develop'
+            description: 'The main branch for ongoing development'
+            value: 'develop'
+          - name: 'chore'
+            description: 'Routine maintenance tasks or dependency updates'
+            value: 'chore'
           - name: 'refactor'
-            description: 'improve code structure and readability'
+            description: 'Code improvements without changing functionality'
             value: 'refactor'
-          - name: 'experiment'
-            description: 'experimental branch for new ideas'
-            value: 'experiment'
+          - name: 'test'
+            description: 'Experimental or test-related changes'
+            value: 'test'
       - type: 'input'
         title: 'Branch name'
         key: 'BranchName'
