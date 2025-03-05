@@ -102,7 +102,7 @@ customCommands:
         body: "Are you sure you want to commit?"
     command: "git commit --message '{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}'"
     loadingText: "Creating conventional commit..."
-  - key: 'N'
+  - key: '<c-n>'
     context: 'localBranches'
     description: "Create new conventional branch"
     prompts:
