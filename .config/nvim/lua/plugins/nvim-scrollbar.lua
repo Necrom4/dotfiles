@@ -7,7 +7,7 @@ return {
       highlight = 'Cursor',
     },
     marks = {
-      Cursor = { text = '█' },
+      Cursor = { text = '▒' },
       Search = { text = { '', '󰇙' }, highlight = 'ScrollBarSearch' },
       Error = { text = { '━', '═' }, highlight = 'ScrollBarError' },
       Warn = { text = { '━', '═' }, highlight = 'ScrollBarWarn' },
