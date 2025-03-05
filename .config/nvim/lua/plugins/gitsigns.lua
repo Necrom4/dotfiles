@@ -15,17 +15,17 @@ return {
       end
 
       -- Navigation
-      map('n', '<leader>]', function()
+      map('n', ']c', function()
         if vim.wo.diff then
-          vim.cmd.normal({'<leader>]', bang = true})
+          vim.cmd.normal({']c', bang = true})
         else
-          gitsigns.nav_hunk('next')
+         gitsigns.nav_hunk('next')
         end
       end)
 
-      map('n', '<leader>[', function()
+      map('n', '[c', function()
         if vim.wo.diff then
-          vim.cmd.normal({'<leader>[', bang = true})
+          vim.cmd.normal({'[c', bang = true})
         else
           gitsigns.nav_hunk('prev')
         end
