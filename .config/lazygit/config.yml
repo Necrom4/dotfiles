@@ -98,7 +98,7 @@ customCommands:
         initialValue: ""
       - type: "confirm"
         key: "Confirm"
-        title: "Commit"
+        title: "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"
         body: "Are you sure you want to commit?"
     command: "git commit --message '{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}'"
     loadingText: "Creating conventional commit..."
@@ -107,7 +107,7 @@ customCommands:
     description: "Create new conventional branch"
     prompts:
       - type: 'menu'
-        title: Branch type'
+        title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}})'"
         key: 'BranchType'
         options:
           - name: 'feature'
@@ -135,7 +135,7 @@ customCommands:
             description: 'Experimental or test-related changes'
             value: 'test'
       - type: 'input'
-        title: 'Branch name'
+        title: "New branch name (branch is off of '{{.SelectedLocalBranch.Name}})'"
         key: 'BranchName'
         initialValue: ''
     command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} {{.SelectedLocalBranch.Name}}"
