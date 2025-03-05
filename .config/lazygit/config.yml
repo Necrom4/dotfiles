@@ -138,5 +138,5 @@ customCommands:
         title: 'Branch name'
         key: 'BranchName'
         initialValue: ''
-    command: "git flow {{.Form.BranchType}} start {{.Form.BranchName}}"
+    command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} {{.SelectedLocalBranch.Name}}"
     loadingText: 'Creating conventional branch...'
