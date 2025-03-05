@@ -138,5 +138,9 @@ customCommands:
         title: "New branch name (branch is off of '{{.SelectedLocalBranch.Name}})'"
         key: 'BranchName'
         initialValue: ''
+      - type: "confirm"
+        key: "Confirm"
+        title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
+        body: "Are you sure you want to branch?"
     command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} {{.SelectedLocalBranch.Name}}"
     loadingText: 'Creating conventional branch...'
