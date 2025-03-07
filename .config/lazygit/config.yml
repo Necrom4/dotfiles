@@ -107,7 +107,7 @@ customCommands:
     description: "Create new conventional branch"
     prompts:
       - type: 'menu'
-        title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}})'"
+        title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}}')"
         key: 'BranchType'
         options:
           - name: 'feature'
@@ -142,5 +142,5 @@ customCommands:
         key: "Confirm"
         title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
         body: "Are you sure you want to branch?"
-    command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} {{.SelectedLocalBranch.Name}}"
+    command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} refs/heads/{{.SelectedLocalBranch.Name}} --no-track"
     loadingText: 'Creating conventional branch...'
