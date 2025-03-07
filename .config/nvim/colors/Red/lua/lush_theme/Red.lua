@@ -119,8 +119,8 @@ local theme = lush(function(injected_functions)
     ColorColumn                            { bg="nvimdarkgrey4", }, -- ColorColumn    xxx cterm=reverse guibg=NvimDarkGrey4
     QuickFixLine                           { fg=hsl(0, 100, 40), bg=hsl(0, 100, 15), }, -- QuickFixLine   xxx guifg=#cc0000 guibg=#4c0000
     NormalNC                               { fg=hsl(0, 100, 40), }, -- NormalNC       xxx guifg=#cc0000
-    WinBar                                 { fg="nvimlightgrey4", gui="bold", bg="nvimdarkgrey1", }, -- WinBar         xxx cterm=bold gui=bold guifg=NvimLightGrey4 guibg=NvimDarkGrey1
-    WinBarNC                               { fg="nvimlightgrey4", bg="nvimdarkgrey1", }, -- WinBarNC       xxx cterm=bold guifg=NvimLightGrey4 guibg=NvimDarkGrey1
+    WinBar                                 { fg="nvimlightgrey4", gui="bold", }, -- WinBar         xxx cterm=bold gui=bold guifg=NvimLightGrey4 guibg=NvimDarkGrey1
+    WinBarNC                               { fg="nvimlightgrey4", }, -- WinBarNC       xxx cterm=bold guifg=NvimLightGrey4 guibg=NvimDarkGrey1
     NormalFloat                            { bg="none", },
     Cursor                                 { fg=hsl(0, 100, 40), }, -- Cursor         xxx guifg=#cc0000
     CursorIM                               { Cursor }, -- CursorIM       xxx links to Cursor
