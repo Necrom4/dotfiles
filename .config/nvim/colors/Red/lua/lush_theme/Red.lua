@@ -194,7 +194,7 @@ local theme = lush(function(injected_functions)
     SnacksDashboardSpecial                 { Special }, -- SnacksDashboardSpecial xxx links to Special
     SnacksDashboardIcon                    { Special }, -- SnacksDashboardIcon xxx links to Special
     SnacksPickerPrompt                     { Special }, -- SnacksPickerPrompt xxx links to Special
-    SnacksPickerMatch                      { Special }, -- SnacksPickerMatch xxx links to Special
+    SnacksPickerMatch                      { fg=hsl(0, 100, 50), bold = true, underline = true }, -- SnacksPickerMatch xxx links to Special
     SnacksPickerIconEvent                  { Special }, -- SnacksPickerIconEvent xxx links to Special
     SnacksPickerSpecial                    { Special }, -- SnacksPickerSpecial xxx links to Special
     SnacksPickerIcon                       { Special }, -- SnacksPickerIcon xxx links to Special
@@ -353,7 +353,8 @@ local theme = lush(function(injected_functions)
     GitSignsChangedeleteLn                 { GitSignsChangeLn }, -- GitSignsChangedeleteLn xxx links to GitSignsChangeLn
     BlinkCmpGhostText                      { fg=hsl(0, 100, 15), }, -- BlinkCmpGhostText xxx guifg=#4c0000
     BlinkCmpScrollBarThumb                 { bg=hsl(0, 100, 32), }, -- BlinkCmpScrollBarThumb xxx guibg=#a50000
-    BlinkCmpMenuSelection                  { fg=hsl(0, 100, 50), gui="bold", bg=hsl(0, 100, 15), }, -- BlinkCmpMenuSelection xxx cterm=bold gui=bold guifg=#ff0000 guibg=#4c0000
+    BlinkCmpMenuSelection                  { bg=hsl(0, 100, 15), }, -- BlinkCmpMenuSelection xxx cterm=bold gui=bold guifg=#ff0000 guibg=#4c0000
+    BlinkCmpLabelMatch                     { fg=hsl(0, 100, 50), bold = true, underline = true, },
     GitSignsStagedAdd                      { fg="#660000", }, -- GitSignsStagedAdd xxx guifg=#660000
     GitSignsStagedChange                   { fg="#3f0000", }, -- GitSignsStagedChange xxx guifg=#3f0000
     GitSignsStagedDelete                   { fg="#660000", }, -- GitSignsStagedDelete xxx guifg=#660000
