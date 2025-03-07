@@ -27,6 +27,10 @@ return {
     local conditions = require("heirline.conditions")
     local Align = { provider = "%=" }
     local Space = { provider = " " }
+    local RightSeparator = {
+      provider = "",
+      hl = { fg = colors.red_5 },
+    }
 
     -- Mode Indicator Section
     local ViMode = {
@@ -46,7 +50,7 @@ return {
       provider = function(self)
         return " %2("..self.mode_names[self.mode].."%) "  -- Display the mode with padding and icon
       end,
-      hl = { fg = colors.monochrome_7, bg = colors.red_2, bold = true },
+      hl = { fg = colors.monochrome_7, bold = true },
       {
         condition = function()
           return not conditions.is_git_repo()
@@ -64,13 +68,13 @@ return {
 
       {
         provider = "",
-        hl = { fg = colors.red_2, bg = colors.red_5 },
+        hl = { fg = colors.red_2 },
       },
       {   -- git branch name
         provider = function(self)
           return "  " .. self.status_dict.head .. " "
         end,
-        hl = { fg = colors.red_1, bg = colors.red_5 },
+        hl = { fg = colors.red_1 },
       },
       {
         provider = "",
@@ -91,14 +95,14 @@ return {
         local path = vim.fn.fnamemodify(self.filename, ":h")
         return path .. "/"
       end,
-      hl = { fg = colors.red_3, bg = colors.red_7 },
+      hl = { fg = colors.red_3 },
     }
     local FileName = {
       provider = function(self)
         local name = vim.fn.fnamemodify(self.filename, ":t")
         return name
       end,
-      hl = { fg = colors.red_1, bg = colors.red_7, bold = true },
+      hl = { fg = colors.red_1, bold = true },
     }
     local FileIcon = {
       init = function(self)
@@ -106,7 +110,6 @@ return {
         local extension = vim.fn.fnamemodify(filename, ":e")
         self.icon, self.icon_color = require("nvim-web-devicons").get_icon_color(filename, extension, { default = true })
       end,
-      hl = { bg = colors.red_7 },
       {
         provider = function()
           return vim.bo.modified and "[" or " "
@@ -132,7 +135,7 @@ return {
           return not vim.bo.modifiable or vim.bo.readonly
         end,
         provider = " ",
-        hl = { fg = colors.red_2, bg = colors.red_7 },
+        hl = { fg = colors.red_2 },
       },
     }
     FileNameBlock = utils.insert(FileNameBlock,
@@ -150,7 +153,7 @@ return {
         self.status_dict = vim.b.gitsigns_status_dict
         self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
       end,
-      hl = { fg = colors.red_2, bg = colors.red_7 },
+      hl = { fg = colors.red_2 },
 
       {
         condition = function(self)
@@ -198,8 +201,6 @@ return {
         self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
       end,
 
-      hl = { bg = colors.red_7 },
-
       update = { "DiagnosticChanged", "BufEnter" },
 
       {
@@ -232,13 +233,9 @@ return {
       },
     }
 
-    local RightSeparator = {
-      provider = "",
-      hl = { fg = colors.red_5, bg = colors.red_7 },
-    }
     local CursorPosition = {
       provider = "%c:%l/%L | %p%% ",
-      hl = { fg = colors.red_1, bg = colors.red_5 },
+      hl = { fg = colors.red_1 },
     }
 
     local ScrollBar = {
@@ -256,7 +253,7 @@ return {
         end
         return string.rep(self.sbar[i], 2)
       end,
-      hl = { fg = colors.red_2, bg = colors.red_5 },
+      hl = { fg = colors.red_2 },
     }
 
     local BuffName = {
@@ -324,11 +321,12 @@ return {
     }
 
     return {
-      statusline = { ViMode,
-        Branch, { Space, hl = { bg = colors.red_7 }}, FileNameBlock, { Align, hl = { bg = colors.red_7 }},
-        { Space, hl = { bg = colors.red_7 }}, Git, Diagnostics,
-        RightSeparator, { Space, hl = { bg = colors.red_5 }},
-        CursorPosition, ScrollBar },
+      statusline = {
+        {{ ViMode }, hl = { bg = colors.red_2 }},
+        {{ Branch }, hl = { bg = colors.red_5 }},
+        {{ Space, FileNameBlock, Align, Space, Git, Diagnostics, RightSeparator }, hl = { bg = colors.red_7 }},
+        {{ Space, CursorPosition, ScrollBar }, hl = { bg = colors.red_5 }},
+      },
       winbar = { WinBars },
       tabline = { TabLine },
       opts = {
