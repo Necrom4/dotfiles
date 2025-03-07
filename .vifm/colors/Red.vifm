@@ -49,7 +49,7 @@
 highlight clear
 
 highlight Win cterm=none ctermfg=160 ctermbg=none
-highlight Directory cterm=none ctermfg=160 ctermbg=none
+highlight Directory cterm=none ctermfg=124 ctermbg=none
 highlight Link cterm=none ctermfg=196 ctermbg=default
 highlight BrokenLink cterm=bold ctermfg=196 ctermbg=default
 highlight HardLink cterm=none ctermfg=yellow ctermbg=default
@@ -57,8 +57,8 @@ highlight Socket cterm=bold ctermfg=magenta ctermbg=default
 highlight Device cterm=bold ctermfg=196 ctermbg=default
 highlight Fifo cterm=bold ctermfg=cyan ctermbg=default
 highlight Executable cterm=none ctermfg=196 ctermbg=default
-highlight Selected cterm=none ctermfg=196 ctermbg=52
-highlight CurrLine cterm=none ctermfg=0 ctermbg=196
+highlight Selected cterm=none ctermfg=16 ctermbg=160
+highlight CurrLine cterm=none ctermfg=196 ctermbg=52
 highlight TopLine cterm=none ctermfg=196 ctermbg=none
 highlight TopLineSel cterm=bold ctermfg=196 ctermbg=none
 highlight StatusLine cterm=bold ctermfg=196 ctermbg=none
