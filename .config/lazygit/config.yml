@@ -144,3 +144,45 @@ customCommands:
         body: "Are you sure you want to branch?"
     command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} refs/heads/{{.SelectedLocalBranch.Name}} --no-track"
     loadingText: 'Creating conventional branch...'
+  - key: '<c-n>'
+    context: 'remoteBranches'
+    description: "Create new conventional branch"
+    prompts:
+      - type: 'menu'
+        title: "New branch type (branch is off of '{{.SelectedRemoteBranch.Name}}')"
+        key: 'BranchType'
+        options:
+          - name: 'feature'
+            description: 'A new feature under developmentfeature'
+            value: 'feature'
+          - name: 'bugfix'
+            description: 'A fix for a specific bug or issue'
+            value: 'bugfix'
+          - name: 'hotfix'
+            description: 'An urgent fix for a critical issue in production'
+            value: 'hotfix'
+          - name: 'release'
+            description: 'Prepares a new version for deployment'
+            value: 'release'
+          - name: 'develop'
+            description: 'The main branch for ongoing development'
+            value: 'develop'
+          - name: 'chore'
+            description: 'Routine maintenance tasks or dependency updates'
+            value: 'chore'
+          - name: 'refactor'
+            description: 'Code improvements without changing functionality'
+            value: 'refactor'
+          - name: 'test'
+            description: 'Experimental or test-related changes'
+            value: 'test'
+      - type: 'input'
+        title: "New branch name (branch is off of '{{.SelectedRemoteBranch.Name}})'"
+        key: 'BranchName'
+        initialValue: ''
+      - type: "confirm"
+        key: "Confirm"
+        title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
+        body: "Are you sure you want to branch?"
+    command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} origin/{{.SelectedRemoteBranch.Name}} --no-track"
+    loadingText: 'Creating conventional branch...'
