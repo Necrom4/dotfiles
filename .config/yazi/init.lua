@@ -16,5 +16,10 @@ require("bookmarks"):setup({
 })
 
 require("relative-motions"):setup({ show_numbers="relative", show_motion = true, enter_mode ="first" })
+require("eza-preview"):setup({
+  level = 3,
+  follow_symlinks = true,
+  dereference = true,
+})
 
 require("git"):setup()

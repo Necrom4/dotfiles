@@ -7,6 +7,11 @@ prepend_keymap = [
   { on = "'", run = "plugin bookmarks jump", desc = "Jump to a bookmark" },
   { on = [ "b", "d" ], run = "plugin bookmarks delete", desc = "Delete a bookmark" },
   { on = [ "b", "D" ], run = "plugin bookmarks delete_all", desc = "Delete all bookmarks" },
+  #eza-preview
+  { on = [ "E" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
+  { on = [ "-" ], run = "plugin eza-preview --args='--inc-level'", desc = "Increment tree level" },
+  { on = [ "_" ], run = "plugin eza-preview --args='--dec-level'", desc = "Decrement tree level" },
+  { on = [ "$" ], run = "plugin eza-preview --args='--toggle-follow-symlinks'", desc = "Toggle tree follow symlinks" },
   #relative-motions
   { on = "1", run = "plugin relative-motions 1", desc = "Move in relative steps" },
   { on = "2", run = "plugin relative-motions 2", desc = "Move in relative steps" },
