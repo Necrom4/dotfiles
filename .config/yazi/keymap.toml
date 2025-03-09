@@ -1,3 +1,9 @@
+[manager]
+prepend_keymap = [
+	{ on = "Q",     run = "quit",               desc = "Quit the process" },
+	{ on = "q",     run = "quit --no-cwd-file", desc = "quit the process without outputting cwd-file" },
+]
+
 [[manager.prepend_keymap]]
 on = [ "m" ]
 run = "plugin bookmarks save"
