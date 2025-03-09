@@ -14,6 +14,11 @@ rev = "2bf70d8"
 hash = "806cb2842b64e976ba2c65a3e3724518"
 
 [[plugin.deps]]
+use = "llanosrocas/githead"
+rev = "2375024"
+hash = "f46c42b1146bed331c7000b1efd076f5"
+
+[[plugin.deps]]
 use = "ahkohd/eza-preview"
 rev = "6575a9a"
 hash = "72355a6c8b7c8de6ed4dda0f98f86fee"
