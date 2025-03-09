@@ -29,5 +29,3 @@ vim.opt.termguicolors = true
 opt.hidden = true
 -- Make macros render faster (lazy draw)
 opt.lazyredraw = true
--- Set global variable g:cwd
-vim.g.cwd = vim.fn.system('~/.scripts/./cwd.sh')
