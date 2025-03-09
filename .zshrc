@@ -131,7 +131,7 @@ export EDITOR="nvim"
 
 alias vim="nvim"
 alias e="nvim"
-alias ls='lsd --color never'
+alias ls='lsd --color=never'
 alias ll='ls -l'
 alias la='ls -A'
 alias lla='ls -lA'
