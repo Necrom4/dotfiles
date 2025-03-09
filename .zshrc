@@ -136,7 +136,6 @@ alias ll='ls -l'
 alias la='ls -A'
 alias lla='ls -lA'
 alias lt='ls --tree'
-alias brew="~/.linuxbrew/bin/brew"
 function x() {
   if [ "$2" != "" ]; then
     vifm "$@"
@@ -158,8 +157,7 @@ function x() {
   fi
   return $?
 }
-alias lazygit="~/.linuxbrew/bin/lazygit"
-alias g="~/.linuxbrew/bin/lazygit"
+alias g="lazygit"
 alias y="yadm enter lazygit"
 alias z="omz reload"
 
@@ -185,7 +183,8 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#4C0000
 # //ZSH-AUTOSUGGESTIONS//
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#7F0000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
-eval "$(/root/.linuxbrew/bin/brew shellenv)"
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(/root/.local/bin/mise activate zsh)"
 
 # export HTTP_PROXY="http://p-proxy-01.cp.loc:3128"
