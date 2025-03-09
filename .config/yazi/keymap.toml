@@ -22,4 +22,6 @@ prepend_keymap = [
   { on = "7", run = "plugin relative-motions 7", desc = "Move in relative steps" },
   { on = "8", run = "plugin relative-motions 8", desc = "Move in relative steps" },
   { on = "9", run = "plugin relative-motions 9", desc = "Move in relative steps" },
+  #restore
+  { on = "u", run = "plugin restore", desc = "Restore last deleted files/folders" },
 ]

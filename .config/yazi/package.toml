@@ -23,5 +23,10 @@ use = "ahkohd/eza-preview"
 rev = "6575a9a"
 hash = "72355a6c8b7c8de6ed4dda0f98f86fee"
 
+[[plugin.deps]]
+use = "boydaihungst/restore"
+rev = "5d22884"
+hash = "8e6fc2d660f661c91e30b10dd1a251b8"
+
 [flavor]
 deps = []
