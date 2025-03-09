@@ -1,4 +1,28 @@
+[manager]
+cwd = { fg = "#CC0000" }
+
+# Hovered
+hovered = { fg = "#CC0000", bg = "#330000" }
+preview_hovered = {}
+
+[mode]
+normal_main = { fg = "#000000", bg = "#CC0000", bold = true, blink = true }
+normal_alt = { fg = "#CC0000", bg = "#330000" }
+
+# Select mode
+select_main = { fg = "#000000", bg = "#CC0000", bold = true }
+select_alt = { fg = "#CC0000", bg = "#330000" }
+
+# Unset mode
+unset_main = { fg = "#000000", bg = "#CC0000", bold = true }
+unset_alt = { fg = "#CC0000", bg = "#330000" }
+
 [status]
 overall   = {}
 sep_left  = { open = "", close = "" }
 sep_right = { open = "", close = "" }
+
+[filetype]
+rules = [
+  { name = "*/", fg = "#A50000" },
+]
