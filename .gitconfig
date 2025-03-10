@@ -8,7 +8,7 @@
   algorithm = histogram
 [color "diff"]
   context = "#7F0000"
-  commit = "#80f000"
+  commit = "#CC0000"
   newMoved = "#FFAA00"
   oldMoved = "#7F5500"
   frag = "#FF8080"
