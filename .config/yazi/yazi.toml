@@ -1,6 +1,6 @@
 [manager]
 ratio = [ 1, 3, 4 ]
-linemode = "mtime"
+linemode = "size"
 
 [[plugin.prepend_previewers]]
 name = "*/"

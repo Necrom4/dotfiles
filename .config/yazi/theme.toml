@@ -2,11 +2,14 @@
 cwd = { fg = "#CC0000" }
 
 # Hovered
-hovered = { fg = "#CC0000", bg = "#330000" }
+hovered = { fg = "#FF0000", bg = "#330000" }
 preview_hovered = {}
 
+# Border
+border_style  = { fg = "#CC0000" }
+
 [mode]
-normal_main = { fg = "#000000", bg = "#CC0000", bold = true, blink = true }
+normal_main = { fg = "#000000", bg = "#CC0000", bold = true }
 normal_alt = { fg = "#CC0000", bg = "#330000" }
 
 # Select mode
