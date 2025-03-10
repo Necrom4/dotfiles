@@ -21,6 +21,8 @@ require("eza-preview"):setup({
   dereference = true,
 })
 
+require("full-border"):setup()
+
 THEME.git = THEME.git or {}
 THEME.git.modified_sign = "󰏬"
 THEME.git.modified = ui.Style():fg("#FFFF00")
