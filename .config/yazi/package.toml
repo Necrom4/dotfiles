@@ -14,11 +14,6 @@ rev = "2bf70d8"
 hash = "806cb2842b64e976ba2c65a3e3724518"
 
 [[plugin.deps]]
-use = "llanosrocas/githead"
-rev = "2375024"
-hash = "f46c42b1146bed331c7000b1efd076f5"
-
-[[plugin.deps]]
 use = "boydaihungst/restore"
 rev = "5d22884"
 hash = "8e6fc2d660f661c91e30b10dd1a251b8"
@@ -52,6 +47,21 @@ hash = "9dce00232a0e0e2502565c7aa2b0ed4e"
 use = "ahkohd/eza-preview"
 rev = "6575a9a"
 hash = "72355a6c8b7c8de6ed4dda0f98f86fee"
+
+[[plugin.deps]]
+use = "imsi32/yatline"
+rev = "6b0fc1e"
+hash = "ab115c6cc77f5710c27f39dfa2f3d4d"
+
+[[plugin.deps]]
+use = "imsi32/yatline-githead"
+rev = "3b0eb7c"
+hash = "bfd30c396bbe2af526cb949d97ce3dcf"
+
+[[plugin.deps]]
+use = "wekauwau/yatline-created-time"
+rev = "3c129d6"
+hash = "695b2441885359206812dcd4e810633c"
 
 [flavor]
 deps = []
