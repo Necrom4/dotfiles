@@ -172,7 +172,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#7F0000"
 ZSH_AUTOSUGGEST_STRATEGY=completion
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-eval "$(/root/.local/bin/mise activate zsh)"
+eval "$(~/.local/bin/mise activate zsh)"
 
 # export HTTP_PROXY="http://p-proxy-01.cp.loc:3128"
 # export HTTPS_PROXY="http://p-proxy-01.cp.loc:3128"
