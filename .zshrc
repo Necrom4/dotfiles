@@ -137,25 +137,12 @@ alias la='ls -A'
 alias lla='ls -lA'
 alias lt='ls --tree'
 function x() {
-  if [ "$2" != "" ]; then
-    vifm "$@"
-  elif [ "$1" != "" ]; then
-    if [ -d "$1" ]; then
-      vifm "$1"
-    elif [ -f "$1" ]; then
-      vifm "$1"
-    else
-      out="$(autojump $1)"
-      vifm "$out"
-    fi
-  else
-    dst="$(command vifm --choose-dir -)"
-    if [ -z "$dst" ]; then
-      return 1
-    fi
-    cd "$dst"
-  fi
-  return $?
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
 }
 alias g="lazygit"
 alias y="yadm enter lazygit"
