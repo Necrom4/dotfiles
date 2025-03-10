@@ -13,6 +13,8 @@ prepend_keymap = [
   { on = [ "b", "D" ], run = "plugin bookmarks delete_all", desc = "Delete all bookmarks" },
   #chmod
   { on = [ "c", "m" ], run = "plugin chmod", desc = "Chmod on selected files" },
+  #compress
+  { on = [ "c", "a" ], run = "plugin compress", desc = "Archive selected files" },
   #eza-preview
   { on = [ "T" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
   { on = [ "+" ], run = "plugin eza-preview --args='--inc-level'", desc = "Increment tree level" },

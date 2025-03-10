@@ -29,6 +29,11 @@ rev = "2bf70d8"
 hash = "2f1053f89d1a301a648ab181d0948e38"
 
 [[plugin.deps]]
+use = "KKV9/compress"
+rev = "60b24af"
+hash = "ee025be766240cc98e671754ac836da3"
+
+[[plugin.deps]]
 use = "ahkohd/eza-preview"
 rev = "6575a9a"
 hash = "72355a6c8b7c8de6ed4dda0f98f86fee"
