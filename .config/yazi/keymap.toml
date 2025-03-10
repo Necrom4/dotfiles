@@ -32,4 +32,6 @@ prepend_keymap = [
   { on = "9", run = "plugin relative-motions 9", desc = "Move in relative steps" },
   #restore
   { on = "u", run = "plugin restore", desc = "Restore last deleted files/folders" },
+  #what-size
+  { on   = [ "c", "s" ], run  = "plugin what-size", desc = "Calc size of selection or cwd" },
 ]
