@@ -63,5 +63,10 @@ use = "wekauwau/yatline-created-time"
 rev = "3c129d6"
 hash = "695b2441885359206812dcd4e810633c"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-filter"
+rev = "2bf70d8"
+hash = "f0c4b41b5d19a3144958383333eff6e7"
+
 [flavor]
 deps = []
