@@ -15,6 +15,8 @@ prepend_keymap = [
   { on = [ "c", "m" ], run = "plugin chmod", desc = "Chmod on selected files" },
   #compress
   { on = [ "c", "a" ], run = "plugin compress", desc = "Archive selected files" },
+  #diff
+  { on = "<c-d>", run = "shell --block -- nvim -d $@", desc = "Diff the selected files" },
   #eza-preview
   { on = [ "T" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
   { on = [ "+" ], run = "plugin eza-preview --args='--inc-level'", desc = "Increment tree level" },
