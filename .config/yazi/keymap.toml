@@ -6,6 +6,7 @@ prepend_keymap = [
   { on = "i", run = "spot", desc = "Spot hovered file" },
   { on = "e", run = "open", desc = "Open selected files" },
 	{ on = "E", run = "open --interactive", desc = "Open selected files interactively" },
+	{ on = "<Space>", run = "toggle", desc = "Toggle the current selection state" },
   #bookmarks
   { on = "m", run = "plugin bookmarks save", desc = "Save current position as a bookmark" },
   { on = "'", run = "plugin bookmarks jump", desc = "Jump to a bookmark" },
