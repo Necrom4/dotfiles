@@ -49,15 +49,15 @@ require("githead"):setup({
   state_symbol = "~",
 
   show_staged = true,
-  staged_color = "bright yellow",
+  staged_color = "#FF0000",
   staged_symbol = "",
 
   show_unstaged = true,
-  unstaged_color = "bright yellow",
+  unstaged_color = "#A50000",
   unstaged_symbol = "",
 
   show_untracked = true,
-  untracked_color = "blue",
+  untracked_color = "#7F0000",
   untracked_symbol = "?",
 })
 
