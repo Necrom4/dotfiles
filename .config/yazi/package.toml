@@ -39,6 +39,11 @@ rev = "b23e3a4"
 hash = "98e5f5af3efd3ba8bc2db0720187cc83"
 
 [[plugin.deps]]
+use = "yazi-rs/plugins:smart-enter"
+rev = "2bf70d8"
+hash = "7918aab6a71caf31b58411f789195677"
+
+[[plugin.deps]]
 use = "ahkohd/eza-preview"
 rev = "6575a9a"
 hash = "72355a6c8b7c8de6ed4dda0f98f86fee"
