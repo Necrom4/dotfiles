@@ -27,15 +27,15 @@ THEME.git = THEME.git or {}
 THEME.git.modified_sign = "󰏬"
 THEME.git.modified = ui.Style():fg("#FFFF00")
 THEME.git.added_sign = ""
-THEME.git.added = ui.Style():fg("#00FF00")
-THEME.git.untracked_sign = "?"
-THEME.git.untracked = ui.Style():fg("#7F0000")
+THEME.git.added = ui.Style():fg("#00BF00")
+THEME.git.untracked_sign = ""
+THEME.git.untracked = ui.Style():fg("#FFAA00")
 THEME.git.ignored_sign = ""
-THEME.git.ignored = ui.Style():fg("#7F0000")
+THEME.git.ignored = ui.Style():fg("#7F7F7F")
 THEME.git.deleted_sign = ""
-THEME.git.deleted = ui.Style():fg("#CC0000")
-THEME.git.updated_sign = "󰇚"
-THEME.git.updated = ui.Style():fg("#00FF00")
+THEME.git.deleted = ui.Style():fg("#FF0000")
+THEME.git.updated_sign = "󰚰"
+THEME.git.updated = ui.Style():fg("#FF7F7F")
 require("git"):setup()
 
 require("relative-motions"):setup({ show_numbers="relative", show_motion = true, enter_mode ="first" })
