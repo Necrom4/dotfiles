@@ -84,7 +84,7 @@ local theme = lush(function(injected_functions)
     DiffAdd                                { fg=hsl(120, 100, 37), }, -- DiffAdd        xxx guifg=#00bf00
     GitSignsAddPreview                     { DiffAdd }, -- GitSignsAddPreview xxx links to DiffAdd
     DiffChange                             { fg=hsl(60, 100, 50), }, -- DiffChange     xxx guifg=#ffff00
-    DiffDelete                             { fg=hsl(0, 100, 25), }, -- DiffDelete     xxx guifg=#7f0000
+    DiffDelete                             { fg=hsl(0, 100, 50), }, -- DiffDelete     xxx guifg=#7f0000
     GitSignsDeletePreview                  { DiffDelete }, -- GitSignsDeletePreview xxx links to DiffDelete
     GitSignsDeleteVirtLn                   { DiffDelete }, -- GitSignsDeleteVirtLn xxx links to DiffDelete
     DiffText                               { fg=hsl(60, 100, 50), bg=hsl(60, 100, 15), }, -- DiffText       xxx guifg=#ffff00 guibg=#595900
@@ -293,15 +293,15 @@ local theme = lush(function(injected_functions)
     sym"@markup.italic"                    { gui="italic", }, -- @markup.italic xxx cterm=italic gui=italic
     sym"@markup.strikethrough"             { gui="strikethrough", }, -- @markup.strikethrough xxx cterm=strikethrough gui=strikethrough
     sym"@markup.underline"                 { gui="underline", }, -- @markup.underline xxx cterm=underline gui=underline
-    Added                                  { fg="nvimlightgreen", }, -- Added          xxx ctermfg=10 guifg=NvimLightGreen
+    Added                                  { DiffAdd }, -- Added          xxx ctermfg=10 guifg=NvimLightGreen
     sym"@diff.plus"                        { Added }, -- @diff.plus     xxx links to Added
     SnacksPickerGitStatusAdded             { Added }, -- SnacksPickerGitStatusAdded xxx links to Added
     SnacksPickerUndoAdded                  { Added }, -- SnacksPickerUndoAdded xxx links to Added
-    Removed                                { fg="nvimlightred", }, -- Removed        xxx ctermfg=9 guifg=NvimLightRed
+    Removed                                { DiffDelete }, -- Removed        xxx ctermfg=9 guifg=NvimLightRed
     sym"@diff.minus"                       { Removed }, -- @diff.minus    xxx links to Removed
     SnacksPickerGitStatusDeleted           { Removed }, -- SnacksPickerGitStatusDeleted xxx links to Removed
     SnacksPickerUndoRemoved                { Removed }, -- SnacksPickerUndoRemoved xxx links to Removed
-    Changed                                { fg="nvimlightcyan", }, -- Changed        xxx ctermfg=14 guifg=NvimLightCyan
+    Changed                                { DiffChange }, -- Changed        xxx ctermfg=14 guifg=NvimLightCyan
     sym"@diff.delta"                       { Changed }, -- @diff.delta    xxx links to Changed
     DiagnosticDeprecated                   { sp="nvimlightred", gui="strikethrough", }, -- DiagnosticDeprecated xxx cterm=strikethrough gui=strikethrough guisp=NvimLightRed
     sym"@lsp.mod.deprecated"               { DiagnosticDeprecated }, -- @lsp.mod.deprecated xxx links to DiagnosticDeprecated
@@ -335,15 +335,15 @@ local theme = lush(function(injected_functions)
     WinActive                              { fg=hsl(0, 0, 0), gui="bold", bg=hsl(0, 100, 40), }, -- WinActive      xxx cterm=bold gui=bold guifg=#000000 guibg=#cc0000
     WinInactive                            { fg=hsl(0, 100, 40), bg=hsl(0, 100, 10), }, -- WinInactive    xxx guifg=#cc0000 guibg=#330000
     WinNeighbor                            { WinInactive }, -- WinNeighbor    xxx links to WinInactive
-    GitSignsAdd                            { fg=hsl(0, 100, 40), }, -- GitSignsAdd    xxx guifg=#cc0000
+    GitSignsAdd                            { DiffAdd }, -- GitSignsAdd    xxx guifg=#cc0000
     GitSignsUntracked                      { GitSignsAdd }, -- GitSignsUntracked xxx links to GitSignsAdd
     GitSignsAddNr                          { GitSignsAdd }, -- GitSignsAddNr  xxx links to GitSignsAdd
     GitSignsAddCul                         { GitSignsAdd }, -- GitSignsAddCul xxx links to GitSignsAdd
-    GitSignsChange                         { fg=hsl(0, 100, 25), }, -- GitSignsChange xxx guifg=#7f0000
+    GitSignsChange                         { DiffChange }, -- GitSignsChange xxx guifg=#7f0000
     GitSignsChangedelete                   { GitSignsChange }, -- GitSignsChangedelete xxx links to GitSignsChange
     GitSignsChangeNr                       { GitSignsChange }, -- GitSignsChangeNr xxx links to GitSignsChange
     GitSignsChangeCul                      { GitSignsChange }, -- GitSignsChangeCul xxx links to GitSignsChange
-    GitSignsDelete                         { fg=hsl(0, 100, 40), }, -- GitSignsDelete xxx guifg=#cc0000
+    GitSignsDelete                         { DiffDelete }, -- GitSignsDelete xxx guifg=#cc0000
     GitSignsTopdelete                      { GitSignsDelete }, -- GitSignsTopdelete xxx links to GitSignsDelete
     GitSignsDeleteNr                       { GitSignsDelete }, -- GitSignsDeleteNr xxx links to GitSignsDelete
     GitSignsDeleteCul                      { GitSignsDelete }, -- GitSignsDeleteCul xxx links to GitSignsDelete
@@ -355,12 +355,12 @@ local theme = lush(function(injected_functions)
     BlinkCmpScrollBarThumb                 { bg=hsl(0, 100, 32), }, -- BlinkCmpScrollBarThumb xxx guibg=#a50000
     BlinkCmpMenuSelection                  { bg=hsl(0, 100, 15), }, -- BlinkCmpMenuSelection xxx cterm=bold gui=bold guifg=#ff0000 guibg=#4c0000
     BlinkCmpLabelMatch                     { fg=hsl(0, 100, 50), bold = true, underline = true, },
-    GitSignsStagedAdd                      { fg="#660000", }, -- GitSignsStagedAdd xxx guifg=#660000
-    GitSignsStagedChange                   { fg="#3f0000", }, -- GitSignsStagedChange xxx guifg=#3f0000
-    GitSignsStagedDelete                   { fg="#660000", }, -- GitSignsStagedDelete xxx guifg=#660000
-    GitSignsStagedChangedelete             { fg="#3f0000", }, -- GitSignsStagedChangedelete xxx guifg=#3f0000
-    GitSignsStagedTopdelete                { fg="#660000", }, -- GitSignsStagedTopdelete xxx guifg=#660000
-    GitSignsStagedUntracked                { fg="#660000", }, -- GitSignsStagedUntracked xxx guifg=#660000
+    GitSignsStagedAdd                      { fg=hsl(120, 100, 25), }, -- GitSignsStagedAdd xxx guifg=#660000
+    GitSignsStagedChange                   { fg=hsl(60, 100, 25), }, -- GitSignsStagedChange xxx guifg=#3f0000
+    GitSignsStagedDelete                   { fg=hsl(0, 100, 25), }, -- GitSignsStagedDelete xxx guifg=#660000
+    GitSignsStagedChangedelete             { GitSignsStagedChange }, -- GitSignsStagedChangedelete xxx guifg=#3f0000
+    GitSignsStagedTopdelete                { GitSignsStagedDelete }, -- GitSignsStagedTopdelete xxx guifg=#660000
+    GitSignsStagedUntracked                { GitSignsStagedDelete }, -- GitSignsStagedUntracked xxx guifg=#660000
     GitSignsStagedAddNr                    { fg="#660000", }, -- GitSignsStagedAddNr xxx guifg=#660000
     GitSignsStagedChangeNr                 { fg="#3f0000", }, -- GitSignsStagedChangeNr xxx guifg=#3f0000
     GitSignsStagedDeleteNr                 { fg="#660000", }, -- GitSignsStagedDeleteNr xxx guifg=#660000
