@@ -1,5 +1,11 @@
 [user]
 	name = Diogo Pombeiro
+[commit]
+	verbose = true
+[branch]
+  sort = -committerdate
+[tag]
+  sort = version:refname
 [diff]
   tool = nvimdiff
   colorMoved = plain
@@ -17,7 +23,3 @@
   old = "#FF0000"
 [column]
   ui = auto
-[branch]
-  sort = -committerdate
-[tag]
-  sort = version:refname
