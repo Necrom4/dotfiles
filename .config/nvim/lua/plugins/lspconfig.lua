@@ -30,5 +30,8 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = { "williamboman/mason-lspconfig.nvim" },
+    vim.diagnostic.config({
+      signs = false,
+    })
   },
 }
