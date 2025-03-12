@@ -9,6 +9,8 @@ return {
     'mikavilpas/blink-ripgrep.nvim',
     'hrsh7th/cmp-calc',
     'folke/lazydev.nvim',
+    'moyiz/blink-emoji.nvim',
+    'MahanRahmati/blink-nerdfont.nvim',
   },
   version = '*',
   event = { 'InsertEnter', 'CmdlineEnter' },
@@ -63,7 +65,7 @@ return {
     },
     signature = { enabled = true },
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer', 'ripgrep', 'calc', 'lazydev' },
+      default = { 'lsp', 'path', 'snippets', 'buffer', 'ripgrep', 'calc', 'lazydev', 'emoji', 'nerdfont' },
       providers = {
         ripgrep = {
           name = "Ripgrep",
@@ -77,6 +79,18 @@ return {
           name = "LazyDev",
           module = "lazydev.integrations.blink",
           score_offset = 100, -- show at a higher priority than lsp
+        },
+        emoji = {
+          name = "Emoji",
+          module = "blink-emoji",
+          score_offset = 15, -- Tune by preference
+          opts = { insert = true }, -- Insert emoji (default) or complete its name
+        },
+        nerdfont = {
+          name = "Nerd Fonts",
+          module = "blink-nerdfont",
+          score_offset = 10, -- Tune by preference
+          opts = { insert = true }, -- Insert emoji (default) or complete its name
         },
       }
     },
