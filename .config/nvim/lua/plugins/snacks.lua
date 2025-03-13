@@ -141,6 +141,8 @@ return {
             ["<c-p>"] = { "preview_scroll_up", mode = { "i", "n" } },
             ["<c-n>"] = { "preview_scroll_down", mode = { "i", "n" } },
             ["<a-q>"] = { "qflist", mode = { "i", "n" } },
+            ["<Tab>"] = { { "select_and_next", "list_up" }, mode = { "i", "n" } },
+            ["<S-Tab>"] = { "select_and_next", mode = { "i", "n" } },
           },
         },
       },
