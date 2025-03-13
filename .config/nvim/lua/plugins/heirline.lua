@@ -278,10 +278,10 @@ return {
         condition = function()
           return not conditions.is_active()
         end,
-        utils.surround({ "█", "█" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName, FileIcon }),
+        utils.surround({ "█", "" }, colors.red_7, { hl = { fg = colors.red_4, force = true }, BuffName, FileIcon }),
       },
       -- A winbar for regular files
-      utils.surround({ "█", "█" }, colors.red_6, { hl = { fg = colors.red_1, force = true }, BuffName, FileIcon }),
+      utils.surround({ "█", "" }, colors.red_6, { hl = { fg = colors.red_1, force = true }, BuffName, FileIcon }),
     }
 
     local Tab = {
