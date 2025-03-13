@@ -32,7 +32,7 @@ return {
     { "<leader>g", ":lua Snacks.lazygit.open()<CR>", desc = "Open LazyGit", silent = true },
     { "<leader>t", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
     { "<leader>s", ":lua Snacks.scratch()<CR>", desc = "Open Scratch", silent = true },
-    { "<leader>d", function() toggle_dim() end, desc = "Toggle Dim", silent = true },
+    { "<leader>dd", function() toggle_dim() end, desc = "Toggle Dim", silent = true },
   },
   opts = {
     bigfile = { enabled = true },
