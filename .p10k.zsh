@@ -412,13 +412,9 @@
     if [[ -n $VCS_STATUS_LOCAL_BRANCH ]]; then
       local branch=${(V)VCS_STATUS_LOCAL_BRANCH}
       # If local branch name is at most 32 characters long, show it in full.
-      # Otherwise, truncate between the first and last dash.
+      # Otherwise, truncate to the first 32 characters and add "...".
       if (( $#branch > 32 )); then
-        local first_dash=${branch%%-*}  # Get everything before the first dash
-        local last_dash=${branch##*-}   # Get everything after the last dash
-        if [[ -n $first_dash && -n $last_dash ]]; then
-          branch="${first_dash}${last_dash}"
-        fi
+        branch="${branch:0:32}"
       fi
       res+="${clean}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${branch//\%/%%}"
     fi

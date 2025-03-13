@@ -59,29 +59,14 @@ return {
         hl = { fg = colors.red_2, bg = colors.red_7 },
       },
     }
+
     local function truncate_branch_name(branch_name)
       local max_length = 32
       if #branch_name <= max_length then
         return branch_name
       end
 
-      local first_dash = branch_name:find("-")
-      local last_dash = branch_name:match(".*()%-")
-
-      if not first_dash or not last_dash or first_dash >= last_dash then
-        return branch_name
-      end
-
-      local prefix = branch_name:sub(1, first_dash - 1)
-      local suffix = branch_name:sub(last_dash + 1)
-
-      local truncated = prefix .. "" .. suffix
-
-      if #truncated > max_length then
-        return branch_name
-      end
-
-      return truncated
+      return branch_name:sub(1, max_length) .. ""
     end
 
     local Branch = {
