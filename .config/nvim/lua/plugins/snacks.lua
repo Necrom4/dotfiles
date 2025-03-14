@@ -39,7 +39,7 @@ return {
     { "<leader>f=", ":lua Snacks.picker.resume()<CR>", desc = "Resume Picker", silent = true },
     { "<leader>g", ":lua Snacks.lazygit.open()<CR>", desc = "Open LazyGit", silent = true },
     { "<leader>T", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
-    { "<leader>t", function() Snacks.terminal(nil, { win = { position = "float", size = { height = 0.4 } } }) end, desc = "Open Terminal in a floating window" },
+    { "<leader>t", ":lua Snacks.terminal('zsh')<CR>", desc = "Open Terminal", silent = true },
     { "<leader>s", ":lua Snacks.scratch()<CR>", desc = "Open Scratch", silent = true },
     { "<leader>dd", function() toggle_dim() end, desc = "Toggle Dim", silent = true },
   },
