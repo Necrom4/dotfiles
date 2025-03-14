@@ -29,7 +29,7 @@ return {
   keys = {
     { "<leader>e", ":lua Snacks.dashboard.open()<CR>", desc = "Open Dashboard", silent = true },
     { "<leader>f", ":lua Snacks.picker()<CR>", desc = "Open Picker", silent = true },
-    { "<leader>fb", ":lua Snacks.picker.buffers()<CR>", desc = "Open Buffer Picker", silent = true },
+    { "<leader>fb", ":lua Snacks.picker.buffers({current=false})<CR>", desc = "Open Buffer Picker", silent = true },
     { "<leader>fg", ":lua Snacks.picker.grep()<CR>", desc = "Open Grep Picker", silent = true },
     { "<leader>fgg", ":lua Snacks.picker.git_grep()<CR>", desc = "Open Git Grep Picker", silent = true },
     { "<leader>ff", ":lua Snacks.picker.files()<CR>", desc = "Open Files Picker", silent = true },
