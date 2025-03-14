@@ -1,0 +1,18 @@
+gui:
+  theme:
+    activeBorderColor:
+      - green
+      - bold
+    inactiveBorderColor:
+      - red
+    selectedLineBgColor:
+      - white
+stats:
+  graphs:
+    - caption: CPU (%)
+      statPath: DerivedStats.CPUPercentage
+      color: green
+    - caption: Memory (%)
+      statPath: DerivedStats.MemoryPercentage
+      color: green
+
