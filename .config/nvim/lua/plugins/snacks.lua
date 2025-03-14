@@ -38,7 +38,8 @@ return {
     { "<leader>fs", ":lua Snacks.picker.smart()<CR>", desc = "Open Smart Picker", silent = true },
     { "<leader>f=", ":lua Snacks.picker.resume()<CR>", desc = "Resume Picker", silent = true },
     { "<leader>g", ":lua Snacks.lazygit.open()<CR>", desc = "Open LazyGit", silent = true },
-    { "<leader>t", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
+    { "<leader>T", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
+    { "<leader>t", function() Snacks.terminal(nil, { win = { position = "float", size = { height = 0.4 } } }) end, desc = "Open Terminal in a floating window" },
     { "<leader>s", ":lua Snacks.scratch()<CR>", desc = "Open Scratch", silent = true },
     { "<leader>dd", function() toggle_dim() end, desc = "Toggle Dim", silent = true },
   },
@@ -218,7 +219,6 @@ return {
     },
     terminal = {
       enabled = true,
-      win = "float",
     },
     words = { enabled = false },
   },
