@@ -118,6 +118,11 @@ end)
 -- LAZYVIM
 vim.keymap.set('n', '<leader>l', ':Lazy<cr>', { noremap = true, silent = true })
 
+-- LAZYDOCKER
+vim.api.nvim_create_user_command('Lazydocker', function()
+  Snacks.terminal('lazydocker')
+end, {})
+
 -- OTHER
 
 -- Remap ' to `
