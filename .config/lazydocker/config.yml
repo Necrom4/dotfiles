@@ -1,12 +1,7 @@
 gui:
   theme:
-    activeBorderColor:
-      - green
-      - bold
-    inactiveBorderColor:
-      - red
     selectedLineBgColor:
-      - white
+      - blue
 stats:
   graphs:
     - caption: CPU (%)
