@@ -12,6 +12,9 @@ return {
 			hl.WinSeparator = {
 				fg = "#C0CAF5",
 			}
+			hl.WhichKeyNormal = {
+				bg = "none",
+			}
 		end,
 	},
 }
