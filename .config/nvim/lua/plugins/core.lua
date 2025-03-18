@@ -10,7 +10,7 @@ return {
     },
   },
   {
-    "stevearc/conform.nvim",
+    "catppuccin/nvim",
     enabled = false,
   },
   {
