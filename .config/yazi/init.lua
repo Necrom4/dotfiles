@@ -75,9 +75,9 @@ require("yatline"):setup({
         { type = "line", custom = false, name = "tabs", params = { "left" } },
       },
       section_b = {
+        { type = "coloreds", custom = false, name = "githead" },
       },
       section_c = {
-        { type = "coloreds", custom = false, name = "githead" },
       }
     },
     right = {
