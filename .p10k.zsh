@@ -185,7 +185,7 @@
   # The right end of left prompt.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL='\uE0B0'
   # The left end of right prompt.
-  typeset -g POWERLEVEL9K_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL='%2F\uE0B3'
+  typeset -g POWERLEVEL9K_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL='%147F\uE0B3'
   # The left end of left prompt.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL='\uE0BA'
   # The right end of right prompt.
@@ -574,7 +574,7 @@
   # Show this many fractional digits. Zero means round to seconds.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=1
   # Execution time color.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#C0CAF5'
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#7AA2F7'
   # Duration format: 1d 2h 3m 4s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FORMAT='d h m s'
   # Custom icon.
@@ -839,7 +839,7 @@
 
   ######################################[ ram: free RAM ]#######################################
   # RAM color.
-  typeset -g POWERLEVEL9K_RAM_FOREGROUND='#C0CAF5'
+  typeset -g POWERLEVEL9K_RAM_FOREGROUND='#7AA2F7'
   # Custom icon.
   typeset -g POWERLEVEL9K_RAM_VISUAL_IDENTIFIER_EXPANSION=
 
@@ -1677,7 +1677,7 @@
 
   ####################################[ time: current time ]####################################
   # Current time color.
-  typeset -g POWERLEVEL9K_TIME_FOREGROUND='#C0CAF5'
+  typeset -g POWERLEVEL9K_TIME_FOREGROUND='#7AA2F7'
   # Format for the current time: 09:51:02. See `man 3 strftime`.
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M:%S}'
   # If set to true, time will update when you hit enter. This way prompts for the past
