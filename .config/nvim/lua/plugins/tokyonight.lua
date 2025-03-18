@@ -15,6 +15,13 @@ return {
 			hl.WhichKeyNormal = {
 				bg = "none",
 			}
+			hl.TreesitterContext = {
+				bg = "none",
+			}
+			hl.TreesitterContextBottom = {
+				underline = true,
+				sp = "#636DA6",
+			}
 		end,
 	},
 }
