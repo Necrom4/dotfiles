@@ -9,16 +9,19 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	command = "setlocal noundofile",
 })
 
--- YANK TO NUMBER REGISTERS AND SYNC SYSTEM CLIPBOARD
+-- YANK TO NUMBER REGISTERS AND SYNC SYSTEM CLIPBOARD (WITH CLEANUP)
 vim.api.nvim_create_autocmd({ "TextYankPost", "FocusGained" }, {
 	callback = function()
 		local clipboard_content = vim.fn.getreg("+") -- Get system clipboard content
 		if clipboard_content and clipboard_content ~= "" then
+			-- Remove carriage returns (^M) from the clipboard content
+			clipboard_content = clipboard_content:gsub("\r", "")
+
 			-- Shift registers "9" to "2" down
 			for i = 9, 2, -1 do
 				vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
 			end
-			-- Store system clipboard in register "1" (overwriting it if needed)
+			-- Store cleaned clipboard content in register "1"
 			vim.fn.setreg("1", clipboard_content)
 		end
 	end,
