@@ -38,9 +38,3 @@ vim.api.nvim_create_autocmd('InsertLeave', {
 vim.cmd [[
   autocmd BufRead,BufNewFile *.tpl.yaml set filetype=helm
 ]]
---
--- vim.api.nvim_create_autocmd("VimEnter", {
---   callback = function()
---     vim.cmd("colorscheme tokyonight-night")
---   end
--- })
