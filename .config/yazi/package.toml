@@ -68,5 +68,12 @@ use = "yazi-rs/plugins:smart-filter"
 rev = "2bf70d8"
 hash = "f0c4b41b5d19a3144958383333eff6e7"
 
-[flavor]
-deps = []
+[[plugin.deps]]
+use = "wekauwau/yatline-tokyo-night"
+rev = "19dbd25"
+hash = "5f00a80a79b9f7fd8e24d6fa5dbb3ae"
+
+[[flavor.deps]]
+use = "BennyOe/tokyo-night"
+rev = "695dac6"
+hash = "a8f426ea0d9cb843b081d62ab01364c8"
