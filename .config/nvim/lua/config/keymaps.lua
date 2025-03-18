@@ -51,7 +51,8 @@ vim.keymap.set("n", "<leader><tab>q", "<cmd>tabclose<cr>", { desc = "Close Tab" 
 vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
--- COPY TEXT
+-- new file
+vim.keymap.set("n", "<leader>N", "<cmd>enew<cr>", { desc = "New File" })
 
 -- Yank filename
 vim.keymap.set("n", "yp", function()
@@ -73,6 +74,9 @@ end, { noremap = true, silent = true })
 vim.api.nvim_create_user_command("Lazydocker", function()
 	Snacks.terminal("lazydocker")
 end, {})
+
+-- NEORG
+vim.keymap.set("n", "gt", "<Plug>(neorg.qol.todo-items.todo.task-cycle)", {})
 
 -- Remap ' to `
 vim.keymap.set("n", "'", "`", { noremap = true })
