@@ -2,16 +2,16 @@ gui:
   nerdFontsVersion: "3"
   theme:
     cherryPickedCommitFgColor:
-      - "#7F0000"
+      - red
     cherryPickedCommitBgColor:
       - "none"
     selectedLineBgColor:
-      - white
+      - blue
   spinner:
     frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 git:
-  branchLogCmd: git log --graph --color=always --format=format:'%C(#CC0000)%>|(17)%h%C(reset) %C(#7F0000)[%ar]%C(reset)%x09%C(#FF7F7F)%d%C(reset) %C(#CC0000)%s%C(reset) %C(#7F0000)- %an%C(reset)'
-  allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#CC0000)%>|(17)%h%C(reset) %C(#7F0000)[%ar]%C(reset)%x09%C(#FF7F7F)%d%C(reset) %C(#CC0000)%s%C(reset) %C(#7F0000)- %an%C(reset)'
+  branchLogCmd: git log --graph --color=always --format=format:'%C(#FF9E64)%>|(17)%h%C(reset) %C(#1ABC9C)[%ar]%C(reset)%x09%C(#DB4B4B)%d%C(reset) %C(#C0CAF5)%s%C(reset) %C(#7DCFFF)- %an%C(reset)'
+  allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#FF9E64)%>|(17)%h%C(reset) %C(#1ABC9C)[%ar]%C(reset)%x09%C(#DB4B4B)%d%C(reset) %C(#C0CAF5)%s%C(reset) %C(#7DCFFF)- %an%C(reset)'
 customCommands:
   - key: '<c-p>'
     description: 'PR commands'
@@ -153,7 +153,7 @@ customCommands:
         key: 'BranchType'
         options:
           - name: 'feature'
-            description: 'A new feature under developmentfeature'
+            description: 'A new feature under development'
             value: 'feature'
           - name: 'bugfix'
             description: 'A fix for a specific bug or issue'
