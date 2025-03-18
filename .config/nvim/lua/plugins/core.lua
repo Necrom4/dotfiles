@@ -39,7 +39,7 @@ return {
           mode = { "n", "v" },
           { "<leader><tab>", group = "tabs" },
           { "<leader>c", group = "code" },
-          { "<leader>d", group = "diff" },
+          { "<leader>d", group = "diff", icon = { icon = " ", color = "yellow" } },
           { "<a-d>", group = "debug" },
           { "<leader>dp", group = "profiler" },
           { "<leader>f", group = "file/find" },
