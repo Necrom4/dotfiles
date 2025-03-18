@@ -29,3 +29,5 @@ require("lazy").setup({
     border = "rounded",
   },
 })
+
+vim.cmd("colorscheme tokyonight-night")
