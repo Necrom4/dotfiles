@@ -21,7 +21,6 @@ return {
 			["<C-J>"] = { "select_next", "fallback" },
 			["<S-TAB>"] = { "select_prev", "fallback" },
 			["<TAB>"] = { "select_next", "fallback" },
-			["<C-L>"] = { "select_and_accept", "fallback" },
 			["<C-U>"] = { "cancel" },
 			["<C-E>"] = { "hide" },
 			["<C-D>"] = { "show", "show_documentation", "hide_documentation" },
