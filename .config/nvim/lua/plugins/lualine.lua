@@ -40,6 +40,7 @@ return {
 						"Outline",
 						"spectre_panel",
 						"toggleterm",
+						"undotree",
 					},
 				},
 			},
@@ -134,6 +135,7 @@ return {
 						"filename",
 						color = { fg = "#b8db87", bg = "" }, -- Transparent background
 					},
+					disabled_buftypes = { "terminal" },
 				},
 			},
 			inactive_winbar = {
@@ -142,6 +144,7 @@ return {
 						"filename",
 						color = { fg = "#6b7f4f", bg = "" }, -- Transparent background
 					},
+					disabled_buftypes = { "terminal" },
 				},
 			},
 			extensions = { "neo-tree", "lazy", "fzf" },
