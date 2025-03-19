@@ -130,21 +130,23 @@ return {
 				},
 			},
 			winbar = {
-				lualine_c = {
+				lualine_b = {
 					{
-						"filename",
-						color = { fg = "#b8db87", bg = "" }, -- Transparent background
+						"windows",
+						show_filename_only = true,
+						show_modified_status = true,
+						mode = 0,
 					},
-					disabled_buftypes = { "terminal" },
 				},
 			},
 			inactive_winbar = {
-				lualine_c = {
+				lualine_b = {
 					{
-						"filename",
-						color = { fg = "#6b7f4f", bg = "" }, -- Transparent background
+						"windows",
+						show_filename_only = true,
+						show_modified_status = true,
+						mode = 0,
 					},
-					disabled_buftypes = { "terminal" },
 				},
 			},
 			extensions = { "neo-tree", "lazy", "fzf" },
