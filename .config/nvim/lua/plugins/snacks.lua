@@ -146,7 +146,7 @@ return {
 				unstagedChangesColor = { fg = "Operator" },
 			},
 		},
-		notifier = { enabled = true },
+		notifier = { enabled = false },
 		picker = {
 			enabled = true,
 			win = {
