@@ -34,6 +34,9 @@ return {
 			{ "williamboman/mason-lspconfig.nvim", config = function() end },
 		},
 		opts = function()
+			local keys = require("lazyvim.plugins.lsp.keymaps").get()
+			-- disable a keymap
+			keys[#keys + 1] = { "K", false }
 			---@class PluginLspOpts
 			local ret = {
 				-- options for vim.diagnostic.config()
