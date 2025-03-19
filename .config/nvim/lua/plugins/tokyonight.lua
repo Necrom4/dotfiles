@@ -22,6 +22,11 @@ return {
 				underline = true,
 				sp = "#636DA6",
 			}
+			hl.FlashLabel = {
+				fg = "#000000",
+				bg = "#4FD6BE",
+				bold = true,
+			}
 		end,
 	},
 }
