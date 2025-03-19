@@ -131,7 +131,7 @@ export EDITOR="nvim"
 
 alias vim="nvim"
 alias e="nvim"
-alias ls='eza --icons=always'
+alias ls='eza -h --icons=always'
 alias ll='ls -l'
 alias la='ls -A'
 alias lla='ls -lA'
