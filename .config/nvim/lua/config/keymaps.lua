@@ -69,6 +69,9 @@ vim.keymap.set("n", "yc", function()
 	vim.fn.setreg('"', vim.fn.getreg(":")) -- Set unnamed register to the last command
 	vim.cmd("normal! p") -- Paste the command
 end, { noremap = true, silent = true })
+-- default LazyVim disabled keymaps
+vim.keymap.del("s", "<Tab>")
+vim.keymap.del({ "i", "s" }, "<S-Tab>")
 
 -- LAZYDOCKER
 vim.api.nvim_create_user_command("Lazydocker", function()
