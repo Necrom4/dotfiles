@@ -1,5 +1,11 @@
 -- KEYMAPS --
 
+local function feedkeys(key)
+	return function()
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), "c", false)
+	end
+end
+
 -- SAVE/QUIT
 
 -- Save the current file
@@ -34,16 +40,15 @@ vim.keymap.set({ "n", "v", "o" }, "H", "0", { noremap = true, silent = true })
 vim.keymap.set("n", "gK", "kgJ", { noremap = true, silent = true })
 vim.keymap.set("n", "[;", "<c-o>", { noremap = true, silent = true })
 vim.keymap.set("n", "];", "<c-i>", { noremap = true, silent = true })
-vim.keymap.set("n", "<c-s-k>", "kzz", { noremap = true, silent = true })
-vim.keymap.set("n", "<c-s-j>", "jzz", { noremap = true, silent = true })
 vim.keymap.set("i", "<c-h>", "<left>", { noremap = true, silent = true })
 vim.keymap.set("i", "<c-j>", "<down>", { noremap = true, silent = true })
 vim.keymap.set("i", "<c-k>", "<up>", { noremap = true, silent = true })
 vim.keymap.set("i", "<c-l>", "<right>", { noremap = true, silent = true })
-vim.keymap.set("c", "<c-h>", "<left>", { noremap = true, silent = true })
-vim.keymap.set("c", "<c-j>", "<down>", { noremap = true, silent = true })
-vim.keymap.set("c", "<c-k>", "<up>", { noremap = true, silent = true })
-vim.keymap.set("c", "<c-l>", "<right>", { noremap = true, silent = true })
+vim.keymap.set("c", "<c-h>", feedkeys("<left>"), { noremap = true, silent = true })
+vim.keymap.set("c", "<c-j>", feedkeys("<down>"), { noremap = true, silent = true })
+vim.keymap.set("c", "<c-k>", feedkeys("<up>"), { noremap = true, silent = true })
+vim.keymap.set("c", "<c-l>", feedkeys("<right>"), { noremap = true, silent = true })
+vim.keymap.set("t", "<c-w>", [[<c-\><c-n><c-w>]], { noremap = true, silent = true })
 vim.keymap.set("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
 vim.keymap.set("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 vim.keymap.set("n", "<leader><tab>n", "<cmd>tabnew<cr>", { desc = "New Tab" })
