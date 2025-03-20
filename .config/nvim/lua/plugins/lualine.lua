@@ -1,3 +1,11 @@
+local function scrollbar()
+	local sbar = { "▔", "🭶", "🭷", "🭸", "🭹", "🭺", "🭻", "▁" }
+	local curr_line = vim.api.nvim_win_get_cursor(0)[1]
+	local lines = vim.api.nvim_buf_line_count(0)
+	local i = math.floor((curr_line - 1) / lines * #sbar) + 1
+	return string.rep(sbar[i], 2)
+end
+
 return {
 	"nvim-lualine/lualine.nvim",
 	event = "VeryLazy",
@@ -120,14 +128,11 @@ return {
 					},
 				},
 				lualine_y = {
-					{ "location", separator = "|", padding = { left = 1, right = 1 } },
-					{ "progress", padding = { left = 1, right = 1 } },
+					{ "location" },
+					{ "progress", separator = "", padding = { left = 1, right = 1 } },
+					{ scrollbar, padding = { left = 0, right = 0 } },
 				},
-				lualine_z = {
-					function()
-						return " " .. os.date("%R")
-					end,
-				},
+				lualine_z = {},
 			},
 			winbar = {
 				lualine_b = {
