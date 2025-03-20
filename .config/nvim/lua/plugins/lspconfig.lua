@@ -141,5 +141,8 @@ return {
 			}
 			return ret
 		end,
+		vim.diagnostic.config({
+			signs = false,
+		}),
 	},
 }

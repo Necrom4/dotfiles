@@ -14,12 +14,6 @@ return {
     enabled = false,
   },
   {
-    "neovim/nvim-lspconfig",
-    vim.diagnostic.config({
-      signs = false,
-    }),
-  },
-  {
     "folke/noice.nvim",
     opts = {
       lsp = {
