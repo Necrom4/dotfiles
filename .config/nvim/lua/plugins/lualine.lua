@@ -64,15 +64,6 @@ return {
 				lualine_c = {
 					LazyVim.lualine.root_dir(),
 					{
-						"diagnostics",
-						symbols = {
-							error = icons.diagnostics.Error,
-							warn = icons.diagnostics.Warn,
-							info = icons.diagnostics.Info,
-							hint = icons.diagnostics.Hint,
-						},
-					},
-					{
 						LazyVim.lualine.pretty_path(),
 						separator = "",
 						padding = { left = 1, right = 0 },
@@ -125,6 +116,15 @@ return {
 								}
 							end
 						end,
+					},
+					{
+						"diagnostics",
+						symbols = {
+							error = icons.diagnostics.Error,
+							warn = icons.diagnostics.Warn,
+							info = icons.diagnostics.Info,
+							hint = icons.diagnostics.Hint,
+						},
 					},
 				},
 				lualine_y = {
