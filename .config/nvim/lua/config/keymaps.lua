@@ -52,23 +52,8 @@ vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
 -- new file
-vim.keymap.set("n", "<leader>N", "<cmd>enew<cr>", { desc = "New File" })
+vim.keymap.set("n", "<leader>E", "<cmd>enew<cr>", { desc = "New File" })
 
--- Yank filename
-vim.keymap.set("n", "yp", function()
-	vim.fn.setreg('"', vim.fn.expand("%")) -- Set unnamed register to the file name
-	vim.cmd("normal! p") -- Paste the filename
-end, { noremap = true, silent = true })
--- Yank full path
-vim.keymap.set("n", "yP", function()
-	vim.fn.setreg('"', vim.fn.expand("%:p")) -- Set unnamed register to the full path
-	vim.cmd("normal! p") -- Paste the path
-end, { noremap = true, silent = true })
--- Yank cmd
-vim.keymap.set("n", "yc", function()
-	vim.fn.setreg('"', vim.fn.getreg(":")) -- Set unnamed register to the last command
-	vim.cmd("normal! p") -- Paste the command
-end, { noremap = true, silent = true })
 -- default LazyVim disabled keymaps
 vim.keymap.del("s", "<Tab>")
 vim.keymap.del({ "i", "s" }, "<S-Tab>")
