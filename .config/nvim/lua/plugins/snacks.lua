@@ -1,15 +1,3 @@
-local dim_enabled = false
-
-local function toggle_dim()
-	if dim_enabled then
-		Snacks.dim.disable()
-		dim_enabled = false
-	else
-		Snacks.dim.enable()
-		dim_enabled = true
-	end
-end
-
 local function pickDotfiles()
 	local original_git_dir = vim.env.GIT_DIR
 	local home_dir = vim.fn.expand("~")
@@ -142,7 +130,7 @@ return {
 				hl = "Operator",
 			},
 		},
-		input = { enabled = false },
+		input = { enabled = true },
 		lazygit = {
 			enabled = true,
 			theme = {
@@ -158,7 +146,7 @@ return {
 				unstagedChangesColor = { fg = "Operator" },
 			},
 		},
-		notifier = { enabled = false },
+		notifier = { enabled = false, style = "fancy" },
 		picker = {
 			enabled = true,
 			win = {
@@ -180,44 +168,6 @@ return {
 			end,
 		},
 		quickfile = { enabled = true },
-		scope = {
-			enabled = true,
-			keys = {
-				textobject = {
-					is = {
-						min_size = 2, -- minimum size of the scope
-						edge = false, -- inner scope
-						cursor = false,
-						treesitter = { blocks = { enabled = false } },
-						desc = "inner scope",
-					},
-					as = {
-						cursor = false,
-						min_size = 2, -- minimum size of the scope
-						treesitter = { blocks = { enabled = false } },
-						desc = "full scope",
-					},
-				},
-				jump = {
-					["[s"] = {
-						min_size = 1, -- allow single line scopes
-						bottom = false,
-						cursor = false,
-						edge = true,
-						treesitter = { blocks = { enabled = false } },
-						desc = "jump to top edge of scope",
-					},
-					["]s"] = {
-						min_size = 1, -- allow single line scopes
-						bottom = true,
-						cursor = false,
-						edge = true,
-						treesitter = { blocks = { enabled = false } },
-						desc = "jump to bottom edge of scope",
-					},
-				},
-			},
-		},
 		scroll = { enabled = true },
 		statuscolumn = {
 			left = { "git" }, -- priority of signs on the left (high to low)
