@@ -1,10 +1,10 @@
-local function pickDotfiles()
+local function switchToDotfiles(cmd)
 	local original_git_dir = vim.env.GIT_DIR
 	local home_dir = vim.fn.expand("~")
 	local git_dir = vim.fn.expand("~/.local/share/yadm/repo.git") -- Hardcoded for speed
 
 	vim.env.GIT_DIR = git_dir
-	Snacks.dashboard.pick("git_files", { cwd = home_dir })
+	cmd(home_dir)
 	vim.schedule(function()
 		vim.env.GIT_DIR = original_git_dir
 	end)
@@ -19,6 +19,14 @@ return {
 		{ "<leader>f<leader>", ":lua Snacks.picker()<CR>", desc = "Open Picker", silent = true },
 		{ "<leader>fs", ":lua Snacks.picker.smart()<CR>", desc = "Open Smart Picker", silent = true },
 		{ "<leader>f=", ":lua Snacks.picker.resume()<CR>", desc = "Resume Picker", silent = true },
+		{
+			"<leader>gy",
+			function()
+				switchToDotfiles(Snacks.lazygit)
+			end,
+			desc = "Open Lazygit (Yadm)",
+			silent = true,
+		},
 		{ "<leader>tf", ":lua Snacks.terminal('zsh')<CR>", desc = "Open Floating Terminal", silent = true },
 		{ "<leader>tt", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
 		{
@@ -76,7 +84,9 @@ return {
 						key = "c",
 						desc = "Config",
 						action = function()
-							pickDotfiles()
+							switchToDotfiles(function(home_dir)
+								Snacks.dashboard.pick("git_files", { cwd = home_dir })
+							end)
 						end,
 					},
 					{ icon = " ", key = "l", desc = "Lazy Config", action = ":lua Snacks.picker.lazy()" },
