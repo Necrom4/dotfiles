@@ -31,8 +31,20 @@ return {
 		{ "<leader>f<leader>", ":lua Snacks.picker()<CR>", desc = "Open Picker", silent = true },
 		{ "<leader>fs", ":lua Snacks.picker.smart()<CR>", desc = "Open Smart Picker", silent = true },
 		{ "<leader>f=", ":lua Snacks.picker.resume()<CR>", desc = "Resume Picker", silent = true },
-		{ "<leader>T", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
-		{ "<leader>t", ":lua Snacks.terminal('zsh')<CR>", desc = "Open Terminal", silent = true },
+		{ "<leader>tf", ":lua Snacks.terminal('zsh')<CR>", desc = "Open Floating Terminal", silent = true },
+		{ "<leader>tt", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
+		{
+			"<leader>tc",
+			":lua Snacks.terminal(nil, { cwd = vim.fn.expand('%:p:h') })<CR>",
+			desc = "Open Terminal (Current Dir)",
+			silent = true,
+		},
+		{
+			"<leader>tr",
+			":lua Snacks.terminal(nil, { cwd = LazyVim.root() })<CR>",
+			desc = "Open Terminal (Root Dir)",
+			silent = true,
+		},
 		{
 			"<leader>fn",
 			function()
