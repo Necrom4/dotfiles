@@ -131,6 +131,9 @@ export EDITOR="nvim"
 
 alias vim="nvim"
 alias e="nvim"
+if command -v batcat &> /dev/null; then
+  alias cat="batcat"
+fi
 alias ls='eza -h --icons=always'
 alias ll='ls -l'
 alias la='ls -A'
