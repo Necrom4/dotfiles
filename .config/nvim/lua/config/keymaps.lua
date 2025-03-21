@@ -48,6 +48,7 @@ vim.keymap.set("c", "<c-h>", feedkeys("<left>"), { noremap = true, silent = true
 vim.keymap.set("c", "<c-j>", feedkeys("<down>"), { noremap = true, silent = true })
 vim.keymap.set("c", "<c-k>", feedkeys("<up>"), { noremap = true, silent = true })
 vim.keymap.set("c", "<c-l>", feedkeys("<right>"), { noremap = true, silent = true })
+vim.keymap.set("t", "<c-q>", [[<c-\><c-n>:q<cr>]], { noremap = true, silent = true })
 vim.keymap.set("t", "<c-w>", [[<c-\><c-n><c-w>]], { noremap = true, silent = true })
 vim.keymap.set("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
 vim.keymap.set("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
