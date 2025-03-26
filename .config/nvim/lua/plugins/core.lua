@@ -97,10 +97,10 @@ return {
 			spec = {
 				{
 					mode = { "n", "v" },
-					-- { "<leader>c", group = "code" },
 					{ "<leader>d", group = "diff", icon = { icon = " ", color = "red" } },
-					-- { "<leader>/", group = "search" },
-					{ "<leader>u", group = "ui", icon = { icon = "󰙵 ", color = "cyan" } },
+					{ "<leader>r", group = "replace", icon = { icon = "󰛔 ", color = "red" } },
+					{ "<leader>rb", group = "replace multi-buffer", icon = { icon = "󰛔 ", color = "red" } },
+					{ "<leader>rv", group = "replace selection", icon = { icon = "󰛔 ", color = "red" } },
 					{ "<leader>t", group = "terminal", icon = { icon = " ", color = "green" } },
 					-- { "ys", group = "surround" },
 				},
