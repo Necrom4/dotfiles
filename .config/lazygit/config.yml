@@ -13,28 +13,48 @@ git:
   branchLogCmd: git log --graph --color=always --format=format:'%C(#FF9E64)%>|(17)%h%C(reset) %C(#1ABC9C)[%ar]%C(reset)%x09%C(#DB4B4B)%d%C(reset) %C(#C0CAF5)%s%C(reset) %C(#7DCFFF)- %an%C(reset)'
   allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#FF9E64)%>|(17)%h%C(reset) %C(#1ABC9C)[%ar]%C(reset)%x09%C(#DB4B4B)%d%C(reset) %C(#C0CAF5)%s%C(reset) %C(#7DCFFF)- %an%C(reset)'
 customCommands:
-  - key: '<c-p>'
-    description: 'PR commands'
+  - key: '<c-r>'
+    description: 'MR commands'
     commandMenu:
-    - command: 'az repos pr list --output table'
+    - command: |
+        if git remote -v | grep -q 'github.com'; then
+          gh pr list
+        elif git remote -v | grep -q 'gitlab.com'; then
+          glab mr list
+        else
+          az repos pr list --output table
+        fi
       context: "localBranches"
-      description: "Show all PRs details"
+      description: "Show all MRs details"
       showOutput: true
       stream: false
       outputTitle: "PRs details"
-      loadingText: "Fetching PRs details..."
-    - command: >
-        az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv |
-        xargs az repos pr show --output table --id
+      loadingText: "Fetching MRs details..."
+    - command: |
+        if git remote -v | grep -q 'github.com'; then
+          gh pr view {{.SelectedLocalBranch.UpstreamBranch}}
+        elif git remote -v | grep -q 'gitlab.com'; then
+          glab mr view {{.SelectedLocalBranch.UpstreamBranch}}
+        else
+          az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv |
+          xargs az repos pr show --output table --id
+        fi
       context: "localBranches"
-      description: "Show PR details"
+      description: "Show MR details"
       showOutput: true
-      outputTitle: "PR details"
-      loadingText: "Fetching PR details..."
-    - command: 'az repos pr show --id $(az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv) --open'
+      outputTitle: "MR details"
+      loadingText: "Fetching MR details..."
+    - command: |
+        if git remote -v | grep -q 'github.com'; then
+          gh pr view -w {{.SelectedLocalBranch.UpstreamBranch}}
+        elif git remote -v | grep -q 'gitlab.com'; then
+          glab mr view -w {{.SelectedLocalBranch.UpstreamBranch}}
+        else
+          az repos pr show --id $(az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv) --open
+        fi
       context: "localBranches"
-      description: "Open PR in Azure DevOps"
-      loadingText: "Opening PR in Azure DevOps..."
+      description: "Open MR in web browser"
+      loadingText: "Opening MR..."
       stream: true
   - key: "<c-c>"
     context: "global"
@@ -111,7 +131,7 @@ customCommands:
         key: 'BranchType'
         options:
           - name: 'feature'
-            description: 'A new feature under developmentfeature'
+            description: 'A new feature under development'
             value: 'feature'
           - name: 'bugfix'
             description: 'A fix for a specific bug or issue'
