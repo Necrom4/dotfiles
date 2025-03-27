@@ -69,10 +69,5 @@ vim.keymap.set("n", "<leader>E", "<cmd>enew<cr>", { desc = "New File" })
 vim.keymap.del("s", "<Tab>")
 vim.keymap.del({ "i", "s" }, "<S-Tab>")
 
--- LAZYDOCKER
-vim.api.nvim_create_user_command("Lazydocker", function()
-	Snacks.terminal("lazydocker")
-end, {})
-
 -- NEORG
 vim.keymap.set("n", "gt", "<Plug>(neorg.qol.todo-items.todo.task-cycle)", {})
