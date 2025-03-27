@@ -141,14 +141,9 @@ return {
 			enabled = true,
 		},
 		indent = {
-			indent = {
-				enabled = false,
-			},
-			scope = {
-				enabled = true,
-				only_current = true,
-				hl = "Operator",
-			},
+			-- indent = {
+			-- 	enabled = false,
+			-- },
 		},
 		input = { enabled = true },
 		lazygit = {
