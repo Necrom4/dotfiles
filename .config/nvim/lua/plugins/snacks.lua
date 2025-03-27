@@ -17,6 +17,16 @@ return {
 	keys = {
 		{ "<leader>e", ":lua Snacks.dashboard.open()<CR>", desc = "Open Dashboard", silent = true },
 		{ "<leader>f<leader>", ":lua Snacks.picker()<CR>", desc = "Open Picker", silent = true },
+		{
+			"<leader>fc",
+			function()
+				switchToDotfiles(function(home_dir)
+					Snacks.dashboard.pick("git_files", { cwd = home_dir })
+				end)
+			end,
+			desc = "Find Config Files",
+			silent = true,
+		},
 		{ "<leader>fs", ":lua Snacks.picker.smart()<CR>", desc = "Open Smart Picker", silent = true },
 		{ "<leader>f=", ":lua Snacks.picker.resume()<CR>", desc = "Resume Picker", silent = true },
 		{
