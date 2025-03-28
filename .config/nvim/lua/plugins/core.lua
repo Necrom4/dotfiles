@@ -21,7 +21,7 @@ return {
 			},
 		},
 		keys = {
-			{ "<leader>N", "", desc = "+noice" },
+			{ "<leader>n", "", desc = "+noice" },
 			{
 				"<S-Enter>",
 				function()
@@ -31,35 +31,35 @@ return {
 				desc = "Redirect Cmdline",
 			},
 			{
-				"<leader>Nl",
+				"<leader>nl",
 				function()
 					require("noice").cmd("last")
 				end,
 				desc = "Noice Last Message",
 			},
 			{
-				"<leader>Nh",
+				"<leader>nh",
 				function()
 					require("noice").cmd("history")
 				end,
 				desc = "Noice History",
 			},
 			{
-				"<leader>Na",
+				"<leader>na",
 				function()
 					require("noice").cmd("all")
 				end,
 				desc = "Noice All",
 			},
 			{
-				"<leader>Nd",
+				"<leader>nd",
 				function()
 					require("noice").cmd("dismiss")
 				end,
 				desc = "Dismiss All",
 			},
 			{
-				"<leader>Nt",
+				"<leader>nt",
 				function()
 					require("noice").cmd("pick")
 				end,

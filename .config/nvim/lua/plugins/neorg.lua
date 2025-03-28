@@ -19,7 +19,7 @@ return {
 	cmd = "Neorg",
 	keys = {
 		{
-			"<leader>n",
+			"<leader>N",
 			':lua Snacks.win({ width = 0.4, height = 0.8, position = "float", border = "rounded", wo = { wrap = true, spell = false, number = true, relativenumber = true, foldenable = false, foldcolumn = "0" }, on_win = function(win) vim.cmd("Neorg workspace notes") end, })<CR>',
 			desc = "Open Notes",
 			silent = true,
