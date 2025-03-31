@@ -144,7 +144,7 @@ return {
 					{ "<leader>rb", group = "replace multi-buffer", icon = { icon = "󰛔 ", color = "red" } },
 					{ "<leader>rv", group = "replace selection", icon = { icon = "󰛔 ", color = "red" } },
 					{ "<leader>t", group = "terminal", icon = { icon = " ", color = "green" } },
-					-- { "ys", group = "surround" },
+					{ "gs", group = "surround", icon = { icon = "󰅲 ", color = "yellow" } },
 				},
 			},
 		},
