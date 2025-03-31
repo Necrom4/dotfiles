@@ -9,23 +9,23 @@ end
 -- SAVE/QUIT
 
 -- Save the current file
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-s>", "<cmd>w<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-s>", "<cmd>w<cr>", { noremap = true, silent = true })
 -- Force save the current file with force
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-s><c-s>", "<cmd>w!<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-s><c-s>", "<cmd>w!<cr>", { noremap = true, silent = true })
 -- Save all files
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-s><c-a>", "<cmd>wa<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-s><c-a>", "<cmd>wa<cr>", { noremap = true, silent = true })
 -- Save and quit
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-s><c-q>", "<cmd>wq<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-s><c-q>", "<cmd>wq<cr>", { noremap = true, silent = true })
 -- Save all files and quit
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-s><c-a><c-q>", "<cmd>waq<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-s><c-a><c-q>", "<cmd>waq<cr>", { noremap = true, silent = true })
 -- Quit the current file
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-q>", "<cmd>q<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-q>", "<cmd>q<cr>", { noremap = true, silent = true })
 -- Force quit the current file
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-q><c-q>", "<cmd>q!<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-q><c-q>", "<cmd>q!<cr>", { noremap = true, silent = true })
 -- Quit all files
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-q><c-a>", "<cmd>qa<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-q><c-a>", "<cmd>qa<cr>", { noremap = true, silent = true })
 -- Force quit all file
-vim.keymap.set({ "i", "x", "n", "s" }, "<c-q><c-a><c-q>", "<cmd>qa!<cr><esc>", { noremap = true, silent = true })
+vim.keymap.set({ "i", "x", "n", "s" }, "<c-q><c-a><c-q>", "<cmd>qa!<cr>", { noremap = true, silent = true })
 
 -- NAVIGATION
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
