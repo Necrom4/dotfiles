@@ -164,6 +164,9 @@ return {
 		notifier = { enabled = false, style = "fancy" },
 		picker = {
 			enabled = true,
+			matcher = {
+				frecency = true,
+			},
 			win = {
 				input = {
 					keys = {
