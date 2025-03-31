@@ -24,6 +24,7 @@ require("lazy").setup({
 		{ "LazyVim/LazyVim", import = "lazyvim.plugins" },
 		-- import/override with your plugins
 		{ import = "lazyvim.plugins.extras.coding.luasnip" },
+		{ import = "lazyvim.plugins.extras.editor.dial" },
 		{ import = "plugins" },
 	},
 	defaults = {
