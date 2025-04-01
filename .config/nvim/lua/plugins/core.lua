@@ -169,6 +169,9 @@ return {
 					{ "gs", group = "surround", icon = { icon = "󰅲 ", color = "yellow" } },
 				},
 			},
+			plugins = {
+				registers = false,
+			},
 		},
 	},
 }

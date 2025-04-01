@@ -17,6 +17,7 @@ return {
 	keys = {
 		{ "<leader><leader>", ":lua Snacks.picker()<CR>", desc = "Open Picker", silent = true },
 		{ "<leader>.", ":lua Snacks.picker.resume()<CR>", desc = "Resume Picker", silent = true },
+		{ "<leader>'", ":lua Snacks.picker.registers()<CR>", desc = "Resume Picker", silent = true },
 		{ "<leader>e", ":lua Snacks.dashboard.open()<CR>", desc = "Open Dashboard", silent = true },
 		{
 			"<leader>fc",
