@@ -48,6 +48,14 @@ return {
 			silent = true,
 		},
 		{
+			"<leader>fb",
+			function()
+				Snacks.picker.buffers({ current = false })
+			end,
+			desc = "Buffers",
+			silent = true,
+		},
+		{
 			"<leader>fc",
 			function()
 				switchToDotfiles(function(home_dir)
