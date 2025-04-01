@@ -15,10 +15,38 @@ return {
 	priority = 1000,
 	lazy = false,
 	keys = {
-		{ "<leader><leader>", ":lua Snacks.picker()<CR>", desc = "Open Picker", silent = true },
-		{ "<leader>.", ":lua Snacks.picker.resume()<CR>", desc = "Resume Picker", silent = true },
-		{ "<leader>'", ":lua Snacks.picker.registers()<CR>", desc = "Resume Picker", silent = true },
-		{ "<leader>e", ":lua Snacks.dashboard.open()<CR>", desc = "Open Dashboard", silent = true },
+		{
+			"<leader><leader>",
+			function()
+				Snacks.picker()
+			end,
+			desc = "Open Picker",
+			silent = true,
+		},
+		{
+			"<leader>.",
+			function()
+				Snacks.picker.resume()
+			end,
+			desc = "Resume Picker",
+			silent = true,
+		},
+		{
+			"<leader>'",
+			function()
+				Snacks.picker.registers()
+			end,
+			desc = "Resume Picker",
+			silent = true,
+		},
+		{
+			"<leader>e",
+			function()
+				Snacks.dashboard.open()
+			end,
+			desc = "Open Dashboard",
+			silent = true,
+		},
 		{
 			"<leader>fc",
 			function()
@@ -29,7 +57,14 @@ return {
 			desc = "Find Config Files",
 			silent = true,
 		},
-		{ "<leader>fs", ":lua Snacks.picker.smart()<CR>", desc = "Open Smart Picker", silent = true },
+		{
+			"<leader>fs",
+			function()
+				Snacks.picker.smart()
+			end,
+			desc = "Open Smart Picker",
+			silent = true,
+		},
 		{
 			"<leader>gy",
 			function()
@@ -38,17 +73,35 @@ return {
 			desc = "Open Lazygit (Yadm)",
 			silent = true,
 		},
-		{ "<leader>tf", ":lua Snacks.terminal('zsh')<CR>", desc = "Open Floating Terminal", silent = true },
-		{ "<leader>tt", ":lua Snacks.terminal()<CR>", desc = "Open Terminal", silent = true },
+		{
+			"<leader>tf",
+			function()
+				Snacks.terminal("zsh")
+			end,
+			desc = "Open Floating Terminal",
+			silent = true,
+		},
+		{
+			"<leader>tt",
+			function()
+				Snacks.terminal()
+			end,
+			desc = "Open Terminal",
+			silent = true,
+		},
 		{
 			"<leader>tc",
-			":lua Snacks.terminal(nil, { cwd = vim.fn.expand('%:p:h') })<CR>",
+			function()
+				Snacks.terminal(nil, { cwd = vim.fn.expand("%:p:h") })
+			end,
 			desc = "Open Terminal (Current Dir)",
 			silent = true,
 		},
 		{
 			"<leader>tr",
-			":lua Snacks.terminal(nil, { cwd = LazyVim.root() })<CR>",
+			function()
+				Snacks.terminal(nil, { cwd = LazyVim.root() })
+			end,
 			desc = "Open Terminal (Root Dir)",
 			silent = true,
 		},
@@ -59,7 +112,14 @@ return {
 			end,
 			desc = "Notification History",
 		},
-		{ "<leader>S", ":lua Snacks.scratch()<CR>", desc = "Open Scratch", silent = true },
+		{
+			"<leader>S",
+			function()
+				Snacks.scratch()
+			end,
+			desc = "Open Scratch",
+			silent = true,
+		},
 	},
 	opts = {
 		bigfile = { enabled = true },
@@ -77,18 +137,29 @@ return {
 ╰────────────────────────────────────────────────────────╯]],
 				keys = {
 					{ icon = " ", key = "e", desc = "New File", action = ":ene | startinsert" },
-					{ icon = "󰥨 ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+					{
+						icon = "󰥨 ",
+						key = "f",
+						desc = "Find File",
+						action = function()
+							Snacks.dashboard.pick("files")
+						end,
+					},
 					{
 						icon = "󰈞 ",
 						key = "g",
 						desc = "Find Text",
-						action = ":lua Snacks.dashboard.pick('live_grep')",
+						action = function()
+							Snacks.dashboard.pick("live_grep")
+						end,
 					},
 					{
 						icon = " ",
 						key = "r",
 						desc = "Recent Files",
-						action = ":lua Snacks.dashboard.pick('oldfiles')",
+						action = function()
+							Snacks.dashboard.pick("oldfiles")
+						end,
 					},
 					{
 						icon = " ",
@@ -100,7 +171,14 @@ return {
 							end)
 						end,
 					},
-					{ icon = " ", key = "l", desc = "Lazy Config", action = ":lua Snacks.picker.lazy()" },
+					{
+						icon = " ",
+						key = "l",
+						desc = "Lazy Config",
+						action = function()
+							Snacks.picker.lazy()
+						end,
+					},
 					{ icon = " ", key = "s", desc = "Restore Session", section = "session" },
 					{ icon = " ", key = "q", desc = "Quit", action = ":quit" },
 				},
