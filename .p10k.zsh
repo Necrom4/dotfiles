@@ -203,9 +203,9 @@
   # Transparent background.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_BACKGROUND=
   # Green prompt symbol if the last command succeeded.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#7AA2F7'
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#82AAFF'
   # Red prompt symbol if the last command failed.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#565F89'
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#C53B53'
   # Default prompt symbol.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIINS_CONTENT_EXPANSION=''
   # Prompt symbol in command vi mode.
@@ -224,15 +224,15 @@
 
   ##################################[ dir: current directory ]##################################
   # Default current directory color.
-  typeset -g POWERLEVEL9K_DIR_FOREGROUND='#828BB8'
-  typeset -g POWERLEVEL9K_DIR_BACKGROUND='#1E2030'
+  typeset -g POWERLEVEL9K_DIR_FOREGROUND='#636DA6'
+  typeset -g POWERLEVEL9K_DIR_BACKGROUND='#222436'
   # If directory is too long, shorten some of its segments to the shortest possible unique
   # prefix. The shortened directory can be tab-completed to the original.
   typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
   # Replace removed segment suffixes with this symbol.
   typeset -g POWERLEVEL9K_SHORTEN_DELIMITER=
   # Color of the shortened directory segments.
-  typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND='#7AA2F7'
+  typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND='#82AAFF'
   # Color of the anchor directory segments. Anchor segments are never shortened. The first
   # segment is always an anchor.
   typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND='#C8D3F5'
@@ -538,21 +538,21 @@
   # it will signify success by turning green.
   typeset -g POWERLEVEL9K_STATUS_OK=false
   typeset -g POWERLEVEL9K_STATUS_OK_VISUAL_IDENTIFIER_EXPANSION='󰸞'
-  typeset -g POWERLEVEL9K_STATUS_OK_FOREGROUND='#9ECE6A'
+  typeset -g POWERLEVEL9K_STATUS_OK_FOREGROUND='#C3E88D'
   typeset -g POWERLEVEL9K_STATUS_OK_BACKGROUND=0
 
   # Status when some part of a pipe command fails but the overall exit status is zero. It may look
   # like this: 1|0.
   typeset -g POWERLEVEL9K_STATUS_OK_PIPE=true
   typeset -g POWERLEVEL9K_STATUS_OK_PIPE_VISUAL_IDENTIFIER_EXPANSION='󰸞'
-  typeset -g POWERLEVEL9K_STATUS_OK_PIPE_FOREGROUND='#7AA2F7'
+  typeset -g POWERLEVEL9K_STATUS_OK_PIPE_FOREGROUND='#82AAFF'
   typeset -g POWERLEVEL9K_STATUS_OK_PIPE_BACKGROUND=0
 
   # Status when it's just an error code (e.g., '1'). No need to show it if prompt_char is enabled as
   # it will signify error by turning red.
   typeset -g POWERLEVEL9K_STATUS_ERROR=true
   typeset -g POWERLEVEL9K_STATUS_ERROR_VISUAL_IDENTIFIER_EXPANSION='󱎘'
-  typeset -g POWERLEVEL9K_STATUS_ERROR_FOREGROUND='#DB4B4B'
+  typeset -g POWERLEVEL9K_STATUS_ERROR_FOREGROUND='#C53B53'
   typeset -g POWERLEVEL9K_STATUS_ERROR_BACKGROUND=''
 
   # Status when the last command was terminated by a signal.
@@ -574,7 +574,7 @@
   # Show this many fractional digits. Zero means round to seconds.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=1
   # Execution time color.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#7AA2F7'
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#82AAFF'
   # Duration format: 1d 2h 3m 4s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FORMAT='d h m s'
   # Custom icon.
@@ -586,7 +586,7 @@
   # Don't show the number of background jobs.
   typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE=true
   # Background jobs color.
-  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND='#FF9E64'
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND='#FF966C'
   # Custom icon.
   # typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
@@ -831,15 +831,15 @@
   # Text and color for overtype (a.k.a. overwrite and replace) vi mode.
   typeset -g POWERLEVEL9K_VI_OVERWRITE_MODE_STRING='REPLACE'
   typeset -g POWERLEVEL9K_VI_MODE_OVERWRITE_FOREGROUND=0
-  typeset -g POWERLEVEL9K_VI_MODE_OVERWRITE_BACKGROUND='#FF75FF'
+  typeset -g POWERLEVEL9K_VI_MODE_OVERWRITE_BACKGROUND='#FF757F'
   # Text and color for insert vi mode.
   typeset -g POWERLEVEL9K_VI_INSERT_MODE_STRING='INSERT'
   typeset -g POWERLEVEL9K_VI_MODE_INSERT_FOREGROUND=0
-  typeset -g POWERLEVEL9K_VI_MODE_INSERT_BACKGROUND='#7AA2F7'
+  typeset -g POWERLEVEL9K_VI_MODE_INSERT_BACKGROUND='#82AAFF'
 
   ######################################[ ram: free RAM ]#######################################
   # RAM color.
-  typeset -g POWERLEVEL9K_RAM_FOREGROUND='#7AA2F7'
+  typeset -g POWERLEVEL9K_RAM_FOREGROUND='#82AAFF'
   # Custom icon.
   typeset -g POWERLEVEL9K_RAM_VISUAL_IDENTIFIER_EXPANSION=
 
@@ -943,7 +943,7 @@
 
   ##################################[ context: user@hostname ]##################################
   # Context color when running with privileges.
-  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND='#FF9E64'
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND='#FF966C'
   # Context color in SSH without privileges.
   typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND=180
   # Default context color (no privileges, no SSH).
@@ -1677,7 +1677,7 @@
 
   ####################################[ time: current time ]####################################
   # Current time color.
-  typeset -g POWERLEVEL9K_TIME_FOREGROUND='#7AA2F7'
+  typeset -g POWERLEVEL9K_TIME_FOREGROUND='#82AAFF'
   # Format for the current time: 09:51:02. See `man 3 strftime`.
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M:%S}'
   # If set to true, time will update when you hit enter. This way prompts for the past

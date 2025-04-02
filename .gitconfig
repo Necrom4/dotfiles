@@ -13,13 +13,13 @@
   renames = true
   algorithm = histogram
 [color "diff"]
-  context = "#565F89"
-  commit = "#1ABC9C"
-  newMoved = "#F9F1A5"
-  oldMoved = "#E0AF68"
+  context = "#636DA6"
+  commit = "#3BA08E"
+  newMoved = "#FFC777"
+  oldMoved = "#FF966C"
   frag = "#1ABC9C"
-  meta = "#C0CAF5"
-  new = "#9ECE6A"
-  old = "#DB4B4B"
+  meta = "#C8D3F5"
+  new = "#C3E88D"
+  old = "#E26A75"
 [column]
   ui = auto

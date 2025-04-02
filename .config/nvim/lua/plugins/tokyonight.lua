@@ -3,6 +3,7 @@ return {
 	lazy = false,
 	priority = 1000,
 	opts = {
+		style = "moon",
 		transparent = true,
 		styles = {
 			floats = "transparent",
@@ -10,7 +11,7 @@ return {
 		lualine_bold = true,
 		on_highlights = function(hl, c)
 			hl.WinSeparator = {
-				fg = "#C0CAF5",
+				fg = "#C8D3F5",
 			}
 			hl.WhichKeyNormal = {
 				bg = "none",

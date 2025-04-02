@@ -10,8 +10,8 @@ gui:
   spinner:
     frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 git:
-  branchLogCmd: git log --graph --color=always --format=format:'%C(#FF9E64)%>|(17)%h%C(reset) %C(#1ABC9C)[%ar]%C(reset)%x09%C(#DB4B4B)%d%C(reset) %C(#C0CAF5)%s%C(reset) %C(#7DCFFF)- %an%C(reset)'
-  allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#FF9E64)%>|(17)%h%C(reset) %C(#1ABC9C)[%ar]%C(reset)%x09%C(#DB4B4B)%d%C(reset) %C(#C0CAF5)%s%C(reset) %C(#7DCFFF)- %an%C(reset)'
+  branchLogCmd: git log --graph --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
+  allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
 customCommands:
   - key: '<c-r>'
     description: 'MR commands'
