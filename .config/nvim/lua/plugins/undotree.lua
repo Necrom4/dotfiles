@@ -8,7 +8,7 @@ return {
 	end,
 	keys = {
 		{
-			"<leader>uu",
+			"<leader>du",
 			function()
 				-- Check if an UndoTree buffer exists and is visible
 				local undotree_open = false

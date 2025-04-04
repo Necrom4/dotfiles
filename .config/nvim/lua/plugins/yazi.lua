@@ -1,6 +1,6 @@
 return {
-  "mikavilpas/yazi.nvim",
-  keys = {
-    { "<leader>x", mode = { "n", "v" }, "<cmd>Yazi<cr>", desc = "Open yazi at the current file", },
-  },
+	"mikavilpas/yazi.nvim",
+	keys = {
+		{ "<leader>ef", mode = { "n", "v" }, "<cmd>Yazi<cr>", desc = "Buffer Dir (floating)" },
+	},
 }

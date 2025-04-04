@@ -20,7 +20,7 @@ return {
 			function()
 				Snacks.picker()
 			end,
-			desc = "Open Picker",
+			desc = "Snacks Picker",
 			silent = true,
 		},
 		{
@@ -32,19 +32,46 @@ return {
 			silent = true,
 		},
 		{
-			"<leader>'",
+			'<leader>"',
 			function()
 				Snacks.picker.registers()
 			end,
-			desc = "Resume Picker",
+			desc = "Registers Picker",
+			silent = true,
+		},
+		{
+			"<leader><cr>",
+			function()
+				Snacks.dashboard.open()
+			end,
+			desc = "Dashboard",
+			silent = true,
+		},
+		{
+			"<leader>bn",
+			function()
+				vim.cmd("enew")
+			end,
+			desc = "New Buffer",
 			silent = true,
 		},
 		{
 			"<leader>e",
+		},
+		{
+			"<leader>ee",
 			function()
-				Snacks.dashboard.open()
+				Snacks.picker.explorer({ cwd = LazyVim.root() })
 			end,
-			desc = "Open Dashboard",
+			desc = "Root Dir",
+			silent = true,
+		},
+		{
+			"<leader>eE",
+			function()
+				Snacks.picker.explorer()
+			end,
+			desc = "cwd",
 			silent = true,
 		},
 		{
@@ -62,7 +89,15 @@ return {
 					Snacks.dashboard.pick("git_files", { cwd = home_dir })
 				end)
 			end,
-			desc = "Find Config Files",
+			desc = "Find Config File",
+			silent = true,
+		},
+		{
+			"<leader>fl",
+			function()
+				Snacks.picker.lazy()
+			end,
+			desc = "Find Lazy Config Files",
 			silent = true,
 		},
 		{
@@ -70,7 +105,15 @@ return {
 			function()
 				Snacks.picker.smart()
 			end,
-			desc = "Open Smart Picker",
+			desc = "Smart Picker",
+			silent = true,
+		},
+		{
+			"<leader>fy",
+			function()
+				Snacks.picker.yanky()
+			end,
+			desc = "Yanky Picker",
 			silent = true,
 		},
 		{
@@ -78,54 +121,74 @@ return {
 			function()
 				switchToDotfiles(Snacks.lazygit)
 			end,
-			desc = "Open Lazygit (Yadm)",
+			desc = "Lazygit (Yadm)",
 			silent = true,
+		},
+		{
+			"<leader>hc",
+			function()
+				Snacks.picker.command_history()
+			end,
+			desc = "Command",
+		},
+		{
+			"<leader>hs",
+			function()
+				Snacks.picker.search_history()
+			end,
+			desc = "Search",
+		},
+		{
+			"<leader>sc",
+			function()
+				Snacks.picker.commands()
+			end,
+			desc = "Commands",
+		},
+		{
+			"<leader>sb",
+			function()
+				Snacks.picker.grep_buffers()
+			end,
+			desc = "Buffers",
+		},
+		{
+			"<leader>sl",
+			function()
+				Snacks.picker.lines()
+			end,
+			desc = "Lines",
 		},
 		{
 			"<leader>tf",
 			function()
-				Snacks.terminal("zsh")
+				Snacks.terminal("zsh", { cwd = vim.fn.expand("%:p:h") })
 			end,
-			desc = "Open Floating Terminal",
+			desc = "Buffer Dir (floating)",
 			silent = true,
 		},
 		{
 			"<leader>tt",
 			function()
-				Snacks.terminal()
-			end,
-			desc = "Open Terminal",
-			silent = true,
-		},
-		{
-			"<leader>tc",
-			function()
-				Snacks.terminal(nil, { cwd = vim.fn.expand("%:p:h") })
-			end,
-			desc = "Open Terminal (Current Dir)",
-			silent = true,
-		},
-		{
-			"<leader>tr",
-			function()
 				Snacks.terminal(nil, { cwd = LazyVim.root() })
 			end,
-			desc = "Open Terminal (Root Dir)",
+			desc = "Root Dir",
 			silent = true,
 		},
 		{
-			"<leader>fn",
+			"<leader>tT",
 			function()
-				Snacks.picker.notifications()
+				Snacks.terminal()
 			end,
-			desc = "Notification History",
+			desc = "cwd",
+			silent = true,
 		},
 		{
-			"<leader>S",
+			"<leader>ns",
 			function()
 				Snacks.scratch()
 			end,
-			desc = "Open Scratch",
+			desc = "Scratch",
 			silent = true,
 		},
 	},
@@ -144,7 +207,7 @@ return {
 │ ╚═╝  ╚═══╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ │
 ╰────────────────────────────────────────────────────────╯]],
 				keys = {
-					{ icon = " ", key = "e", desc = "New File", action = ":ene | startinsert" },
+					{ icon = " ", key = "n", desc = "New File", action = ":ene" },
 					{
 						icon = "󰥨 ",
 						key = "f",
