@@ -64,9 +64,6 @@ vim.keymap.set("n", "<leader><tab>}", "<cmd>tablast<cr>", { desc = "Last Tab" })
 vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
--- new file
-vim.keymap.set("n", "<leader>E", "<cmd>enew<cr>", { desc = "New File" })
-
 -- default LazyVim disabled keymaps
 vim.keymap.del("s", "<Tab>")
 vim.keymap.del({ "i", "s" }, "<S-Tab>")
