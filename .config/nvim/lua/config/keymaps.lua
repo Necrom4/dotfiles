@@ -70,6 +70,3 @@ vim.keymap.set("n", "<leader>E", "<cmd>enew<cr>", { desc = "New File" })
 -- default LazyVim disabled keymaps
 vim.keymap.del("s", "<Tab>")
 vim.keymap.del({ "i", "s" }, "<S-Tab>")
-
--- NEORG
-vim.keymap.set("n", "gt", "<Plug>(neorg.qol.todo-items.todo.task-cycle)", {})
