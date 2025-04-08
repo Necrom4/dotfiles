@@ -10,6 +10,9 @@ return {
 		},
 		lualine_bold = true,
 		on_highlights = function(hl, c)
+			hl.CursorLine = {
+				bg = "none",
+			}
 			hl.WinSeparator = {
 				fg = "#C8D3F5",
 			}
