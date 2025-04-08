@@ -5,22 +5,22 @@ hash = "17a094653b7d0db4ac68ed531d2e1412"
 
 [[plugin.deps]]
 use = "dedukun/relative-motions"
-rev = "8103065"
+rev = "=8103065"
 hash = "9f13f0740fa3a0c18e47ec6fb62ddfaa"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "2bf70d8"
+rev = "=2bf70d8"
 hash = "806cb2842b64e976ba2c65a3e3724518"
 
 [[plugin.deps]]
 use = "boydaihungst/restore"
-rev = "5d22884"
-hash = "8e6fc2d660f661c91e30b10dd1a251b8"
+rev = "328dd88"
+hash = "ad406e4a5ada589211e6ffe8bad3c983"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "2bf70d8"
+rev = "9a09505"
 hash = "2f1053f89d1a301a648ab181d0948e38"
 
 [[plugin.deps]]
@@ -30,18 +30,18 @@ hash = "ee025be766240cc98e671754ac836da3"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
-rev = "b23e3a4"
-hash = "98e5f5af3efd3ba8bc2db0720187cc83"
+rev = "f1c6b69"
+hash = "6e789212eb41d937bab04877ca361099"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "2bf70d8"
+rev = "9a09505"
 hash = "7918aab6a71caf31b58411f789195677"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "2bf70d8"
-hash = "9dce00232a0e0e2502565c7aa2b0ed4e"
+rev = "9a09505"
+hash = "1f3dad061209081a6b04dd6ff2cb06c7"
 
 [[plugin.deps]]
 use = "ahkohd/eza-preview"
@@ -65,7 +65,7 @@ hash = "695b2441885359206812dcd4e810633c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "2bf70d8"
+rev = "9a09505"
 hash = "f0c4b41b5d19a3144958383333eff6e7"
 
 [[plugin.deps]]
