@@ -31,6 +31,10 @@ return {
 				bg = "#4FD6BE",
 				bold = true,
 			}
+			hl["@neorg.markup.verbatim"] = {
+				bg = "#444A73",
+				fg = "#82AAFF",
+			}
 		end,
 	},
 }
