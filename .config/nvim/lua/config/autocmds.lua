@@ -27,21 +27,6 @@ vim.api.nvim_create_autocmd({ "TextYankPost", "FocusGained" }, {
 	end,
 })
 
--- TOGGLE COLUMN NUMBER DISPLAY ON MODE SWITCH
-vim.api.nvim_create_autocmd("InsertEnter", {
-	pattern = "*",
-	callback = function()
-		vim.opt_local.relativenumber = false
-	end,
-})
-
-vim.api.nvim_create_autocmd("InsertLeave", {
-	pattern = "*",
-	callback = function()
-		vim.opt_local.relativenumber = true
-	end,
-})
-
 -- Set embedded templating languages
 vim.cmd([[
   autocmd BufRead,BufNewFile *.tpl.yaml set filetype=helm

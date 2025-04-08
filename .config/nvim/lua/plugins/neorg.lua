@@ -31,7 +31,7 @@ return {
 						wrap = true,
 						spell = false,
 						number = false,
-						relativenumber = true,
+						relativenumber = false,
 						foldenable = false,
 						foldcolumn = "0",
 					},
