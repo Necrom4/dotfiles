@@ -5,13 +5,8 @@ hash = "17a094653b7d0db4ac68ed531d2e1412"
 
 [[plugin.deps]]
 use = "dedukun/relative-motions"
-rev = "=8103065"
-hash = "9f13f0740fa3a0c18e47ec6fb62ddfaa"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:git"
-rev = "=2bf70d8"
-hash = "806cb2842b64e976ba2c65a3e3724518"
+rev = "61ae795"
+hash = "65d576a76597aac2a428dc7ec0eda2ce"
 
 [[plugin.deps]]
 use = "boydaihungst/restore"
@@ -20,13 +15,8 @@ hash = "ad406e4a5ada589211e6ffe8bad3c983"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "9a09505"
+rev = "a1738e8"
 hash = "2f1053f89d1a301a648ab181d0948e38"
-
-[[plugin.deps]]
-use = "KKV9/compress"
-rev = "60b24af"
-hash = "ee025be766240cc98e671754ac836da3"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
@@ -35,12 +25,12 @@ hash = "6e789212eb41d937bab04877ca361099"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "9a09505"
+rev = "a1738e8"
 hash = "7918aab6a71caf31b58411f789195677"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "9a09505"
+rev = "a1738e8"
 hash = "1f3dad061209081a6b04dd6ff2cb06c7"
 
 [[plugin.deps]]
@@ -59,19 +49,19 @@ rev = "3b0eb7c"
 hash = "bfd30c396bbe2af526cb949d97ce3dcf"
 
 [[plugin.deps]]
-use = "wekauwau/yatline-created-time"
-rev = "3c129d6"
-hash = "695b2441885359206812dcd4e810633c"
-
-[[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "9a09505"
+rev = "a1738e8"
 hash = "f0c4b41b5d19a3144958383333eff6e7"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-tokyo-night"
 rev = "19dbd25"
 hash = "5f00a80a79b9f7fd8e24d6fa5dbb3ae"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:git"
+rev = "a1738e8"
+hash = "e0ada736ea676c2bbb3ec705a49526ef"
 
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
