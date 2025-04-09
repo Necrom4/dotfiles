@@ -1,6 +1,8 @@
 [manager]
 prepend_keymap = [
   #defaults
+  { on = "j", run = "arrow 1", desc = "Down" },
+  { on = "k", run = "arrow -1", desc = "Up" },
   { on = "Q", run = "quit", desc = "Quit the process" },
   { on = "q", run = "quit --no-cwd-file", desc = "quit the process without outputting cwd-file" },
   { on = "i", run = "spot", desc = "Spot hovered file" },
@@ -23,6 +25,8 @@ prepend_keymap = [
   { on = [ "+" ], run = "plugin eza-preview --args='--inc-level'", desc = "Increment tree level" },
   { on = [ "_" ], run = "plugin eza-preview --args='--dec-level'", desc = "Decrement tree level" },
   { on = [ "$" ], run = "plugin eza-preview --args='--toggle-follow-symlinks'", desc = "Toggle tree follow symlinks" },
+  #keymap.toml
+  { on = [ "g", "c" ], run = "plugin vcs-files", desc = "Show Git file changes" },
   #relative-motions
   { on = "1", run = "plugin relative-motions 1", desc = "Move in relative steps" },
   { on = "2", run = "plugin relative-motions 2", desc = "Move in relative steps" },
