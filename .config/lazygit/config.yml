@@ -13,6 +13,14 @@ git:
   branchLogCmd: git log --graph --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
   allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
 customCommands:
+  - key: 'D'
+    context: 'remoteBranches'
+    description: 'Delete remote-tracking'
+    command: 'git branch -r -D {{.SelectedRemote.Name}}/{{.SelectedRemoteBranch.Name}}'
+    prompts:
+    - type: 'confirm'
+      title: 'Delete remote-tracking'
+      body: "Delete '{{.SelectedRemote.Name}}/{{.SelectedRemoteBranch.Name}}'?"
   - key: '<c-r>'
     description: 'MR commands'
     commandMenu:
