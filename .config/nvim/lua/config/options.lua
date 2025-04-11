@@ -7,3 +7,8 @@ opt.wrap = false -- Disable line wrap
 
 -- This makes vim act like all other editors, buffers can exist in the background without being in a window.
 opt.hidden = true
+vim.filetype.add({
+	pattern = {
+		[".*%.tpl%.yaml"] = "helm",
+	},
+})
