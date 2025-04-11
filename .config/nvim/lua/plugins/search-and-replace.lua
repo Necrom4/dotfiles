@@ -3,21 +3,21 @@ return {
 	opts = {},
 	keys = {
 		{
-			"<leader>ro",
+			"<leader>rv",
 			mode = "v",
 			"<CMD>SearchReplaceSingleBufferVisualSelection<CR>",
-			desc = "[o]pen",
+			desc = "[v]isual selection",
 			silent = true,
 		},
 		{
-			"<leader>rvo",
+			"<leader>ri",
 			mode = "v",
 			"<CMD>SearchReplaceWithinVisualSelection<CR>",
-			desc = "[o]pen",
+			desc = "[i]nput",
 			silent = true,
 		},
 		{
-			"<leader>rvw",
+			"<leader>rw",
 			mode = "v",
 			"<CMD>SearchReplaceWithinVisualSelectionCWord<CR>",
 			desc = "[w]ord",
@@ -27,14 +27,14 @@ return {
 			"<leader>rs",
 			mode = "n",
 			"<CMD>SearchReplaceSingleBufferSelections<CR>",
-			desc = "[s]election list",
+			desc = "[s]elect",
 			silent = true,
 		},
 		{
-			"<leader>ro",
+			"<leader>ri",
 			mode = "n",
 			"<CMD>SearchReplaceSingleBufferOpen<CR>",
-			desc = "[o]pen",
+			desc = "[i]nput",
 			silent = true,
 		},
 		{
@@ -65,19 +65,18 @@ return {
 			desc = "[f]ile",
 			silent = true,
 		},
-
 		{
 			"<leader>rbs",
 			mode = "n",
 			"<CMD>SearchReplaceMultiBufferSelections<CR>",
-			desc = "[s]election list",
+			desc = "[s]elect",
 			silent = true,
 		},
 		{
-			"<leader>rbo",
+			"<leader>rbi",
 			mode = "n",
 			"<CMD>SearchReplaceMultiBufferOpen<CR>",
-			desc = "[o]pen",
+			desc = "[i]nput",
 			silent = true,
 		},
 		{
