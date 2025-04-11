@@ -26,8 +26,3 @@ vim.api.nvim_create_autocmd({ "TextYankPost", "FocusGained" }, {
 		end
 	end,
 })
-
--- Set embedded templating languages
-vim.cmd([[
-  autocmd BufRead,BufNewFile *.tpl.yaml set filetype=helm
-]])
