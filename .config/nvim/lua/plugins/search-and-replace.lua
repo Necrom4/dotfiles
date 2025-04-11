@@ -3,21 +3,21 @@ return {
 	opts = {},
 	keys = {
 		{
-			"<leader>ro",
+			"<leader>rv",
 			mode = "v",
 			"<CMD>SearchReplaceSingleBufferVisualSelection<CR>",
 			desc = "[o]pen",
 			silent = true,
 		},
 		{
-			"<leader>rvo",
+			"<leader>ro",
 			mode = "v",
 			"<CMD>SearchReplaceWithinVisualSelection<CR>",
 			desc = "[o]pen",
 			silent = true,
 		},
 		{
-			"<leader>rvw",
+			"<leader>rw",
 			mode = "v",
 			"<CMD>SearchReplaceWithinVisualSelectionCWord<CR>",
 			desc = "[w]ord",
@@ -65,7 +65,6 @@ return {
 			desc = "[f]ile",
 			silent = true,
 		},
-
 		{
 			"<leader>rbs",
 			mode = "n",
