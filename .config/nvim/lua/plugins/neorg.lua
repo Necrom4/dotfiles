@@ -52,8 +52,8 @@ return {
 					wo = {
 						wrap = true,
 						spell = false,
-						number = true,
-						relativenumber = true,
+						number = false,
+						relativenumber = false,
 						foldenable = false,
 						foldcolumn = "0",
 					},
