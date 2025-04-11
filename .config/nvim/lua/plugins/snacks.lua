@@ -160,6 +160,13 @@ return {
 			desc = "Lines",
 		},
 		{
+			"<leader>ss",
+			function()
+				Snacks.picker.spelling()
+			end,
+			desc = "Spelling",
+		},
+		{
 			"<leader>tf",
 			function()
 				Snacks.terminal("zsh", { cwd = vim.fn.expand("%:p:h") })
