@@ -17,6 +17,7 @@ return {
 				{ "<leader>tf", name = "Buffer Dir (floating)", icon = { icon = " ", color = "green" } },
 				{ "<leader>tt", name = "Root Dir", icon = { icon = " ", color = "green" } },
 				{ "<leader>tT", name = "cwd", icon = { icon = " ", color = "green" } },
+				{ "<leader>?", name = "MAN", icon = { icon = " ", color = "pink" } },
 				{ "gs", group = "surround", icon = { icon = "󰅲 ", color = "yellow" } },
 			},
 		},

@@ -65,5 +65,7 @@ vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
 -- default LazyVim disabled keymaps
-vim.keymap.del("s", "<Tab>")
-vim.keymap.del({ "i", "s" }, "<S-Tab>")
+vim.keymap.del("n", "<leader>K")
+
+--keywordprg
+vim.keymap.set("n", "<leader>?", "<cmd>norm! K<cr>", { desc = "MAN" })
