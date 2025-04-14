@@ -1,7 +1,7 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter-context",
-		event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+		event = "LazyFile",
 		opts = function()
 			local tsc = require("treesitter-context")
 			Snacks.toggle({
@@ -15,6 +15,7 @@ return {
 					end
 				end,
 			}):map("<leader>uc")
+			return { mode = "cursor", max_lines = 3 }
 		end,
 	},
 	{
