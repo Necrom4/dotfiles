@@ -12,75 +12,14 @@ return {
 	opts = function()
 		local augend = require("dial.augend")
 
-		local logical_alias = augend.constant.new({
-			elements = { "&&", "||" },
-			word = false,
-			cyclic = true,
-		})
-
-		local ordinal_numbers = augend.constant.new({
-			-- elements through which we cycle. When we increment, we go down
-			-- On decrement we go up
-			elements = {
-				"first",
-				"second",
-				"third",
-				"fourth",
-				"fifth",
-				"sixth",
-				"seventh",
-				"eighth",
-				"ninth",
-				"tenth",
-			},
-			-- if true, it only matches strings with word boundary. firstDate wouldn't work for example
-			word = false,
-			-- do we cycle back and forth (tenth to first on increment, first to tenth on decrement).
-			-- Otherwise nothing will happen when there are no further values
-			cyclic = true,
-		})
-
-		local weekdays = augend.constant.new({
-			elements = {
-				"Monday",
-				"Tuesday",
-				"Wednesday",
-				"Thursday",
-				"Friday",
-				"Saturday",
-				"Sunday",
-			},
-			word = true,
-			cyclic = true,
-		})
-
-		local months = augend.constant.new({
-			elements = {
-				"January",
-				"February",
-				"March",
-				"April",
-				"May",
-				"June",
-				"July",
-				"August",
-				"September",
-				"October",
-				"November",
-				"December",
-			},
-			word = true,
-			cyclic = true,
-		})
-
-		local capitalized_boolean = augend.constant.new({
-			elements = {
-				"True",
-				"False",
-			},
-			word = true,
-			cyclic = true,
-		})
+		-- Define many togglable constants
+		local make_const = function(elements, word)
+			return augend.constant.new({
+				elements = elements,
+				word = word or true,
+				cyclic = true,
+			})
+		end
 
 		return {
 			dials_by_ft = {
@@ -99,32 +38,87 @@ return {
 			},
 			groups = {
 				default = {
-					augend.integer.alias.decimal, -- nonnegative decimal number (0, 1, 2, 3, ...)
-					augend.integer.alias.decimal_int, -- nonnegative and negative decimal number
-					augend.integer.alias.hex, -- nonnegative hex number  (0x01, 0x1a1f, etc.)
-					augend.date.alias["%Y/%m/%d"], -- date (2022/02/19, etc.)
-					ordinal_numbers,
-					weekdays,
-					months,
-					capitalized_boolean,
-					augend.constant.alias.bool, -- boolean value (true <-> false)
-					logical_alias,
+					augend.integer.alias.decimal,
+					augend.integer.alias.decimal_int,
+					augend.integer.alias.hex,
+					augend.date.alias["%Y/%m/%d"],
+					make_const({
+						"first",
+						"second",
+						"third",
+						"fourth",
+						"fifth",
+						"sixth",
+						"seventh",
+						"eighth",
+						"ninth",
+						"tenth",
+					}, false),
+					make_const({ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" }),
+					make_const({
+						"January",
+						"February",
+						"March",
+						"April",
+						"May",
+						"June",
+						"July",
+						"August",
+						"September",
+						"October",
+						"November",
+						"December",
+					}),
+					make_const({ "True", "False" }),
+					make_const({ "true", "false" }),
+					make_const({ "enable", "disable" }),
+					make_const({ "enabled", "disabled" }),
+					make_const({ "Enabled", "Disabled" }),
+					make_const({ "on", "off" }),
+					make_const({ "yes", "no" }),
+					make_const({ "Yes", "No" }),
+					make_const({ "show", "hide" }),
+					make_const({ "visible", "hidden" }),
+					make_const({ "Visible", "Hidden" }),
+					make_const({ "start", "stop" }),
+					make_const({ "Start", "Stop" }),
+					make_const({ "success", "failure" }),
+					make_const({ "pass", "fail" }),
+					make_const({ "Pass", "Fail" }),
+					make_const({ "high", "medium", "low" }),
+					make_const({ "todo", "doing", "done" }),
+					make_const({ "TODO", "DOING", "DONE" }),
+					make_const({ "✔️", "❌" }),
+					make_const({ "add", "remove" }),
+					make_const({ "Add", "Remove" }),
+					make_const({ "active", "inactive" }),
+					make_const({ "Active", "Inactive" }),
+					make_const({ "dev", "test", "staging", "prod", "production" }),
+					make_const({ "draft", "published" }),
+					make_const({ "Draft", "Published" }),
+					make_const({ "read", "write", "execute" }),
+					make_const({ "run", "build", "test", "deploy" }),
+					make_const({ "Run", "Build", "Test", "Deploy" }),
+					make_const({ "light", "dark" }),
+					make_const({ "Light", "Dark" }),
+					augend.constant.alias.bool,
+					augend.constant.new({
+						elements = { "&&", "||" },
+						word = false,
+						cyclic = true,
+					}),
 				},
 				vue = {
-					augend.constant.new({ elements = { "let", "const" } }),
+					make_const({ "let", "const" }),
 					augend.hexcolor.new({ case = "lower" }),
 					augend.hexcolor.new({ case = "upper" }),
 				},
 				typescript = {
-					augend.constant.new({ elements = { "let", "const" } }),
+					make_const({ "let", "const" }),
 				},
 				css = {
-					augend.hexcolor.new({
-						case = "lower",
-					}),
-					augend.hexcolor.new({
-						case = "upper",
-					}),
+					augend.hexcolor.new({ case = "lower" }),
+					augend.hexcolor.new({ case = "upper" }),
 				},
 				markdown = {
 					augend.constant.new({
@@ -135,19 +129,13 @@ return {
 					augend.misc.alias.markdown_header,
 				},
 				json = {
-					augend.semver.alias.semver, -- versioning (v1.1.2)
+					augend.semver.alias.semver,
 				},
 				lua = {
-					augend.constant.new({
-						elements = { "and", "or" },
-						word = true, -- if false, "sand" is incremented into "sor", "doctor" into "doctand", etc.
-						cyclic = true, -- "or" is incremented into "and".
-					}),
+					make_const({ "and", "or" }),
 				},
 				python = {
-					augend.constant.new({
-						elements = { "and", "or" },
-					}),
+					make_const({ "and", "or" }),
 				},
 			},
 		}
