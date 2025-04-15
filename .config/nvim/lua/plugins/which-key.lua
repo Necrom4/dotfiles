@@ -19,6 +19,7 @@ return {
 				{ "<leader>xf", name = "Floating", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>X", group = "diagnostics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
 				{ "<leader>?", name = "MAN", icon = { icon = " ", color = "pink" } },
+				{ "<a-d>", group = "debug", icon = { icon = "󰃤 ", color = "red" } },
 				{ "gs", group = "surround", icon = { icon = "󰅲 ", color = "yellow" } },
 			},
 		},
