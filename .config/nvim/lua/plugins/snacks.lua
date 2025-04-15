@@ -18,6 +18,7 @@ return {
 		{ "<leader>e", false },
 		{ "<leader>E", false },
 		{ "<leader>n", false },
+		{ "<leader>sr", false },
 		{ "<leader>?", false },
 		{
 			"<leader><leader>",
@@ -33,14 +34,6 @@ return {
 				Snacks.picker.resume()
 			end,
 			desc = "Resume Picker",
-			silent = true,
-		},
-		{
-			'<leader>"',
-			function()
-				Snacks.picker.registers()
-			end,
-			desc = "Registers Picker",
 			silent = true,
 		},
 		{
@@ -143,6 +136,14 @@ return {
 				Snacks.picker.lines()
 			end,
 			desc = "Lines",
+		},
+		{
+			"<leader>sr",
+			function()
+				Snacks.picker.registers()
+			end,
+			desc = "Registers",
+			silent = true,
 		},
 		{
 			"<leader>ss",
