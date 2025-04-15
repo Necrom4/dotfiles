@@ -1,11 +1,5 @@
 -- KEYMAPS --
 
-local function feedkeys(key)
-	return function()
-		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), "c", false)
-	end
-end
-
 -- SAVE/QUIT
 
 -- Save the current file
@@ -28,6 +22,13 @@ vim.keymap.set({ "i", "x", "n", "s" }, "<c-q><c-a>", "<cmd>qa<cr>", { noremap = 
 vim.keymap.set({ "i", "x", "n", "s" }, "<c-q><c-a><c-q>", "<cmd>qa!<cr>", { noremap = true, silent = true })
 
 -- NAVIGATION
+
+local function feedkeys(key)
+	return function()
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), "c", false)
+	end
+end
+
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "v", "o" }, "gj", "j", { noremap = true, silent = true })
@@ -63,6 +64,24 @@ vim.keymap.set("n", "<leader><tab>{", "<cmd>tabfirst<cr>", { desc = "First Tab" 
 vim.keymap.set("n", "<leader><tab>}", "<cmd>tablast<cr>", { desc = "Last Tab" })
 vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+
+-- SMART JOIN
+
+function _G.smart_join()
+	local row = vim.fn.line(".") - 1
+	local lines = vim.api.nvim_buf_get_lines(0, row, row + 2, false)
+	if #lines < 2 then
+		return
+	end
+
+	local a = lines[1]:gsub("%s+$", "")
+	local b = lines[2]:gsub("^%s+", "")
+	local sep = a:match("[:{(,]$") and "" or " "
+
+	vim.api.nvim_buf_set_lines(0, row, row + 2, false, { a .. sep .. b })
+end
+
+vim.keymap.set("n", "gJ", smart_join, { desc = "Smart Join Lines" })
 
 -- default LazyVim disabled keymaps
 vim.keymap.del("n", "<leader>K")
