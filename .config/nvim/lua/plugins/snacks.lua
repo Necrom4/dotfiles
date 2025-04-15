@@ -15,6 +15,8 @@ return {
 	priority = 1000,
 	lazy = false,
 	keys = {
+		{ "<leader>e", false },
+		{ "<leader>E", false },
 		{ "<leader>n", false },
 		{ "<leader>?", false },
 		{
@@ -55,25 +57,6 @@ return {
 				vim.cmd("enew")
 			end,
 			desc = "New Buffer",
-			silent = true,
-		},
-		{
-			"<leader>e",
-		},
-		{
-			"<leader>ee",
-			function()
-				Snacks.picker.explorer({ cwd = LazyVim.root() })
-			end,
-			desc = "Root Dir",
-			silent = true,
-		},
-		{
-			"<leader>eE",
-			function()
-				Snacks.picker.explorer()
-			end,
-			desc = "cwd",
 			silent = true,
 		},
 		{
@@ -198,6 +181,22 @@ return {
 				Snacks.scratch()
 			end,
 			desc = "Scratch",
+			silent = true,
+		},
+		{
+			"<leader>xx",
+			function()
+				Snacks.picker.explorer({ cwd = LazyVim.root() })
+			end,
+			desc = "Root Dir",
+			silent = true,
+		},
+		{
+			"<leader>xX",
+			function()
+				Snacks.picker.explorer()
+			end,
+			desc = "cwd",
 			silent = true,
 		},
 	},

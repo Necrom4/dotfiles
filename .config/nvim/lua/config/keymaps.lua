@@ -85,6 +85,24 @@ vim.keymap.set("n", "gJ", smart_join, { desc = "Smart Join Lines" })
 
 -- default LazyVim disabled keymaps
 vim.keymap.del("n", "<leader>K")
+vim.keymap.del("n", "<leader>xl")
+vim.keymap.del("n", "<leader>xq")
 
 --keywordprg
 vim.keymap.set("n", "<leader>?", "<cmd>norm! K<cr>", { desc = "MAN" })
+
+-- location list
+vim.keymap.set("n", "<leader>Xl", function()
+	local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
+	if not success and err then
+		vim.notify(err, vim.log.levels.ERROR)
+	end
+end, { desc = "Location List" })
+
+-- quickfix list
+vim.keymap.set("n", "<leader>Xq", function()
+	local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+	if not success and err then
+		vim.notify(err, vim.log.levels.ERROR)
+	end
+end, { desc = "Quickfix List" })
