@@ -1,6 +1,7 @@
 return {
 	"gbprod/yanky.nvim",
 	keys = {
+		{ "<leader>p", mode = { "n", "x" }, false },
 		{
 			"<leader>hy",
 			function()
