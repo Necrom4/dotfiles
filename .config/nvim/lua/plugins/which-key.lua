@@ -4,7 +4,11 @@ return {
 		spec = {
 			{
 				mode = { "n", "v" },
-				{ "<leader>d", group = "diff", icon = { icon = " ", color = "red" } },
+				{ "<leader>d", group = "diff", icon = { icon = " ", color = "yellow" } },
+				{ "<leader>di", name = "Index", icon = { icon = " ", color = "blue" } },
+				{ "<leader>dh", name = "History", icon = { icon = " ", color = "green" } },
+				{ "<leader>dq", name = "Close Diffview", icon = { icon = "󰈆 ", color = "red" } },
+				{ "<leader>du", name = "Toggle Undotree", icon = { icon = "󰕌 ", color = "purple" } },
 				{ "<leader>h", group = "history", icon = { icon = " ", color = "green" } },
 				{ "<leader>n", group = "notes", icon = { icon = "󰠮 ", color = "blue" } },
 				{ "<leader>r", group = "replace", icon = { icon = "󰛔 ", color = "red" } },
@@ -18,7 +22,7 @@ return {
 				{ "<leader>xX", name = "cwd", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>xf", name = "Floating", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>X", group = "diagnostics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
-				{ "<leader>?", name = "MAN", icon = { icon = " ", color = "pink" } },
+				{ "<leader>?", name = "MAN", icon = { icon = " ", color = "purple" } },
 				{ "<a-d>", group = "debug", icon = { icon = "󰃤 ", color = "red" } },
 				{ "gs", group = "surround", icon = { icon = "󰅲 ", color = "yellow" } },
 			},
