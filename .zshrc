@@ -135,7 +135,7 @@ if command -v batcat &> /dev/null; then
   alias cat="batcat"
 fi
 alias ls='eza -h --icons=always'
-alias ll='ls -l'
+alias ll='ls -l --total-size'
 alias la='ls -A'
 alias lla='ls -lA'
 alias lt='ls --tree'
