@@ -382,6 +382,6 @@ return {
 				},
 			},
 		},
-		words = { enabled = false },
+		words = { enabled = true },
 	},
 }
