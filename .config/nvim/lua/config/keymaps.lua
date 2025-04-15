@@ -85,11 +85,13 @@ vim.keymap.set("n", "gJ", smart_join, { desc = "Smart Join Lines" })
 
 -- default LazyVim disabled keymaps
 vim.keymap.del("n", "<leader>K")
+-- vim.keymap.del("n", "<leader>sw")
+-- vim.keymap.del("n", "<leader>sW")
 vim.keymap.del("n", "<leader>xl")
 vim.keymap.del("n", "<leader>xq")
 
 --keywordprg
-vim.keymap.set("n", "<leader>?", "<cmd>norm! K<cr>", { desc = "MAN" })
+vim.keymap.set("v", "<leader>sM", "<cmd>norm! K<cr>", { desc = "Man Pages" })
 
 -- location list
 vim.keymap.set("n", "<leader>Xl", function()

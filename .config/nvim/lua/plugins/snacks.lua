@@ -18,8 +18,9 @@ return {
 		{ "<leader>e", false },
 		{ "<leader>E", false },
 		{ "<leader>n", false },
-		{ "<leader>sr", false },
-		{ "<leader>?", false },
+		{ "<leader>sr", mode = { "n", "x" }, false },
+		{ "<leader>sw", mode = { "n", "x" }, false },
+		{ "<leader>sW", mode = { "n", "x" }, false },
 		{
 			"<leader><leader>",
 			function()
@@ -131,6 +132,22 @@ return {
 			desc = "Buffers",
 		},
 		{
+			"<leader>sg",
+			function()
+				Snacks.picker.grep_word({ cwd = LazyVim.root() })
+			end,
+			desc = "Grep Selection (Root Dir)",
+			mode = "x",
+		},
+		{
+			"<leader>sG",
+			function()
+				Snacks.picker.grep_word()
+			end,
+			desc = "Grep Selection (cwd)",
+			mode = "x",
+		},
+		{
 			"<leader>sl",
 			function()
 				Snacks.picker.lines()
@@ -143,6 +160,7 @@ return {
 				Snacks.picker.registers()
 			end,
 			desc = "Registers",
+			mode = { "n", "x" },
 			silent = true,
 		},
 		{
