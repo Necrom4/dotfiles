@@ -73,6 +73,11 @@ use = "wekauwau/yatline-modified-time"
 rev = "286680b"
 hash = "d5f86be5c73c480afecf99c1ca381d04"
 
+[[plugin.deps]]
+use = "Lil-Dank/lazygit"
+rev = "7a08a09"
+hash = "a1fa2b3e1826c3a34804ea8c548e9f80"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "695dac6"
