@@ -109,13 +109,13 @@ require("yatline"):setup({
 			section_c = {
 				{ type = "string", custom = false, name = "hovered_file_extension", params = { true } },
 				{ type = "coloreds", custom = false, name = "permissions" },
-				-- { type = "coloreds", custom = false, name = "created_time" },
+				{ type = "coloreds", custom = false, name = "modified_time" },
 			},
 		},
 	},
 })
 
--- require("yatline-created-time"):setup()
+require("yatline-modified-time"):setup()
 
 require("yatline-githead"):setup({
 	show_branch = true,

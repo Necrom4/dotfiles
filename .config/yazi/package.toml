@@ -68,6 +68,11 @@ use = "yazi-rs/plugins:git"
 rev = "b12a9ab"
 hash = "e0ada736ea676c2bbb3ec705a49526ef"
 
+[[plugin.deps]]
+use = "wekauwau/yatline-modified-time"
+rev = "286680b"
+hash = "d5f86be5c73c480afecf99c1ca381d04"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "695dac6"
