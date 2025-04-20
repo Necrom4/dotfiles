@@ -292,7 +292,7 @@ return {
 					enabled = function()
 						return Snacks.git.get_root() == nil
 					end,
-					cmd = "cmatrix",
+					cmd = "cmatrix -br",
 					height = 5,
 					padding = 2,
 					ttl = 5 * 60,
