@@ -75,39 +75,39 @@ customCommands:
           key: "Type"
           title: "Type of change"
           options:
+            - name: "build"
+              description: "Updates build configuration, development tools or other changes irrelevant to the user"
+              value: "build"
+            - name: "chore"
+              description: "Updates dependencies or performs maintenance tasks"
+              value: "chore"
+            - name: "ci"
+              description: "Changes to CI configuration files and scripts"
+              value: "ci"
+            - name: "docs"
+              description: "Updates or adds documentation"
+              value: "docs"
             - name: "feat"
               description: "Introduces a new feature to the codebase"
               value: "feat"
             - name: "fix"
               description: "Resolves a bug or issue in the code"
               value: "fix"
-            - name: "chore"
-              description: "Updates dependencies or performs maintenance tasks"
-              value: "chore"
-            - name: "docs"
-              description: "Updates or adds documentation"
-              value: "docs"
             - name: "perf"
               description: "Optimizes performance for better efficiency"
               value: "perf"
-            - name: "test"
-              description: "Adds or modifies tests to ensure code reliability"
-              value: "test"
-            - name: "build"
-              description: "Updates build configuration, development tools or other changes irrelevant to the user"
-              value: "build"
-            - name: "ci"
-              description: "Changes to CI configuration files and scripts"
-              value: "ci"
             - name: "refactor"
               description: "Improves code structure without changing functionality"
               value: "refactor"
-            - name: "style"
-              description: "Improves code formatting or style without affecting behavior"
-              value: "style"
             - name: "revert"
               description: "Reverts a previous commit"
               value: "revert"
+            - name: "style"
+              description: "Improves code formatting or style without affecting behavior"
+              value: "style"
+            - name: "test"
+              description: "Adds or modifies tests to ensure code reliability"
+              value: "test"
             - name: "wip"
               description: "For incomplete work"
               value: "wip"
@@ -145,27 +145,27 @@ customCommands:
           title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}}')"
           key: 'BranchType'
           options:
-            - name: 'feature'
-              description: 'A new feature under development'
-              value: 'feature'
-            - name: 'bugfix'
-              description: 'A fix for a specific bug or issue'
-              value: 'bugfix'
-            - name: 'hotfix'
-              description: 'An urgent fix for a critical issue in production'
-              value: 'hotfix'
-            - name: 'release'
-              description: 'Prepares a new version for deployment'
-              value: 'release'
-            - name: 'develop'
-              description: 'The main branch for ongoing development'
-              value: 'develop'
             - name: 'chore'
               description: 'Routine maintenance tasks or dependency updates'
               value: 'chore'
+            - name: 'develop'
+              description: 'The main branch for ongoing development'
+              value: 'develop'
+            - name: 'feature'
+              description: 'A new feature under development'
+              value: 'feature'
+            - name: 'fix'
+              description: 'A fix for a specific bug or issue'
+              value: 'fix'
+            - name: 'hotfix'
+              description: 'An urgent fix for a critical issue in production'
+              value: 'hotfix'
             - name: 'refactor'
               description: 'Code improvements without changing functionality'
               value: 'refactor'
+            - name: 'release'
+              description: 'Prepares a new version for deployment'
+              value: 'release'
             - name: 'test'
               description: 'Experimental or test-related changes'
               value: 'test'
