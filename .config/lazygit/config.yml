@@ -64,153 +64,114 @@ customCommands:
       description: "Open MR in web browser"
       loadingText: "Opening MR..."
       stream: true
-  - key: "<c-c>"
-    context: "global"
-    description: "Create new conventional commit"
-    prompts:
-      - type: "menu"
-        key: "Type"
-        title: "Type of change"
-        options:
-          - name: "feat"
-            description: "Introduces a new feature to the codebase"
-            value: "feat"
-          - name: "fix"
-            description: "Resolves a bug or issue in the code"
-            value: "fix"
-          - name: "chore"
-            description: "Updates dependencies or performs maintenance tasks"
-            value: "chore"
-          - name: "docs"
-            description: "Updates or adds documentation"
-            value: "docs"
-          - name: "perf"
-            description: "Optimizes performance for better efficiency"
-            value: "perf"
-          - name: "test"
-            description: "Adds or modifies tests to ensure code reliability"
-            value: "test"
-          - name: "build"
-            description: "Updates build configuration, development tools or other changes irrelevant to the user"
-            value: "build"
-          - name: "ci"
-            description: "Changes to CI configuration files and scripts"
-            value: "ci"
-          - name: "refactor"
-            description: "Improves code structure without changing functionality"
-            value: "refactor"
-          - name: "style"
-            description: "Improves code formatting or style without affecting behavior"
-            value: "style"
-          - name: "revert"
-            description: "Reverts a previous commit"
-            value: "revert"
-          - name: "wip"
-            description: "For incomplete work"
-            value: "wip"
-      - type: "input"
-        title: "(scope)"
-        key: "Scope"
-        initialValue: ""
-      - type: "menu"
-        key: "Breaking"
-        title: "!Breaking change!"
-        options:
-          - name: "no"
-            value: ""
-          - name: "yes"
-            value: "!"
-      - type: "input"
-        title: "message"
-        key: "Message"
-        initialValue: ""
-      - type: "confirm"
-        key: "Confirm"
-        title: "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"
-        body: "Are you sure you want to commit?"
-    command: 'git commit --message "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"'
-    loadingText: "Creating conventional commit..."
-  - key: '<c-n>'
-    context: 'localBranches'
-    description: "Create new conventional branch"
-    prompts:
-      - type: 'menu'
-        title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}}')"
-        key: 'BranchType'
-        options:
-          - name: 'feature'
-            description: 'A new feature under development'
-            value: 'feature'
-          - name: 'bugfix'
-            description: 'A fix for a specific bug or issue'
-            value: 'bugfix'
-          - name: 'hotfix'
-            description: 'An urgent fix for a critical issue in production'
-            value: 'hotfix'
-          - name: 'release'
-            description: 'Prepares a new version for deployment'
-            value: 'release'
-          - name: 'develop'
-            description: 'The main branch for ongoing development'
-            value: 'develop'
-          - name: 'chore'
-            description: 'Routine maintenance tasks or dependency updates'
-            value: 'chore'
-          - name: 'refactor'
-            description: 'Code improvements without changing functionality'
-            value: 'refactor'
-          - name: 'test'
-            description: 'Experimental or test-related changes'
-            value: 'test'
-      - type: 'input'
-        title: "New branch name (branch is off of '{{.SelectedLocalBranch.Name}})'"
-        key: 'BranchName'
-        initialValue: ''
-      - type: "confirm"
-        key: "Confirm"
-        title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
-        body: "Are you sure you want to branch?"
-    command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} refs/heads/{{.SelectedLocalBranch.Name}} --no-track"
-    loadingText: 'Creating conventional branch...'
-  - key: '<c-n>'
-    context: 'remoteBranches'
-    description: "Create new conventional branch"
-    prompts:
-      - type: 'menu'
-        title: "New branch type (branch is off of '{{.SelectedRemoteBranch.Name}}')"
-        key: 'BranchType'
-        options:
-          - name: 'feature'
-            description: 'A new feature under development'
-            value: 'feature'
-          - name: 'bugfix'
-            description: 'A fix for a specific bug or issue'
-            value: 'bugfix'
-          - name: 'hotfix'
-            description: 'An urgent fix for a critical issue in production'
-            value: 'hotfix'
-          - name: 'release'
-            description: 'Prepares a new version for deployment'
-            value: 'release'
-          - name: 'develop'
-            description: 'The main branch for ongoing development'
-            value: 'develop'
-          - name: 'chore'
-            description: 'Routine maintenance tasks or dependency updates'
-            value: 'chore'
-          - name: 'refactor'
-            description: 'Code improvements without changing functionality'
-            value: 'refactor'
-          - name: 'test'
-            description: 'Experimental or test-related changes'
-            value: 'test'
-      - type: 'input'
-        title: "New branch name (branch is off of '{{.SelectedRemoteBranch.Name}})'"
-        key: 'BranchName'
-        initialValue: ''
-      - type: "confirm"
-        key: "Confirm"
-        title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
-        body: "Are you sure you want to branch?"
-    command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} origin/{{.SelectedRemoteBranch.Name}} --no-track"
-    loadingText: 'Creating conventional branch...'
+  - key: 'N'
+    description: 'Create new'
+    commandMenu:
+    - key: "c"
+      context: "global"
+      description: "commit"
+      prompts:
+        - type: "menu"
+          key: "Type"
+          title: "Type of change"
+          options:
+            - name: "feat"
+              description: "Introduces a new feature to the codebase"
+              value: "feat"
+            - name: "fix"
+              description: "Resolves a bug or issue in the code"
+              value: "fix"
+            - name: "chore"
+              description: "Updates dependencies or performs maintenance tasks"
+              value: "chore"
+            - name: "docs"
+              description: "Updates or adds documentation"
+              value: "docs"
+            - name: "perf"
+              description: "Optimizes performance for better efficiency"
+              value: "perf"
+            - name: "test"
+              description: "Adds or modifies tests to ensure code reliability"
+              value: "test"
+            - name: "build"
+              description: "Updates build configuration, development tools or other changes irrelevant to the user"
+              value: "build"
+            - name: "ci"
+              description: "Changes to CI configuration files and scripts"
+              value: "ci"
+            - name: "refactor"
+              description: "Improves code structure without changing functionality"
+              value: "refactor"
+            - name: "style"
+              description: "Improves code formatting or style without affecting behavior"
+              value: "style"
+            - name: "revert"
+              description: "Reverts a previous commit"
+              value: "revert"
+            - name: "wip"
+              description: "For incomplete work"
+              value: "wip"
+        - type: "input"
+          title: "(scope)"
+          key: "Scope"
+          initialValue: ""
+        - type: "menu"
+          key: "Breaking"
+          title: "!Breaking change!"
+          options:
+            - name: "no"
+              value: ""
+            - name: "yes"
+              value: "!"
+        - type: "input"
+          title: "message"
+          key: "Message"
+          initialValue: ""
+        - type: "confirm"
+          key: "Confirm"
+          title: "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"
+          body: "Are you sure you want to commit?"
+      command: 'git commit --message "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"'
+      loadingText: "Creating commit..."
+    - key: 'b'
+      context: 'global'
+      description: "branch"
+      prompts:
+        - type: 'menu'
+          title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}}')"
+          key: 'BranchType'
+          options:
+            - name: 'feature'
+              description: 'A new feature under development'
+              value: 'feature'
+            - name: 'bugfix'
+              description: 'A fix for a specific bug or issue'
+              value: 'bugfix'
+            - name: 'hotfix'
+              description: 'An urgent fix for a critical issue in production'
+              value: 'hotfix'
+            - name: 'release'
+              description: 'Prepares a new version for deployment'
+              value: 'release'
+            - name: 'develop'
+              description: 'The main branch for ongoing development'
+              value: 'develop'
+            - name: 'chore'
+              description: 'Routine maintenance tasks or dependency updates'
+              value: 'chore'
+            - name: 'refactor'
+              description: 'Code improvements without changing functionality'
+              value: 'refactor'
+            - name: 'test'
+              description: 'Experimental or test-related changes'
+              value: 'test'
+        - type: 'input'
+          title: "New branch name (branch is off of '{{.SelectedLocalBranch.Name}})'"
+          key: 'BranchName'
+          initialValue: ''
+        - type: "confirm"
+          key: "Confirm"
+          title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
+          body: "Are you sure you want to branch?"
+      command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} refs/heads/{{.SelectedLocalBranch.Name}} --no-track"
+      loadingText: 'Creating branch...'
