@@ -127,11 +127,15 @@ customCommands:
           title: "message"
           key: "Message"
           initialValue: ""
+        - type: "input"
+          title: "description"
+          key: "Description"
+          initialValue: ""
         - type: "confirm"
           key: "Confirm"
           title: "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"
           body: "Are you sure you want to commit?"
-      command: 'git commit --message "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"'
+      command: 'git commit --message "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"{{ if .Form.Description }} --message "{{.Form.Description}}"{{ end }}'
       loadingText: "Creating commit..."
     - key: 'b'
       context: 'global'
