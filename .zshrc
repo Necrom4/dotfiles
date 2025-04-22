@@ -86,12 +86,29 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+
+# //PLUGINS CONFIG//
+
+# eza
+zstyle ':omz:plugins:eza' 'git-status' yes
+zstyle ':omz:plugins:eza' 'header' yes
+zstyle ':omz:plugins:eza' 'icons' yes
+zstyle ':omz:plugins:eza' 'color-scale' all
+
+# alias-finder
+zstyle ':omz:plugins:alias-finder' autoload yes
+zstyle ':omz:plugins:alias-finder' exact yes
+
+# zsh-autosuggestions
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#636DA6"
+ZSH_AUTOSUGGEST_STRATEGY=completion
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-vi-mode zsh-history-substring-search colored-man-pages command-not-found docker docker-compose kubectl minikube helm jsontools ruby rails rake)
+plugins=(aliases alias-finder azure colored-man-pages command-not-found docker docker-compose eza git helm jsontools kubectl pip python rails rake ruby z zsh-autopair zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting zsh-vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -134,10 +151,9 @@ alias e="nvim"
 if command -v batcat &> /dev/null; then
   alias cat="batcat"
 fi
-alias ls='eza -h --icons=always'
-alias ll='ls -l --total-size'
-alias la='ls -A'
-alias lla='ls -lA'
+alias ll='ls -la --total-size'
+alias la='ls -a'
+# alias lla='ls -lA'
 alias lt='ls --tree'
 function x() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -149,15 +165,14 @@ function x() {
 }
 alias g="lazygit"
 alias y="yadm enter lazygit"
-alias z="omz reload"
+bindkey '^x' clear-screen
 
-# //VI MODE//
+# vi-mode
 bindkey -v
 bindkey '^k' history-substring-search-up
 bindkey '^j' history-substring-search-down
 bindkey '^h' vi-backward-char
 bindkey '^l' vi-forward-char
-bindkey '^x' clear-screen
 
 # Yank to the system clipboard
 function vi-yank-xclip {
@@ -169,10 +184,6 @@ function vi-yank-xclip {
 
 ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
 ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
-
-# //ZSH-AUTOSUGGESTIONS//
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#636DA6"
-ZSH_AUTOSUGGEST_STRATEGY=completion
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(~/.local/bin/mise activate zsh)"
