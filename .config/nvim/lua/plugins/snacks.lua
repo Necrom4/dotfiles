@@ -346,7 +346,21 @@ return {
 					hidden = true,
 				},
 				explorer = {
+					auto_close = true,
 					hidden = true,
+					win = {
+						list = {
+							keys = {
+								["L"] = "explorer_focus",
+								["H"] = "explorer_up",
+								["K"] = "preview_scroll_up",
+								["J"] = "preview_scroll_down",
+								["<Tab>"] = { { "select_and_next", "list_up" } },
+								["<S-Tab>"] = "select_and_next",
+								["<c-w>o"] = "toggle_maximize",
+							},
+						},
+					},
 				},
 				files = {
 					hidden = true,
