@@ -341,6 +341,17 @@ return {
 		notifier = { enabled = false, style = "fancy" },
 		picker = {
 			enabled = true,
+			sources = {
+				buffers = {
+					hidden = true,
+				},
+				explorer = {
+					hidden = true,
+				},
+				files = {
+					hidden = true,
+				},
+			},
 			matcher = {
 				frecency = true,
 			},
