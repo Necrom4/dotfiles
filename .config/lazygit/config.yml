@@ -177,5 +177,8 @@ customCommands:
           key: "Confirm"
           title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
           body: "Are you sure you want to branch?"
-      command: "git checkout -b {{.Form.BranchType}}/{{.Form.BranchName}} refs/heads/{{.SelectedLocalBranch.Name}} --no-track"
+      command: |
+        BRANCH_NAME="{{.Form.BranchName}}"
+        BRANCH_NAME="${BRANCH_NAME// /-}"
+        git checkout -b "{{.Form.BranchType}}/$BRANCH_NAME" refs/heads/{{.SelectedLocalBranch.Name}} --no-track
       loadingText: 'Creating branch...'
