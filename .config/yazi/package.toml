@@ -10,8 +10,8 @@ hash = "23915860e59348bf4166778bb0e606f7"
 
 [[plugin.deps]]
 use = "boydaihungst/restore"
-rev = "328dd88"
-hash = "ad406e4a5ada589211e6ffe8bad3c983"
+rev = "978e988"
+hash = "b679d40ef43b767cacfcf5bf66beb387"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
