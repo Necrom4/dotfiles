@@ -118,6 +118,14 @@ return {
 			desc = "Search",
 		},
 		{
+			"<leader>ns",
+			function()
+				Snacks.scratch()
+			end,
+			desc = "Scratch",
+			silent = true,
+		},
+		{
 			"<leader>sc",
 			function()
 				Snacks.picker.commands()
@@ -192,14 +200,6 @@ return {
 				Snacks.terminal()
 			end,
 			desc = "cwd",
-			silent = true,
-		},
-		{
-			"<leader>ns",
-			function()
-				Snacks.scratch()
-			end,
-			desc = "Scratch",
 			silent = true,
 		},
 		{
