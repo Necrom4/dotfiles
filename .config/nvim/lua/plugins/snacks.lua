@@ -218,6 +218,14 @@ return {
 			desc = "cwd",
 			silent = true,
 		},
+		{
+			"<c-w>m",
+			function()
+				Snacks.toggle.zoom():toggle()
+			end,
+			desc = "Toggle maximize",
+			silent = true,
+		},
 	},
 	opts = {
 		bigfile = { enabled = true },
@@ -357,7 +365,7 @@ return {
 								["J"] = "preview_scroll_down",
 								["<Tab>"] = { { "select_and_next", "list_up" } },
 								["<S-Tab>"] = "select_and_next",
-								["<c-w>o"] = "toggle_maximize",
+								["<c-w>m"] = "toggle_maximize",
 							},
 						},
 					},
