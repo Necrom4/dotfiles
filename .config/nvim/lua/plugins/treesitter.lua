@@ -14,7 +14,7 @@ return {
 						tsc.disable()
 					end
 				end,
-			}):map("<leader>uc")
+			}):map("<leader>ut")
 			return { mode = "cursor", max_lines = 3 }
 		end,
 	},

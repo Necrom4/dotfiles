@@ -6,30 +6,37 @@ return {
 		vim.g.undotree_TreeNodeShape = ""
 		vim.g.undotree_TreeVertShape = "│"
 	end,
-	keys = {
-		{
-			"<leader>du",
-			function()
-				-- Check if an UndoTree buffer exists and is visible
-				local undotree_open = false
-				for _, win in ipairs(vim.api.nvim_list_wins()) do
-					local buf = vim.api.nvim_win_get_buf(win)
-					if vim.bo[buf].filetype == "undotree" then
-						undotree_open = true
-						break
+	opts = function()
+		Snacks.toggle
+			.new({
+				id = "undotree",
+				name = "Undotree",
+				get = function()
+					-- Check if an UndoTree buffer exists and is visible
+					for _, win in ipairs(vim.api.nvim_list_wins()) do
+						local buf = vim.api.nvim_win_get_buf(win)
+						if vim.bo[buf].filetype == "undotree" and vim.api.nvim_win_is_valid(win) then
+							return true
+						end
 					end
-				end
-
-				-- Toggle UndoTree
-				vim.cmd("UndotreeToggle")
-
-				-- Send notification based on new state
-				local status = undotree_open and "Disabled" or "Enabled"
-				local log_level = undotree_open and vim.log.levels.WARN or vim.log.levels.INFO
-				vim.notify(status .. " **Undotree**", log_level, { title = "Undotree" })
-			end,
-			desc = "Toggle Undotree",
-			silent = true,
-		},
-	},
+					return false
+				end,
+				set = function(state)
+					vim.cmd("UndotreeToggle")
+				end,
+				icon = {
+					enabled = "󰈆 ",
+					disabled = "󰕌 ",
+				},
+				color = {
+					enabled = "red",
+					disabled = "purple",
+				},
+				wk_desc = {
+					enabled = "Close ",
+					disabled = "Open ",
+				},
+			})
+			:map("<leader>du")
+	end,
 }
