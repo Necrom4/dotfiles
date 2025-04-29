@@ -77,6 +77,7 @@ return {
 					make_const({ "on", "off" }),
 					make_const({ "yes", "no" }),
 					make_const({ "Yes", "No" }),
+					make_const({ "and", "or" }),
 					make_const({ "show", "hide" }),
 					make_const({ "visible", "hidden" }),
 					make_const({ "Visible", "Hidden" }),
@@ -104,6 +105,16 @@ return {
 					augend.constant.alias.bool,
 					augend.constant.new({
 						elements = { "&&", "||" },
+						word = false,
+						cyclic = true,
+					}),
+					augend.constant.new({
+						elements = { "==", "!=" },
+						word = false,
+						cyclic = true,
+					}),
+					augend.constant.new({
+						elements = { "==", "~=" },
 						word = false,
 						cyclic = true,
 					}),
