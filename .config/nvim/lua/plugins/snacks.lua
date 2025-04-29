@@ -1,4 +1,4 @@
--- SYSYTEM_INFO
+-- SYSTEM UTILS
 local function term_cmd(cmd)
 	local handle = io.popen(cmd)
 	local result = handle:read("*a")
@@ -6,166 +6,131 @@ local function term_cmd(cmd)
 	return result:gsub("%s+$", "")
 end
 
-local function make_graph(percentage, width)
-	percentage = tonumber(percentage) or 0
+local function make_graph(percent, width)
+	percent = tonumber(percent) or 0
 	width = width or 20
-	local filled = math.floor((percentage / 100) * width)
+	local filled = math.floor((percent / 100) * width)
 	return string.rep("■", filled) .. string.rep("□", width - filled)
 end
 
 -- OS NAME
 local function os_name()
 	local uname = term_cmd("uname")
-
 	if uname == "Linux" then
-		local name = term_cmd("lsb_release -ds")
-		if name == "" then
-			-- fallback if lsb_release is not available
-			name = term_cmd("cat /etc/os-release | grep '^PRETTY_NAME=' | cut -d '\"' -f2")
+		local linux_name = term_cmd("lsb_release -ds")
+		if linux_name == "" then
+			linux_name = term_cmd("cat /etc/os-release | grep '^PRETTY_NAME=' | cut -d '\"' -f2")
 		end
-		return name ~= "" and name or "Linux"
+		return linux_name ~= "" and linux_name or "Linux"
 	elseif uname == "Darwin" then
-		local product_name = term_cmd("sw_vers -productName")
-		local product_version = term_cmd("sw_vers -productVersion")
-		return product_name .. " " .. product_version
+		return term_cmd("sw_vers -productName") .. " " .. term_cmd("sw_vers -productVersion")
 	end
-
 	return "Unknown OS"
 end
 
+-- NEOVIM VERSION
+local function vim_version()
+	return vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch
+end
+
 -- CPU
-local cpu = tonumber(term_cmd("uptime"):match("load averages?:%s*([%d%.]+)")) or 0
+local cpu_load = tonumber(term_cmd("uptime"):match("load averages?:%s*([%d%.]+)")) or 0
 
 -- RAM
-local function get_ram_usage()
+local function ram()
+	if term_cmd("uname") == "Linux" then
+		local memory_output = term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
+		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
+		return tonumber(used_mb), tonumber(total_mb)
+	end
+	local page_size = 4096
+	local active_pages = tonumber(term_cmd("vm_stat | grep 'Pages active'"):match("(%d+)")) or 0
+	local inactive_pages = tonumber(term_cmd("vm_stat | grep 'Pages inactive'"):match("(%d+)")) or 0
+	local wired_pages = tonumber(term_cmd("vm_stat | grep 'Pages wired down'"):match("(%d+)")) or 0
+	local memsize_str = term_cmd("sysctl -n hw.memsize"):gsub("[^%d]", "")
+	local total_bytes = tonumber(memsize_str) or (8 * 1024 ^ 3)
+	local used_bytes = (active_pages + inactive_pages + wired_pages) * page_size
+	local used_mb = used_bytes / 1024 ^ 2
+	local total_mb = total_bytes / 1024 ^ 2
+	return math.floor(used_mb), math.floor(total_mb)
+end
+
+-- DISK
+local function disk()
 	local uname = term_cmd("uname")
+	local disk_output
+	local is_wsl = false
 
 	if uname == "Linux" then
-		local ram_output = term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
-		local used, total = ram_output:match("(%d+)%s+(%d+)")
-		return tonumber(used or "0"), tonumber(total or "1")
-	elseif uname == "Darwin" then
-		-- macOS: vm_stat gives pages, assume 4096 bytes per page
-		local page_size = 4096
-		local used_pages = tonumber(term_cmd("vm_stat | grep 'Pages active'"):match("(%d+)")) or 0
-		local inactive_pages = tonumber(term_cmd("vm_stat | grep 'Pages inactive'"):match("(%d+)")) or 0
-		local wired_pages = tonumber(term_cmd("vm_stat | grep 'Pages wired down'"):match("(%d+)")) or 0
-		local memsize_str = term_cmd("sysctl -n hw.memsize"):gsub("[^%d]", "")
-		local total_pages = tonumber(memsize_str) or (8 * 1024 * 1024 * 1024)
+		local kernel_version = term_cmd("cat /proc/version")
+		if kernel_version:match("Microsoft") or kernel_version:match("WSL") then
+			is_wsl = true
+		end
+	end
 
-		local used_bytes = (used_pages + inactive_pages + wired_pages) * page_size
-		local total_mb = total_pages / (1024 * 1024)
-		local used_mb = used_bytes / (1024 * 1024)
-		return math.floor(used_mb), math.floor(total_mb)
+	if uname == "Linux" or uname == "Darwin" then
+		local mount_path = is_wsl and "/mnt/c" or "/"
+		disk_output = term_cmd("df -k " .. mount_path .. " | awk 'NR==2 {print $3, $2}'")
+		local used_kb, total_kb = disk_output:match("(%d+)%s+(%d+)")
+		local used_gb = tonumber(used_kb or "0") / (1024 * 1024)
+		local total_gb = tonumber(total_kb or "1") / (1024 * 1024)
+		return math.floor(used_gb + 0.5), math.floor(total_gb + 0.5)
 	end
 
 	return 0, 1
 end
 
-local ram_used, ram_total = get_ram_usage()
-
--- DISK
-local function get_disk_usage()
-	local uname = term_cmd("uname")
-	local disk_output
-
-	if uname == "Linux" or uname == "Darwin" then
-		-- Use -k (KB) for consistent parsing
-		disk_output = term_cmd("df -k / | awk 'NR==2 {print $3, $2}'")
-		local used_kb, total_kb = disk_output:match("(%d+)%s+(%d+)")
-		local used_gb = tonumber(used_kb or "0") / (1024 * 1024)
-		local total_gb = tonumber(total_kb or "1") / (1024 * 1024) -- avoid division by 0
-		return math.floor(used_gb + 0.5), math.floor(total_gb + 0.5)
-	end
-
-	return 0, 1 -- Fallback
-end
-
-local disk_used, disk_total = get_disk_usage()
-
 -- UPTIME
 local function uptime()
-	local uname = term_cmd("uname")
-
-	if uname == "Linux" then
-		return term_cmd("uptime -s") -- e.g., "2025-04-28 09:32:17"
-	elseif uname == "Darwin" then
-		-- Get boot time in seconds since epoch
-		local boottime_str = term_cmd("sysctl -n kern.boottime")
-		-- Example: "{ sec = 1714290741, usec = 0 }"
-		local sec = boottime_str:match("sec%s*=%s*(%d+)")
-		if sec then
-			local ts = tonumber(sec)
-			return os.date("%Y-%m-%d %H:%M:%S", ts) -- Format like uptime -s
-		end
+	if term_cmd("uname") == "Linux" then
+		local year, month, day = term_cmd("uptime -s"):match("(%d+)-(%d+)-(%d+)")
+		local boot_time = os.time({ year = year, month = month, day = day })
+		local current_time = os.time(os.date("*t"))
+		return term_cmd("uptime -s"), math.min(math.floor(os.difftime(current_time, boot_time) / 86400) / 14) * 100, 100
 	end
-
-	return nil
-end
-
-local function days_since_uptime(uptime_date_str)
-	local year, month, day = uptime_date_str:match("(%d+)-(%d+)-(%d+)")
-	year, month, day = tonumber(year), tonumber(month), tonumber(day)
-	local uptime_time = os.time({ year = year, month = month, day = day, hour = 0, min = 0, sec = 0 })
-	local now = os.date("*t")
-	local current_time = os.time({ year = now.year, month = now.month, day = now.day, hour = 0, min = 0, sec = 0 })
-	local diff_in_seconds = os.difftime(current_time, uptime_time)
-	local days = math.floor(diff_in_seconds / (60 * 60 * 24))
-
-	return days
+	local boot_sec = term_cmd("sysctl -n kern.boottime"):match("sec%s*=%s*(%d+)")
+	local boot_date = tonumber(boot_sec) and os.date("*t", tonumber(boot_sec))
+	local current_date = os.date("*t")
+	local boot_day = os.time({ year = boot_date.year, month = boot_date.month, day = boot_date.day })
+	local current_day = os.time({ year = current_date.year, month = current_date.month, day = current_date.day })
+	return boot_date, math.min(math.floor(os.difftime(current_day, boot_day) / 86400) / 14) * 100, 100
 end
 
 -- BATTERY
-local function battery()
-	local result
-
-	-- Try Linux first
-	result = term_cmd("cat /sys/class/power_supply/BAT*/capacity 2>/dev/null")
-	if result and result:match("%d+") then
-		return tonumber(result:match("%d+"))
+local function battery_percentage()
+	local battery_output = term_cmd(
+		'for d in /sys/class/power_supply/*; do case "$d" in */BAT*|*/CMD*|*/battery*) cat "$d/capacity" 2>/dev/null; break; esac; done'
+	)
+	if battery_output:match("%d+") then
+		return tonumber(battery_output:match("%d+"))
 	end
-
-	-- Try macOS if Linux check failed
-	result = term_cmd("pmset -g batt | grep -Eo '\\d+%' | head -1")
-	if result and result:match("%d+") then
-		return tonumber(result:match("%d+"))
-	end
-
-	return nil
+	local battery_mac = term_cmd("pmset -g batt | grep -Eo '\\d+%' | head -1")
+	return tonumber(battery_mac and battery_mac:match("%d+")) or 0
 end
 
--- IP
+-- IP ADDRESS
 local function ip_address()
-	local uname = term_cmd("uname")
-
-	if uname == "Linux" then
+	if term_cmd("uname") == "Linux" then
 		return term_cmd("hostname -I | awk '{print $1}'")
-	elseif uname == "Darwin" then
-		-- macOS: usually en0 is the active interface, fallback to en1
-		local ip = term_cmd("ipconfig getifaddr en0")
-		if ip == "" then
-			ip = term_cmd("ipconfig getifaddr en1")
-		end
-		return ip ~= "" and ip or "N/A"
 	end
-
-	return "N/A"
+	local ip = term_cmd("ipconfig getifaddr en0")
+	if ip == "" then
+		ip = term_cmd("ipconfig getifaddr en1")
+	end
+	return ip ~= "" and ip or "N/A"
 end
 
--- Calculations
-local ram_percent = (tonumber(ram_used) or 0) / (tonumber(ram_total) or 1) * 100
-local disk_percent = (tonumber(disk_used) or 0) / (tonumber(disk_total) or 1) * 100
-local uptime_percent = math.min((days_since_uptime(uptime()) / 7) * 100, 100)
+-- RAM/DISK/UPTIME
+local ram_used, ram_total = ram()
+local disk_used, disk_total = disk()
+local disk_percent = disk_used / disk_total * 100
+local ram_percent = ram_used / ram_total * 100
+local uptime_date, uptime_percent = uptime()
 
--- Neovim Version
-local function vim_version()
-	return vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch
-end
-
--- Table system_info
+-- SYSTEM INFO BOX
 local system_info = {
 	"╭────────┬─────────────────────────────────────────╮",
-	string.format("│ CPU    │ %-16s %2s %s │", cpu .. "%", "", make_graph(cpu)),
+	string.format("│ CPU    │ %-16s %2s %s │", cpu_load .. "%", "", make_graph(cpu_load)),
 	string.format(
 		"│ RAM    │ %-16s %2s %s │",
 		ram_used .. "/" .. ram_total .. "MB",
@@ -178,8 +143,8 @@ local system_info = {
 		"󰨆",
 		make_graph(disk_percent)
 	),
-	string.format("│ UPTIME │ %-29s %2s %s │", uptime(), "󰃭", make_graph(uptime_percent, 7)),
-	string.format("│ MORE   │ %-10s %33s │", " " .. battery() .. "%", "󰍸 " .. ip_address()),
+	string.format("│ UPTIME │ %-22s %2s %s │", uptime_date, "󰃭", make_graph(uptime_percent, 14)),
+	string.format("│ MORE   │ %-10s %33s │", " " .. battery_percentage() .. "%", "󰍸 " .. ip_address()),
 	"╰────────┴─────────────────────────────────────────╯",
 }
 
