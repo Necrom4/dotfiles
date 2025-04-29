@@ -108,3 +108,33 @@ vim.keymap.set("n", "<leader>Xq", function()
 		vim.notify(err, vim.log.levels.ERROR)
 	end
 end, { desc = "Quickfix List" })
+
+-- diff
+Snacks.toggle
+	.new({
+		id = "diff_win",
+		name = "Diff Window",
+		get = function()
+			return vim.wo.diff
+		end,
+		set = function(state)
+			if state then
+				vim.cmd("diffthis")
+			else
+				vim.cmd("diffoff")
+			end
+		end,
+		icon = {
+			enabled = " ",
+			disabled = " ",
+		},
+		color = {
+			enabled = "green",
+			disabled = "yellow",
+		},
+		wk_desc = {
+			enabled = "Disable ",
+			disabled = "Enable ",
+		},
+	})
+	:map("<leader>dd")
