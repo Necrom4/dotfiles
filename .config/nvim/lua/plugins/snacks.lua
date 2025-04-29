@@ -1,3 +1,56 @@
+-- SYSYTEM_INFO
+local function get_output(cmd)
+	local handle = io.popen(cmd)
+	local result = handle:read("*a")
+	handle:close()
+	return result:gsub("%s+$", "")
+end
+
+local function make_graph(percentage, width)
+	percentage = tonumber(percentage) or 0
+	width = width or 20
+	local filled = math.floor((percentage / 100) * width)
+	return string.rep("■", filled) .. string.rep("□", width - filled)
+end
+
+-- Example system commands (adjust to your OS)
+local cpu_raw = get_output("top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}'")
+local cpu = tonumber(cpu_raw) or 0
+
+-- RAM
+local ram_output = get_output("free -m | awk '/Mem:/ {print $3, $2}'")
+local ram_used, ram_total = ram_output:match("(%d+)%s+(%d+)")
+ram_used = tonumber(ram_used or "0")
+ram_total = tonumber(ram_total or "1") -- avoid division by zero
+
+-- DISK
+local disk_output = get_output("df -h / | awk 'NR==2 {print $3, $2}'")
+local disk_used, disk_total = disk_output:match("(%d+)%a?%s+(%d+)%a?")
+disk_used = tonumber(disk_used or "0")
+disk_total = tonumber(disk_total or "1")
+
+local uptime = get_output("uptime -s")
+
+-- Calculations
+local ram_percent = (tonumber(ram_used) or 0) / (tonumber(ram_total) or 1) * 100
+local disk_percent = (tonumber(disk_used) or 0) / (tonumber(disk_total) or 1) * 100
+
+-- Neovim Version
+local function vim_version()
+	return vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch
+end
+
+-- Table system_info
+local system_info = {
+	"╭────────┬─────────────────────────────────────────╮",
+	string.format("│ CPU    │ %-18s %s │", cpu .. "%", make_graph(cpu)),
+	string.format("│ RAM    │ %-18s %s │", ram_used .. "/" .. ram_total .. " MB", make_graph(ram_percent)),
+	string.format("│ DISK   │ %-18s %s │", disk_used .. "/" .. disk_total .. " GB", make_graph(disk_percent)),
+	string.format("│ UPTIME │ %-39s │", uptime),
+	"╰────────┴─────────────────────────────────────────╯",
+}
+
+--YADM
 local function switchToDotfiles(cmd)
 	local original_git_dir = vim.env.GIT_DIR
 	local home_dir = vim.fn.expand("~")
@@ -241,80 +294,38 @@ return {
 			enabled = true,
 			preset = {
 				header = [[
-╭────────────────────────────────────────────────────────╮
-│ ███╗   ██╗███████╗ ██████╗██████╗  ██████╗ ███╗   ███╗ │
-│ ████╗  ██║██╔════╝██╔════╝██╔══██╗██╔═══██╗████╗ ████║ │
-│ ██╔██╗ ██║█████╗  ██║     ██████╔╝██║   ██║██╔████╔██║ │
-│ ██║╚██╗██║██╔══╝  ██║     ██╔══██╗██║   ██║██║╚██╔╝██║ │
-│ ██║ ╚████║███████╗╚██████╗██║  ██║╚██████╔╝██║ ╚═╝ ██║ │
-│ ╚═╝  ╚═══╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝ │
-╰────────────────────────────────────────────────────────╯]],
+███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]]
+					.. "\n"
+					.. vim_version()
+					.. "\n"
+					.. table.concat(system_info, "\n")
+					.. "\n"
+					.. os.date(),
 				keys = {
 					{ icon = " ", key = "n", desc = "New File", action = ":ene" },
-					{
-						icon = "󰥨 ",
-						key = "f",
-						desc = "Find File",
-						action = function()
-							Snacks.dashboard.pick("files")
-						end,
-					},
-					{
-						icon = "󰈞 ",
-						key = "g",
-						desc = "Find Text",
-						action = function()
-							Snacks.dashboard.pick("live_grep")
-						end,
-					},
-					{
-						icon = " ",
-						key = "r",
-						desc = "Recent Files",
-						action = function()
-							Snacks.dashboard.pick("oldfiles")
-						end,
-					},
-					{
-						icon = " ",
-						key = "c",
-						desc = "Config",
-						action = function()
-							switchToDotfiles(function(home_dir)
-								Snacks.dashboard.pick("git_files", { cwd = home_dir })
-							end)
-						end,
-					},
-					{
-						icon = " ",
-						key = "l",
-						desc = "Lazy Config",
-						action = function()
-							Snacks.picker.lazy()
-						end,
-					},
 					{ icon = " ", key = "s", desc = "Restore Session", section = "session" },
 					{ icon = " ", key = "q", desc = "Quit", action = ":quit" },
 				},
 			},
 			sections = {
-				{ section = "header" },
-				{ section = "keys", padding = 2 },
-				{ icon = "󰙅 ", title = "PROJECTS", section = "projects", indent = 2, padding = 2 },
+				{ pane = 1, section = "header" },
 				{
-					icon = " ",
-					title = "GIT STATUS",
+					pane = 1,
 					section = "terminal",
-					enabled = function()
-						return Snacks.git.get_root() == nil
-					end,
-					cmd = "cmatrix -br",
-					height = 5,
-					padding = 2,
-					ttl = 5 * 60,
-					indent = 2,
+					cmd = "curl -s 'https://wttr.in/?0FQ' || echo",
+					height = 6,
 				},
+				{ pane = 1, section = "startup" },
+				{ pane = 2, section = "keys", padding = 1 },
+				{ pane = 2, icon = " ", title = "RECENT FILES", section = "recent_files", indent = 2, padding = 1 },
+				{ pane = 2, icon = "󰙅 ", title = "PROJECTS", section = "projects", indent = 2, padding = 1 },
 				{
+					pane = 2,
 					icon = " ",
 					title = "GIT STATUS [" .. vim.fn.trim(vim.fn.system("git branch --show-current")) .. "]",
 					section = "terminal",
@@ -323,20 +334,25 @@ return {
 					end,
 					cmd = "git --no-pager diff --stat -B -M -C && git status --short --renames",
 					height = 5,
-					padding = 2,
+					padding = 1,
 					ttl = 5 * 60,
 					indent = 2,
 				},
-				{ section = "startup" },
+				{
+					pane = 2,
+					section = "terminal",
+					enabled = function()
+						return Snacks.git.get_root() == nil
+					end,
+					cmd = "cmatrix -br",
+					height = 6,
+					indent = 2,
+					padding = 1,
+				},
 			},
 		},
 		dim = {
 			enabled = true,
-		},
-		indent = {
-			-- indent = {
-			-- 	enabled = false,
-			-- },
 		},
 		input = { enabled = true },
 		lazygit = {
