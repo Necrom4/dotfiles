@@ -13,22 +13,96 @@ local function make_graph(percentage, width)
 	return string.rep("■", filled) .. string.rep("□", width - filled)
 end
 
+-- OS NAME
+local function os_name()
+	local uname = term_cmd("uname")
+
+	if uname == "Linux" then
+		local name = term_cmd("lsb_release -ds")
+		if name == "" then
+			-- fallback if lsb_release is not available
+			name = term_cmd("cat /etc/os-release | grep '^PRETTY_NAME=' | cut -d '\"' -f2")
+		end
+		return name ~= "" and name or "Linux"
+	elseif uname == "Darwin" then
+		local product_name = term_cmd("sw_vers -productName")
+		local product_version = term_cmd("sw_vers -productVersion")
+		return product_name .. " " .. product_version
+	end
+
+	return "Unknown OS"
+end
+
 -- CPU
-local cpu = tonumber(term_cmd("uptime"):match("load average:%s*([%d%.]+)")) or 0
+local cpu = tonumber(term_cmd("uptime"):match("load averages?:%s*([%d%.]+)")) or 0
 
 -- RAM
-local ram_output = term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
-local ram_used, ram_total = ram_output:match("(%d+)%s+(%d+)")
-ram_used = tonumber(ram_used or "0")
-ram_total = tonumber(ram_total or "1") -- avoid division by zero
+local function get_ram_usage()
+	local uname = term_cmd("uname")
+
+	if uname == "Linux" then
+		local ram_output = term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
+		local used, total = ram_output:match("(%d+)%s+(%d+)")
+		return tonumber(used or "0"), tonumber(total or "1")
+	elseif uname == "Darwin" then
+		-- macOS: vm_stat gives pages, assume 4096 bytes per page
+		local page_size = 4096
+		local used_pages = tonumber(term_cmd("vm_stat | grep 'Pages active'"):match("(%d+)")) or 0
+		local inactive_pages = tonumber(term_cmd("vm_stat | grep 'Pages inactive'"):match("(%d+)")) or 0
+		local wired_pages = tonumber(term_cmd("vm_stat | grep 'Pages wired down'"):match("(%d+)")) or 0
+		local memsize_str = term_cmd("sysctl -n hw.memsize"):gsub("[^%d]", "")
+		local total_pages = tonumber(memsize_str) or (8 * 1024 * 1024 * 1024)
+
+		local used_bytes = (used_pages + inactive_pages + wired_pages) * page_size
+		local total_mb = total_pages / (1024 * 1024)
+		local used_mb = used_bytes / (1024 * 1024)
+		return math.floor(used_mb), math.floor(total_mb)
+	end
+
+	return 0, 1
+end
+
+local ram_used, ram_total = get_ram_usage()
 
 -- DISK
-local disk_output = term_cmd("df -h / | awk 'NR==2 {print $3, $2}'")
-local disk_used, disk_total = disk_output:match("(%d+)%a?%s+(%d+)%a?")
-disk_used = tonumber(disk_used or "0")
-disk_total = tonumber(disk_total or "1")
+local function get_disk_usage()
+	local uname = term_cmd("uname")
+	local disk_output
+
+	if uname == "Linux" or uname == "Darwin" then
+		-- Use -k (KB) for consistent parsing
+		disk_output = term_cmd("df -k / | awk 'NR==2 {print $3, $2}'")
+		local used_kb, total_kb = disk_output:match("(%d+)%s+(%d+)")
+		local used_gb = tonumber(used_kb or "0") / (1024 * 1024)
+		local total_gb = tonumber(total_kb or "1") / (1024 * 1024) -- avoid division by 0
+		return math.floor(used_gb + 0.5), math.floor(total_gb + 0.5)
+	end
+
+	return 0, 1 -- Fallback
+end
+
+local disk_used, disk_total = get_disk_usage()
 
 -- UPTIME
+local function uptime()
+	local uname = term_cmd("uname")
+
+	if uname == "Linux" then
+		return term_cmd("uptime -s") -- e.g., "2025-04-28 09:32:17"
+	elseif uname == "Darwin" then
+		-- Get boot time in seconds since epoch
+		local boottime_str = term_cmd("sysctl -n kern.boottime")
+		-- Example: "{ sec = 1714290741, usec = 0 }"
+		local sec = boottime_str:match("sec%s*=%s*(%d+)")
+		if sec then
+			local ts = tonumber(sec)
+			return os.date("%Y-%m-%d %H:%M:%S", ts) -- Format like uptime -s
+		end
+	end
+
+	return nil
+end
+
 local function days_since_uptime(uptime_date_str)
 	local year, month, day = uptime_date_str:match("(%d+)-(%d+)-(%d+)")
 	year, month, day = tonumber(year), tonumber(month), tonumber(day)
@@ -42,37 +116,46 @@ local function days_since_uptime(uptime_date_str)
 end
 
 -- BATTERY
-local function get_battery_percentage()
-	local handle
+local function battery()
 	local result
 
 	-- Try Linux first
-	handle = io.popen("cat /sys/class/power_supply/BAT*/capacity 2>/dev/null")
-	if handle then
-		result = handle:read("*a")
-		handle:close()
-		if result and result:match("%d+") then
-			return tonumber(result:match("%d+"))
-		end
+	result = term_cmd("cat /sys/class/power_supply/BAT*/capacity 2>/dev/null")
+	if result and result:match("%d+") then
+		return tonumber(result:match("%d+"))
 	end
 
 	-- Try macOS if Linux check failed
-	handle = io.popen("pmset -g batt | grep -Eo '\\d+%' | head -1")
-	if handle then
-		result = handle:read("*a")
-		handle:close()
-		if result and result:match("%d+") then
-			return tonumber(result:match("%d+"))
-		end
+	result = term_cmd("pmset -g batt | grep -Eo '\\d+%' | head -1")
+	if result and result:match("%d+") then
+		return tonumber(result:match("%d+"))
 	end
 
-	return nil -- Battery info not found
+	return nil
+end
+
+-- IP
+local function ip_address()
+	local uname = term_cmd("uname")
+
+	if uname == "Linux" then
+		return term_cmd("hostname -I | awk '{print $1}'")
+	elseif uname == "Darwin" then
+		-- macOS: usually en0 is the active interface, fallback to en1
+		local ip = term_cmd("ipconfig getifaddr en0")
+		if ip == "" then
+			ip = term_cmd("ipconfig getifaddr en1")
+		end
+		return ip ~= "" and ip or "N/A"
+	end
+
+	return "N/A"
 end
 
 -- Calculations
 local ram_percent = (tonumber(ram_used) or 0) / (tonumber(ram_total) or 1) * 100
 local disk_percent = (tonumber(disk_used) or 0) / (tonumber(disk_total) or 1) * 100
-local uptime_percent = math.min((days_since_uptime(term_cmd("uptime -s")) / 7) * 100, 100)
+local uptime_percent = math.min((days_since_uptime(uptime()) / 7) * 100, 100)
 
 -- Neovim Version
 local function vim_version()
@@ -95,12 +178,8 @@ local system_info = {
 		"󰨆",
 		make_graph(disk_percent)
 	),
-	string.format("│ UPTIME │ %-29s %2s %s │", term_cmd("uptime -s"), "󰃭", make_graph(uptime_percent, 7)),
-	string.format(
-		"│ MORE   │ %-10s %33s │",
-		" " .. get_battery_percentage() .. "%",
-		"󰍸 " .. term_cmd("hostname -I | awk '{print $1}'")
-	),
+	string.format("│ UPTIME │ %-29s %2s %s │", uptime(), "󰃭", make_graph(uptime_percent, 7)),
+	string.format("│ MORE   │ %-10s %33s │", " " .. battery() .. "%", "󰍸 " .. ip_address()),
 	"╰────────┴─────────────────────────────────────────╯",
 }
 
@@ -355,7 +434,7 @@ return {
 ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
 ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]]
 					.. "\n"
-					.. term_cmd("lsb_release -ds")
+					.. os_name()
 					.. "  "
 					.. vim_version()
 					.. "\n"
