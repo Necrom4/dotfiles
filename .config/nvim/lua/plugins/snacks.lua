@@ -1,5 +1,5 @@
 -- SYSYTEM_INFO
-local function get_output(cmd)
+local function term_cmd(cmd)
 	local handle = io.popen(cmd)
 	local result = handle:read("*a")
 	handle:close()
@@ -13,27 +13,66 @@ local function make_graph(percentage, width)
 	return string.rep("■", filled) .. string.rep("□", width - filled)
 end
 
--- Example system commands (adjust to your OS)
-local cpu_raw = get_output("top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}'")
-local cpu = tonumber(cpu_raw) or 0
+-- CPU
+local cpu = tonumber(term_cmd("uptime"):match("load average:%s*([%d%.]+)")) or 0
 
 -- RAM
-local ram_output = get_output("free -m | awk '/Mem:/ {print $3, $2}'")
+local ram_output = term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
 local ram_used, ram_total = ram_output:match("(%d+)%s+(%d+)")
 ram_used = tonumber(ram_used or "0")
 ram_total = tonumber(ram_total or "1") -- avoid division by zero
 
 -- DISK
-local disk_output = get_output("df -h / | awk 'NR==2 {print $3, $2}'")
+local disk_output = term_cmd("df -h / | awk 'NR==2 {print $3, $2}'")
 local disk_used, disk_total = disk_output:match("(%d+)%a?%s+(%d+)%a?")
 disk_used = tonumber(disk_used or "0")
 disk_total = tonumber(disk_total or "1")
 
-local uptime = get_output("uptime -s")
+-- UPTIME
+local function days_since_uptime(uptime_date_str)
+	local year, month, day = uptime_date_str:match("(%d+)-(%d+)-(%d+)")
+	year, month, day = tonumber(year), tonumber(month), tonumber(day)
+	local uptime_time = os.time({ year = year, month = month, day = day, hour = 0, min = 0, sec = 0 })
+	local now = os.date("*t")
+	local current_time = os.time({ year = now.year, month = now.month, day = now.day, hour = 0, min = 0, sec = 0 })
+	local diff_in_seconds = os.difftime(current_time, uptime_time)
+	local days = math.floor(diff_in_seconds / (60 * 60 * 24))
+
+	return days
+end
+
+-- BATTERY
+local function get_battery_percentage()
+	local handle
+	local result
+
+	-- Try Linux first
+	handle = io.popen("cat /sys/class/power_supply/BAT*/capacity 2>/dev/null")
+	if handle then
+		result = handle:read("*a")
+		handle:close()
+		if result and result:match("%d+") then
+			return tonumber(result:match("%d+"))
+		end
+	end
+
+	-- Try macOS if Linux check failed
+	handle = io.popen("pmset -g batt | grep -Eo '\\d+%' | head -1")
+	if handle then
+		result = handle:read("*a")
+		handle:close()
+		if result and result:match("%d+") then
+			return tonumber(result:match("%d+"))
+		end
+	end
+
+	return nil -- Battery info not found
+end
 
 -- Calculations
 local ram_percent = (tonumber(ram_used) or 0) / (tonumber(ram_total) or 1) * 100
 local disk_percent = (tonumber(disk_used) or 0) / (tonumber(disk_total) or 1) * 100
+local uptime_percent = math.min((days_since_uptime(term_cmd("uptime -s")) / 7) * 100, 100)
 
 -- Neovim Version
 local function vim_version()
@@ -43,10 +82,25 @@ end
 -- Table system_info
 local system_info = {
 	"╭────────┬─────────────────────────────────────────╮",
-	string.format("│ CPU    │ %-18s %s │", cpu .. "%", make_graph(cpu)),
-	string.format("│ RAM    │ %-18s %s │", ram_used .. "/" .. ram_total .. " MB", make_graph(ram_percent)),
-	string.format("│ DISK   │ %-18s %s │", disk_used .. "/" .. disk_total .. " GB", make_graph(disk_percent)),
-	string.format("│ UPTIME │ %-39s │", uptime),
+	string.format("│ CPU    │ %-16s %2s %s │", cpu .. "%", "", make_graph(cpu)),
+	string.format(
+		"│ RAM    │ %-16s %2s %s │",
+		ram_used .. "/" .. ram_total .. "MB",
+		"",
+		make_graph(ram_percent)
+	),
+	string.format(
+		"│ DISK   │ %-16s %2s %s │",
+		disk_used .. "/" .. disk_total .. "GB",
+		"󰨆",
+		make_graph(disk_percent)
+	),
+	string.format("│ UPTIME │ %-29s %2s %s │", term_cmd("uptime -s"), "󰃭", make_graph(uptime_percent, 7)),
+	string.format(
+		"│ MORE   │ %-10s %33s │",
+		" " .. get_battery_percentage() .. "%",
+		"󰍸 " .. term_cmd("hostname -I | awk '{print $1}'")
+	),
 	"╰────────┴─────────────────────────────────────────╯",
 }
 
@@ -301,13 +355,15 @@ return {
 ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
 ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]]
 					.. "\n"
+					.. term_cmd("lsb_release -ds")
+					.. "  "
 					.. vim_version()
 					.. "\n"
 					.. table.concat(system_info, "\n")
 					.. "\n"
 					.. os.date(),
 				keys = {
-					{ icon = " ", key = "n", desc = "New File", action = ":ene" },
+					{ icon = " ", key = "n", desc = "New File", action = ":ene" },
 					{ icon = " ", key = "s", desc = "Restore Session", section = "session" },
 					{ icon = " ", key = "q", desc = "Quit", action = ":quit" },
 				},
