@@ -2,7 +2,7 @@ local tint_enabled = true
 
 return {
 	"levouh/tint.nvim",
-	event = "VeryLazy",
+	event = "LazyFile",
 	opts = function()
 		Snacks.toggle
 			.new({
