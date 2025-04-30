@@ -9,6 +9,9 @@ end
 local function make_graph(percent, width)
 	percent = tonumber(percent) or 0
 	width = width or 20
+	if percent > 100 then
+		return string.rep("󰨔", width)
+	end
 	local filled = math.floor((percent / 100) * width)
 	return string.rep("■", filled) .. string.rep("□", width - filled)
 end
