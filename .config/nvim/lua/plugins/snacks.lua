@@ -60,27 +60,13 @@ end
 
 -- DISK
 local function disk()
-	local uname = term_cmd("uname")
-	local disk_output
-	local is_wsl = false
-
-	if uname == "Linux" then
-		local kernel_version = term_cmd("cat /proc/version")
-		if kernel_version:match("Microsoft") or kernel_version:match("WSL") then
-			is_wsl = true
-		end
-	end
-
-	if uname == "Linux" or uname == "Darwin" then
-		local mount_path = is_wsl and "/mnt/c" or "/"
-		disk_output = term_cmd("df -k " .. mount_path .. " | awk 'NR==2 {print $3, $2}'")
-		local used_kb, total_kb = disk_output:match("(%d+)%s+(%d+)")
-		local used_gb = tonumber(used_kb or "0") / (1024 * 1024)
-		local total_gb = tonumber(total_kb or "1") / (1024 * 1024)
-		return math.floor(used_gb + 0.5), math.floor(total_gb + 0.5)
-	end
-
-	return 0, 1
+	local is_wsl = term_cmd("uname") == "Linux"
+		and (term_cmd("cat /proc/version"):match("Microsoft") or term_cmd("cat /proc/version"):match("WSL"))
+	local mount_path = is_wsl and "/mnt/c" or "/"
+	local used, total = term_cmd("df -H " .. mount_path .. " | awk 'NR==2 {print $3, $2}'"):match(
+		"([%d%.]+)[GMKTB]?%s+([%d%.]+)[GMKTB]?"
+	)
+	return math.floor(tonumber(used or 0) + 0.5), math.floor(tonumber(total or 1) + 0.5)
 end
 
 -- UPTIME
