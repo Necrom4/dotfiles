@@ -62,8 +62,8 @@ vim.keymap.set("n", "<leader><tab>h", "<cmd>-tabmove<cr>", { desc = "Move Tab Le
 vim.keymap.set("n", "<leader><tab>l", "<cmd>+tabmove<cr>", { desc = "Move Tab Right" })
 vim.keymap.set("n", "<leader><tab>{", "<cmd>tabfirst<cr>", { desc = "First Tab" })
 vim.keymap.set("n", "<leader><tab>}", "<cmd>tablast<cr>", { desc = "Last Tab" })
-vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
-vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+vim.keymap.set({ "n", "t" }, "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+vim.keymap.set({ "n", "t" }, "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
 -- SMART JOIN
 
