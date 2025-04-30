@@ -172,6 +172,17 @@ return {
 		{ "<leader>sr", mode = { "n", "x" }, false },
 		{ "<leader>sw", mode = { "n", "x" }, false },
 		{ "<leader>sW", mode = { "n", "x" }, false },
+		{ "<leader>ua", false },
+		{
+			"<leader>ua",
+			function()
+				Snacks.toggle.animate():toggle()
+				Snacks.toggle.scroll():toggle()
+				require("smear_cursor").toggle()
+			end,
+			desc = "Toggle Animations",
+			silent = true,
+		},
 		{
 			"<leader><leader>",
 			function()
