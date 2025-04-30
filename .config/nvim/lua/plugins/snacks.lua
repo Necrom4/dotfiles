@@ -85,18 +85,23 @@ end
 
 -- UPTIME
 local function uptime()
+	local boot_time, boot_date
+
 	if term_cmd("uname") == "Linux" then
-		local year, month, day = term_cmd("uptime -s"):match("(%d+)-(%d+)-(%d+)")
-		local boot_time = os.time({ year = year, month = month, day = day })
-		local current_time = os.time(os.date("*t"))
-		return term_cmd("uptime -s"), math.min(math.floor(os.difftime(current_time, boot_time) / 86400) / 14) * 100, 100
+		boot_date = term_cmd("uptime -s")
+		local y, m, d = boot_date:match("(%d+)-(%d+)-(%d+)")
+		boot_time = os.time({ year = y, month = m, day = d })
+	else
+		local boot_sec = term_cmd("sysctl -n kern.boottime"):match("sec%s*=%s*(%d+)")
+		boot_time = tonumber(boot_sec)
+		boot_date = os.date("%Y-%m-%d %H:%M:%S", boot_time)
 	end
-	local boot_sec = term_cmd("sysctl -n kern.boottime"):match("sec%s*=%s*(%d+)")
-	local boot_date = tonumber(boot_sec) and os.date("*t", tonumber(boot_sec))
-	local current_date = os.date("*t")
-	local boot_day = os.time({ year = boot_date.year, month = boot_date.month, day = boot_date.day })
-	local current_day = os.time({ year = current_date.year, month = current_date.month, day = current_date.day })
-	return boot_date, math.min(math.floor(os.difftime(current_day, boot_day) / 86400) / 14) * 100, 100
+
+	local current_time = os.time(os.date("*t"))
+	local days_since_boot = math.floor(os.difftime(current_time, boot_time) / 86400)
+	local uptime_percentage = math.min(days_since_boot / 14, 1) * 100
+
+	return boot_date, uptime_percentage
 end
 
 -- BATTERY
