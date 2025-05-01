@@ -16,24 +16,41 @@ local function make_graph(percent, width)
 	return string.rep("■", filled) .. string.rep("□", width - filled)
 end
 
--- OS NAME
+-- OS
 local function os_name()
 	local uname = term_cmd("uname")
 	if uname == "Linux" then
-		local linux_name = term_cmd("lsb_release -ds")
+		local linux_name = term_cmd("lsb_release -is"):lower()
 		if linux_name == "" then
-			linux_name = term_cmd("cat /etc/os-release | grep '^PRETTY_NAME=' | cut -d '\"' -f2")
+			linux_name = term_cmd("cat /etc/os-release | grep '^ID=' | cut -d '=' -f2"):lower()
 		end
-		return linux_name ~= "" and linux_name or "Linux"
+
+		local os_pretty_name = term_cmd("lsb_release -ds")
+		if os_pretty_name == "" then
+			os_pretty_name = term_cmd("cat /etc/os-release | grep '^PRETTY_NAME=' | cut -d '\"' -f2")
+		end
+
+		local icon = "" -- default Linux icon
+		if linux_name:find("ubuntu") then
+			icon = ""
+		elseif linux_name:find("debian") then
+			icon = ""
+		elseif linux_name:find("arch") then
+			icon = "󰣇"
+		end
+
+		return icon .. " " .. (os_pretty_name ~= "" and os_pretty_name or "Linux")
 	elseif uname == "Darwin" then
-		return term_cmd("sw_vers -productName") .. " " .. term_cmd("sw_vers -productVersion")
+		local name = term_cmd("sw_vers -productName")
+		local version = term_cmd("sw_vers -productVersion")
+		return " " .. name .. " " .. version
 	end
-	return "Unknown OS"
+	return " Unknown OS"
 end
 
 -- NEOVIM VERSION
 local function vim_version()
-	return vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch
+	return " " .. vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch
 end
 
 -- CPU
@@ -403,7 +420,7 @@ return {
 ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]]
 					.. "\n"
 					.. os_name()
-					.. "  "
+					.. " | "
 					.. vim_version()
 					.. "\n"
 					.. table.concat(system_info, "\n")
