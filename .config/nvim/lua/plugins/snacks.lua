@@ -124,21 +124,19 @@ local uptime_date, uptime_percent = uptime()
 -- SYSTEM INFO BOX
 local system_info = {
 	"╭────────┬─────────────────────────────────────────╮",
-	string.format("│ CPU    │ %-16s %2s %s │", cpu_load .. "%", "", make_graph(cpu_load)),
+	string.format("│ CPU    │ %-16s %s │", cpu_load .. "%", " " .. make_graph(cpu_load)),
 	string.format(
-		"│ RAM    │ %-16s %2s %s │",
+		"│ RAM    │ %-16s %s │",
 		ram_used .. "/" .. ram_total .. "MB",
-		"",
-		make_graph(ram_percent)
+		" " .. make_graph(ram_percent)
 	),
 	string.format(
-		"│ DISK   │ %-16s %2s %s │",
+		"│ DISK   │ %-16s %s │",
 		disk_used .. "/" .. disk_total .. "GB",
-		"󰨆",
-		make_graph(disk_percent)
+		"󰨆 " .. make_graph(disk_percent)
 	),
-	string.format("│ UPTIME │ %-22s %2s %s │", uptime_date, "󰃭", make_graph(uptime_percent, 14)),
-	string.format("│ MORE   │ %-10s %33s │", " " .. battery_percentage() .. "%", "󰍸 " .. ip_address()),
+	string.format("│ UPTIME │ %-22s %s │", uptime_date, "󰃭 " .. make_graph(uptime_percent, 14)),
+	string.format("│ MORE   │ %-25s %s │", " " .. battery_percentage() .. "%", "󰍸 " .. ip_address()),
 	"╰────────┴─────────────────────────────────────────╯",
 }
 
