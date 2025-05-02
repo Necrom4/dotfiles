@@ -77,10 +77,12 @@ end
 
 -- DISK
 local function disk()
-	local is_wsl = term_cmd("uname") == "Linux"
+	local is_linux = term_cmd("uname") == "Linux"
+	local is_wsl = is_linux
 		and (term_cmd("cat /proc/version"):match("Microsoft") or term_cmd("cat /proc/version"):match("WSL"))
+	local flag = is_linux and "-h" or "-H"
 	local mount_path = is_wsl and "/mnt/c" or "/"
-	local used, total = term_cmd("df -H " .. mount_path .. " | awk 'NR==2 {print $3, $2}'"):match(
+	local used, total = term_cmd("df " .. flag .. " " .. mount_path .. " | awk 'NR==2 {print $3, $2}'"):match(
 		"([%d%.]+)[GMKTB]?%s+([%d%.]+)[GMKTB]?"
 	)
 	return math.floor(tonumber(used or 0) + 0.5), math.floor(tonumber(total or 1) + 0.5)
