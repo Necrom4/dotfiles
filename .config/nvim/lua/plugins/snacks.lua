@@ -121,6 +121,14 @@ local function battery_percentage()
 	return tonumber(battery_mac and battery_mac:match("%d+")) or 0
 end
 
+-- PROCESSES
+local function processes()
+	if term_cmd("uname") == "Linux" then
+		return term_cmd("ps -e --no-headers | wc -l")
+	end
+	return term_cmd("ps ax | wc -l")
+end
+
 -- IP ADDRESS
 local function ip_address()
 	if term_cmd("uname") == "Linux" then
@@ -155,7 +163,13 @@ local system_info = {
 		"󰨆 " .. make_graph(disk_percent)
 	),
 	string.format("│ UPTIME │ %-22s %s │", uptime_date, "󰃭 " .. make_graph(uptime_percent, 14)),
-	string.format("│ MORE   │ %-25s %s │", " " .. battery_percentage() .. "%", "󰍸 " .. ip_address()),
+	string.format(
+		"│ MORE   │ %-11s %3s %-7s %22s │",
+		" " .. battery_percentage() .. "%",
+		" " .. term_cmd("who | wc -l"),
+		" " .. processes(),
+		"󰍸 " .. ip_address()
+	),
 	"╰────────┴─────────────────────────────────────────╯",
 }
 
