@@ -8,6 +8,9 @@ end
 
 local function make_graph(percent, width)
 	percent = tonumber(percent) or 0
+	if percent ~= percent then
+		percent = 0
+	end
 	width = width or 20
 	if percent > 100 then
 		return string.rep("󰨔", width)
@@ -139,7 +142,7 @@ local function processes()
 	if term_cmd("uname") == "Linux" then
 		return term_cmd("ps -e --no-headers | wc -l")
 	end
-	return term_cmd("ps ax | wc -l")
+	return term_cmd("ps ax | wc -l | awk '{print $1}'")
 end
 
 -- IP ADDRESS
@@ -186,7 +189,7 @@ local system_info = {
 	string.format(
 		"│ MORE   │ %-11s %3s %-7s %22s │",
 		" " .. battery_percentage() .. "%",
-		" " .. term_cmd("who | wc -l"),
+		" " .. term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'"),
 		" " .. processes(),
 		"󰍸 " .. ip_address()
 	),
