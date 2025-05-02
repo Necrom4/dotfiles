@@ -75,6 +75,19 @@ local function ram()
 	return math.floor(used_mb), math.floor(total_mb)
 end
 
+-- SWAP
+local function swap()
+	if term_cmd("uname") == "Linux" then
+		local memory_output = term_cmd("free -m | awk '/Swap:/ {print $3, $2}'")
+		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
+		return tonumber(used_mb), tonumber(total_mb)
+	end
+	local swap_output = term_cmd("sysctl vm.swapusage")
+	local total = tonumber(swap_output:match("total = ([%d%.]+)M"))
+	local used = tonumber(swap_output:match("used = ([%d%.]+)M"))
+	return math.floor(used), math.floor(total)
+end
+
 -- DISK
 local function disk()
 	local is_linux = term_cmd("uname") == "Linux"
@@ -143,9 +156,11 @@ end
 
 -- RAM/DISK/UPTIME
 local ram_used, ram_total = ram()
+local ram_percent = ram_used / ram_total * 100
+local swap_used, swap_total = swap()
+local swap_percent = swap_used / swap_total * 100
 local disk_used, disk_total = disk()
 local disk_percent = disk_used / disk_total * 100
-local ram_percent = ram_used / ram_total * 100
 local uptime_date, uptime_percent = uptime()
 
 -- SYSTEM INFO BOX
@@ -156,6 +171,11 @@ local system_info = {
 		"│ RAM    │ %-16s %s │",
 		ram_used .. "/" .. ram_total .. "MB",
 		" " .. make_graph(ram_percent)
+	),
+	string.format(
+		"│ SWAP   │ %-16s %s │",
+		swap_used .. "/" .. swap_total .. "MB",
+		"󰯍 " .. make_graph(swap_percent)
 	),
 	string.format(
 		"│ DISK   │ %-16s %s │",
