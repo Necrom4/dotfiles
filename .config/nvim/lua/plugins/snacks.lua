@@ -1,3 +1,41 @@
+--------------------
+--------GIT---------
+--------------------
+
+-- TOGGLE BETWEEN CURRENT & YADM REPO
+local original_git_dir = nil
+
+local function switchRepo()
+	local yadm_git_dir = vim.fn.expand("~/.local/share/yadm/repo.git")
+
+	if vim.env.GIT_DIR == yadm_git_dir then
+		vim.env.GIT_DIR = original_git_dir
+		original_git_dir = nil
+		print("In original Git repo")
+	else
+		original_git_dir = vim.env.GIT_DIR or nil
+		vim.env.GIT_DIR = yadm_git_dir
+		print("In Dotfiles repo")
+	end
+end
+
+-- SWITCH TO YADM REPO
+local function cmdInDotfiles(cmd)
+	local original_git_dir = vim.env.GIT_DIR
+	local home_dir = vim.fn.expand("~")
+	local git_dir = vim.fn.expand("~/.local/share/yadm/repo.git")
+
+	vim.env.GIT_DIR = git_dir
+	cmd(home_dir)
+	vim.schedule(function()
+		vim.env.GIT_DIR = original_git_dir
+	end)
+end
+
+--------------------
+-----DASHBOARD------
+--------------------
+
 -- SYSTEM UTILS
 local function term_cmd(cmd)
 	local handle = io.popen(cmd)
@@ -196,19 +234,6 @@ local system_info = {
 	"╰────────┴─────────────────────────────────────────╯",
 }
 
---YADM
-local function switchToDotfiles(cmd)
-	local original_git_dir = vim.env.GIT_DIR
-	local home_dir = vim.fn.expand("~")
-	local git_dir = vim.fn.expand("~/.local/share/yadm/repo.git") -- Hardcoded for speed
-
-	vim.env.GIT_DIR = git_dir
-	cmd(home_dir)
-	vim.schedule(function()
-		vim.env.GIT_DIR = original_git_dir
-	end)
-end
-
 return {
 	"folke/snacks.nvim",
 	priority = 1000,
@@ -282,7 +307,7 @@ return {
 		{
 			"<leader>fc",
 			function()
-				switchToDotfiles(function(home_dir)
+				cmdInDotfiles(function(home_dir)
 					Snacks.dashboard.pick("git_files", { cwd = home_dir })
 				end)
 			end,
@@ -314,11 +339,33 @@ return {
 			silent = true,
 		},
 		{
+			"<leader>ga",
+			function()
+				vim.cmd({
+					cmd = "!",
+					args = { "git", "add", vim.fn.expand("%:p") },
+				})
+			end,
+			desc = "Add file",
+			silent = true,
+		},
+		{
+			"<leader>gD",
+			function()
+				vim.cmd({
+					cmd = "!",
+					args = { "git", "rm", "--cached", vim.fn.expand("%:p") },
+				})
+			end,
+			desc = "Remove file",
+			silent = true,
+		},
+		{
 			"<leader>gy",
 			function()
-				switchToDotfiles(Snacks.lazygit)
+				switchRepo()
 			end,
-			desc = "Lazygit (Yadm)",
+			desc = "Toggle Repo",
 			silent = true,
 		},
 		{
@@ -549,7 +596,27 @@ return {
 								["<Tab>"] = { { "select_and_next", "list_up" } },
 								["<S-Tab>"] = "select_and_next",
 								["<c-w>m"] = "toggle_maximize",
+								["<leader>ga"] = "git_add",
+								["<leader>gD"] = "git_rm",
 							},
+						},
+					},
+					actions = {
+						git_add = {
+							action = function(picker)
+								vim.cmd({
+									cmd = "!",
+									args = { "git", "add", vim.fn.escape(picker:current().file, "#") },
+								})
+							end,
+						},
+						git_rm = {
+							action = function(picker)
+								vim.cmd({
+									cmd = "!",
+									args = { "git", "rm", "--cached", vim.fn.escape(picker:current().file, "#") },
+								})
+							end,
 						},
 					},
 				},

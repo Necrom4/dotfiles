@@ -12,6 +12,9 @@ gui:
 git:
   branchLogCmd: git log --graph --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
   allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
+keybinding:
+  branches:
+    moveCommitsToNewBranch: "<c-n>"
 customCommands:
   - key: 'D'
     context: 'remoteBranches'
@@ -36,7 +39,7 @@ customCommands:
       description: "Show all MRs details"
       showOutput: true
       stream: false
-      outputTitle: "PRs details"
+      outputTitle: "Show all MRs details"
       loadingText: "Fetching MRs details..."
     - command: |
         if git remote -v | grep -q 'github.com'; then
@@ -50,7 +53,7 @@ customCommands:
       context: "localBranches"
       description: "Show MR details"
       showOutput: true
-      outputTitle: "MR details"
+      outputTitle: "Open MR details"
       loadingText: "Fetching MR details..."
     - command: |
         if git remote -v | grep -q 'github.com'; then
@@ -61,7 +64,7 @@ customCommands:
           az repos pr show --id $(az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv) --open
         fi
       context: "localBranches"
-      description: "Open MR in web browser"
+      description: "Open MR in browser"
       loadingText: "Opening MR..."
       stream: true
   - key: 'N'
