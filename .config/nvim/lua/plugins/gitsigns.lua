@@ -1,5 +1,11 @@
 return {
 	"lewis6991/gitsigns.nvim",
+	event = { "VeryLazy" },
+	dependencies = {
+		{
+			"purarue/gitsigns-yadm.nvim",
+		},
+	},
 	opts = {
 		signs = {
 			add = { text = "▎" },
@@ -17,11 +23,13 @@ return {
 			changedelete = { text = "~" },
 			untracked = { text = "┆" },
 		},
-
 		current_line_blame = true,
 		current_line_blame_opts = {
 			delay = 200,
 		},
+		_on_attach_pre = function(bufnr, callback)
+			require("gitsigns-yadm").yadm_signs(callback, { bufnr = bufnr })
+		end,
 		on_attach = function(bufnr)
 			local gitsigns = require("gitsigns")
 
