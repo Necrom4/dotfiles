@@ -165,14 +165,52 @@ end
 
 -- BATTERY
 local function battery_percentage()
-	local battery_output = term_cmd(
-		'for d in /sys/class/power_supply/*; do case "$d" in */BAT*|*/CMD*|*/battery*) cat "$d/capacity" 2>/dev/null; break; esac; done'
-	)
-	if battery_output:match("%d+") then
-		return tonumber(battery_output:match("%d+"))
+	local output = term_cmd([[
+		for d in /sys/class/power_supply/*; do
+			case "$d" in */BAT*|*/CMD*|*/battery*)
+				[ -f "$d/capacity" ] && cat "$d/capacity" && exit
+			esac
+		done
+		pmset -g batt | grep -Eo '\d+%' | head -1 | tr -d '%'
+	]])
+	return tonumber(output and output:match("%d+")) or 0
+end
+
+local function battery_status()
+	local status = term_cmd([[
+		(for d in /sys/class/power_supply/*; do
+			case "$d" in */BAT*|*/CMD*|*/battery*)
+				[ -f "$d/status" ] && cat "$d/status" && break
+			esac
+		done) || pmset -g batt | grep 'AC Power'
+	]])
+
+	return status and status:match("Charging") or status:match("AC Power") or false
+end
+
+local function battery_icon(capacity, battery_status)
+	if battery_status then
+		return "󰂄"
 	end
-	local battery_mac = term_cmd("pmset -g batt | grep -Eo '\\d+%' | head -1")
-	return tonumber(battery_mac and battery_mac:match("%d+")) or 0
+
+	local index = math.floor(capacity / 10) + 1
+	local capacity_icons = {
+		"󰂎",
+		"󰁺",
+		"󰁻",
+		"󰁼",
+		"󰁽",
+		"󰁾",
+		"󰁿",
+		"󰂀",
+		"󰂁",
+		"󰂂",
+		"󰁹",
+	}
+	if index > #capacity_icons then
+		index = #capacity_icons
+	end
+	return capacity_icons[index]
 end
 
 -- PROCESSES
@@ -225,8 +263,8 @@ local system_info = {
 	),
 	string.format("│ UPTIME │ %-22s %s │", uptime_date, "󰃭 " .. make_graph(uptime_percent, 14)),
 	string.format(
-		"│ MORE   │ %-11s %3s %-7s %22s │",
-		" " .. battery_percentage() .. "%",
+		"│ MORE   │ %-12s %3s %-7s %22s │",
+		battery_icon(battery_percentage(), battery_status()) .. " " .. battery_percentage() .. "%",
 		" " .. term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'"),
 		" " .. processes(),
 		"󰍸 " .. ip_address()
@@ -488,7 +526,7 @@ return {
 ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
 ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
 ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]]
-					.. "\n"
+					.. "\n\n"
 					.. os_name()
 					.. " | "
 					.. vim_version()
@@ -507,7 +545,7 @@ return {
 				{
 					pane = 1,
 					section = "terminal",
-					cmd = "curl -s 'https://wttr.in/?0FQ' || echo",
+					cmd = "curl -s 'https://wttr.in/?0FQ'",
 					height = 6,
 				},
 				{ pane = 1, section = "startup" },
