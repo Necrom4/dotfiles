@@ -22,11 +22,3 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 		end
 	end,
 })
-
--- AUTOSAVE
-vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged", "FocusLost" }, {
-	pattern = "*.norg",
-	callback = function()
-		vim.cmd("silent! write")
-	end,
-})
