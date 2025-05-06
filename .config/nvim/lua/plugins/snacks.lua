@@ -281,22 +281,6 @@ return {
 			silent = true,
 		},
 		{
-			"<leader>bn",
-			function()
-				vim.cmd("enew")
-			end,
-			desc = "New Buffer",
-			silent = true,
-		},
-		{
-			"<leader>D",
-			function()
-				Snacks.terminal("lazydocker")
-			end,
-			desc = "Lazydocker",
-			silent = true,
-		},
-		{
 			"<leader>fb",
 			function()
 				Snacks.picker.buffers({ current = false })
