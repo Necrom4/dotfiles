@@ -602,9 +602,6 @@ return {
 		picker = {
 			enabled = true,
 			sources = {
-				buffers = {
-					hidden = true,
-				},
 				explorer = {
 					auto_close = true,
 					hidden = true,
