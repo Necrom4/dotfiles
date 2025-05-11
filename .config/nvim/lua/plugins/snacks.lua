@@ -536,6 +536,48 @@ return {
 					.. os.date(),
 				keys = {
 					{ icon = " ", key = "n", desc = "New File", action = ":ene" },
+					{
+						icon = "󰥨 ",
+						key = "f",
+						desc = "Find File",
+						action = function()
+							Snacks.dashboard.pick("files")
+						end,
+					},
+					{
+						icon = "󰈞 ",
+						key = "g",
+						desc = "Find Text",
+						action = function()
+							Snacks.dashboard.pick("live_grep")
+						end,
+					},
+					{
+						icon = " ",
+						key = "r",
+						desc = "Recent Files",
+						action = function()
+							Snacks.dashboard.pick("oldfiles")
+						end,
+					},
+					{
+						icon = " ",
+						key = "c",
+						desc = "Config",
+						action = function()
+							cmdInDotfiles(function(home_dir)
+								Snacks.dashboard.pick("git_files", { cwd = home_dir })
+							end)
+						end,
+					},
+					{
+						icon = " ",
+						key = "l",
+						desc = "Lazy Config",
+						action = function()
+							Snacks.picker.lazy()
+						end,
+					},
 					{ icon = " ", key = "s", desc = "Restore Session", section = "session" },
 					{ icon = " ", key = "q", desc = "Quit", action = ":quit" },
 				},
