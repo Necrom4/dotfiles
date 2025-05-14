@@ -288,7 +288,7 @@ return {
 			"<leader>ua",
 			function()
 				Snacks.toggle.animate():toggle()
-				Snacks.toggle.scroll():toggle()
+				vim.b.minianimate_disable = not vim.b.minianimate_disable
 				require("smear_cursor").toggle()
 			end,
 			desc = "Toggle Animations",

@@ -36,6 +36,7 @@ require("lazy").setup({
 		{ import = "lazyvim.plugins.extras.lang.python" },
 		{ import = "lazyvim.plugins.extras.lang.ruby" },
 		{ import = "lazyvim.plugins.extras.lang.yaml" },
+		{ import = "lazyvim.plugins.extras.ui.mini-animate" },
 		{ import = "lazyvim.plugins.extras.ui.smear-cursor" },
 		{ import = "lazyvim.plugins.extras.ui.treesitter-context" },
 		{ import = "lazyvim.plugins.extras.util.mini-hipatterns" },
