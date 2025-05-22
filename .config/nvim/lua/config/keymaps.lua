@@ -147,13 +147,3 @@ Snacks.toggle
 		},
 	})
 	:map("<leader>dd")
-
--- NEOVIDE
-if vim.g.neovide then
-	-- Allow copy paste in Neovim
-	vim.g.neovide_input_use_logo = true
-	vim.keymap.set("n", "<D-v>", '"+p<CR>', { noremap = true, silent = true })
-	vim.keymap.set("i", "<D-v>", "<C-R>+", { noremap = true, silent = true })
-	vim.keymap.set("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
-	vim.keymap.set("v", "<D-c>", '"+y<CR>', { noremap = true, silent = true })
-end

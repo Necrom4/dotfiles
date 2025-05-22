@@ -11,6 +11,13 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local vimsettings = "~/.config/nvim/lua/core"
+local settingsfiles = vim.fn.split(vim.fn.globpath(vimsettings, "*.lua"), "\n")
+
+for _, fpath in ipairs(settingsfiles) do
+	dofile(fpath)
+end
+
 require("lazy").setup({
 	spec = {
 		-- add LazyVim and import its plugins
