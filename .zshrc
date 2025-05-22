@@ -115,7 +115,13 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='nvim'
 # fi
 
-export EDITOR="nvim"
+if command -v neovide >/dev/null 2>&1; then
+  export EDITOR="neovide"
+elif command -v nvim >/dev/null 2>&1; then
+  export EDITOR="nvim"
+else
+  export EDITOR="vim"
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -136,7 +142,7 @@ export EDITOR="nvim"
 # source /Users/dferreir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 alias vim="nvim"
-alias e="nvim"
+alias e=$EDITOR
 if command -v batcat &> /dev/null; then
   alias cat="batcat"
 fi

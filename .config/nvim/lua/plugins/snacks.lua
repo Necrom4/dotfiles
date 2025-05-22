@@ -288,8 +288,10 @@ return {
 			"<leader>ua",
 			function()
 				Snacks.toggle.animate():toggle()
-				vim.b.minianimate_disable = not vim.b.minianimate_disable
-				require("smear_cursor").toggle()
+				if not vim.g.neovide then
+					vim.b.minianimate_disable = not vim.b.minianimate_disable
+					require("smear_cursor").toggle()
+				end
 			end,
 			desc = "Toggle Animations",
 			silent = true,

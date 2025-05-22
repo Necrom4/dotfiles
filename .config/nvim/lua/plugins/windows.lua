@@ -1,6 +1,7 @@
 return {
 	{
 		"echasnovski/mini.animate",
+		cond = vim.g.neovide == nil,
 		opts = {
 			cursor = {
 				enable = false,
