@@ -10,48 +10,48 @@ hash = "23915860e59348bf4166778bb0e606f7"
 
 [[plugin.deps]]
 use = "boydaihungst/restore"
-rev = "1bfd5f7"
-hash = "f61cea367316f9459590f5c1dc4fc"
+rev = "86dff43"
+hash = "f99f16081c0efc8ed49df9b788f92671"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "4df8f70"
-hash = "2f1053f89d1a301a648ab181d0948e38"
+rev = "63f9650"
+hash = "d0ad0c1946b46a30c8489735fe8de41c"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
-rev = "f1c6b69"
-hash = "6e789212eb41d937bab04877ca361099"
+rev = "0a4904c"
+hash = "fca231a128488a554823374f8f6d5241"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "4df8f70"
-hash = "7918aab6a71caf31b58411f789195677"
+rev = "63f9650"
+hash = "a7ab702e1ef0c097defbc976ed34c186"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "4df8f70"
-hash = "1f3dad061209081a6b04dd6ff2cb06c7"
+rev = "63f9650"
+hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
 use = "ahkohd/eza-preview"
-rev = "6575a9a"
-hash = "72355a6c8b7c8de6ed4dda0f98f86fee"
+rev = "7a93433"
+hash = "22e1bd3dd03894746a3540b5f3729d0c"
 
 [[plugin.deps]]
 use = "imsi32/yatline"
-rev = "2ecf715"
-hash = "38e2ea4703ea606d4eef574e8e8b8fd7"
+rev = "4872af0"
+hash = "d32742ded0e73146a8ca590fdc4fb404"
 
 [[plugin.deps]]
 use = "imsi32/yatline-githead"
-rev = "3b0eb7c"
-hash = "bfd30c396bbe2af526cb949d97ce3dcf"
+rev = "f8f969e"
+hash = "4d441b38138ce6492a4e10fa349fd65"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "4df8f70"
-hash = "f0c4b41b5d19a3144958383333eff6e7"
+rev = "63f9650"
+hash = "4d82cd9e7534d976f000edf9c0f68d8f"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-tokyo-night"
@@ -60,13 +60,13 @@ hash = "5f00a80a79b9f7fd8e24d6fa5dbb3ae"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "4df8f70"
-hash = "36405f8781fcaf33ceab24dffd5cea19"
+rev = "63f9650"
+hash = "70898957e9e4c1ca291ff26e8fdc434"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "4df8f70"
-hash = "e0ada736ea676c2bbb3ec705a49526ef"
+rev = "63f9650"
+hash = "bf6f074cd41ee33c3360341d168f9733"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-modified-time"

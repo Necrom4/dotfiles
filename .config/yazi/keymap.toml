@@ -1,4 +1,4 @@
-[manager]
+[mgr]
 prepend_keymap = [
   #defaults
   { on = "j", run = "arrow 1", desc = "Down" },
