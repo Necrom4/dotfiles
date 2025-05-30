@@ -11,7 +11,8 @@ gui:
     frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 git:
   branchLogCmd: git log --graph --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
-  allBranchesLogCmd: git log --graph --all --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
+  allBranchesLogCmds:
+    - git log --graph --all --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
 keybinding:
   branches:
     moveCommitsToNewBranch: "<c-n>"
@@ -23,167 +24,166 @@ customCommands:
     description: 'Delete remote-tracking'
     command: 'git branch -r -D {{.SelectedRemote.Name}}/{{.SelectedRemoteBranch.Name}}'
     prompts:
-    - type: 'confirm'
-      title: 'Delete remote-tracking'
-      body: "Delete '{{.SelectedRemote.Name}}/{{.SelectedRemoteBranch.Name}}'?"
+      - type: 'confirm'
+        title: 'Delete remote-tracking'
+        body: "Delete '{{.SelectedRemote.Name}}/{{.SelectedRemoteBranch.Name}}'?"
   - key: '<c-r>'
     description: 'MR commands'
     commandMenu:
-    - command: |
-        if git remote -v | grep -q 'github.com'; then
-          gh pr list
-        elif git remote -v | grep -q 'gitlab.com'; then
-          glab mr list
-        else
-          az repos pr list --output table
-        fi
-      context: "localBranches"
-      description: "Show all MRs details"
-      showOutput: true
-      stream: false
-      outputTitle: "Show all MRs details"
-      loadingText: "Fetching MRs details..."
-    - command: |
-        if git remote -v | grep -q 'github.com'; then
-          gh pr view {{.SelectedLocalBranch.UpstreamBranch}}
-        elif git remote -v | grep -q 'gitlab.com'; then
-          glab mr view {{.SelectedLocalBranch.UpstreamBranch}}
-        else
-          az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv |
-          xargs az repos pr show --output table --id
-        fi
-      context: "localBranches"
-      description: "Show MR details"
-      showOutput: true
-      outputTitle: "Open MR details"
-      loadingText: "Fetching MR details..."
-    - command: |
-        if git remote -v | grep -q 'github.com'; then
-          gh pr view -w {{.SelectedLocalBranch.UpstreamBranch}}
-        elif git remote -v | grep -q 'gitlab.com'; then
-          glab mr view -w {{.SelectedLocalBranch.UpstreamBranch}}
-        else
-          az repos pr show --id $(az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv) --open
-        fi
-      context: "localBranches"
-      description: "Open MR in browser"
-      loadingText: "Opening MR..."
-      stream: true
+      - command: |
+          if git remote -v | grep -q 'github.com'; then
+            gh pr list
+          elif git remote -v | grep -q 'gitlab.com'; then
+            glab mr list
+          else
+            az repos pr list --output table
+          fi
+        context: "localBranches"
+        description: "Show all MRs details"
+        outputTitle: "Show all MRs details"
+        loadingText: "Fetching MRs details..."
+        output: popup
+      - command: |
+          if git remote -v | grep -q 'github.com'; then
+            gh pr view {{.SelectedLocalBranch.UpstreamBranch}}
+          elif git remote -v | grep -q 'gitlab.com'; then
+            glab mr view {{.SelectedLocalBranch.UpstreamBranch}}
+          else
+            az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv |
+            xargs az repos pr show --output table --id
+          fi
+        context: "localBranches"
+        description: "Show MR details"
+        outputTitle: "Open MR details"
+        loadingText: "Fetching MR details..."
+        output: popup
+      - command: |
+          if git remote -v | grep -q 'github.com'; then
+            gh pr view -w {{.SelectedLocalBranch.UpstreamBranch}}
+          elif git remote -v | grep -q 'gitlab.com'; then
+            glab mr view -w {{.SelectedLocalBranch.UpstreamBranch}}
+          else
+            az repos pr show --id $(az repos pr list --source-branch {{.SelectedLocalBranch.Name}} --query "[0].pullRequestId" -o tsv) --open
+          fi
+        context: "localBranches"
+        description: "Open MR in browser"
+        loadingText: "Opening MR..."
+        output: log
   - key: 'N'
     description: 'Create new'
     commandMenu:
-    - key: "c"
-      context: "global"
-      description: "commit"
-      prompts:
-        - type: "menu"
-          key: "Type"
-          title: "Type of change"
-          options:
-            - name: "build"
-              description: "Updates build configuration, development tools or other changes irrelevant to the user"
-              value: "build"
-            - name: "chore"
-              description: "Updates dependencies or performs maintenance tasks"
-              value: "chore"
-            - name: "ci"
-              description: "Changes to CI configuration files and scripts"
-              value: "ci"
-            - name: "docs"
-              description: "Updates or adds documentation"
-              value: "docs"
-            - name: "feat"
-              description: "Introduces a new feature to the codebase"
-              value: "feat"
-            - name: "fix"
-              description: "Resolves a bug or issue in the code"
-              value: "fix"
-            - name: "perf"
-              description: "Optimizes performance for better efficiency"
-              value: "perf"
-            - name: "refactor"
-              description: "Improves code structure without changing functionality"
-              value: "refactor"
-            - name: "revert"
-              description: "Reverts a previous commit"
-              value: "revert"
-            - name: "style"
-              description: "Improves code formatting or style without affecting behavior"
-              value: "style"
-            - name: "test"
-              description: "Adds or modifies tests to ensure code reliability"
-              value: "test"
-            - name: "wip"
-              description: "For incomplete work"
-              value: "wip"
-        - type: "input"
-          title: "(scope)"
-          key: "Scope"
-          initialValue: ""
-        - type: "menu"
-          key: "Breaking"
-          title: "!Breaking change!"
-          options:
-            - name: "no"
-              value: ""
-            - name: "yes"
-              value: "!"
-        - type: "input"
-          title: "message"
-          key: "Message"
-          initialValue: ""
-        - type: "input"
-          title: "description"
-          key: "Description"
-          initialValue: ""
-        - type: "confirm"
-          key: "Confirm"
-          title: "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"
-          body: "Are you sure you want to commit?"
-      command: 'git commit --message "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"{{ if .Form.Description }} --message "{{.Form.Description}}"{{ end }}'
-      loadingText: "Creating commit..."
-    - key: 'b'
-      context: 'global'
-      description: "branch"
-      prompts:
-        - type: 'menu'
-          title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}}')"
-          key: 'BranchType'
-          options:
-            - name: 'chore'
-              description: 'Routine maintenance tasks or dependency updates'
-              value: 'chore'
-            - name: 'develop'
-              description: 'The main branch for ongoing development'
-              value: 'develop'
-            - name: 'feature'
-              description: 'A new feature under development'
-              value: 'feature'
-            - name: 'fix'
-              description: 'A fix for a specific bug or issue'
-              value: 'fix'
-            - name: 'hotfix'
-              description: 'An urgent fix for a critical issue in production'
-              value: 'hotfix'
-            - name: 'refactor'
-              description: 'Code improvements without changing functionality'
-              value: 'refactor'
-            - name: 'release'
-              description: 'Prepares a new version for deployment'
-              value: 'release'
-            - name: 'test'
-              description: 'Experimental or test-related changes'
-              value: 'test'
-        - type: 'input'
-          title: "New branch name (branch is off of '{{.SelectedLocalBranch.Name}})'"
-          key: 'BranchName'
-          initialValue: ''
-        - type: "confirm"
-          key: "Confirm"
-          title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
-          body: "Are you sure you want to branch?"
-      command: |
-        BRANCH_NAME="{{.Form.BranchName}}"
-        BRANCH_NAME="${BRANCH_NAME// /-}"
-        git checkout -b "{{.Form.BranchType}}/$BRANCH_NAME" refs/heads/{{.SelectedLocalBranch.Name}} --no-track
-      loadingText: 'Creating branch...'
+      - key: "c"
+        context: "global"
+        description: "commit"
+        prompts:
+          - type: "menu"
+            key: "Type"
+            title: "Type of change"
+            options:
+              - name: "build"
+                description: "Updates build configuration, development tools or other changes irrelevant to the user"
+                value: "build"
+              - name: "chore"
+                description: "Updates dependencies or performs maintenance tasks"
+                value: "chore"
+              - name: "ci"
+                description: "Changes to CI configuration files and scripts"
+                value: "ci"
+              - name: "docs"
+                description: "Updates or adds documentation"
+                value: "docs"
+              - name: "feat"
+                description: "Introduces a new feature to the codebase"
+                value: "feat"
+              - name: "fix"
+                description: "Resolves a bug or issue in the code"
+                value: "fix"
+              - name: "perf"
+                description: "Optimizes performance for better efficiency"
+                value: "perf"
+              - name: "refactor"
+                description: "Improves code structure without changing functionality"
+                value: "refactor"
+              - name: "revert"
+                description: "Reverts a previous commit"
+                value: "revert"
+              - name: "style"
+                description: "Improves code formatting or style without affecting behavior"
+                value: "style"
+              - name: "test"
+                description: "Adds or modifies tests to ensure code reliability"
+                value: "test"
+              - name: "wip"
+                description: "For incomplete work"
+                value: "wip"
+          - type: "input"
+            title: "(scope)"
+            key: "Scope"
+            initialValue: ""
+          - type: "menu"
+            key: "Breaking"
+            title: "!Breaking change!"
+            options:
+              - name: "no"
+                value: ""
+              - name: "yes"
+                value: "!"
+          - type: "input"
+            title: "message"
+            key: "Message"
+            initialValue: ""
+          - type: "input"
+            title: "description"
+            key: "Description"
+            initialValue: ""
+          - type: "confirm"
+            key: "Confirm"
+            title: "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"
+            body: "Are you sure you want to commit?"
+        command: 'git commit --message "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"{{ if .Form.Description }} --message "{{.Form.Description}}"{{ end }}'
+        loadingText: "Creating commit..."
+      - key: 'b'
+        context: 'global'
+        description: "branch"
+        prompts:
+          - type: 'menu'
+            title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}}')"
+            key: 'BranchType'
+            options:
+              - name: 'chore'
+                description: 'Routine maintenance tasks or dependency updates'
+                value: 'chore'
+              - name: 'develop'
+                description: 'The main branch for ongoing development'
+                value: 'develop'
+              - name: 'feature'
+                description: 'A new feature under development'
+                value: 'feature'
+              - name: 'fix'
+                description: 'A fix for a specific bug or issue'
+                value: 'fix'
+              - name: 'hotfix'
+                description: 'An urgent fix for a critical issue in production'
+                value: 'hotfix'
+              - name: 'refactor'
+                description: 'Code improvements without changing functionality'
+                value: 'refactor'
+              - name: 'release'
+                description: 'Prepares a new version for deployment'
+                value: 'release'
+              - name: 'test'
+                description: 'Experimental or test-related changes'
+                value: 'test'
+          - type: 'input'
+            title: "New branch name (branch is off of '{{.SelectedLocalBranch.Name}})'"
+            key: 'BranchName'
+            initialValue: ''
+          - type: "confirm"
+            key: "Confirm"
+            title: "{{.Form.BranchType}}/{{.Form.BranchName}}"
+            body: "Are you sure you want to branch?"
+        command: |
+          BRANCH_NAME="{{.Form.BranchName}}"
+          BRANCH_NAME="${BRANCH_NAME// /-}"
+          git checkout -b "{{.Form.BranchType}}/$BRANCH_NAME" refs/heads/{{.SelectedLocalBranch.Name}} --no-track
+        loadingText: 'Creating branch...'
