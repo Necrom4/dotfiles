@@ -57,10 +57,21 @@ local function make_graph(percent, width)
 	return string.rep("■", filled) .. string.rep("□", width - filled)
 end
 
--- OS
-local function os_name()
+-- GET OS
+local function get_os()
 	local uname = term_cmd("uname")
-	if uname == "Linux" then
+	local is_wsl = uname
+		and (term_cmd("cat /proc/version"):match("Microsoft") or term_cmd("cat /proc/version"):match("WSL"))
+	if is_wsl then
+		uname = "WSL"
+	end
+	return uname
+end
+
+-- OS VERSION
+local function os_version()
+	local uname = get_os()
+	if uname == "Linux" or "WSL" then
 		local linux_name = term_cmd("lsb_release -is"):lower()
 		if linux_name == "" then
 			linux_name = term_cmd("cat /etc/os-release | grep '^ID=' | cut -d '=' -f2"):lower()
@@ -107,7 +118,7 @@ local cpu_load = tonumber(term_cmd("uptime"):match("load averages?:%s*([%d%.]+)"
 
 -- RAM
 local function ram()
-	if term_cmd("uname") == "Linux" then
+	if get_os() == "Linux" or "WSL" then
 		local memory_output = term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
 		return tonumber(used_mb), tonumber(total_mb)
@@ -126,7 +137,7 @@ end
 
 -- SWAP
 local function swap()
-	if term_cmd("uname") == "Linux" then
+	if get_os() == "Linux" or "WSL" then
 		local memory_output = term_cmd("free -m | awk '/Swap:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
 		return tonumber(used_mb), tonumber(total_mb)
@@ -139,11 +150,15 @@ end
 
 -- DISK
 local function disk()
-	local is_linux = term_cmd("uname") == "Linux"
-	local is_wsl = is_linux
-		and (term_cmd("cat /proc/version"):match("Microsoft") or term_cmd("cat /proc/version"):match("WSL"))
-	local flag = is_linux and "-h" or "-H"
-	local mount_path = is_wsl and "/mnt/c" or "/"
+	local uname = get_os()
+	local flag = "-H"
+	if uname == "Linux" or "WSL" then
+		flag = "-h"
+	end
+	local mount_path = "/"
+	if uname == "WSL" then
+		mount_path = "/mnt/c"
+	end
 	local used, total = term_cmd("df " .. flag .. " " .. mount_path .. " | awk 'NR==2 {print $3, $2}'"):match(
 		"([%d%.]+)[GMKTB]?%s+([%d%.]+)[GMKTB]?"
 	)
@@ -154,7 +169,7 @@ end
 local function uptime()
 	local boot_time, boot_date
 
-	if term_cmd("uname") == "Linux" then
+	if get_os() == "Linux" or "WSL" then
 		boot_date = term_cmd("uptime -s")
 		local y, m, d = boot_date:match("(%d+)-(%d+)-(%d+)")
 		boot_time = os.time({ year = y, month = m, day = d })
@@ -223,7 +238,7 @@ end
 
 -- PROCESSES
 local function processes()
-	if term_cmd("uname") == "Linux" then
+	if get_os() == "Linux" or "WSL" then
 		return term_cmd("ps -e --no-headers | wc -l")
 	end
 	return term_cmd("ps ax | wc -l | awk '{print $1}'")
@@ -231,7 +246,7 @@ end
 
 -- IP ADDRESS
 local function ip_address()
-	if term_cmd("uname") == "Linux" then
+	if get_os() == "Linux" or "WSL" then
 		return term_cmd("hostname -I | awk '{print $1}'")
 	end
 	local ip = term_cmd("ipconfig getifaddr en0")
@@ -550,7 +565,7 @@ return {
 				preset = {
 					header = header
 						.. "\n\n"
-						.. os_name()
+						.. os_version()
 						.. " | "
 						.. vim_version()
 						.. neovide_version()
