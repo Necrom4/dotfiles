@@ -60,10 +60,11 @@ end
 -- GET OS
 local function get_os()
 	local uname = term_cmd("uname")
-	local is_wsl = uname
-		and (term_cmd("cat /proc/version"):match("Microsoft") or term_cmd("cat /proc/version"):match("WSL"))
-	if is_wsl then
-		uname = "WSL"
+	if uname == "Linux" then
+		local version = term_cmd("cat /proc/version")
+		if version:match("Microsoft") or version:match("WSL") then
+			return "WSL"
+		end
 	end
 	return uname
 end
@@ -75,12 +76,13 @@ local function wsl_version()
 			.. term_cmd("wsl.exe -v 2>&1 | iconv -f UTF-16LE -t UTF-8 | grep 'WSL version' | cut -d ':' -f2 | xargs")
 			.. " | "
 	end
+	return ""
 end
 
 -- OS VERSION
 local function os_version()
 	local uname = get_os()
-	if uname == "Linux" or "WSL" then
+	if uname ~= "Darwin" then
 		local linux_name = term_cmd("lsb_release -is"):lower()
 		if linux_name == "" then
 			linux_name = term_cmd("cat /etc/os-release | grep '^ID=' | cut -d '=' -f2"):lower()
@@ -101,7 +103,7 @@ local function os_version()
 		end
 
 		return icon .. " " .. (os_pretty_name ~= "" and os_pretty_name or "Linux")
-	elseif uname == "Darwin" then
+	else
 		local name = term_cmd("sw_vers -productName")
 		local version = term_cmd("sw_vers -productVersion")
 		return " " .. name .. " " .. version
@@ -127,7 +129,7 @@ local cpu_load = tonumber(term_cmd("uptime"):match("load averages?:%s*([%d%.]+)"
 
 -- RAM
 local function ram()
-	if get_os() == "Linux" or "WSL" then
+	if get_os() ~= "Darwin" then
 		local memory_output = term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
 		return tonumber(used_mb), tonumber(total_mb)
@@ -146,7 +148,7 @@ end
 
 -- SWAP
 local function swap()
-	if get_os() == "Linux" or "WSL" then
+	if get_os() ~= "Darwin" then
 		local memory_output = term_cmd("free -m | awk '/Swap:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
 		return tonumber(used_mb), tonumber(total_mb)
@@ -161,7 +163,7 @@ end
 local function disk()
 	local uname = get_os()
 	local flag = "-H"
-	if uname == "Linux" or "WSL" then
+	if uname ~= "Darwin" then
 		flag = "-h"
 	end
 	local mount_path = "/"
@@ -180,7 +182,7 @@ end
 local function uptime()
 	local boot_time, boot_date
 
-	if get_os() == "Linux" or "WSL" then
+	if get_os() ~= "Darwin" then
 		boot_date = term_cmd("uptime -s")
 		local y, m, d = boot_date:match("(%d+)-(%d+)-(%d+)")
 		boot_time = os.time({ year = y, month = m, day = d })
@@ -249,7 +251,7 @@ end
 
 -- PROCESSES
 local function processes()
-	if get_os() == "Linux" or "WSL" then
+	if get_os() ~= "Darwin" then
 		return term_cmd("ps -e --no-headers | wc -l")
 	end
 	return term_cmd("ps ax | wc -l | awk '{print $1}'")
@@ -257,7 +259,7 @@ end
 
 -- IP ADDRESS
 local function ip_address()
-	if get_os() == "Linux" or "WSL" then
+	if get_os() ~= "Darwin" then
 		return term_cmd("hostname -I | awk '{print $1}'")
 	end
 	local ip = term_cmd("ipconfig getifaddr en0")
