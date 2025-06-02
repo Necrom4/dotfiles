@@ -68,6 +68,15 @@ local function get_os()
 	return uname
 end
 
+-- WSL VERSION
+local function wsl_version()
+	if get_os() == "WSL" then
+		return "󰖳 WSL "
+			.. term_cmd("wsl.exe -v 2>&1 | iconv -f UTF-16LE -t UTF-8 | grep 'WSL version' | cut -d ':' -f2 | xargs")
+			.. " | "
+	end
+end
+
 -- OS VERSION
 local function os_version()
 	local uname = get_os()
