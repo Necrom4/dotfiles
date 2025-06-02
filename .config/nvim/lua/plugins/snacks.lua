@@ -158,6 +158,8 @@ local function disk()
 	local mount_path = "/"
 	if uname == "WSL" then
 		mount_path = "/mnt/c"
+	elseif uname == "Darwin" then
+		mount_path = "/System/Volumes/Data"
 	end
 	local used, total = term_cmd("df " .. flag .. " " .. mount_path .. " | awk 'NR==2 {print $3, $2}'"):match(
 		"([%d%.]+)[GMKTB]?%s+([%d%.]+)[GMKTB]?"
