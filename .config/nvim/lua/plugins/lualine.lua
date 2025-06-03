@@ -130,6 +130,7 @@ return {
 							hint = icons.diagnostics.Hint,
 						},
 					},
+					{ "encoding" },
 				},
 				lualine_y = {
 					{ "location" },
