@@ -119,7 +119,7 @@ end
 -- NEOVIDE VERSION
 local function neovide_version()
 	if vim.g.neovide then
-		return " | 󰏌 " .. vim.g.neovide_version
+		return " |  " .. vim.g.neovide_version
 	end
 	return ""
 end
@@ -299,7 +299,7 @@ local system_info = {
 	),
 	string.format("│ UPTIME │ %-22s %s │", uptime_date, "󰃭 " .. make_graph(uptime_percent, 14)),
 	string.format(
-		"│ MORE   │ %-12s %3s %-7s %22s │",
+		"│  │ %-12s %3s %-7s %22s │",
 		battery_icon(battery_percentage(), battery_status()) .. " " .. battery_percentage() .. "%",
 		" " .. term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'"),
 		" " .. processes(),
