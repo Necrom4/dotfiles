@@ -1,0 +1,24 @@
+# WSL-specific interactive config
+
+# Neovide WSL setup
+config_src="$HOME/.config/neovide/config.toml"
+username="$(cmd.exe /C 'echo %USERNAME%' 2>/dev/null | tr -d '\r')"
+config_dest="/mnt/c/Users/${username}/AppData/Roaming/neovide/config.toml"
+
+# Your WSL-specific config
+wsl_config='wsl = true
+neovim-bin = "/home/linuxbrew/.linuxbrew/bin/nvim"'
+
+# Create target dir if missing
+mkdir -p "$(dirname "$config_dest")"
+
+# Read existing file (without duplicates)
+existing=$(< "$config_src")
+cleaned=$(echo "$existing" | grep -v 'wsl = ' | grep -v 'neovim-bin = ')
+
+# Write new config with wsl lines at the top
+{
+  echo "$wsl_config"
+    echo
+    echo "$cleaned"
+} > "$config_dest"
