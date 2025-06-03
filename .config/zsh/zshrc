@@ -70,23 +70,6 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 # --- Prompt ---
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Detect platform
-case "$(uname -s)" in
-  Darwin)
-    platform="macos"
-    ;;
-  Linux)
-    if grep -qEi "(Microsoft|WSL)" /proc/version &>/dev/null; then
-      platform="wsl"
-    else
-      platform="linux"
-    fi
-    ;;
-  *)
-    platform="unknown"
-    ;;
-esac
-
-# Source the appropriate platform file if it exists
-platform_file="${HOME}/.config/zsh/platform/${platform}"
+# --- System Specific --
+platform_file="${HOME}/.config/zsh/platform.zsh"
 [[ -f "$platform_file" ]] && source "$platform_file"
