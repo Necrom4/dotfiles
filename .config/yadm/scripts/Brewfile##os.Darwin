@@ -1,0 +1,43 @@
+tap "homebrew/command-not-found"
+# Console Matrix
+brew "cmatrix"
+# Pack, ship and run any application as a lightweight container
+brew "docker"
+# Modern, maintained replacement for ls
+brew "eza"
+# Tools and libraries to manipulate images in many formats
+brew "imagemagick"
+# Lazier way to manage everything docker
+brew "lazydocker"
+# Simple terminal UI for git commands
+brew "lazygit"
+# YAML Parser
+brew "libyaml"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Platform built on V8 to build network applications
+brew "node"
+# Development kit for the Java programming language
+brew "openjdk"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.13"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# 7-Zip is a file archiver with a high compression ratio
+brew "sevenzip"
+# Simplified and community-driven man pages
+brew "tldr"
+# Yet Another Dotfiles Manager
+brew "yadm"
+# Blazing fast terminal file manager written in Rust, based on async I/O
+brew "yazi"
+# UNIX shell (command interpreter)
+brew "zsh"
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Application uninstaller
+cask "appcleaner"
+# Neovim Client
+cask "neovide"

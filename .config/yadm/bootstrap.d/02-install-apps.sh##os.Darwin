@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# install homebrew if it's missing
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Installing homebrew"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+brewfile=$HOME/.config/yadm/scripts/Brewfile
+
+if [ -f $brewfile ]; then
+  echo "Updating homebrew bundle"
+  brew bundle install --file=$brewfile
+fi
