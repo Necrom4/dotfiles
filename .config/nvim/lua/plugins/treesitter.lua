@@ -21,6 +21,9 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		opts = {
+			ensure_installed = {
+				"norg",
+			},
 			incremental_selection = {
 				enable = true,
 				keymaps = {
