@@ -1,6 +1,2 @@
 frame = "none"
 maximized = true
-
-[font]
-normal = ["CommitMono Nerd Font Mono"] # Will use the bundled Fira Code Nerd Font by default
-size = 16.0
