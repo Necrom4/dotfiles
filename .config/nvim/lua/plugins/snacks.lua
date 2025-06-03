@@ -1,3 +1,5 @@
+local utils = require("core.utils")
+
 --------------------
 --------GIT---------
 --------------------
@@ -36,14 +38,6 @@ end
 -----DASHBOARD------
 --------------------
 
--- SYSTEM UTILS
-local function term_cmd(cmd)
-	local handle = io.popen(cmd)
-	local result = handle:read("*a")
-	handle:close()
-	return result:gsub("%s+$", "")
-end
-
 local function make_graph(percent, width)
 	percent = tonumber(percent) or 0
 	if percent ~= percent then
@@ -57,23 +51,13 @@ local function make_graph(percent, width)
 	return string.rep("■", filled) .. string.rep("□", width - filled)
 end
 
--- GET OS
-local function get_os()
-	local uname = term_cmd("uname")
-	if uname == "Linux" then
-		local version = term_cmd("cat /proc/version")
-		if version:match("Microsoft") or version:match("WSL") then
-			return "WSL"
-		end
-	end
-	return uname
-end
-
 -- WSL VERSION
 local function wsl_version()
-	if get_os() == "WSL" then
+	if utils.system_type() == "wsl" then
 		return "󰖳 WSL "
-			.. term_cmd("wsl.exe -v 2>&1 | iconv -f UTF-16LE -t UTF-8 | grep 'WSL version' | cut -d ':' -f2 | xargs")
+			.. utils.term_cmd(
+				"wsl.exe -v 2>&1 | iconv -f UTF-16LE -t UTF-8 | grep 'WSL version' | cut -d ':' -f2 | xargs"
+			)
 			.. " | "
 	end
 	return ""
@@ -81,16 +65,16 @@ end
 
 -- OS VERSION
 local function os_version()
-	local uname = get_os()
-	if uname ~= "Darwin" then
-		local linux_name = term_cmd("lsb_release -is"):lower()
+	local uname = utils.system_type()
+	if uname ~= "darwin" then
+		local linux_name = utils.term_cmd("lsb_release -is"):lower()
 		if linux_name == "" then
-			linux_name = term_cmd("cat /etc/os-release | grep '^ID=' | cut -d '=' -f2"):lower()
+			linux_name = utils.term_cmd("cat /etc/os-release | grep '^ID=' | cut -d '=' -f2"):lower()
 		end
 
-		local os_pretty_name = term_cmd("lsb_release -ds")
+		local os_pretty_name = utils.term_cmd("lsb_release -ds")
 		if os_pretty_name == "" then
-			os_pretty_name = term_cmd("cat /etc/os-release | grep '^PRETTY_NAME=' | cut -d '\"' -f2")
+			os_pretty_name = utils.term_cmd("cat /etc/os-release | grep '^PRETTY_NAME=' | cut -d '\"' -f2")
 		end
 
 		local icon = "" -- default Linux icon
@@ -102,10 +86,10 @@ local function os_version()
 			icon = "󰣇"
 		end
 
-		return icon .. " " .. (os_pretty_name ~= "" and os_pretty_name or "Linux")
+		return icon .. " " .. (os_pretty_name ~= "" and os_pretty_name or "linux")
 	else
-		local name = term_cmd("sw_vers -productName")
-		local version = term_cmd("sw_vers -productVersion")
+		local name = utils.term_cmd("sw_vers -productName")
+		local version = utils.term_cmd("sw_vers -productVersion")
 		return " " .. name .. " " .. version
 	end
 	return " Unknown OS"
@@ -125,20 +109,20 @@ local function neovide_version()
 end
 
 -- CPU
-local cpu_load = tonumber(term_cmd("uptime"):match("load averages?:%s*([%d%.]+)")) or 0
+local cpu_load = tonumber(utils.term_cmd("uptime"):match("load averages?:%s*([%d%.]+)")) or 0
 
 -- RAM
 local function ram()
-	if get_os() ~= "Darwin" then
-		local memory_output = term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
+	if utils.system_type() ~= "darwin" then
+		local memory_output = utils.term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
 		return tonumber(used_mb), tonumber(total_mb)
 	end
 	local page_size = 4096
-	local active_pages = tonumber(term_cmd("vm_stat | grep 'Pages active'"):match("(%d+)")) or 0
-	local inactive_pages = tonumber(term_cmd("vm_stat | grep 'Pages inactive'"):match("(%d+)")) or 0
-	local wired_pages = tonumber(term_cmd("vm_stat | grep 'Pages wired down'"):match("(%d+)")) or 0
-	local memsize_str = term_cmd("sysctl -n hw.memsize"):gsub("[^%d]", "")
+	local active_pages = tonumber(utils.term_cmd("vm_stat | grep 'Pages active'"):match("(%d+)")) or 0
+	local inactive_pages = tonumber(utils.term_cmd("vm_stat | grep 'Pages inactive'"):match("(%d+)")) or 0
+	local wired_pages = tonumber(utils.term_cmd("vm_stat | grep 'Pages wired down'"):match("(%d+)")) or 0
+	local memsize_str = utils.term_cmd("sysctl -n hw.memsize"):gsub("[^%d]", "")
 	local total_bytes = tonumber(memsize_str) or (8 * 1024 ^ 3)
 	local used_bytes = (active_pages + inactive_pages + wired_pages) * page_size
 	local used_mb = used_bytes / 1024 ^ 2
@@ -148,12 +132,12 @@ end
 
 -- SWAP
 local function swap()
-	if get_os() ~= "Darwin" then
-		local memory_output = term_cmd("free -m | awk '/Swap:/ {print $3, $2}'")
+	if utils.system_type() ~= "darwin" then
+		local memory_output = utils.term_cmd("free -m | awk '/Swap:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
 		return tonumber(used_mb), tonumber(total_mb)
 	end
-	local swap_output = term_cmd("sysctl vm.swapusage")
+	local swap_output = utils.term_cmd("sysctl vm.swapusage")
 	local total = tonumber(swap_output:match("total = ([%d%.]+)M"))
 	local used = tonumber(swap_output:match("used = ([%d%.]+)M"))
 	return math.floor(used), math.floor(total)
@@ -161,20 +145,20 @@ end
 
 -- DISK
 local function disk()
-	local uname = get_os()
+	local uname = utils.system_type()
 	local flag = "-H"
-	if uname ~= "Darwin" then
+	if uname ~= "darwin" then
 		flag = "-h"
 	end
 	local mount_path = "/"
-	if uname == "WSL" then
+	if uname == "wsl" then
 		mount_path = "/mnt/c"
-	elseif uname == "Darwin" then
+	elseif uname == "darwin" then
 		mount_path = "/System/Volumes/Data"
 	end
-	local used, total = term_cmd("df " .. flag .. " " .. mount_path .. " | awk 'NR==2 {print $3, $2}'"):match(
-		"([%d%.]+)[GMKTB]?%s+([%d%.]+)[GMKTB]?"
-	)
+	local used, total = utils
+		.term_cmd("df " .. flag .. " " .. mount_path .. " | awk 'NR==2 {print $3, $2}'")
+		:match("([%d%.]+)[GMKTB]?%s+([%d%.]+)[GMKTB]?")
 	return math.floor(tonumber(used or 0) + 0.5), math.floor(tonumber(total or 1) + 0.5)
 end
 
@@ -182,12 +166,12 @@ end
 local function uptime()
 	local boot_time, boot_date
 
-	if get_os() ~= "Darwin" then
-		boot_date = term_cmd("uptime -s")
+	if utils.system_type() ~= "darwin" then
+		boot_date = utils.term_cmd("uptime -s")
 		local y, m, d = boot_date:match("(%d+)-(%d+)-(%d+)")
 		boot_time = os.time({ year = y, month = m, day = d })
 	else
-		local boot_sec = term_cmd("sysctl -n kern.boottime"):match("sec%s*=%s*(%d+)")
+		local boot_sec = utils.term_cmd("sysctl -n kern.boottime"):match("sec%s*=%s*(%d+)")
 		boot_time = tonumber(boot_sec)
 		boot_date = os.date("%Y-%m-%d %H:%M:%S", boot_time)
 	end
@@ -201,7 +185,7 @@ end
 
 -- BATTERY
 local function battery_percentage()
-	local output = term_cmd([[
+	local output = utils.term_cmd([[
 		for d in /sys/class/power_supply/*; do
 			case "$d" in */BAT*|*/CMD*|*/battery*)
 				[ -f "$d/capacity" ] && cat "$d/capacity" && exit
@@ -213,7 +197,7 @@ local function battery_percentage()
 end
 
 local function battery_status()
-	local status = term_cmd([[
+	local status = utils.term_cmd([[
 		(for d in /sys/class/power_supply/*; do
 			case "$d" in */BAT*|*/CMD*|*/battery*)
 				[ -f "$d/status" ] && cat "$d/status" && break
@@ -251,20 +235,20 @@ end
 
 -- PROCESSES
 local function processes()
-	if get_os() ~= "Darwin" then
-		return term_cmd("ps -e --no-headers | wc -l")
+	if utils.system_type() ~= "darwin" then
+		return utils.term_cmd("ps -e --no-headers | wc -l")
 	end
-	return term_cmd("ps ax | wc -l | awk '{print $1}'")
+	return utils.term_cmd("ps ax | wc -l | awk '{print $1}'")
 end
 
 -- IP ADDRESS
 local function ip_address()
-	if get_os() ~= "Darwin" then
-		return term_cmd("hostname -I | awk '{print $1}'")
+	if utils.system_type() ~= "darwin" then
+		return utils.term_cmd("hostname -I | awk '{print $1}'")
 	end
-	local ip = term_cmd("ipconfig getifaddr en0")
+	local ip = utils.term_cmd("ipconfig getifaddr en0")
 	if ip == "" then
-		ip = term_cmd("ipconfig getifaddr en1")
+		ip = utils.term_cmd("ipconfig getifaddr en1")
 	end
 	return ip ~= "" and ip or "N/A"
 end
@@ -301,7 +285,7 @@ local system_info = {
 	string.format(
 		"│  │ %-12s %3s %-7s %22s │",
 		battery_icon(battery_percentage(), battery_status()) .. " " .. battery_percentage() .. "%",
-		" " .. term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'"),
+		" " .. utils.term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'"),
 		" " .. processes(),
 		"󰍸 " .. ip_address()
 	),
