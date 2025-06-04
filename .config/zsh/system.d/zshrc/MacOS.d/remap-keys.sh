@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # Credit to Brad Howes
 FROM='"HIDKeyboardModifierMappingSrc"'
 TO='"HIDKeyboardModifierMappingDst"'
