@@ -1,4 +1,4 @@
-# WSL-specific interactive config
+# copies the neovide configuraiton in ~/.config/neovide/config.toml to /mnt/c/Users/<user>/AppData/Roaming/neovide/config.toml
 
 # Neovide WSL setup
 config_src="$HOME/.config/neovide/config.toml"
@@ -12,12 +12,12 @@ wsl_config='wsl = true'
 mkdir -p "$(dirname "$config_dest")"
 
 # Read existing file (without duplicates)
-existing=$(< "$config_src")
+existing=$(<"$config_src")
 cleaned=$(echo "$existing" | grep -v 'wsl = ')
 
 # Write new config with wsl lines at the top
 {
   echo "$wsl_config"
-    echo
-    echo "$cleaned"
-} > "$config_dest"
+  echo
+  echo "$cleaned"
+} >"$config_dest"

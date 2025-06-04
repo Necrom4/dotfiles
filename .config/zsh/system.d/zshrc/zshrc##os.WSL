@@ -1,0 +1,10 @@
+# WSL-specific interactive shell configuration
+
+scripts_dir="${0:A:h}/WSL.d"
+
+# Source all *.sh files for this OS
+for script in "$scripts_dir"/*.sh; do
+    if [[ -r "$script" ]]; then
+        source "$script"
+    fi
+done

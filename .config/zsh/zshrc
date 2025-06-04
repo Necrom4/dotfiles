@@ -71,5 +71,5 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # --- System Specific --
-platform_file="${HOME}/.config/zsh/platform.zsh"
-[[ -f "$platform_file" ]] && source "$platform_file"
+system_zshrc="${HOME}/.config/zsh/system.d/zshrc/zshrc"
+[[ ! -f "$system_zshrc" ]] || source "$system_zshrc"

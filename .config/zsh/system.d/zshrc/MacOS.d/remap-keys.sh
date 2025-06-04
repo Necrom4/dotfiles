@@ -24,4 +24,4 @@ Map "${BACKQUOTE}" "${SECTION}"
 #Map ${R_COMMAND} ${SHIFT_LOCK}
 #Map ${BACKQUOTE} ${L_CONTROL}
 
-hidutil property --set "{\"UserKeyMapping\":[${CMD}]}"
+hidutil property --set "{\"UserKeyMapping\":[${CMD}]}" >/dev/null 2>&1
