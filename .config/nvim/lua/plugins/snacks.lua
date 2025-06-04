@@ -385,10 +385,7 @@ return {
 		{
 			"<leader>ga",
 			function()
-				vim.cmd({
-					cmd = "!",
-					args = { "git", "add", vim.fn.expand("%:p") },
-				})
+				vim.cmd("!git add " .. vim.fn.fnameescape(vim.fn.expand("%:p")))
 			end,
 			desc = "Add file",
 			silent = true,
@@ -396,10 +393,7 @@ return {
 		{
 			"<leader>gD",
 			function()
-				vim.cmd({
-					cmd = "!",
-					args = { "git", "rm", "--cached", vim.fn.expand("%:p") },
-				})
+				vim.cmd("!git rm --cached " .. vim.fn.fnameescape(vim.fn.expand("%:p")))
 			end,
 			desc = "Remove file",
 			silent = true,
