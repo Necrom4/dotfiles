@@ -24,14 +24,12 @@ plugins=( aliases alias-finder azure colored-man-pages command-not-found docker 
 source $ZSH/oh-my-zsh.sh
 
 # --- Editor Configuration ---
-if command -v neovide >/dev/null 2>&1; then
-  export EDITOR="neovide"
-elif command -v neovide.exe >/dev/null 2>&1; then
-  export EDITOR="neovide.exe"
-elif command -v nvim >/dev/null 2>&1; then
+if command -v nvim >/dev/null 2>&1; then
   export EDITOR="nvim"
-else
+elif command -v nvim >/dev/null 2>&1; then
   export EDITOR="vim"
+else
+  export EDITOR="vi"
 fi
 
 # --- Aliases ---

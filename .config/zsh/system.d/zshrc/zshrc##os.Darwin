@@ -1,8 +1,13 @@
 # MacOS-specific interactive shell configuration
 
+# Set Neovide as EDITOR if available
+if command -v neovide >/dev/null 2>&1; then
+  export EDITOR="neovide"
+fi
+
+# Source all scripts for this OS
 scripts_dir="${0:A:h}/MacOS.d"
 
-# Source all *.sh files for this OS
 for script in "$scripts_dir"/*.sh; do
     if [[ -r "$script" ]]; then
         source "$script"
