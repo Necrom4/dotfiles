@@ -68,6 +68,12 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 # --- Prompt ---
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# --- System Specific --
-system_zshrc="${HOME}/.config/zsh/system.d/zshrc/zshrc"
-[[ ! -f "$system_zshrc" ]] || source "$system_zshrc"
+# --- Source scripts --
+
+scripts_dir="${0:A:h}/zshrc.os"
+
+for script in "$scripts_dir"/*.sh; do
+    if [[ -r "$script" ]]; then
+        source "$script"
+    fi
+done

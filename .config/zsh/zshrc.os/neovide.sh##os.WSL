@@ -1,4 +1,7 @@
-# copies the neovide configuraiton in ~/.config/neovide/config.toml to /mnt/c/Users/<user>/AppData/Roaming/neovide/config.toml
+# Set Neovide as EDITOR if available
+if command -v neovide.exe >/dev/null 2>&1; then
+  export EDITOR="neovide.exe"
+fi
 
 # Neovide WSL setup
 config_src="$HOME/.config/neovide/config.toml"
