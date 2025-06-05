@@ -16,7 +16,7 @@ return {
 		{
 			"<leader>hn",
 			function()
-				require("noice").cmd("history")
+				require("noice").cmd("all")
 			end,
 			desc = "Notifications",
 		},
