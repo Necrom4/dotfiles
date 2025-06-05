@@ -10,19 +10,18 @@ end
 
 -- GET OS
 function M.system_type()
-	local uname = vim.loop.os_uname()
+	if vim.fn.has("wsl") == 1 then
+		return "wsl"
+	end
 
-	if uname.sysname == "Darwin" then
+	local sysname = vim.loop.os_uname().sysname:lower()
+
+	if sysname:find("darwin") then
 		return "darwin"
-	elseif uname.sysname == "Linux" then
-		local is_wsl = vim.fn.has("wsl") == 1
-			or uname.release:lower():match("microsoft")
-			or uname.version:lower():match("microsoft")
-		if is_wsl then
-			return "wsl"
-		else
-			return "linux"
-		end
+	elseif sysname:find("windows") then
+		return "windows"
+	elseif sysname:find("linux") then
+		return "linux"
 	else
 		return "unknown"
 	end

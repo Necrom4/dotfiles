@@ -1,11 +1,12 @@
 local utils = require("core.utils")
+local system_type = utils.system_type()
 
 if vim.g.neovide then
 	-- Window settings
 	vim.g.neovide_opacity = 0.75
 	vim.g.neovide_window_blurred = true
 	vim.g.neovide_input_macos_option_key_is_meta = "only_left"
-	if utils.system_type() == "darwin" then
+	if system_type == "darwin" then
 		vim.o.guifont = "CommitMono Nerd Font Mono:h16"
 	else
 		vim.o.guifont = "CommitMono Nerd Font Mono:h10"

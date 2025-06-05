@@ -1,4 +1,5 @@
 local utils = require("core.utils")
+local system_type = utils.system_type()
 
 --------------------
 --------GIT---------
@@ -53,7 +54,7 @@ end
 
 -- WSL VERSION
 local function wsl_version()
-	if utils.system_type() == "wsl" then
+	if system_type == "wsl" then
 		return "󰖳 WSL "
 			.. utils.term_cmd(
 				"wsl.exe -v 2>&1 | iconv -f UTF-16LE -t UTF-8 | grep 'WSL version' | cut -d ':' -f2 | xargs"
@@ -65,7 +66,7 @@ end
 
 -- OS VERSION
 local function os_version()
-	local uname = utils.system_type()
+	local uname = system_type
 	if uname ~= "darwin" then
 		local linux_name = utils.term_cmd("lsb_release -is"):lower()
 		if linux_name == "" then
@@ -113,7 +114,7 @@ local cpu_load = tonumber(utils.term_cmd("uptime"):match("load averages?:%s*([%d
 
 -- RAM
 local function ram()
-	if utils.system_type() ~= "darwin" then
+	if system_type ~= "darwin" then
 		local memory_output = utils.term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
 		return tonumber(used_mb), tonumber(total_mb)
@@ -132,7 +133,7 @@ end
 
 -- SWAP
 local function swap()
-	if utils.system_type() ~= "darwin" then
+	if system_type ~= "darwin" then
 		local memory_output = utils.term_cmd("free -m | awk '/Swap:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
 		return tonumber(used_mb), tonumber(total_mb)
@@ -145,7 +146,7 @@ end
 
 -- DISK
 local function disk()
-	local uname = utils.system_type()
+	local uname = system_type
 	local flag = "-H"
 	if uname ~= "darwin" then
 		flag = "-h"
@@ -166,7 +167,7 @@ end
 local function uptime()
 	local boot_time, boot_date
 
-	if utils.system_type() ~= "darwin" then
+	if system_type ~= "darwin" then
 		boot_date = utils.term_cmd("uptime -s")
 		local y, m, d = boot_date:match("(%d+)-(%d+)-(%d+)")
 		boot_time = os.time({ year = y, month = m, day = d })
@@ -235,7 +236,7 @@ end
 
 -- PROCESSES
 local function processes()
-	if utils.system_type() ~= "darwin" then
+	if system_type ~= "darwin" then
 		return utils.term_cmd("ps -e --no-headers | wc -l")
 	end
 	return utils.term_cmd("ps ax | wc -l | awk '{print $1}'")
@@ -243,7 +244,7 @@ end
 
 -- IP ADDRESS
 local function ip_address()
-	if utils.system_type() ~= "darwin" then
+	if system_type ~= "darwin" then
 		return utils.term_cmd("hostname -I | awk '{print $1}'")
 	end
 	local ip = utils.term_cmd("ipconfig getifaddr en0")
