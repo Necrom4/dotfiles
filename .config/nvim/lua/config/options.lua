@@ -10,6 +10,16 @@ vim.diagnostic.config({
 
 vim.filetype.add({
 	pattern = {
+		[".*%.sh##.*"] = "sh",
+	},
+})
+vim.filetype.add({
+	pattern = {
+		[".*%.zsh##.*"] = "zsh",
+	},
+})
+vim.filetype.add({
+	pattern = {
 		[".*%.tpl%.yaml"] = "helm",
 	},
 })
