@@ -34,7 +34,9 @@ fi
 
 # --- Aliases ---
 alias vim="nvim"
-alias e=$EDITOR
+e() {
+  "$EDITOR" "$@"
+}
 if command -v batcat &> /dev/null; then
   alias cat="batcat"
 fi
