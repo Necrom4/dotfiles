@@ -31,13 +31,7 @@ if vim.g.neovide then
 	end
 
 	vim.keymap.set("n", c_v, '"+p', { noremap = true, silent = true })
-	vim.keymap.set("i", c_v, function()
-		vim.opt.paste = true
-		vim.api.nvim_feedkeys(vim.fn.getreg("+"), "n", false)
-		vim.defer_fn(function()
-			vim.opt.paste = false
-		end, 0)
-	end, { noremap = true, silent = true })
+	vim.keymap.set("i", c_v, '<ESC>"+pli', { noremap = true, silent = true })
 	vim.keymap.set("c", c_v, paste_in_prompt, { noremap = true, silent = true })
 	vim.keymap.set("t", c_v, paste_in_prompt, { noremap = true, silent = true })
 	vim.keymap.set("v", c_c, '"+y', { noremap = true, silent = true })
