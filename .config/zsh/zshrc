@@ -43,6 +43,7 @@ fi
 alias ll='ls -la --total-size'
 alias la='ls -a'
 alias lt='ls --tree'
+alias d="lazydocker"
 alias g="lazygit"
 alias y="yadm enter lazygit"
 

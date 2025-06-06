@@ -15,5 +15,12 @@ return {
 			desc = "Open LazyDocker",
 		},
 	},
-	opts = {},
+	opts = {
+		window = {
+			settings = {
+				width = 0.9,
+				height = 0.9,
+			},
+		},
+	},
 }
