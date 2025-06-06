@@ -7,9 +7,9 @@ if vim.g.neovide then
 	vim.g.neovide_window_blurred = true
 	vim.g.neovide_input_macos_option_key_is_meta = "only_left"
 	if system_type == "darwin" then
-		vim.o.guifont = "CommitMono Nerd Font Mono:h16"
+		vim.o.guifont = "CommitMono Nerd Font Mono,LegacyComputing:h16"
 	else
-		vim.o.guifont = "CommitMono Nerd Font Mono:h10"
+		vim.o.guifont = "CommitMono Nerd Font Mono,LegacyComputing:h10"
 	end
 	vim.opt.linespace = 1
 
