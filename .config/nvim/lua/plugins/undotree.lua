@@ -1,6 +1,5 @@
 return {
 	"mbbill/undotree",
-	event = "VeryLazy",
 	config = function()
 		vim.g.undotree_WindowLayout = 2
 		vim.g.undotree_ShortIndicators = 1
@@ -40,4 +39,7 @@ return {
 			})
 			:map("<leader>du")
 	end,
+	keys = {
+		{ "<leader>du", desc = "Open Undotree" },
+	},
 }

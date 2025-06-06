@@ -8,6 +8,7 @@ return {
 				{ "<leader>di", name = "Index", icon = { icon = " ", color = "blue" } },
 				{ "<leader>dh", name = "History", icon = { icon = " ", color = "green" } },
 				{ "<leader>dq", name = "Close Diffview", icon = { icon = "󰈆 ", color = "red" } },
+				{ "<leader>du", name = "Open Undotree", icon = { icon = "󰕌 ", color = "purple" } },
 				{ "<leader>h", group = "history", icon = { icon = " ", color = "green" } },
 				{ "<leader>n", group = "notes", icon = { icon = "󰠮 ", color = "blue" } },
 				{ "<leader>r", group = "replace", icon = { icon = "󰛔 ", color = "red" } },
