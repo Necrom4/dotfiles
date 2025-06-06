@@ -731,14 +731,16 @@ return {
 				win = {
 					input = {
 						keys = {
-							["<Esc>"] = { "close", mode = { "n", "i" } },
 							["<c-q>"] = { "close", mode = { "n", "i" } },
 							["<F1>"] = { "toggle_help", mode = { "n", "i" } },
-							["<c-p>"] = { "preview_scroll_up", mode = { "i", "n" } },
-							["<c-n>"] = { "preview_scroll_down", mode = { "i", "n" } },
+							["<c-/>"] = { "toggle_help", mode = { "i" } },
+							["<s-k>"] = { "preview_scroll_up", mode = { "n" } },
+							["<s-j>"] = { "preview_scroll_down", mode = { "n" } },
 							["<a-q>"] = { "qflist", mode = { "i", "n" } },
-							["<Tab>"] = { { "select_and_next", "list_up" }, mode = { "i", "n" } },
-							["<S-Tab>"] = { "select_and_next", mode = { "i", "n" } },
+							["<tab>"] = { { "select_and_next", "list_up" }, mode = { "i", "n" } },
+							["<s-tab>"] = { "select_and_next", mode = { "i", "n" } },
+							["<a-k>"] = { "history_back", mode = { "i" } },
+							["<a-j>"] = { "history_forward", mode = { "i" } },
 						},
 					},
 				},
