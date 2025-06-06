@@ -24,9 +24,12 @@ vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", 
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "v", "o" }, "gj", "j", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v", "o" }, "gk", "k", { noremap = true, silent = true })
--- move one page
-vim.keymap.set({ "n", "v" }, "<c-j>", "<c-f>", { noremap = true, silent = true })
+-- scroll one page
 vim.keymap.set({ "n", "v" }, "<c-k>", "<c-b>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-j>", "<c-f>", { noremap = true, silent = true })
+-- scroll one line
+vim.keymap.set({ "n", "v" }, "<c-s-k>", "<c-y>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-s-j>", "<c-e>", { noremap = true, silent = true })
 -- center cursor
 vim.keymap.set({ "n", "v", "o" }, "MM", "zz", { noremap = true, silent = true })
 -- cursor to extremities
