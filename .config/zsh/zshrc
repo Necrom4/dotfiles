@@ -19,7 +19,31 @@ zstyle ':omz:plugins:alias-finder' exact yes
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#636DA6"
 ZSH_AUTOSUGGEST_STRATEGY=completion
 
-plugins=( aliases alias-finder azure colored-man-pages command-not-found docker docker-compose eza git helm jsontools kubectl pip python rails rake ruby z zsh-autopair zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting zsh-vi-mode )
+plugins=(
+  alias-finder
+  aliases
+  azure
+  colored-man-pages
+  command-not-found
+  docker
+  docker-compose
+  eza
+  git
+  helm
+  jsontools
+  kubectl
+  pip
+  python
+  rails
+  rake
+  ruby
+  z
+  zsh-autopair
+  zsh-autosuggestions
+  zsh-history-substring-search
+  zsh-syntax-highlighting
+  zsh-vi-mode
+)
 
 source $ZSH/oh-my-zsh.sh
 
