@@ -2,10 +2,12 @@ local utils = require("core.utils")
 local system_type = utils.system_type()
 
 if vim.g.neovide then
-	-- Window settings
-	vim.g.neovide_opacity = 0.75
+	-- Window
+	vim.g.neovide_opacity = 0.85
 	vim.g.neovide_window_blurred = true
-	vim.g.neovide_input_macos_option_key_is_meta = "only_left"
+	-- Floating windows
+	vim.g.neovide_floating_shadow = false
+	-- Text
 	if system_type == "darwin" then
 		vim.o.guifont = "CommitMono Nerd Font Mono,LegacyComputing:h16"
 	else
@@ -13,6 +15,8 @@ if vim.g.neovide then
 	end
 	vim.opt.linespace = 1
 
+	-- KEYMAPS
+	vim.g.neovide_input_macos_option_key_is_meta = "only_left"
 	-- Copy paste
 	local c_c = "<C-c>"
 	local c_v = "<C-v>"
