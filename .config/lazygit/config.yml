@@ -9,6 +9,7 @@ gui:
       - blue
   spinner:
     frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+  showRootItemInFileTree: false
 git:
   branchLogCmd: git log --graph --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
   allBranchesLogCmds:
