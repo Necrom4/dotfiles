@@ -2,10 +2,8 @@ local M = {}
 
 -- EXECUTE TERM CMD
 function M.term_cmd(cmd)
-	local handle = io.popen(cmd)
-	local result = handle:read("*a")
-	handle:close()
-	return result:gsub("%s+$", "")
+	local wrapped_cmd = { "sh", "-c", cmd }
+	return vim.fn.system(wrapped_cmd):gsub("%s+$", "")
 end
 
 -- GET OS
