@@ -74,6 +74,12 @@ return {
 			silent = true,
 		},
 		{
+			"<a-x>",
+			"<Plug>(neorg.qol.todo-items.todo.task-cycle)",
+			ft = "norg",
+			silent = true,
+		},
+		{
 			"<tab>",
 			"<Plug>(neorg.itero.next-iteration)",
 			mode = "i",
