@@ -298,6 +298,7 @@ return {
 	priority = 1000,
 	lazy = false,
 	keys = {
+		-- Disable keymaps
 		{ "<leader>e", false },
 		{ "<leader>E", false },
 		{ "<leader>n", false },
@@ -305,28 +306,18 @@ return {
 		{ "<leader>sw", mode = { "n", "x" }, false },
 		{ "<leader>sW", mode = { "n", "x" }, false },
 		{ "<leader>ua", false },
-		{
-			"<leader>ua",
-			function()
-				Snacks.toggle.animate():toggle()
-				if not vim.g.neovide then
-					vim.b.minianimate_disable = not vim.b.minianimate_disable
-					require("smear_cursor").toggle()
-				end
-			end,
-			desc = "Toggle Animations",
-			silent = true,
-		},
+		{ "<leader>.", false },
+		--
 		{
 			"<leader><leader>",
 			function()
-				Snacks.picker()
+				Snacks.picker.smart()
 			end,
-			desc = "Snacks Picker",
+			desc = "Smart Picker",
 			silent = true,
 		},
 		{
-			"<leader>.",
+			"<leader>=",
 			function()
 				Snacks.picker.resume()
 			end,
@@ -336,9 +327,9 @@ return {
 		{
 			"<leader><cr>",
 			function()
-				Snacks.dashboard.open()
+				Snacks.picker()
 			end,
-			desc = "Dashboard",
+			desc = "Snacks Picker",
 			silent = true,
 		},
 		{
@@ -357,22 +348,6 @@ return {
 				end)
 			end,
 			desc = "Find Config File",
-			silent = true,
-		},
-		{
-			"<leader>fl",
-			function()
-				Snacks.picker.lazy()
-			end,
-			desc = "Find Lazy Config Files",
-			silent = true,
-		},
-		{
-			"<leader>fs",
-			function()
-				Snacks.picker.smart()
-			end,
-			desc = "Smart Picker",
 			silent = true,
 		},
 		{
@@ -507,6 +482,18 @@ return {
 			silent = true,
 		},
 		{
+			"<leader>ua",
+			function()
+				Snacks.toggle.animate():toggle()
+				if not vim.g.neovide then
+					vim.b.minianimate_disable = not vim.b.minianimate_disable
+					require("smear_cursor").toggle()
+				end
+			end,
+			desc = "Toggle Animations",
+			silent = true,
+		},
+		{
 			"<leader>xx",
 			function()
 				Snacks.picker.explorer({ cwd = LazyVim.root() })
@@ -528,6 +515,15 @@ return {
 				Snacks.toggle.zoom():toggle()
 			end,
 			desc = "Toggle maximize",
+			silent = true,
+		},
+		-- OTHER
+		{
+			"<leader>.d",
+			function()
+				Snacks.dashboard.open()
+			end,
+			desc = "Dashboard",
 			silent = true,
 		},
 	},
@@ -604,8 +600,8 @@ return {
 						},
 						{
 							icon = " ",
-							key = "l",
-							desc = "Lazy Config",
+							key = "p",
+							desc = "Plugins",
 							action = function()
 								Snacks.picker.lazy()
 							end,
