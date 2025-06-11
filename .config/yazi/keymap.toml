@@ -27,9 +27,10 @@ prepend_keymap = [
   { on = "<c-d>", run = "shell --block -- nvim -d $@", desc = "Diff the selected files" },
   #eza-preview
   { on = [ "T" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
-  { on = [ "+" ], run = "plugin eza-preview --args='--inc-level'", desc = "Increment tree level" },
-  { on = [ "_" ], run = "plugin eza-preview --args='--dec-level'", desc = "Decrement tree level" },
-  { on = [ "$" ], run = "plugin eza-preview --args='--toggle-follow-symlinks'", desc = "Toggle tree follow symlinks" },
+  { on = [ "+" ], run = "plugin eza-preview inc-level", desc = "Increment tree level" },
+  { on = [ "-" ], run = "plugin eza-preview dec-level", desc = "Decrement tree level" },
+  { on = [ "$" ], run = "plugin eza-preview toggle-follow-symlinks", desc = "Toggle tree follow symlinks" },
+  { on = [ "*" ], run = "plugin eza-preview toggle-hidden", desc = "Toggle hidden files" },
   #git
   { on = [ "g", "a" ], run = "shell --block -- git add $@", desc = "Add to Git Repo" },
   { on = [ "g", "D" ], run = "shell --block -- git rm --cached $@", desc = "Remove from Git Repo" },

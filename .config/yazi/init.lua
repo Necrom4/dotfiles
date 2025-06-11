@@ -19,6 +19,7 @@ require("eza-preview"):setup({
 	level = 3,
 	follow_symlinks = true,
 	dereference = true,
+	all = false,
 })
 
 require("full-border"):setup()
