@@ -83,6 +83,11 @@ use = "KKV9/compress"
 rev = "9fc8fe0"
 hash = "2ad086899bf368fba211a33d8f68c39d"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-paste"
+rev = "c648526"
+hash = "6fe47945aff6571d76f3beb65099ad7a"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "b3950bf"
