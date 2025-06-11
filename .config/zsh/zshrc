@@ -102,6 +102,7 @@ bindkey -v
 bindkey '^x' clear-screen
 bindkey '^h' vi-backward-char
 bindkey '^l' vi-forward-char
+bindkey -M vicmd ';' edit-command-line
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
