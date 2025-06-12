@@ -783,7 +783,7 @@ return {
 					},
 				},
 			},
-			words = { enabled = true },
+			words = { enabled = false },
 		}
 	end,
 }
