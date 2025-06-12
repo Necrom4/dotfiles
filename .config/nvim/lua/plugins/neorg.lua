@@ -5,9 +5,10 @@ return {
 	ft = { "norg" },
 	opts = {
 		load = {
-			["core.defaults"] = {},
-			["core.concealer"] = {}, -- We added this line!
-			["core.dirman"] = {
+			-- Basics
+			["core.defaults"] = {}, -- Loads default modules
+			["core.concealer"] = {}, -- Handles visual rendering of markup
+			["core.dirman"] = { -- Manages workspaces
 				config = {
 					workspaces = {
 						notes = "~/notes",
@@ -15,8 +16,14 @@ return {
 					default_workspace = "notes",
 				},
 			},
+			["core.autocommands"] = {},
+			["core.integrations.treesitter"] = {},
+			["core.itero"] = {},
+			["core.highlights"] = {},
 			["core.keybinds"] = {},
 			["core.promo"] = {},
+			["core.qol.todo_items"] = {},
+			["core.syntax"] = {},
 		},
 	},
 	cmd = "Neorg",
@@ -74,12 +81,6 @@ return {
 			silent = true,
 		},
 		{
-			"<a-x>",
-			"<Plug>(neorg.qol.todo-items.todo.task-cycle)",
-			ft = "norg",
-			silent = true,
-		},
-		{
 			"<tab>",
 			"<Plug>(neorg.itero.next-iteration)",
 			mode = "i",
@@ -87,10 +88,30 @@ return {
 			silent = true,
 		},
 		{
-			"gO",
+			"<a-x>",
+			"<Plug>(neorg.qol.todo-items.todo.task-cycle)",
+			ft = "norg",
+			silent = true,
+		},
+		{
+			"<leader>ct",
 			"<cmd>Neorg toc<cr>",
 			ft = "norg",
 			desc = "Create a Table of Contents",
+			silent = true,
+		},
+		{
+			"<leader>cc",
+			"<Plug>(neorg.looking-glass.magnify-code-block)",
+			ft = "norg",
+			desc = "Magnify code block to separate buffer",
+			silent = true,
+		},
+		{
+			"gi",
+			"<Plug>(neorg.pivot.list.toggle)",
+			ft = "norg",
+			desc = "Invert list items",
 			silent = true,
 		},
 		{
@@ -108,17 +129,33 @@ return {
 			silent = true,
 		},
 		{
-			"g>.",
+			">>",
 			"<Plug>(neorg.promo.promote)",
 			ft = "norg",
 			desc = "[neorg] Promote object (Non-Recursively)",
 			silent = true,
 		},
 		{
-			"g<.",
+			"<<",
 			"<Plug>(neorg.promo.demote)",
 			ft = "norg",
 			desc = "[neorg] Demote object (Non-Recursively)",
+			silent = true,
+		},
+		{
+			">",
+			"<Plug>(neorg.promo.promote.range)",
+			ft = "norg",
+			mode = "v",
+			desc = "[neorg] Promote object in range",
+			silent = true,
+		},
+		{
+			"<",
+			"<Plug>(neorg.promo.demote.range)",
+			ft = "norg",
+			mode = "v",
+			desc = "[neorg] Demote object in range",
 			silent = true,
 		},
 	},
