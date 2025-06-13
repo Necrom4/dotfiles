@@ -40,8 +40,8 @@ hash = "22e1bd3dd03894746a3540b5f3729d0c"
 
 [[plugin.deps]]
 use = "imsi32/yatline"
-rev = "4872af0"
-hash = "d32742ded0e73146a8ca590fdc4fb404"
+rev = "88bd1c5"
+hash = "981acbe9b758b1af3a8154c932bb936d"
 
 [[plugin.deps]]
 use = "imsi32/yatline-githead"
