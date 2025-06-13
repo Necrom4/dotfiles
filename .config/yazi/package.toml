@@ -15,7 +15,7 @@ hash = "d9dbd61d8b814e74a5420dba1e4788c4"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "c648526"
+rev = "aeca767"
 hash = "d0ad0c1946b46a30c8489735fe8de41c"
 
 [[plugin.deps]]
@@ -25,12 +25,12 @@ hash = "fca231a128488a554823374f8f6d5241"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "c648526"
+rev = "aeca767"
 hash = "a7ab702e1ef0c097defbc976ed34c186"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "c648526"
+rev = "aeca767"
 hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
@@ -50,7 +50,7 @@ hash = "4d441b38138ce6492a4e10fa349fd65"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "c648526"
+rev = "aeca767"
 hash = "4d82cd9e7534d976f000edf9c0f68d8f"
 
 [[plugin.deps]]
@@ -60,12 +60,12 @@ hash = "5f00a80a79b9f7fd8e24d6fa5dbb3ae"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "c648526"
+rev = "aeca767"
 hash = "70898957e9e4c1ca291ff26e8fdc434"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "c648526"
+rev = "aeca767"
 hash = "bf6f074cd41ee33c3360341d168f9733"
 
 [[plugin.deps]]
@@ -85,12 +85,12 @@ hash = "2ad086899bf368fba211a33d8f68c39d"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "c648526"
-hash = "11effb42691081007479defae1be2dfe"
+rev = "aeca767"
+hash = "23d704e18d864036fc65c188bc6b2e47"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "c648526"
+rev = "aeca767"
 hash = "6fe47945aff6571d76f3beb65099ad7a"
 
 [[flavor.deps]]
