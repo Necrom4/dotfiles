@@ -35,6 +35,8 @@ brew "speedtest-cli"
 brew "tldr"
 # Yet Another Dotfiles Manager
 brew "yadm"
+# JavaScript package manager
+brew "yarn"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
 # UNIX shell (command interpreter)
