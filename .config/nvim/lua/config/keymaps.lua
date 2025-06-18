@@ -39,11 +39,15 @@ vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", ex
 vim.keymap.set({ "n", "v", "o" }, "gj", "j", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v", "o" }, "gk", "k", { noremap = true, silent = true })
 -- scroll one page
-vim.keymap.set({ "n", "v" }, "<c-k>", "<c-u>zz", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "<c-j>", "<c-d>zz", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-j>", "<c-d>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-k>", "<c-u>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-l>", "zL", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-h>", "zH", { noremap = true, silent = true })
 -- scroll one line
-vim.keymap.set({ "n", "v" }, "<c-s-k>", "<c-y>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<c-s-j>", "<c-e>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-s-k>", "<c-y>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-s-l>", "zl", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<c-s-h>", "zh", { noremap = true, silent = true })
 -- center cursor
 vim.keymap.set({ "n", "v", "o" }, "MM", "zz", { noremap = true, silent = true })
 -- cursor to extremities
@@ -55,14 +59,14 @@ vim.keymap.set({ "n", "v", "o" }, "H", "0", { noremap = true, silent = true })
 vim.keymap.set("n", "n", "nzz", { noremap = true, silent = true })
 vim.keymap.set("n", "N", "Nzz", { noremap = true, silent = true })
 -- move cursor in insert/cmdline modes
-vim.keymap.set("i", "<c-h>", "<left>", { noremap = true, silent = true })
 vim.keymap.set("i", "<c-j>", "<down>", { noremap = true, silent = true })
 vim.keymap.set("i", "<c-k>", "<up>", { noremap = true, silent = true })
 vim.keymap.set("i", "<c-l>", "<right>", { noremap = true, silent = true })
-vim.keymap.set("c", "<c-h>", feedkeys("<left>"), { noremap = true, silent = true })
+vim.keymap.set("i", "<c-h>", "<left>", { noremap = true, silent = true })
 vim.keymap.set("c", "<c-j>", feedkeys("<down>"), { noremap = true, silent = true })
 vim.keymap.set("c", "<c-k>", feedkeys("<up>"), { noremap = true, silent = true })
 vim.keymap.set("c", "<c-l>", feedkeys("<right>"), { noremap = true, silent = true })
+vim.keymap.set("c", "<c-h>", feedkeys("<left>"), { noremap = true, silent = true })
 -- non-cursor navigation
 -- normal mode to window mode
 vim.keymap.set("t", "<c-w>", [[<c-\><c-n><c-w>]], { noremap = true, silent = true })
@@ -79,8 +83,8 @@ vim.keymap.set({ "n", "t" }, "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previou
 -- TAB MANAGEMENT
 vim.keymap.set("n", "<leader><tab>n", "<cmd>tabnew<cr>", { desc = "New Tab" })
 vim.keymap.set("n", "<leader><tab>q", "<cmd>tabclose<cr>", { desc = "Close Tab" })
-vim.keymap.set("n", "<leader><tab>h", "<cmd>-tabmove<cr>", { desc = "Move Tab Left" })
 vim.keymap.set("n", "<leader><tab>l", "<cmd>+tabmove<cr>", { desc = "Move Tab Right" })
+vim.keymap.set("n", "<leader><tab>h", "<cmd>-tabmove<cr>", { desc = "Move Tab Left" })
 vim.keymap.set("n", "<leader><tab>{", "<cmd>tabfirst<cr>", { desc = "First Tab" })
 vim.keymap.set("n", "<leader><tab>}", "<cmd>tablast<cr>", { desc = "Last Tab" })
 
