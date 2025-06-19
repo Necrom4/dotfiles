@@ -9,6 +9,8 @@ brew "docker"
 brew "eza"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
+# Command-line pager for JSON data
+brew "jless"
 # Lazier way to manage everything docker
 brew "lazydocker"
 # Simple terminal UI for git commands
