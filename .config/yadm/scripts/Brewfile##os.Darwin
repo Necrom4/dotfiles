@@ -9,6 +9,8 @@ brew "docker"
 brew "eza"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
+# Official CLI for the IPinfo IP Address API
+brew "ipinfo-cli"
 # Command-line pager for JSON data
 brew "jless"
 # Lazier way to manage everything docker
