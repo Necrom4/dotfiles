@@ -1,0 +1,38 @@
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
+# Console Matrix
+brew "cmatrix"
+# Pack, ship and run any application as a lightweight container
+brew "docker"
+# Modern, maintained replacement for ls
+brew "eza"
+# Official CLI for the IPinfo IP Address API
+brew "ipinfo-cli"
+# Command-line pager for JSON data
+brew "jless"
+# Lazier way to manage everything docker
+brew "lazydocker"
+# Simple terminal UI for git commands
+brew "lazygit"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# 7-Zip is a file archiver with a high compression ratio
+brew "sevenzip"
+# Simplified and community-driven man pages
+brew "tldr"
+# Command-line interface to the freedesktop.org trashcan
+brew "trash-cli"
+# Yet Another Dotfiles Manager
+brew "yadm"
+# JavaScript package manager
+brew "yarn"
+# Blazing fast terminal file manager written in Rust, based on async I/O
+brew "yazi"
+# Process YAML, JSON, XML, CSV and properties documents from the CLI
+brew "yq"
+# UNIX shell (command interpreter)
+brew "zsh"
