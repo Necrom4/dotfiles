@@ -50,4 +50,4 @@ cask "1password"
 # Application uninstaller
 cask "appcleaner"
 # Neovim Client
-cask "neovide"
+cask "neovide-app"
