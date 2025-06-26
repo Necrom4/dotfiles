@@ -4,13 +4,22 @@
 # execute all executable files (excluding templates and editor backups) in the
 # ~/.config/yadm/bootstrap.d directory when run.
 
+# Import colors
+source "${HOME}/.config/yadm/scripts/colors.sh"
+
+# Define common color templates
+T_OK="${GREEN}${BOLD}"
+T_WARNING="${ORANGE}${BOLD}"
+T_ERROR="${RED}${BOLD}"
+T_PATH="${CYAN}${UNDERLINE}"
+
 set -eu
 
 # Directory to look for bootstrap executables in
 BOOTSTRAP_D="${BASH_SOURCE[0]}.d"
 
 if [[ ! -d "${BOOTSTRAP_D}" ]]; then
-  echo "Error: bootstrap directory '${BOOTSTRAP_D}' not found" >&2
+  printf "[${T_ERROR}ERROR${RESET}] bootstrap directory '${BOOTSTRAP_D}' not found" >&2
   exit 1
 fi
 
@@ -21,10 +30,11 @@ done < <(find -L "${BOOTSTRAP_D}" \( -type f -or -type l \) -not -name '*##*' -n
 
 for bootstrap in "${bootstraps[@]}"; do
   if [[ -x "${bootstrap}" ]]; then
-    echo "Executing ${bootstrap}"
+    printf "\nExecuting ${T_PATH}$(basename "${bootstrap}")${RESET}\n"
     if ! "${bootstrap}"; then
-      echo "Error: bootstrap '${bootstrap}' failed" >&2
+      printf "[${T_ERROR}ERROR${RESET}] bootstrap '$(basename "${bootstrap}")' failed\n" >&2
       exit 1
     fi
+    printf "[${T_OK}SUCCEDED${RESET}]\n"
   fi
 done
