@@ -198,15 +198,27 @@ local function battery_percentage()
 end
 
 local function battery_status()
-	local status = utils.term_cmd([[
-		(for d in /sys/class/power_supply/*; do
-			case "$d" in */BAT*|*/CMD*|*/battery*)
-				[ -f "$d/status" ] && cat "$d/status" && break
-			esac
-		done) || pmset -g batt | grep 'AC Power'
-	]])
+	if system_type ~= "darwin" then
+		local status = utils.term_cmd([[
+      (for d in /sys/class/power_supply/*; do
+        case "$d" in */BAT*|*/CMD*|*/battery*)
+          [ -f "$d/status" ] && cat "$d/status" && break
+        esac
+      done) || pmset -g batt | grep 'AC Power'
+    ]])
 
-	return status and status:match("Charging") or status:match("AC Power") or false
+		if not status then
+			return false
+		end
+		return status and status:match("Charging") or status:match("AC Power") or false
+	else
+		local status = utils.term_cmd("pmset -g batt")
+		if not status then
+			return false
+		end
+
+		return status and status:match("charging") or status:match("AC Power") or false
+	end
 end
 
 local function battery_icon(capacity, battery_status)
