@@ -117,8 +117,10 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 
 scripts_dir="${0:A:h}/zshrc.os"
 
+setopt null_glob
 for script in "$scripts_dir"/*.sh; do
     if [[ -r "$script" ]]; then
         source "$script"
     fi
 done
+unsetopt null_glob
