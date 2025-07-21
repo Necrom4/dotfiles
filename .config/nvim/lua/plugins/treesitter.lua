@@ -22,6 +22,7 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		opts = {
 			ensure_installed = {
+				"csv",
 				"norg",
 			},
 			incremental_selection = {

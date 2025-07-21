@@ -28,7 +28,15 @@ return {
 		opts = {
 			ensure_installed = {
 				"ast-grep",
+				"docker-compose-language-service",
+				"dockerfile-language-server",
+				"html-lsp",
+				"json-lsp",
 				"phpactor",
+				"rubocop",
+				"superhtml",
+				"taplo",
+				"yaml-language-server",
 			},
 			ui = {
 				border = "rounded",
