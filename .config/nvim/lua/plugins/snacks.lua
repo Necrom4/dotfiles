@@ -217,7 +217,7 @@ local function battery_status()
 			return false
 		end
 
-		return status and status:match("charging") or status:match("AC Power") or false
+		return status and status:match(" charging") or status:match("AC Power") or false
 	end
 end
 
