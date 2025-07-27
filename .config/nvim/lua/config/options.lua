@@ -4,6 +4,8 @@ vim.opt.list = false -- Show some invisible characters (tabs...
 vim.opt.scrolloff = 0 -- Lines of context
 vim.opt.wrap = false -- Disable line wrap
 
+vim.opt.spelllang = { "en", "fr", "pt" }
+
 vim.diagnostic.config({
 	signs = false,
 })
