@@ -34,6 +34,8 @@ return {
 				"json-lsp",
 				"phpactor",
 				"rubocop",
+				"ruby-lsp",
+				"rubyfmt",
 				"superhtml",
 				"taplo",
 				"yaml-language-server",
