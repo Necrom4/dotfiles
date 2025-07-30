@@ -51,5 +51,7 @@ brew "zsh"
 cask "1password"
 # Application uninstaller
 cask "appcleaner"
+# API documentation browser and code snippet manager
+cask "dash"
 # Neovim Client
 cask "neovide-app"
