@@ -14,7 +14,7 @@
   brew bundle dump --file=~/.config/yadm/scripts/Brewfile --describe --force
 
 @brew-cleandump:
-  brew bundle cleanup ~/.config/yadm/scripts/Brewfile --force --file
+  brew bundle cleanup --file=~/.config/yadm/scripts/Brewfile --force
 
 @brew-cleanup:
   brew cleanup -s
