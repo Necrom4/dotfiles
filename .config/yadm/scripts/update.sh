@@ -8,6 +8,8 @@ T_WARNING="${YELLOW}${BOLD}"
 T_ERROR="${RED}${BOLD}"
 T_PROGRAM="${CYAN}${BOLD}"
 
+CONTINUE_ALL=""
+
 update_tool() {
   local name="$1"
   local tool="$2"
@@ -24,7 +26,37 @@ update_tool() {
   fi
 
   if [ "$found" = true ]; then
-    printf "Updating ${T_PROGRAM}%s${NC}\n" "$name"
+    if [ -z "$CONTINUE_ALL" ]; then
+      while true; do
+        printf "Update ${T_PROGRAM}%s${NC}? [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel]" "$tool"
+        read -r -n 1 input
+        case "$input" in
+        [yY]*)
+          printf "\n"
+          break
+          ;;
+        [aA]*)
+          CONTINUE_ALL="true"
+          printf "\n"
+          break
+          ;;
+        [nN]*)
+          printf "\n[${T_WARNING}SKIPPING${NC}] ${T_PROGRAM}%s${NC}\n" "$tool"
+          return 0
+          ;;
+        [cC]*)
+          printf "\n[${T_ERROR}CANCELLED${NC}]\n"
+          exit 1
+          ;;
+        *)
+          printf "Invalid input. Please enter Y, A, or N.\n"
+          ;;
+        esac
+      done
+    else
+      printf "Updating ${T_PROGRAM}%s${NC}\n" "$name"
+    fi
+
     for cmd in "$@"; do
       eval "$cmd"
     done
@@ -43,10 +75,10 @@ update_tool "mise" "mise" "mise plugins update" "mise upgrade"
 #
 # update_tool "neovim mason" "nvim" \
 #   "nvim --headless '+MasonUpdate' +qa"
-#
-update_tool "oh-my-zsh" "[ -d \"${ZSH:-$HOME/.oh-my-zsh}\" ]" "zsh -i -c 'omz update'"
 
-update_tool "Powerlevel10k" "[ -d \"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k\" ]" "git -C \"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k\" pull"
+update_tool "oh-my-zsh" "${ZSH:-$HOME/.oh-my-zsh}" "zsh -i -c 'omz update'"
+
+update_tool "Powerlevel10k" "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" "git -C \"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k\" pull"
 
 update_tool "tldr" "tldr" "tldr --update"
 
