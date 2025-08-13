@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+YADM_SCRIPTS=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../scripts" &>/dev/null && pwd)
+source "${YADM_SCRIPTS}/colors.sh"
+T_OK="${GREEN}${BOLD}"
+T_WARNING="${YELLOW}${BOLD}"
+T_ERROR="${RED}${BOLD}"
+T_PROGRAM="${CYAN}${BOLD}"
+
+update_tool() {
+  local name="$1"
+  local tool="$2"
+  shift 2
+  local found=false
+  if [[ "$tool" == */* || "$tool" == "~"* ]]; then
+    if [ -d "$tool" ]; then
+      found=true
+    fi
+  else
+    if command -v "$tool" &>/dev/null; then
+      found=true
+    fi
+  fi
+
+  if [ "$found" = true ]; then
+    printf "Updating ${T_PROGRAM}%s${NC}\n" "$name"
+    for cmd in "$@"; do
+      eval "$cmd"
+    done
+    printf "[${T_OK}SUCCEEDED${NC}]\n"
+  else
+    printf "[${T_WARNING}WARNING${NC}] ${T_PROGRAM}%s${NC} not found, skipping.\n" "$name"
+  fi
+}
+
+update_tool "brew" "brew" "brew update" "brew upgrade"
+
+update_tool "mise" "mise" "mise plugins update" "mise upgrade"
+
+# update_tool "neovim plugins" "nvim" \
+#   "nvim --headless '+Lazy! sync' +qa"
+#
+# update_tool "neovim mason" "nvim" \
+#   "nvim --headless '+MasonUpdate' +qa"
+#
+update_tool "oh-my-zsh" "[ -d \"${ZSH:-$HOME/.oh-my-zsh}\" ]" "zsh -i -c 'omz update'"
+
+update_tool "Powerlevel10k" "[ -d \"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k\" ]" "git -C \"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k\" pull"
+
+update_tool "tldr" "tldr" "tldr --update"
+
+update_tool "yazi" "ya" \
+  "rm -rf ~/.config/yazi/plugins/* ~/.config/yazi/flavors/*" \
+  "yadm checkout -- ~/.config/yazi/" \
+  "ya pkg upgrade"
