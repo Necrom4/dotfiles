@@ -9,7 +9,7 @@ source "${HOME}/.config/yadm/scripts/colors.sh"
 
 # Define common color templates
 T_OK="${GREEN}${BOLD}"
-T_WARNING="${ORANGE}${BOLD}"
+T_WARNING="${YELLOW}${BOLD}"
 T_ERROR="${RED}${BOLD}"
 T_PATH="${CYAN}${UNDERLINE}"
 
@@ -19,7 +19,7 @@ set -eu
 BOOTSTRAP_D="${BASH_SOURCE[0]}.d"
 
 if [[ ! -d "${BOOTSTRAP_D}" ]]; then
-  printf "[${T_ERROR}ERROR${RESET}] bootstrap directory '${BOOTSTRAP_D}' not found" >&2
+  printf "[${T_ERROR}ERROR${NC}] bootstrap directory '${BOOTSTRAP_D}' not found" >&2
   exit 1
 fi
 
@@ -30,11 +30,11 @@ done < <(find -L "${BOOTSTRAP_D}" \( -type f -or -type l \) -not -name '*##*' -n
 
 for bootstrap in "${bootstraps[@]}"; do
   if [[ -x "${bootstrap}" ]]; then
-    printf "\nExecuting ${T_PATH}$(basename "${bootstrap}")${RESET}\n"
+    printf "\nExecuting ${T_PATH}$(basename "${bootstrap}")${NC}\n"
     if ! "${bootstrap}"; then
-      printf "[${T_ERROR}ERROR${RESET}] bootstrap '$(basename "${bootstrap}")' failed\n" >&2
+      printf "[${T_ERROR}ERROR${NC}] bootstrap '$(basename "${bootstrap}")' failed\n" >&2
       exit 1
     fi
-    printf "[${T_OK}SUCCEDED${RESET}]\n"
+    printf "[${T_OK}SUCCEDED${NC}]\n"
   fi
 done

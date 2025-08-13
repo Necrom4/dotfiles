@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Text attributes
-RESET='\033[0m'
+NC='\033[0m'
 BOLD='\033[1m'
 DIM='\033[2m'
 UNDERLINE='\033[4m'
