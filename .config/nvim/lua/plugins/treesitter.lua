@@ -23,6 +23,7 @@ return {
 		opts = {
 			ensure_installed = {
 				"csv",
+				"just",
 				"norg",
 			},
 			incremental_selection = {

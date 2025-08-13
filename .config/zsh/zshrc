@@ -37,6 +37,7 @@ plugins=(
   rails
   rake
   ruby
+  web-search
   z
   zsh-autopair
   zsh-autosuggestions
@@ -87,6 +88,9 @@ d() {
 }
 alias g="lazygit"
 alias y="yadm enter lazygit"
+alias j="just"
+alias jl="just --list"
+alias ju="just update"
 
 function x() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd

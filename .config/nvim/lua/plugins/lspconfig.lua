@@ -32,6 +32,7 @@ return {
 				"dockerfile-language-server",
 				"html-lsp",
 				"json-lsp",
+				"just-lsp",
 				"phpactor",
 				"rubocop",
 				"ruby-lsp",
