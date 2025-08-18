@@ -48,8 +48,10 @@ vim.keymap.set({ "n", "v" }, "<c-s-j>", "<c-e>", { noremap = true, silent = true
 vim.keymap.set({ "n", "v" }, "<c-s-k>", "<c-y>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<c-s-l>", "zl", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<c-s-h>", "zh", { noremap = true, silent = true })
+-- define mark
+vim.keymap.set({ "n", "v", "o" }, "`", "m", { noremap = true, silent = true })
 -- center cursor
-vim.keymap.set({ "n", "v", "o" }, "MM", "zz", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v", "o" }, "m", "zz", { noremap = true, silent = true })
 -- cursor to extremities
 vim.keymap.set({ "n", "v", "o" }, "J", "L", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v", "o" }, "K", "H", { noremap = true, silent = true })
