@@ -33,11 +33,19 @@ local function feedkeys(key)
 		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), "c", false)
 	end
 end
--- invert j/k-gj/gk
+-- ESC key in terminal
+vim.keymap.set({ "t" }, "<esc>", "<s-esc>", { noremap = true, silent = true })
+vim.keymap.set({ "t" }, "<s-esc>", "<c-\\><c-n>", { noremap = true, silent = true })
+-- cursor position
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "v", "o" }, "gj", "j", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v", "o" }, "gk", "k", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v", "o" }, "m", "zz", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v", "o" }, "J", "L", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v", "o" }, "K", "H", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v", "o" }, "L", "$", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v", "o" }, "H", "0", { noremap = true, silent = true })
 -- scroll one page
 vim.keymap.set({ "n", "v" }, "<c-j>", "<c-d>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<c-k>", "<c-u>", { noremap = true, silent = true })
@@ -50,13 +58,6 @@ vim.keymap.set({ "n", "v" }, "<c-s-l>", "zl", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<c-s-h>", "zh", { noremap = true, silent = true })
 -- define mark
 vim.keymap.set({ "n", "v", "o" }, "`", "m", { noremap = true, silent = true })
--- center cursor
-vim.keymap.set({ "n", "v", "o" }, "m", "zz", { noremap = true, silent = true })
--- cursor to extremities
-vim.keymap.set({ "n", "v", "o" }, "J", "L", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v", "o" }, "K", "H", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v", "o" }, "L", "$", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v", "o" }, "H", "0", { noremap = true, silent = true })
 -- center on next search
 vim.keymap.set("n", "n", "nzz", { noremap = true, silent = true })
 vim.keymap.set("n", "N", "Nzz", { noremap = true, silent = true })
