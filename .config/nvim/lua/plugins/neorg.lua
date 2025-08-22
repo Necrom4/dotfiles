@@ -29,49 +29,29 @@ return {
 	cmd = "Neorg",
 	keys = {
 		{
-			"<leader>nf",
+			"<leader>nn",
 			function()
 				Snacks.win({
-					width = 0.4,
-					height = 0.8,
+					width = 0.3,
+					height = 0.6,
+					row = -1,
+					col = -1,
 					position = "float",
 					border = "rounded",
 					wo = {
 						wrap = true,
-						spell = false,
+						spell = true,
 						number = false,
 						relativenumber = false,
 						foldenable = false,
 						foldcolumn = "0",
 					},
-					on_win = function(win)
+					on_win = function()
 						vim.cmd("Neorg workspace notes")
 					end,
 				})
 			end,
-			desc = "Floating Note",
-			silent = true,
-		},
-		{
-			"<leader>nn",
-			function()
-				Snacks.win({
-					width = 0.2,
-					position = "right",
-					wo = {
-						wrap = true,
-						spell = false,
-						number = false,
-						relativenumber = false,
-						foldenable = false,
-						foldcolumn = "0",
-					},
-					on_win = function(win)
-						vim.cmd("Neorg workspace notes")
-					end,
-				})
-			end,
-			desc = "Note",
+			desc = "Open Note",
 			silent = true,
 		},
 		{
