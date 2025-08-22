@@ -675,18 +675,6 @@ return {
 			input = { enabled = true },
 			lazygit = {
 				enabled = true,
-				theme = {
-					[241] = { fg = "Special" },
-					activeBorderColor = { fg = "MatchParen", bold = true },
-					cherryPickedCommitBgColor = { fg = "Identifier" },
-					cherryPickedCommitFgColor = { fg = "Function" },
-					defaultFgColor = { fg = "Normal" },
-					inactiveBorderColor = { fg = "FloatBorder" },
-					optionsTextColor = { fg = "Function" },
-					searchingActiveBorderColor = { fg = "MatchParen", bold = true },
-					selectedLineBgColor = { bg = "Visual" },
-					unstagedChangesColor = { fg = "Operator" },
-				},
 			},
 			notifier = { enabled = false, style = "fancy" },
 			picker = {
