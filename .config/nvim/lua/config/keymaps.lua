@@ -2,7 +2,7 @@ local utils = require("core.utils")
 
 -- Reload zsh configuration by sourcing ~/.zshrc in a separate shell
 vim.keymap.set("n", "<leader>.s", function()
-	local output = utils.term_cmd("source ~/.zshrc")
+	local output = utils.term_cmd("zsh -i -c 'source ~/.zshrc'")
 	local exit_code = vim.v.shell_error
 	if exit_code == 0 then
 		vim.api.nvim_echo({ { "Successfully sourced ~/.zshrc", "NormalMsg" } }, false, {})
