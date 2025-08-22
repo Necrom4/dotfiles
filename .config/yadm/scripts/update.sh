@@ -28,7 +28,7 @@ update_tool() {
   if [ "$found" = true ]; then
     if [ -z "$CONTINUE_ALL" ]; then
       while true; do
-        printf "Update ${T_PROGRAM}%s${NC}? [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel]" "$tool"
+        printf "Update ${T_PROGRAM}%s${NC}? [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel]" "$name"
         read -r -n 1 input
         case "$input" in
         [yY]*)
@@ -41,7 +41,7 @@ update_tool() {
           break
           ;;
         [nN]*)
-          printf "\n[${T_WARNING}SKIPPING${NC}] ${T_PROGRAM}%s${NC}\n" "$tool"
+          printf "\n[${T_WARNING}SKIPPING${NC}]\n"
           return 0
           ;;
         [cC]*)
@@ -62,7 +62,7 @@ update_tool() {
     done
     printf "[${T_OK}SUCCEEDED${NC}]\n"
   else
-    printf "[${T_WARNING}WARNING${NC}] ${T_PROGRAM}%s${NC} not found, skipping.\n" "$name"
+    printf "[${T_WARNING}SKIPPING${NC}] ${T_PROGRAM}%s${NC} not found.\n" "$name"
   fi
 }
 
@@ -82,7 +82,7 @@ update_tool "Powerlevel10k" "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/power
 
 update_tool "tldr" "tldr" "tldr --update"
 
-update_tool "yazi" "ya" \
+update_tool "yazi packages" "ya" \
   "rm -rf ~/.config/yazi/plugins/* ~/.config/yazi/flavors/*" \
   "yadm checkout -- ~/.config/yazi/" \
   "ya pkg upgrade"
