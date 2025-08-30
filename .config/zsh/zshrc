@@ -70,11 +70,14 @@ alias la='ls -a'
 alias lt='ls --tree'
 d() {
   if ! docker info > /dev/null 2>&1; then
-    if command -v open > /dev/null && [ -d "/Applications/Docker.app" ]; then
+    if command -v colima > /dev/null; then
+      colima start
+    elif command -v open > /dev/null && [ -d "/Applications/Docker.app" ]; then
       open -a Docker
     elif command -v systemctl > /dev/null; then
       sudo systemctl start docker
     else
+      echo "No Docker backend found (colima, Docker Desktop, or systemd)."
       return 1
     fi
 
