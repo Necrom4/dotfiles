@@ -11,7 +11,7 @@ return {
 				get = function()
 					return tint_enabled
 				end,
-				set = function(state)
+				set = function()
 					tint_enabled = not tint_enabled
 					require("tint").toggle()
 				end,

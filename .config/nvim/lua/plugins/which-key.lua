@@ -4,6 +4,7 @@ return {
 		spec = {
 			{
 				mode = { "n", "v" },
+				{ "<leader>cP", name = "Color Picker", icon = { icon = " ", color = "orange" } },
 				{ "<leader>d", group = "diff", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>di", name = "Index", icon = { icon = " ", color = "blue" } },
 				{ "<leader>dh", name = "History", icon = { icon = " ", color = "green" } },
