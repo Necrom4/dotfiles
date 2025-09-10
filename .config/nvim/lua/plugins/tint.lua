@@ -1,19 +1,27 @@
-local tint_enabled = true
+local tinted = false
 
 return {
 	"levouh/tint.nvim",
 	event = "LazyFile",
 	opts = function()
+		local tint = require("tint")
+
+		tint.setup({
+			tint = -75,
+		})
+
+		tint.disable()
+
 		Snacks.toggle
 			.new({
 				id = "tint",
 				name = "Tint",
 				get = function()
-					return tint_enabled
+					return tinted
 				end,
 				set = function()
-					tint_enabled = not tint_enabled
-					require("tint").toggle()
+					tinted = not tinted
+					tint.toggle()
 				end,
 				icon = {
 					enabled = " ",
@@ -29,6 +37,6 @@ return {
 				},
 			})
 			:map("<c-w>d")
-		return { tint = -75 }
+		return {}
 	end,
 }
