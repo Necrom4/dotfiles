@@ -20,119 +20,119 @@ return {
 			{ "<leader>dt", false },
 			{ "<leader>dw", false },
 			{
-				"<a-d><a-B>",
+				"<a-d>B",
 				function()
 					require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
 				end,
 				desc = "Breakpoint Condition",
 			},
 			{
-				"<a-d><a-b>",
+				"<a-d>b",
 				function()
 					require("dap").toggle_breakpoint()
 				end,
 				desc = "Toggle Breakpoint",
 			},
 			{
-				"<a-d><a-c>",
+				"<a-d>c",
 				function()
 					require("dap").continue()
 				end,
 				desc = "Run/Continue",
 			},
 			{
-				"<a-d><a-a>",
+				"<a-d>a",
 				function()
 					require("dap").continue({ before = get_args })
 				end,
 				desc = "Run with Args",
 			},
 			{
-				"<a-d><a-C>",
+				"<a-d>C",
 				function()
 					require("dap").run_to_cursor()
 				end,
 				desc = "Run to Cursor",
 			},
 			{
-				"<a-d><a-g>",
+				"<a-d>g",
 				function()
 					require("dap").goto_()
 				end,
 				desc = "Go to Line (No Execute)",
 			},
 			{
-				"<a-d><a-i>",
+				"<a-d>i",
 				function()
 					require("dap").step_into()
 				end,
 				desc = "Step Into",
 			},
 			{
-				"<a-d><a-j>",
+				"<a-d>j",
 				function()
 					require("dap").down()
 				end,
 				desc = "Down",
 			},
 			{
-				"<a-d><a-k>",
+				"<a-d>k",
 				function()
 					require("dap").up()
 				end,
 				desc = "Up",
 			},
 			{
-				"<a-d><a-l>",
+				"<a-d>l",
 				function()
 					require("dap").run_last()
 				end,
 				desc = "Run Last",
 			},
 			{
-				"<a-d><a-o>",
+				"<a-d>o",
 				function()
 					require("dap").step_out()
 				end,
 				desc = "Step Out",
 			},
 			{
-				"<a-d><a-O>",
+				"<a-d>O",
 				function()
 					require("dap").step_over()
 				end,
 				desc = "Step Over",
 			},
 			{
-				"<a-d><a-P>",
+				"<a-d>P",
 				function()
 					require("dap").pause()
 				end,
 				desc = "Pause",
 			},
 			{
-				"<a-d><a-r>",
+				"<a-d>r",
 				function()
 					require("dap").repl.toggle()
 				end,
 				desc = "Toggle REPL",
 			},
 			{
-				"<a-d><a-s>",
+				"<a-d>s",
 				function()
 					require("dap").session()
 				end,
 				desc = "Session",
 			},
 			{
-				"<a-d><a-t>",
+				"<a-d>t",
 				function()
 					require("dap").terminate()
 				end,
 				desc = "Terminate",
 			},
 			{
-				"<a-d><a-w>",
+				"<a-d>w",
 				function()
 					require("dap.ui.widgets").hover()
 				end,
@@ -146,14 +146,14 @@ return {
 			{ "<leader>du", false },
 			{ "<leader>de", false },
 			{
-				"<a-d><a-u>",
+				"<a-d>u",
 				function()
 					require("dapui").toggle({})
 				end,
 				desc = "Dap UI",
 			},
 			{
-				"<a-d><a-e>",
+				"<a-d>e",
 				function()
 					require("dapui").eval()
 				end,

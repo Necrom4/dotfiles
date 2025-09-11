@@ -25,6 +25,7 @@ return {
 				{ "<leader>X", group = "diagnostics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
 				{ "<leader>.", group = "Other", icon = { icon = "󰇘 ", color = "blue" } },
 				{ "<a-d>", group = "debug", icon = { icon = "󰃤 ", color = "red" } },
+				{ "<a-t>", group = "test", icon = { icon = "󰱑", color = "red" } },
 				{ "gs", group = "surround", icon = { icon = "󰅲 ", color = "yellow" } },
 			},
 		},
