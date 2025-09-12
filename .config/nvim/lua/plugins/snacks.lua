@@ -93,7 +93,6 @@ local function os_version()
 		local version = utils.term_cmd("sw_vers -productVersion")
 		return " " .. name .. " " .. version
 	end
-	return " Unknown OS"
 end
 
 -- NEOVIM VERSION
