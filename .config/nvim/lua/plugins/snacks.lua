@@ -318,6 +318,7 @@ return {
 		{ "<leader>sr", mode = { "n", "x" }, false },
 		{ "<leader>sw", mode = { "n", "x" }, false },
 		{ "<leader>sW", mode = { "n", "x" }, false },
+		{ "<leader>sR", false },
 		{ "<leader>ua", false },
 		{ "<leader>uC", false },
 		{ "<leader>.", false },

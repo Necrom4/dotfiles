@@ -1,11 +1,12 @@
 return {
 	"MagicDuck/grug-far.nvim",
-	opts = { headerMaxWidth = 80 },
-	cmd = "GrugFar",
+	opts = {},
+	cmd = {
+		"GrugFarWithin",
+	},
 	keys = {
-		{ "<leader>sr", false },
 		{
-			"<leader>rB",
+			"<leader>sR",
 			function()
 				local grug = require("grug-far")
 				local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
@@ -14,10 +15,12 @@ return {
 					prefills = {
 						filesFilter = ext and ext ~= "" and "*." .. ext or nil,
 					},
+					visualSelectionUsage = "operate-within-range",
 				})
 			end,
-			mode = { "n", "v" },
-			desc = "Multi-buffer (GrugFar)",
+			mode = { "v" },
+			desc = "Search and Replace (within)",
+			silent = true,
 		},
 	},
 }

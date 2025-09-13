@@ -12,8 +12,6 @@ return {
 				{ "<leader>du", name = "Open Undotree", icon = { icon = "󰕌 ", color = "purple" } },
 				{ "<leader>h", group = "history", icon = { icon = " ", color = "green" } },
 				{ "<leader>n", group = "notes", icon = { icon = "󰠮 ", color = "blue" } },
-				{ "<leader>r", group = "replace", icon = { icon = "󰛔 ", color = "red" } },
-				{ "<leader>rb", group = "multi-buffer", icon = { icon = "󰛔 ", color = "red" } },
 				{ "<leader>t", group = "terminal", icon = { icon = " ", color = "green" } },
 				{ "<leader>tf", name = "Buffer Dir (floating)", icon = { icon = " ", color = "green" } },
 				{ "<leader>tt", name = "Root Dir", icon = { icon = " ", color = "green" } },
