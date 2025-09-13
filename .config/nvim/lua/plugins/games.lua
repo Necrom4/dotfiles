@@ -1,12 +1,22 @@
 return {
 	{
-		"alec-gibson/nvim-tetris",
-		cmd = "Tetris",
+		"Eandrju/cellular-automaton.nvim",
+		cmd = "CellularAutomaton",
 		config = function() end,
 	},
 	{
-		"Eandrju/cellular-automaton.nvim",
-		cmd = "CellularAutomaton",
+		"seandewar/actually-doom.nvim",
+		cmd = "Doom",
+		opts = {},
+	},
+	{
+		"seandewar/killersheep.nvim",
+		cmd = "KillKillKill",
+		opts = {},
+	},
+	{
+		"alec-gibson/nvim-tetris",
+		cmd = "Tetris",
 		config = function() end,
 	},
 	{
@@ -15,11 +25,6 @@ return {
 		config = function()
 			require("sudoku").setup({})
 		end,
-	},
-	{
-		"seandewar/killersheep.nvim",
-		cmd = "KillKillKill",
-		opts = {},
 	},
 	{
 		"seandewar/nvimesweeper",
