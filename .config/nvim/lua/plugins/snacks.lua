@@ -315,14 +315,12 @@ return {
 		{ "<leader>n", false },
 		{ "<leader>sc", false },
 		{ "<leader>sC", false },
-		{ "<leader>sr", mode = { "n", "x" }, false },
+		{ "<leader>sR", false },
 		{ "<leader>sw", mode = { "n", "x" }, false },
 		{ "<leader>sW", mode = { "n", "x" }, false },
-		{ "<leader>sR", false },
 		{ "<leader>ua", false },
 		{ "<leader>uC", false },
 		{ "<leader>.", false },
-		--
 		{
 			"<leader><leader>",
 			function()
@@ -455,15 +453,6 @@ return {
 				Snacks.picker.lines()
 			end,
 			desc = "Lines",
-		},
-		{
-			"<leader>sr",
-			function()
-				Snacks.picker.registers()
-			end,
-			desc = "Registers",
-			mode = { "n", "x" },
-			silent = true,
 		},
 		{
 			"<leader>ss",
