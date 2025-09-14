@@ -44,11 +44,11 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 	},
 	init = function()
-		vim.o.fillchars = "eob: ,fold: ,foldopen:,foldsep: ,foldclose:"
-		vim.o.foldcolumn = "1"
-		vim.o.foldlevel = 99
-		vim.o.foldlevelstart = 99
-		vim.o.foldenable = true
+		vim.opt.foldcolumn = "1"
+		vim.opt.foldlevelstart = 99
+		vim.opt.foldnestmax = 6
+		vim.opt.foldenable = true
+		vim.opt.foldopen = "block,insert,jump,mark,percent,quickfix,search,tag,undo"
 	end,
 	keys = {
 		{
