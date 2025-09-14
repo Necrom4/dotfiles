@@ -69,6 +69,7 @@ cask "appcleaner"
 cask "dash"
 # System-wide audio equaliser
 cask "eqmac"
+cask "font-commit-mono-nerd-font"
 # Neovim Client
 cask "neovide-app"
 # Music streaming service
