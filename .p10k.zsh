@@ -33,7 +33,6 @@
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     vi_mode                 # vi mode (you don't need this if you've enabled prompt_char)
-    # os_icon               # os identifier
     vcs                     # git status
     dir                     # current directory
     # =========================[ Line #2 ]=========================
@@ -112,6 +111,7 @@
     per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch              # CPU architecture
     time                    # current time
+    os_icon               # os identifier
     # =========================[ Line #2 ]=========================
     newline                 # \n
     # ip                    # ip address and bandwidth usage for a specified network interface
