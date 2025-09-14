@@ -1,4 +1,5 @@
-@default: pull update
+@default:
+  just --list
 
 @pull:
   yadm fetch
@@ -13,7 +14,7 @@
 @brew-dump:
   brew bundle dump --file=~/.config/yadm/scripts/Brewfile --describe --force
 
-@brew-cleandump:
+@brew-dump-clean:
   brew bundle cleanup --file=~/.config/yadm/scripts/Brewfile --force
 
 @brew-cleanup:
