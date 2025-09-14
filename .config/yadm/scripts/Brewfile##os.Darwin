@@ -67,6 +67,8 @@ cask "1password"
 cask "appcleaner"
 # API documentation browser and code snippet manager
 cask "dash"
+# System-wide audio equaliser
+cask "eqmac"
 # Neovim Client
 cask "neovide-app"
 # Music streaming service
