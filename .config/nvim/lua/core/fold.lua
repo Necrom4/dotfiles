@@ -312,7 +312,7 @@ end
 
 function M.ufo_virt_text_handler_enhanced(virtText, lnum, endLnum, width, truncate, ctx)
 	local newVirtText = {}
-	local filling = "..."
+	local filling = (" 󱞡%d "):format(endLnum - lnum)
 	local suffix = ""
 	local sufWidth = vim.fn.strdisplaywidth(suffix)
 	local targetWidth = width - sufWidth
