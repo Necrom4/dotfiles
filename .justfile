@@ -9,14 +9,15 @@
   yadm bootstrap
 
 @update:
-  ~/.config/yadm/scripts/update.sh
+  $HOME/.config/yadm/scripts/update.sh
 
-@brew-dump:
-  brew bundle dump --file=~/.config/yadm/scripts/Brewfile --describe --force
-
-@brew-dump-clean:
-  brew bundle cleanup --file=~/.config/yadm/scripts/Brewfile --force
-
-@brew-cleanup:
+@cleanup:
   brew cleanup -s
   brew cleanup --prune=all
+  gem cleanup
+
+@brew-dump:
+  brew bundle dump --file=$HOME/.config/yadm/scripts/Brewfile --describe --force
+
+@brew-dump-clean:
+  brew bundle cleanup --file=$HOME/.config/yadm/scripts/Brewfile --force

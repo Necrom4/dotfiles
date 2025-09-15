@@ -66,9 +66,11 @@ update_tool() {
   fi
 }
 
-update_tool "brew" "brew" "brew update" "brew upgrade"
+update_tool "Homebrew" "brew" "brew update" "brew upgrade"
 
-update_tool "mise" "mise" "mise plugins update" "mise upgrade"
+update_tool "Mise" "mise" "mise plugins update" "mise upgrade"
+
+update_tool "Ruby gems" "gem" "bundle install --gemfile=~/.config/yadm/scripts/Gemfile"
 
 # update_tool "neovim plugins" "nvim" \
 #   "nvim --headless '+Lazy! sync' +qa"
@@ -76,13 +78,13 @@ update_tool "mise" "mise" "mise plugins update" "mise upgrade"
 # update_tool "neovim mason" "nvim" \
 #   "nvim --headless '+MasonUpdate' +qa"
 
-update_tool "oh-my-zsh" "${ZSH:-$HOME/.oh-my-zsh}" "zsh -i -c 'omz update'"
+update_tool "Oh My Zsh" "${ZSH:-$HOME/.oh-my-zsh}" "zsh -i -c 'omz update'"
 
 update_tool "Powerlevel10k" "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" "git -C \"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k\" pull"
 
-update_tool "tldr" "tldr" "tldr --update"
+update_tool "TLDR" "tldr" "tldr --update"
 
-update_tool "yazi packages" "ya" \
+update_tool "Yazi packages" "ya" \
   "rm -rf ~/.config/yazi/plugins/* ~/.config/yazi/flavors/*" \
   "yadm checkout -- ~/.config/yazi/" \
   "ya pkg upgrade"
