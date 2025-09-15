@@ -1,7 +1,6 @@
 return {
 	"saghen/blink.cmp",
 	dependencies = {
-		"rafamadriz/friendly-snippets",
 		{
 			"saghen/blink.compat",
 			lazy = true,
@@ -13,6 +12,7 @@ return {
 		"folke/lazydev.nvim",
 		"MahanRahmati/blink-nerdfont.nvim",
 		"mikavilpas/blink-ripgrep.nvim",
+		"rafamadriz/friendly-snippets",
 		"ribru17/blink-cmp-spell",
 		"archie-judd/blink-cmp-words",
 		"marcoSven/blink-cmp-yanky",
@@ -21,11 +21,12 @@ return {
 	event = { "InsertEnter", "CmdlineEnter" },
 	opts = {
 		keymap = {
-			preset = "enter",
-			["<C-K>"] = { "select_prev", "fallback" },
-			["<C-J>"] = { "select_next", "fallback" },
-			["<S-TAB>"] = { "select_prev", "fallback" },
-			["<TAB>"] = { "select_next", "fallback" },
+			preset = "none",
+			["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+			["<S-Tab>"] = { "fallback" },
+			["<C-j>"] = { "select_next" },
+			["<C-k>"] = { "select_prev" },
+			["<CR>"] = { "accept", "fallback" },
 			["<C-U>"] = { "cancel" },
 			["<C-E>"] = { "hide" },
 			["<C-D>"] = { "show", "show_documentation", "hide_documentation" },
