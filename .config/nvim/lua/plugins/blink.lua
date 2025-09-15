@@ -91,15 +91,17 @@ return {
 				"yank",
 			},
 			providers = {
+				buffer = { score_offset = 800 },
 				calc = {
 					name = "calc",
 					module = "blink.compat.source",
+					score_offset = 800,
 				},
 				emoji = {
 					name = "Emoji",
 					module = "blink-emoji",
-					score_offset = 15, -- Tune by preference
-					opts = { insert = true }, -- Insert emoji (default) or complete its name
+					score_offset = 15,
+					opts = { insert = true },
 				},
 				env = {
 					name = "Env",
@@ -118,17 +120,21 @@ return {
 				lazydev = {
 					name = "LazyDev",
 					module = "lazydev.integrations.blink",
-					score_offset = 100, -- show at a higher priority than lsp
+					score_offset = 1000,
 				},
+				lsp = { score_offset = 900 },
 				nerdfont = {
 					name = "Nerd Fonts",
 					module = "blink-nerdfont",
-					score_offset = 10, -- Tune by preference
-					opts = { insert = true }, -- Insert emoji (default) or complete its name
+					score_offset = 15,
+					opts = { insert = true },
 				},
+				path = { score_offset = 800 },
 				ripgrep = {
 					name = "Ripgrep",
 					module = "blink-ripgrep",
+					opts = {},
+					score_offset = 800,
 				},
 				spell = {
 					name = "Spell",
@@ -148,28 +154,16 @@ return {
 							return in_spell_capture
 						end,
 					},
+					score_offset = 400,
 				},
+				snippets = { score_offset = 900 },
 				thesaurus = {
 					name = "blink-cmp-words",
 					module = "blink-cmp-words.thesaurus",
-					-- All available options
 					opts = {
-						-- A score offset applied to returned items.
-						-- By default the highest score is 0 (item 1 has a score of -1, item 2 of -2 etc..).
-						score_offset = 0,
-
-						-- Default pointers define the lexical relations listed under each definition,
-						-- see Pointer Symbols below.
-						-- Default is as below ("antonyms", "similar to" and "also see").
+						score_offset = 300,
 						definition_pointers = { "!", "&", "^" },
-
-						-- The pointers that are considered similar words when using the thesaurus,
-						-- see Pointer Symbols below.
-						-- Default is as below ("similar to", "also see" }
 						similarity_pointers = { "&", "^" },
-
-						-- The depth of similar words to recurse when collecting synonyms. 1 is similar words,
-						-- 2 is similar words of similar words, etc. Increasing this may slow results.
 						similarity_depth = 2,
 					},
 				},
@@ -182,6 +176,7 @@ return {
 						trigger_characters = { '"' },
 						kind_icon = "󰅍",
 					},
+					score_offset = 700,
 				},
 			},
 		},
