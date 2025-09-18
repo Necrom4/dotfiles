@@ -1,6 +1,6 @@
 [mgr]
 prepend_keymap = [
-  #defaults
+  # defaults
   { on = "j", run = "arrow 1", desc = "Down" },
   { on = "k", run = "arrow -1", desc = "Up" },
   { on = "Q", run = "quit", desc = "Quit the process" },
@@ -9,36 +9,33 @@ prepend_keymap = [
   { on = "e", run = "open", desc = "Open selected files" },
 	{ on = "E", run = "open --interactive", desc = "Open selected files interactively" },
 	{ on = "<Space>", run = "toggle", desc = "Toggle the current selection state" },
-  #bookmarks
-  { on = "`", run = "plugin bookmarks save", desc = "Save current position as a bookmark" },
-  { on = "'", run = "plugin bookmarks jump", desc = "Jump to a bookmark" },
   { on = [ "b", "d" ], run = "plugin bookmarks delete", desc = "Delete a bookmark" },
   { on = [ "b", "D" ], run = "plugin bookmarks delete_all", desc = "Delete all bookmarks" },
-  #chmod
+  # chmod
   { on = [ "c", "m" ], run = "plugin chmod", desc = "Chmod on selected files" },
-  #compress
+  # compress
   { on = [ "c", "a", "a" ], run = "plugin compress", desc = "Archive selected files" },
   { on = [ "c", "a", "p" ], run = "plugin compress -p", desc = "Archive selected files (password)" },
   { on = [ "c", "a", "h" ], run = "plugin compress -ph", desc = "Archive selected files (password+header)" },
   { on = [ "c", "a", "l" ], run = "plugin compress -l", desc = "Archive selected files (compression level)" },
   { on = [ "c", "a", "u" ], run = "plugin compress -phl", desc = "Archive selected files (password+header+level)" },
   { on = [ "c", "a", "7" ], run = "plugin compress 7z", desc = "Archive selected files to 7z" },
-  #diff
+  # diff
   { on = "<c-d>", run = "shell --block -- nvim -d \"$@\"", desc = "Diff the selected files" },
-  #eza-preview
+  # eza-preview
   { on = [ "T" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
   { on = [ "+" ], run = "plugin eza-preview inc-level", desc = "Increment tree level" },
   { on = [ "-" ], run = "plugin eza-preview dec-level", desc = "Decrement tree level" },
   { on = [ "$" ], run = "plugin eza-preview toggle-follow-symlinks", desc = "Toggle tree follow symlinks" },
   { on = [ "*" ], run = "plugin eza-preview toggle-hidden", desc = "Toggle hidden files" },
-  #git
+  # git
   { on = [ "g", "a" ], run = "shell --block -- git add $@", desc = "Add to Git Repo" },
   { on = [ "g", "D" ], run = "shell --block -- git rm --cached $@", desc = "Remove from Git Repo" },
-  #vcs-files
+  # vcs-files
   { on = [ "g", "c" ], run = "plugin vcs-files", desc = "Show Git file changes" },
-  #lazygit
+  # lazygit
   { on = [ "g", "l" ], run = "plugin lazygit", desc = "run lazygit" },
-  #relative-motions
+  # relative-motions
   { on = "1", run = "plugin relative-motions 1", desc = "Move in relative steps" },
   { on = "2", run = "plugin relative-motions 2", desc = "Move in relative steps" },
   { on = "3", run = "plugin relative-motions 3", desc = "Move in relative steps" },
@@ -48,17 +45,29 @@ prepend_keymap = [
   { on = "7", run = "plugin relative-motions 7", desc = "Move in relative steps" },
   { on = "8", run = "plugin relative-motions 8", desc = "Move in relative steps" },
   { on = "9", run = "plugin relative-motions 9", desc = "Move in relative steps" },
-  #restore
+  # restore
   { on = "u", run = "plugin restore", desc = "Restore last deleted files/folders" },
-  #smart-enter
+  # smart-enter
   { on = "l", run = "plugin smart-enter", desc = "Enter the child directory, or open the file" },
-  #smart-filter
+  # smart-filter
   { on = "F", run = "plugin smart-filter", desc = "Smart filter" },
-  #smart-paste
+  # smart-paste
   { on = "p", run = "plugin smart-paste", desc = "Paste into the hovered directory or CWD" },
-  #what-size
+  # what-size
   { on   = [ "c", "s" ], run  = "plugin what-size", desc = "Calc size of selection or cwd" },
-  #zoom
+  # whoosh
+  { on = "'", run = "plugin whoosh jump_by_key", desc = "Jump bookmark by key" },
+  { on = [ "`", "a" ], run = "plugin whoosh save", desc = "Add bookmark (hovered file/directory)" },
+  { on = [ "`", "A" ], run = "plugin whoosh save_cwd", desc = "Add bookmark (current directory)" },
+  { on = [ "`", "t" ], run = "plugin whoosh save_temp", desc = "Add temporary bookmark (hovered file/directory)" },
+  { on = [ "`", "T" ], run = "plugin whoosh save_cwd_temp", desc = "Add temporary bookmark (current directory)" },
+  { on = [ "`", "f" ], run = "plugin whoosh jump_by_fzf", desc = "Jump bookmark by fzf" },
+  { on = [ "`", "d" ], run = "plugin whoosh delete_by_key", desc = "Delete bookmark by key" },
+  { on = [ "`", "C" ], run = "plugin whoosh delete_by_fzf", desc = "Delete bookmarks by fzf (use TAB to select multiple)" },
+  { on = [ "`", "D" ], run = "plugin whoosh delete_all", desc = "Delete all user bookmarks" },
+  { on = [ "`", "r" ], run = "plugin whoosh rename_by_key", desc = "Rename bookmark by key" },
+  { on = [ "`", "R" ], run = "plugin whoosh rename_by_fzf", desc = "Rename bookmark by fzf" },
+  # zoom
   { on = "+", run = "plugin zoom 1", desc = "Zoom in hovered file" },
   { on = "-", run = "plugin zoom -1", desc = "Zoom out hovered file" },
 ]
