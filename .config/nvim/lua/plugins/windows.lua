@@ -1,6 +1,6 @@
 return {
 	{
-		"echasnovski/mini.animate",
+		"nvim-mini/mini.animate",
 		cond = vim.g.neovide == nil,
 		opts = {
 			cursor = {
