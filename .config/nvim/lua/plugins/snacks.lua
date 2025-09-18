@@ -738,7 +738,7 @@ return {
 				end,
 			},
 			quickfile = { enabled = true },
-			scroll = { enabled = true },
+			scroll = { enabled = not vim.g.neovide },
 			statuscolumn = {
 				left = { "git" }, -- priority of signs on the left (high to low)
 				right = { "sign", "mark", "fold" }, -- priority of signs on the right (high to low)
