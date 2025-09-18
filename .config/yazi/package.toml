@@ -10,13 +10,13 @@ hash = "e02a788e5b8ae0fb47fd0193dda589cc"
 
 [[plugin.deps]]
 use = "boydaihungst/restore"
-rev = "2a2ba2f"
-hash = "12d8576d0cb8355a7e15d622913eb250"
+rev = "dc40509"
+hash = "e7e377f9b1bbaca4a2e5d9ec9709ac4d"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "d7588f6"
-hash = "1adc12c2b2b025411ab61eb8f0879574"
+rev = "d1c8baa"
+hash = "8ad3e90b079190b4905f24a44f4ca06b"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
@@ -25,12 +25,12 @@ hash = "62251f94eb67648d42cdfcfb8be0fad2"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "d7588f6"
+rev = "d1c8baa"
 hash = "56fdabc96fc1f4d53c96eb884b02a5be"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "d7588f6"
+rev = "d1c8baa"
 hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
@@ -50,28 +50,28 @@ hash = "4d441b38138ce6492a4e10fa349fd65"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "d7588f6"
-hash = "e56b7abf3c06e8ce496eadcca168c093"
+rev = "d1c8baa"
+hash = "bcda8eeb3f4013bae156aecabfc745e8"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-tokyo-night"
-rev = "19dbd25"
-hash = "5f00a80a79b9f7fd8e24d6fa5dbb3ae"
+rev = "b4a6310"
+hash = "215729a555fe5286f1eb35520963d08"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "d7588f6"
-hash = "cc8da55f1deda45ee3787cc97b58ffc9"
+rev = "d1c8baa"
+hash = "4ee57085277d616acfa0ef1fef37dc00"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "d7588f6"
+rev = "d1c8baa"
 hash = "63b6c222bf2103b3023389dde5e2ecfe"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-modified-time"
-rev = "286680b"
-hash = "d5f86be5c73c480afecf99c1ca381d04"
+rev = "2d33471"
+hash = "8fa6028ef832b34cf32f4ee43cb0ae35"
 
 [[plugin.deps]]
 use = "Lil-Dank/lazygit"
@@ -85,13 +85,13 @@ hash = "e17c11b605d989568a1d1741ca17c584"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "d7588f6"
-hash = "4a47a9cd4d8b3a963cb4cc593664b77e"
+rev = "d1c8baa"
+hash = "9dee2bf990ea941ccf67df74bca45468"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "d7588f6"
-hash = "a8050052e59f3952abe0b3e27a5843de"
+rev = "d1c8baa"
+hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
