@@ -329,14 +329,10 @@ return {
 		-- Disable keymaps
 		{ "<leader>e", false },
 		{ "<leader>E", false },
-		{ "<leader>n", false },
-		{ "<leader>sc", false },
 		{ "<leader>sC", false },
 		{ "<leader>sR", false },
 		{ "<leader>sw", mode = { "n", "x" }, false },
 		{ "<leader>sW", mode = { "n", "x" }, false },
-		{ "<leader>uC", false },
-		{ "<leader>.", false },
 		{
 			"<leader><leader>",
 			function()
