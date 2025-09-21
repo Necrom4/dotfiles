@@ -1,6 +1,7 @@
 return {
 	"nvim-neorg/neorg",
-	version = "*",
+	-- version = "*",
+	commit = "a0858f0f83dd45e26671b9153babf974bb52e205",
 	event = { "LazyFile" },
 	ft = { "norg" },
 	opts = {

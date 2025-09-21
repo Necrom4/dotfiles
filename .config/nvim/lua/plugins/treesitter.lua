@@ -24,7 +24,6 @@ return {
 			ensure_installed = {
 				"csv",
 				"just",
-				"norg",
 			},
 			incremental_selection = {
 				enable = true,
