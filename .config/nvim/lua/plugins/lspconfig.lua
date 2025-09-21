@@ -11,6 +11,7 @@ return {
 			end,
 			desc = "Hover",
 		}
+		keys[#keys + 1] = { "<leader>cC", false }
 		keys[#keys + 1] = { "<leader>ss", false }
 
 		opts.diagnostics = vim.tbl_deep_extend("force", opts.diagnostics, {

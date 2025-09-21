@@ -15,7 +15,7 @@ return {
 		"CccPick",
 	},
 	keys = {
-		{ "<leader>cP", "<cmd>CccPick<cr>", desc = "Color Picker", silent = true },
+		{ "<leader>cC", "<cmd>CccPick<cr>", desc = "Color Picker", silent = true },
 	},
 	config = function(_, opts)
 		local ccc = require("ccc")
