@@ -25,14 +25,6 @@ return {
 				"csv",
 				"just",
 			},
-			incremental_selection = {
-				enable = true,
-				keymaps = {
-					init_selection = "gV",
-					node_incremental = "V",
-					node_decremental = "v",
-				},
-			},
 		},
 	},
 }

@@ -1,3 +1,12 @@
+vim.keymap.set({ "n", "x", "o" }, "<cr>", function()
+	require("flash").treesitter({
+		actions = {
+			["<cr>"] = "next",
+			["<bs>"] = "prev",
+		},
+	})
+end, { desc = "Treesitter incremental selection" })
+
 return {
 	"folke/flash.nvim",
 	optional = true,

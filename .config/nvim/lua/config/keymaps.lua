@@ -118,8 +118,6 @@ vim.keymap.set("n", "gJ", smart_join, { desc = "Smart Join Lines" })
 
 -- default LazyVim disabled keymaps
 vim.keymap.del("n", "<leader>K")
--- vim.keymap.del("n", "<leader>sw")
--- vim.keymap.del("n", "<leader>sW")
 vim.keymap.del("n", "<leader>xl")
 vim.keymap.del("n", "<leader>xq")
 
