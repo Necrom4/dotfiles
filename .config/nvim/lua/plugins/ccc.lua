@@ -2,6 +2,7 @@ local ccc_highlighter_enabled = true
 
 return {
 	"uga-rosa/ccc.nvim",
+	event = { "VeryLazy" },
 	opts = {
 		highlighter = {
 			auto_enable = true,
