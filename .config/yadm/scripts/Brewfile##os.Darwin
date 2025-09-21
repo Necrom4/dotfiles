@@ -25,6 +25,8 @@ brew "just"
 brew "lazydocker"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Cross-platform TUI database management tool
+brew "lazysql"
 # YAML Parser
 brew "libyaml"
 # Package manager for the Lua programming language
