@@ -26,7 +26,7 @@ return {
 			}
 			hl.FlashLabel = {
 				fg = "#000000",
-				bg = "#4FD6BE",
+				bg = "#FF966C",
 				bold = true,
 			}
 			hl["@neorg.markup.verbatim"] = {
