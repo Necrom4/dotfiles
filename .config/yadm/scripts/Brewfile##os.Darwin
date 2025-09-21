@@ -9,8 +9,6 @@ brew "colima"
 brew "docker"
 # Modern, maintained replacement for ls
 brew "eza"
-# GNU multiple precision arithmetic library
-brew "gmp"
 # Play, record, convert, and stream audio and video
 brew "ffmpeg"
 # Tools and libraries to manipulate images in many formats
