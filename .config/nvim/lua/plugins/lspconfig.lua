@@ -4,6 +4,13 @@ return {
 		local keys = require("lazyvim.plugins.lsp.keymaps").get()
 		-- disable a keymap
 		keys[#keys + 1] = { "K", false }
+		keys[#keys + 1] = {
+			"gK",
+			function()
+				return vim.lsp.buf.hover()
+			end,
+			desc = "Hover",
+		}
 		keys[#keys + 1] = { "<leader>ss", false }
 
 		opts.diagnostics = vim.tbl_deep_extend("force", opts.diagnostics, {
