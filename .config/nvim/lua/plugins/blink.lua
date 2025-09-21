@@ -100,7 +100,7 @@ return {
 				emoji = {
 					name = "Emoji",
 					module = "blink-emoji",
-					score_offset = 15,
+					score_offset = 1000,
 					opts = { insert = true },
 				},
 				env = {
@@ -126,7 +126,7 @@ return {
 				nerdfont = {
 					name = "Nerd Fonts",
 					module = "blink-nerdfont",
-					score_offset = 15,
+					score_offset = 1000,
 					opts = { insert = true },
 				},
 				path = { score_offset = 800 },
