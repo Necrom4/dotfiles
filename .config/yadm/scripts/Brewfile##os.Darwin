@@ -11,6 +11,8 @@ brew "docker"
 brew "eza"
 # Play, record, convert, and stream audio and video
 brew "ffmpeg"
+# Command-line fuzzy finder written in Go
+brew "fzf"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
 # Official CLI for the IPinfo IP Address API
