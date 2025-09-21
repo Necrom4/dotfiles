@@ -49,7 +49,7 @@ update_tool() {
           exit 1
           ;;
         *)
-          printf "Invalid input. Please enter Y, A, or N.\n"
+          printf "Invalid input. Please enter Y, A, N or C.\n"
           ;;
         esac
       done
