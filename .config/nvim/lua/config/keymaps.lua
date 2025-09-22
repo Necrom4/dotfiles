@@ -99,22 +99,7 @@ vim.keymap.set("n", "g>", ">", { noremap = true, desc = "Indent Right" })
 vim.keymap.set("n", "<", "<<", { noremap = true, desc = "Indent Left" })
 vim.keymap.set("n", ">", ">>", { noremap = true, desc = "Indent Right" })
 
--- smart join
-function _G.smart_join()
-	local row = vim.fn.line(".") - 1
-	local lines = vim.api.nvim_buf_get_lines(0, row, row + 2, false)
-	if #lines < 2 then
-		return
-	end
-
-	local a = lines[1]:gsub("%s+$", "")
-	local b = lines[2]:gsub("^%s+", "")
-	local sep = a:match("[:{(,]$") and "" or " "
-
-	vim.api.nvim_buf_set_lines(0, row, row + 2, false, { a .. sep .. b })
-end
-
-vim.keymap.set("n", "gJ", smart_join, { desc = "Smart Join Lines" })
+vim.keymap.set("n", "gJ", "J")
 
 -- default LazyVim disabled keymaps
 vim.keymap.del("n", "<leader>K")
