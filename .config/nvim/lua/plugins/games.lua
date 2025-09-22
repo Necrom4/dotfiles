@@ -20,6 +20,12 @@ return {
 		config = function() end,
 	},
 	{
+		"NStefan002/speedtyper.nvim",
+		branch = "v2",
+		lazy = false,
+		cmd = "Speedtyper",
+	},
+	{
 		"jim-fx/sudoku.nvim",
 		cmd = "Sudoku",
 		config = function()
