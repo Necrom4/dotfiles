@@ -33,7 +33,6 @@ return {
 			"ruby-lsp",
 			"rubyfmt",
 			"ruff",
-			"sqls",
 			"stylelint",
 			"stylelint-lsp",
 			"superhtml",
