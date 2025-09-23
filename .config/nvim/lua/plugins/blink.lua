@@ -1,3 +1,5 @@
+vim.g.vim_dadbod_completion_mark = "󰆼"
+
 return {
 	"saghen/blink.cmp",
 	dependencies = {
@@ -6,6 +8,7 @@ return {
 			lazy = true,
 		},
 		"hrsh7th/cmp-calc",
+		"kristijanhusak/vim-dadbod-completion",
 		"moyiz/blink-emoji.nvim",
 		"bydlw98/blink-cmp-env",
 		"folke/lazydev.nvim",
@@ -76,6 +79,7 @@ return {
 			default = {
 				"buffer",
 				"calc",
+				"dadbod",
 				"emoji",
 				"env",
 				"lazydev",
@@ -94,6 +98,11 @@ return {
 					name = "calc",
 					module = "blink.compat.source",
 					score_offset = 800,
+				},
+				dadbod = {
+					name = "Dadbod",
+					module = "vim_dadbod_completion.blink",
+					score_offset = 1000,
 				},
 				emoji = {
 					name = "Emoji",
