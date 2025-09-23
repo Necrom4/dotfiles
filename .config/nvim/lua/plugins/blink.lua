@@ -29,10 +29,10 @@ return {
 			["<C-j>"] = { "select_next" },
 			["<C-k>"] = { "select_prev" },
 			["<CR>"] = { "accept", "fallback" },
-			["<C-U>"] = { "cancel" },
-			["<C-E>"] = { "hide" },
+			["<C-C>"] = { "cancel" },
+			["<C-H>"] = { "hide" },
 			["<C-D>"] = { "show", "show_documentation", "hide_documentation" },
-			["<C-S>"] = {
+			["<C-T>"] = {
 				function(cmp)
 					cmp.show({ providers = { "snippets" } })
 				end,
