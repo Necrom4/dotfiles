@@ -1,4 +1,4 @@
-vim.g.db_ui_use_nerd_fonts = 1
+vim.g.db_ui_drawer_sections = { "schemas", "saved_queries", "new_query", "buffers" }
 
 vim.g.db_ui_icons = {
 	expanded = {
