@@ -25,10 +25,10 @@ brew "just"
 brew "lazydocker"
 # Simple terminal UI for git commands
 brew "lazygit"
-# Cross-platform TUI database management tool
-brew "lazysql"
 # YAML Parser
 brew "libyaml"
+# Terminal-based SSH manager
+brew "lazyssh"
 # Text-based web browser
 brew "lynx"
 # Mac App Store command-line interface
@@ -37,10 +37,6 @@ brew "mas"
 brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Development kit for the Java programming language
-brew "openjdk"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.13"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # 7-Zip is a file archiver with a high compression ratio
@@ -49,8 +45,6 @@ brew "sevenzip"
 brew "speedtest-cli"
 # Simplified and community-driven man pages
 brew "tldr"
-# Internet file retriever
-brew "wget"
 # Yet Another Dotfiles Manager
 brew "yadm"
 # JavaScript package manager
