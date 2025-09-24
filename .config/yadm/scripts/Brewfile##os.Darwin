@@ -39,8 +39,6 @@ brew "mise"
 brew "neovim"
 # Development kit for the Java programming language
 brew "openjdk"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.13"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # 7-Zip is a file archiver with a high compression ratio
