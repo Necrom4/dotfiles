@@ -2,8 +2,6 @@
 brew "btop"
 # Console Matrix
 brew "cmatrix"
-# Pack, ship and run any application as a lightweight container
-brew "docker"
 # Modern, maintained replacement for ls
 brew "eza"
 # Official CLI for the IPinfo IP Address API
@@ -34,5 +32,3 @@ brew "yarn"
 brew "yazi"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
-# UNIX shell (command interpreter)
-brew "zsh"
