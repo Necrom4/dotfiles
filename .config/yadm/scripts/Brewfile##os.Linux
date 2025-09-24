@@ -4,6 +4,8 @@ brew "btop"
 brew "cmatrix"
 # Modern, maintained replacement for ls
 brew "eza"
+# Command-line fuzzy finder written in Go
+brew "fzf"
 # Official CLI for the IPinfo IP Address API
 brew "ipinfo-cli"
 # Command-line pager for JSON data
@@ -16,6 +18,8 @@ brew "lazydocker"
 brew "lazygit"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# Text-based web browser
+brew "lynx"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Search tool like grep and The Silver Searcher
