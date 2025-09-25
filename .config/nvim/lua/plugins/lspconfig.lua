@@ -13,6 +13,7 @@ return {
 		}
 		keys[#keys + 1] = { "<leader>cC", false }
 		keys[#keys + 1] = { "<leader>ss", false }
+		keys[#keys + 1] = { "<c-k>", mode = "i", false }
 
 		opts.diagnostics = vim.tbl_deep_extend("force", opts.diagnostics, {
 			virtual_text = {

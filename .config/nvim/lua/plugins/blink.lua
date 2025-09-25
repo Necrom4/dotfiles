@@ -33,13 +33,13 @@ return {
 			preset = "none",
 			["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
 			["<S-Tab>"] = { "fallback" },
-			["<C-j>"] = { "select_next" },
-			["<C-k>"] = { "select_prev" },
+			["<C-j>"] = { "select_next", "fallback" },
+			["<C-k>"] = { "select_prev", "fallback" },
 			["<CR>"] = { "accept", "fallback" },
-			["<C-C>"] = { "cancel" },
-			["<C-H>"] = { "hide" },
-			["<C-D>"] = { "show", "show_documentation", "hide_documentation" },
-			["<C-T>"] = {
+			["<C-c>"] = { "cancel" },
+			["<C-e>"] = { "hide" },
+			["<C-d>"] = { "show", "show_documentation", "hide_documentation" },
+			["<C-t>"] = {
 				function(cmp)
 					cmp.show({ providers = { "snippets" } })
 				end,
@@ -53,6 +53,10 @@ return {
 			completion = {
 				list = { selection = { preselect = false } },
 				menu = { auto_show = true },
+				keymap = {
+					["<C-j>"] = { "select_next" },
+					["<C-k>"] = { "select_prev" },
+				},
 			},
 		},
 		completion = {
