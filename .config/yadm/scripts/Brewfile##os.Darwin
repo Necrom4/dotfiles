@@ -27,8 +27,6 @@ brew "lazydocker"
 brew "lazygit"
 # YAML Parser
 brew "libyaml"
-# Terminal-based SSH manager
-brew "lazyssh"
 # Text-based web browser
 brew "lynx"
 # Mac App Store command-line interface
