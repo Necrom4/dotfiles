@@ -4,11 +4,6 @@ return {
 	dependencies = {
 		{
 			"purarue/gitsigns-yadm.nvim",
-			opts = {
-				on_yadm_attach = function()
-					vim.b.yadm_tracked = true
-				end,
-			},
 		},
 	},
 	opts = {

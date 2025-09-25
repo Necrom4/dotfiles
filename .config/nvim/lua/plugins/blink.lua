@@ -98,7 +98,7 @@ return {
 					"thesaurus",
 					"yank",
 				}
-				if not utils.is_yadm() then
+				if not utils.is_yadm_cwd() then
 					table.insert(base, "ripgrep")
 				end
 				return base
