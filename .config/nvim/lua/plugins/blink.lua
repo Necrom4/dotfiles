@@ -112,6 +112,13 @@ return {
 					name = "calc",
 					module = "blink.compat.source",
 					score_offset = 1000,
+					transform_items = function(ctx, items)
+						for _, item in ipairs(items) do
+							item.kind_icon = "󰃬"
+							item.kind_hl = "Error"
+						end
+						return items
+					end,
 				},
 				dbee = {
 					name = "cmp-dbee",
