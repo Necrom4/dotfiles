@@ -1,3 +1,5 @@
+local utils = require("core.utils")
+
 return {
 	"saghen/blink.cmp",
 	dependencies = {
@@ -81,21 +83,26 @@ return {
 		},
 		signature = { enabled = true },
 		sources = {
-			default = {
-				"buffer",
-				"calc",
-				"emoji",
-				"env",
-				"lazydev",
-				"lsp",
-				"nerdfont",
-				"path",
-				"ripgrep",
-				"snippets",
-				"spell",
-				"thesaurus",
-				"yank",
-			},
+			default = function()
+				local base = {
+					"buffer",
+					"calc",
+					"emoji",
+					"env",
+					"lazydev",
+					"lsp",
+					"nerdfont",
+					"path",
+					"snippets",
+					"spell",
+					"thesaurus",
+					"yank",
+				}
+				if not utils.is_yadm_repo(vim.fn.getcwd()) then
+					table.insert(base, "ripgrep")
+				end
+				return base
+			end,
 			per_filetype = {
 				sql = { "dbee", "buffer" },
 			},
