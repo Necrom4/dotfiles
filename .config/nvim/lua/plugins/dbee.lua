@@ -11,8 +11,15 @@ return {
 			drawer = {
 				disable_help = true,
 				mappings = {
-					{ key = "R", mode = "n", action = "refresh" },
+					{ key = "r", mode = "n", action = "refresh" },
+					{ key = "<CR>", mode = "n", action = "action_1" },
+					{ key = "cw", mode = "n", action = "action_2" },
+					{ key = "dd", mode = "n", action = "action_3" },
 					{ key = "z", mode = "n", action = "toggle" },
+					{ key = "<CR>", mode = "n", action = "menu_confirm" },
+					{ key = "y", mode = "n", action = "menu_yank" },
+					{ key = "<Esc>", mode = "n", action = "menu_close" },
+					{ key = "q", mode = "n", action = "menu_close" },
 				},
 				candies = {
 					note = {
@@ -39,8 +46,17 @@ return {
 			},
 			result = {
 				mappings = {
+					{ key = "L", mode = "", action = "page_next" },
+					{ key = "H", mode = "", action = "page_prev" },
 					{ key = "K", mode = "", action = "page_last" },
 					{ key = "J", mode = "", action = "page_first" },
+					{ key = "yaj", mode = "n", action = "yank_current_json" },
+					{ key = "yaj", mode = "v", action = "yank_selection_json" },
+					{ key = "yaJ", mode = "", action = "yank_all_json" },
+					{ key = "yac", mode = "n", action = "yank_current_csv" },
+					{ key = "yac", mode = "v", action = "yank_selection_csv" },
+					{ key = "yaC", mode = "", action = "yank_all_csv" },
+					{ key = "<C-c>", mode = "", action = "cancel_call" },
 				},
 			},
 			editor = {
