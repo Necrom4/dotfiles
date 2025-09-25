@@ -1,5 +1,5 @@
 return {
-	"MTDL9/vim-log-highlighting",
+	"fei6409/log-highlight.nvim",
 	ft = { "log" },
-	config = function() end,
+	opts = {},
 }
