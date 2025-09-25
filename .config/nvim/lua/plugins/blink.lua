@@ -111,7 +111,7 @@ return {
 				calc = {
 					name = "calc",
 					module = "blink.compat.source",
-					score_offset = 800,
+					score_offset = 1000,
 				},
 				dbee = {
 					name = "cmp-dbee",
@@ -153,13 +153,14 @@ return {
 					score_offset = 1000,
 					opts = { insert = true },
 				},
-				path = { score_offset = 800 },
+				path = { score_offset = 1000 },
 				ripgrep = {
 					name = "Ripgrep",
 					module = "blink-ripgrep",
 					opts = {},
 					score_offset = 800,
 				},
+				snippets = { score_offset = 900 },
 				spell = {
 					name = "Spell",
 					module = "blink-cmp-spell",
@@ -180,7 +181,6 @@ return {
 					},
 					score_offset = 400,
 				},
-				snippets = { score_offset = 900 },
 				thesaurus = {
 					name = "blink-cmp-words",
 					module = "blink-cmp-words.thesaurus",
