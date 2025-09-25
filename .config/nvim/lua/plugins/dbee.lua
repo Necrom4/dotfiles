@@ -52,6 +52,34 @@ return {
 			},
 		})
 	end,
+	opts = function(_, opts)
+		local dbee = require("dbee")
+
+		Snacks.toggle({
+			id = "dbee",
+			name = "DBee",
+			get = function()
+				return dbee.is_open()
+			end,
+			set = function()
+				dbee.toggle()
+			end,
+			icon = {
+				enabled = "󰆼",
+				disabled = "󰆼 ",
+			},
+			color = {
+				enabled = "green",
+				disabled = "yellow",
+			},
+			wk_desc = {
+				enabled = "Close ",
+				disabled = "Open ",
+			},
+		}):map("<leader>D")
+
+		return opts
+	end,
 	cmd = "Dbee",
 	keys = {
 		{
