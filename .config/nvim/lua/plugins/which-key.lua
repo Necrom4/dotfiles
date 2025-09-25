@@ -26,6 +26,16 @@ return {
 				{ "<a-d>", group = "debug", icon = { icon = "󰃤 ", color = "red" } },
 				{ "gs", group = "surround", icon = { icon = "󰅲 ", color = "yellow" } },
 			},
+			{
+				mode = { "x" },
+				{ "<leader>cs", name = "CodeSnap", icon = { icon = " ", color = "orange" } },
+				{ "<leader>csa", icon = { icon = " ", color = "orange" } },
+				{ "<leader>csc", icon = { icon = " ", color = "orange" } },
+				{ "<leader>css", icon = { icon = " ", color = "orange" } },
+				{ "<leader>csv", name = "With Highlight", icon = { icon = " ", color = "cyan" } },
+				{ "<leader>csvc", icon = { icon = " ", color = "orange" } },
+				{ "<leader>csvs", icon = { icon = " ", color = "orange" } },
+			},
 		},
 		plugins = {
 			registers = false,

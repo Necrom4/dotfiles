@@ -2,8 +2,16 @@ return {
 	"mistricky/codesnap.nvim",
 	build = "make",
 	keys = {
-		{ "<leader>.s", "<esc><cmd>CodeSnap<cr>", mode = "x", desc = "Save snaped code into clipboard" },
-		{ "<leader>.S", "<esc><cmd>CodeSnapSave<cr>", mode = "x", desc = "Save snaped code to ~/Desktop" },
+		{ "<leader>csc", "<esc><cmd>CodeSnap<cr>", mode = "x", desc = "To clipboard" },
+		{ "<leader>css", "<esc><cmd>CodeSnapSave<cr>", mode = "x", desc = "Save to ~/Desktop" },
+		{ "<leader>csvc", "<esc><cmd>CodeSnapHighlight<cr>", mode = "x", desc = "To clipboard with highlight" },
+		{
+			"<leader>csvs",
+			"<esc><cmd>CodeSnapSaveHighlight<cr>",
+			mode = "x",
+			desc = "Save to ~/Desktop with highlight",
+		},
+		{ "<leader>csa", "<esc><cmd>CodeSnapASCII<cr>", mode = "x", desc = "Copy as text" },
 	},
 	opts = {
 		mac_window_bar = false,
