@@ -9,6 +9,14 @@ return {
 		},
 		"hrsh7th/cmp-calc",
 		"kristijanhusak/vim-dadbod-completion",
+		{
+			"MattiasMTS/cmp-dbee",
+			dependencies = {
+				{ "kndndrj/nvim-dbee" },
+			},
+			ft = "sql",
+			opts = {},
+		},
 		"moyiz/blink-emoji.nvim",
 		"bydlw98/blink-cmp-env",
 		"folke/lazydev.nvim",
@@ -92,6 +100,9 @@ return {
 				"thesaurus",
 				"yank",
 			},
+			per_filetype = {
+				sql = { "dbee", "buffer" },
+			},
 			providers = {
 				buffer = { score_offset = 800 },
 				calc = {
@@ -102,6 +113,11 @@ return {
 				dadbod = {
 					name = "Dadbod",
 					module = "vim_dadbod_completion.blink",
+					score_offset = 1000,
+				},
+				dbee = {
+					name = "cmp-dbee",
+					module = "blink.compat.source",
 					score_offset = 1000,
 				},
 				emoji = {
