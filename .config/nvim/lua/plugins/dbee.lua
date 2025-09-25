@@ -32,6 +32,11 @@ return {
 						icon_highlight = "Removed",
 						text_highlight = "",
 					},
+					view = {
+						icon = "󱂔",
+						icon_highlight = "Debug",
+						text_highlight = "",
+					},
 					help = {
 						icon = "󰘥",
 						icon_highlight = "Title",
