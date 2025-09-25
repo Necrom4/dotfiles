@@ -51,8 +51,6 @@ brew "yarn"
 brew "yazi"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
-# UNIX shell (command interpreter)
-brew "zsh"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Application uninstaller
