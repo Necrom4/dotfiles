@@ -119,6 +119,14 @@ return {
 					name = "cmp-dbee",
 					module = "blink.compat.source",
 					score_offset = 1000,
+					transform_items = function(ctx, items)
+						for _, item in ipairs(items) do
+							item.kind_icon = "󰆼"
+							item.kind_name = "DBee"
+							item.kind_hl = "BlinkCmpKindDBee"
+						end
+						return items
+					end,
 				},
 				emoji = {
 					name = "Emoji",

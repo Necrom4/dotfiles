@@ -29,6 +29,9 @@ return {
 				bg = "#FF966C",
 				bold = true,
 			}
+			hl.BlinkCmpKindDBee = {
+				fg = "#FCA7EA",
+			}
 			hl["@neorg.markup.verbatim"] = {
 				bg = "#444A73",
 				fg = "#82AAFF",
