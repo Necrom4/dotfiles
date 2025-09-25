@@ -25,11 +25,30 @@ function M.system_type()
 	end
 end
 
-function M.is_yadm_repo(dir)
-	local homedir = vim.fn.expand("~")
-	local configdir = vim.fn.expand("~/.config")
+function M.is_yadm_file(file)
+	local home = vim.fn.expand("~")
+	local config = home .. "/.config"
+	local repo = home .. "/.local/share/yadm/repo.git"
 
-	return dir == homedir or string.sub(dir, 1, #configdir) == configdir
+	file = file or vim.fn.getcwd()
+
+	if file == home or file:sub(1, #config) == config then
+		return true
+	end
+
+	if vim.fn.filereadable(file) == 1 then
+		vim.fn.systemlist({
+			"yadm",
+			"--yadm-repo",
+			repo,
+			"ls-files",
+			"--error-unmatch",
+			file,
+		})
+		return vim.v.shell_error == 0
+	end
+
+	return false
 end
 
 return M

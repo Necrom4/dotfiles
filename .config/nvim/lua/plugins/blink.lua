@@ -98,7 +98,7 @@ return {
 					"thesaurus",
 					"yank",
 				}
-				if not utils.is_yadm_repo(vim.fn.getcwd()) then
+				if not utils.is_yadm_file() then
 					table.insert(base, "ripgrep")
 				end
 				return base
