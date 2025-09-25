@@ -25,4 +25,11 @@ function M.system_type()
 	end
 end
 
+function M.is_yadm_repo(dir)
+	local homedir = vim.fn.expand("~")
+	local configdir = vim.fn.expand("~/.config")
+
+	return dir == homedir or string.sub(dir, 1, #configdir) == configdir
+end
+
 return M
