@@ -27,11 +27,6 @@ return {
 						icon_highlight = "Character",
 						text_highlight = "",
 					},
-					schema = {
-						icon = "פּ",
-						icon_highlight = "Removed",
-						text_highlight = "",
-					},
 					view = {
 						icon = "󱂔",
 						icon_highlight = "Debug",
@@ -41,11 +36,6 @@ return {
 						icon = "󰘥",
 						icon_highlight = "Title",
 						text_highlight = "Title",
-					},
-					source = {
-						icon = "",
-						icon_highlight = "MoreMsg",
-						text_highlight = "MoreMsg",
 					},
 				},
 			},
