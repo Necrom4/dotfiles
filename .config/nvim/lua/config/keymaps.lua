@@ -103,6 +103,7 @@ vim.keymap.set("n", "gJ", "J")
 
 -- default LazyVim disabled keymaps
 vim.keymap.del("n", "<leader>K")
+vim.keymap.del("n", "<leader>L")
 vim.keymap.del("n", "<leader>xl")
 vim.keymap.del("n", "<leader>xq")
 
