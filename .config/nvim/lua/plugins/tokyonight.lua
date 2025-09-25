@@ -29,6 +29,9 @@ return {
 				bg = "#FF966C",
 				bold = true,
 			}
+			hl.BlinkCmpKindFile = {
+				link = "BlinkCmpKindFolder",
+			}
 			hl.BlinkCmpKindDBee = {
 				fg = "#FCA7EA",
 			}
