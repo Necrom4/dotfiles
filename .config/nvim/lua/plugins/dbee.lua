@@ -92,15 +92,4 @@ return {
 		return opts
 	end,
 	cmd = "Dbee",
-	keys = {
-		{
-			"D",
-			function()
-				require("dbee").toggle()
-			end,
-			mode = { "n" },
-			silent = true,
-			desc = "Open DBee",
-		},
-	},
 }
