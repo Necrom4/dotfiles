@@ -1,10 +1,11 @@
 return {
 	"lewis6991/gitsigns.nvim",
-	event = { "VeryLazy" },
+	lazy = false,
 	dependencies = {
 		{
 			"purarue/gitsigns-yadm.nvim",
 			opts = {
+				disable_inside_gitdir = false,
 				on_yadm_attach = function()
 					vim.b.yadm_tracked = true
 				end,
