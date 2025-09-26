@@ -2,6 +2,7 @@ local utils = require("core.utils")
 
 return {
 	"saghen/blink.cmp",
+	event = { "InsertEnter", "CmdlineEnter" },
 	dependencies = {
 		{
 			"saghen/blink.compat",
@@ -26,8 +27,6 @@ return {
 		"archie-judd/blink-cmp-words",
 		"marcoSven/blink-cmp-yanky",
 	},
-	version = "*",
-	event = { "InsertEnter", "CmdlineEnter" },
 	opts = {
 		keymap = {
 			preset = "none",
