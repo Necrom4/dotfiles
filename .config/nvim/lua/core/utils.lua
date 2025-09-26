@@ -25,6 +25,7 @@ function M.system_type()
 	end
 end
 
+-- YADM
 function M.is_yadm_repo(path)
 	local home = vim.fn.expand("~")
 	local config = home .. "/.config"
@@ -44,6 +45,34 @@ function M.is_yadm(path)
 	end
 
 	return false
+end
+
+M.original_git_dir = nil
+
+function M.switch_git_dir()
+	local yadm_repo = vim.fn.expand("~/.local/share/yadm/repo.git")
+
+	if vim.env.GIT_DIR == yadm_repo then
+		vim.env.GIT_DIR = M.original_git_dir
+		M.original_git_dir = nil
+		print("In Project Repo")
+	else
+		M.original_git_dir = vim.env.GIT_DIR or nil
+		vim.env.GIT_DIR = yadm_repo
+		print("In Yadm Repo")
+	end
+end
+
+function M.cmd_in_yadm(cmd)
+	local original_git_dir = vim.env.GIT_DIR
+	local home = vim.fn.expand("~")
+	local git_dir = vim.fn.expand("~/.local/share/yadm/repo.git")
+
+	vim.env.GIT_DIR = git_dir
+	cmd(home)
+	vim.schedule(function()
+		vim.env.GIT_DIR = original_git_dir
+	end)
 end
 
 return M

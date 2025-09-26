@@ -2,40 +2,6 @@ local utils = require("core.utils")
 local system_type = utils.system_type()
 
 --------------------
---------GIT---------
---------------------
-
--- TOGGLE BETWEEN CURRENT & YADM REPO
-local original_git_dir = nil
-
-local function switchRepo()
-	local yadm_git_dir = vim.fn.expand("~/.local/share/yadm/repo.git")
-
-	if vim.env.GIT_DIR == yadm_git_dir then
-		vim.env.GIT_DIR = original_git_dir
-		original_git_dir = nil
-		print("Switched to Git repository")
-	else
-		original_git_dir = vim.env.GIT_DIR or nil
-		vim.env.GIT_DIR = yadm_git_dir
-		print("Switched to Yadm repository")
-	end
-end
-
--- SWITCH TO YADM REPO
-local function cmdInDotfiles(cmd)
-	local original_git_dir = vim.env.GIT_DIR
-	local home_dir = vim.fn.expand("~")
-	local git_dir = vim.fn.expand("~/.local/share/yadm/repo.git")
-
-	vim.env.GIT_DIR = git_dir
-	cmd(home_dir)
-	vim.schedule(function()
-		vim.env.GIT_DIR = original_git_dir
-	end)
-end
-
---------------------
 -----DASHBOARD------
 --------------------
 
@@ -372,8 +338,8 @@ return {
 		{
 			"<leader>fc",
 			function()
-				cmdInDotfiles(function(home_dir)
-					Snacks.dashboard.pick("git_files", { cwd = home_dir })
+				utils.cmd_in_yadm(function(yadm_repo)
+					Snacks.dashboard.pick("git_files", { cwd = yadm_repo })
 				end)
 			end,
 			desc = "Find Config File",
@@ -406,7 +372,7 @@ return {
 		{
 			"<leader>gy",
 			function()
-				switchRepo()
+				utils.switch_git_dir()
 			end,
 			desc = "Toggle Repo",
 			silent = true,
@@ -510,7 +476,6 @@ return {
 					require("smear_cursor").toggle()
 				end
 			end,
-			desc = "Toggle Animations",
 			silent = true,
 		},
 		{
@@ -594,8 +559,8 @@ return {
 						key = "c",
 						desc = "Config",
 						action = function()
-							cmdInDotfiles(function(home_dir)
-								Snacks.dashboard.pick("git_files", { cwd = home_dir })
+							utils.cmd_in_yadm(function(yadm_repo)
+								Snacks.dashboard.pick("git_files", { cwd = yadm_repo })
 							end)
 						end,
 					},
