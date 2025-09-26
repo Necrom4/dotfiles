@@ -1,3 +1,5 @@
+local undotree_enabled = false
+
 return {
 	"mbbill/undotree",
 	config = function()
@@ -12,20 +14,14 @@ return {
 				id = "undotree",
 				name = "Undotree",
 				get = function()
-					-- Check if an UndoTree buffer exists and is visible
-					for _, win in ipairs(vim.api.nvim_list_wins()) do
-						local buf = vim.api.nvim_win_get_buf(win)
-						if vim.bo[buf].filetype == "undotree" and vim.api.nvim_win_is_valid(win) then
-							return true
-						end
-					end
-					return false
+					return undotree_enabled
 				end,
-				set = function(state)
+				set = function()
+					undotree_enabled = not undotree_enabled
 					vim.cmd("UndotreeToggle")
 				end,
 				icon = {
-					enabled = "󰈆 ",
+					enabled = "󰕌 ",
 					disabled = "󰕌 ",
 				},
 				color = {
@@ -38,8 +34,6 @@ return {
 				},
 			})
 			:map("<leader>du")
+		return {}
 	end,
-	keys = {
-		{ "<leader>du", desc = "Open Undotree" },
-	},
 }
