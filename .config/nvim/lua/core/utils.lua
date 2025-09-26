@@ -25,8 +25,7 @@ function M.system_type()
 	end
 end
 
--- CHECK YADM
-function M.is_yadm_cwd(path)
+function M.is_yadm_repo(path)
 	local home = vim.fn.expand("~")
 	local config = home .. "/.config"
 
@@ -39,29 +38,8 @@ function M.is_yadm_cwd(path)
 	return false
 end
 
-function M.is_yadm_file(path)
-	local home = vim.fn.expand("~")
-	local repo = home .. "/.local/share/yadm/repo.git"
-
-	path = path or vim.fn.getcwd()
-
-	if vim.fn.filereadable(path) == 1 then
-		vim.fn.systemlist({
-			"yadm",
-			"--yadm-repo",
-			repo,
-			"ls-files",
-			"--error-unmatch",
-			path,
-		})
-		return vim.v.shell_error == 0
-	end
-
-	return false
-end
-
 function M.is_yadm(path)
-	if M.is_yadm_cwd(path) or M.is_yadm_file(path) then
+	if M.is_yadm_repo(path) or vim.b.yadm_tracked then
 		return true
 	end
 
