@@ -24,6 +24,7 @@ return {
 			ensure_installed = {
 				"csv",
 				"just",
+				"sql",
 			},
 		},
 	},
