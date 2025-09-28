@@ -52,10 +52,6 @@ return {
 			completion = {
 				list = { selection = { preselect = false } },
 				menu = { auto_show = true },
-				keymap = {
-					["<C-j>"] = { "select_next" },
-					["<C-k>"] = { "select_prev" },
-				},
 			},
 		},
 		completion = {
