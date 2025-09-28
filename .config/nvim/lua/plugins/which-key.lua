@@ -15,6 +15,7 @@ return {
 				{ "<leader>ob", name = "Task Builder", icon = { icon = "󰘙 ", color = "cyan" } },
 				{ "<leader>oc", name = "Clear Cache", icon = { icon = "󰆴 ", color = "red" } },
 				{ "<leader>oi", name = "Overseer Info", icon = { icon = " ", color = "blue" } },
+				{ "<leader>ol", name = "Load Bundle", icon = { icon = " ", color = "green" } },
 				{ "<leader>oq", name = "QuickAction Recent Task", icon = { icon = "󰑓 ", color = "red" } },
 				{ "<leader>or", name = "Recent Tasks", icon = { icon = " ", color = "green" } },
 				{ "<leader>ot", name = "Template Tasks", icon = { icon = "󰑮 ", color = "red" } },
