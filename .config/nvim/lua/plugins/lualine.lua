@@ -154,6 +154,7 @@ return {
 							hint = icons.diagnostics.Hint,
 						},
 					},
+					{ "overseer" },
 					{ "encoding" },
 					{ os_icon, color = { fg = "white" } },
 				},
