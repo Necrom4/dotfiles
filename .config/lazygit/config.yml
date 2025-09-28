@@ -22,6 +22,11 @@ keybinding:
 os:
   editPreset: "nvim"
 customCommands:
+  - key: P
+    context: commits
+    command: "git push $(git rev-parse --abbrev-ref --symbolic-full-name @{u} | sed 's/\\/.*//') {{ .SelectedCommit.Hash }}:$(git rev-parse --abbrev-ref HEAD)"
+    description: "Push up to selected commit"
+    loadingText: "Pushing up to selected commit..."
   - key: "D"
     context: "remoteBranches"
     description: "Delete remote-tracking"
