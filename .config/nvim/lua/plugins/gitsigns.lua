@@ -63,6 +63,12 @@ return {
 					gitsigns.nav_hunk("prev")
 				end
 			end, { desc = "Previous Hunk" })
+			map("n", "]G", function()
+				gitsigns.nav_hunk("last")
+			end, { desc = "Last Hunk" })
+			map("n", "[G", function()
+				gitsigns.nav_hunk("first")
+			end, { desc = "First Hunk" })
 
 			-- Actions
 			map("n", "<leader>gs", gitsigns.stage_hunk, { desc = "Stage Hunk" })
