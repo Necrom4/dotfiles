@@ -2,7 +2,7 @@ gui:
   nerdFontsVersion: "3"
   theme:
     cherryPickedCommitFgColor:
-      - red
+      - lightgreen
     cherryPickedCommitBgColor:
       - "none"
     selectedLineBgColor:
