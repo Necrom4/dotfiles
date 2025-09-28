@@ -10,20 +10,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	command = "setlocal noundofile",
 })
 
--- Yank to number registers
-vim.api.nvim_create_autocmd("TextYankPost", {
-	callback = function()
-		if vim.v.event.operator == "y" then
-			-- Shift registers "9" to "2" down
-			for i = 9, 2, -1 do
-				vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
-			end
-			-- Store the new yank in register "1" (but don't touch "0")
-			vim.fn.setreg("1", vim.fn.getreg('"'))
-		end
-	end,
-})
-
 -- Display table instead of binary in .sqlite files
 vim.api.nvim_create_autocmd("BufReadPre", {
 	pattern = "*.sqlite",
