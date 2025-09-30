@@ -62,7 +62,9 @@ alias vim="nvim"
 e() {
   "$EDITOR" "$@"
 }
-if command -v batcat &> /dev/null; then
+if command -v bat &> /dev/null; then
+  alias cat="bat --theme=Dracula"
+elif command -v batcat &> /dev/null; then
   alias cat="batcat"
 fi
 alias ll='ls -la --total-size'
