@@ -30,6 +30,7 @@ return {
 			"rubocop",
 			"ruff",
 			"sqruff",
+			"standardrb",
 			"stylelint",
 			"stylelint-lsp",
 			"superhtml",
