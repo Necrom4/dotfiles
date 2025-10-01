@@ -296,6 +296,8 @@ return {
 		{ "<leader>e", false },
 		{ "<leader>E", false },
 		{ "<leader>n", false },
+		{ "<leader>ft", false },
+		{ "<leader>fT", false },
 		{ "<leader>sc", false },
 		{ "<leader>sC", false },
 		{ "<leader>sR", false },
@@ -464,7 +466,7 @@ return {
 			function()
 				Snacks.terminal()
 			end,
-			desc = "cwd",
+			desc = "CWD",
 			silent = true,
 		},
 		{

@@ -19,6 +19,7 @@ return {
 			{ "<leader>ds", false },
 			{ "<leader>dt", false },
 			{ "<leader>dw", false },
+			{ "<leader>td", false },
 			{
 				"<a-d>B",
 				function()
@@ -144,7 +145,7 @@ return {
 		"rcarriga/nvim-dap-ui",
 		keys = {
 			{ "<leader>du", false },
-			{ "<leader>de", false },
+			{ "<leader>de", mode = { "n", "v" }, false },
 			{
 				"<a-d>u",
 				function()
