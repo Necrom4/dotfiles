@@ -5,6 +5,7 @@ return {
 		yazi_floating_window_winblend = 20,
 	},
 	keys = {
-		{ "<leader>xf", mode = { "n", "v" }, "<cmd>Yazi toggle<cr>", desc = "Floating" },
+		{ "<leader>xf", mode = { "n", "v" }, "<cmd>Yazi toggle<cr>", desc = "Root Dir (floating)" },
+		{ "<leader>xF", mode = { "n", "v" }, "<cmd>Yazi cwd<cr>", desc = "CWD (floating)" },
 	},
 }

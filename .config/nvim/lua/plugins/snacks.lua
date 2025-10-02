@@ -493,7 +493,7 @@ return {
 			function()
 				Snacks.picker.explorer()
 			end,
-			desc = "cwd",
+			desc = "CWD",
 			silent = true,
 		},
 		{

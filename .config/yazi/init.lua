@@ -10,7 +10,7 @@ require("full-border"):setup()
 th.git = th.git or {}
 th.git.modified_sign = "󰏬"
 th.git.modified = ui.Style():fg("#82AAFF")
-th.git.added_sign = ""
+th.git.added_sign = ""
 th.git.added = ui.Style():fg("#C3E88D")
 th.git.untracked_sign = ""
 th.git.untracked = ui.Style():fg("#FFC777")
