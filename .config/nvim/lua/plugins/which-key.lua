@@ -26,8 +26,6 @@ return {
 				{ "<leader>tT", icon = { icon = " ", color = "red" } },
 				{ "<leader>T", group = "test", icon = { icon = "󰱑", color = "red" } },
 				{ "<leader>x", group = "explorer", icon = { icon = "󰙅 ", color = "yellow" } },
-				{ "<leader>xb", name = "Root Dir (bulk)", icon = { icon = "󰏫 ", color = "red" } },
-				{ "<leader>xB", name = "CWD (bulk)", icon = { icon = "󰏫 ", color = "red" } },
 				{ "<leader>xf", name = "Root Dir (floating)", icon = { icon = " ", color = "blue" } },
 				{ "<leader>xF", name = "CWD (floating)", icon = { icon = " ", color = "blue" } },
 				{ "<leader>xx", name = "Root Dir", icon = { icon = "󰙅 ", color = "yellow" } },

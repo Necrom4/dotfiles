@@ -651,6 +651,7 @@ return {
 								["<c-w>m"] = "toggle_maximize",
 								["<leader>ga"] = "git_add",
 								["<leader>gD"] = "git_rm",
+								["<leader>xf"] = "yazi_open",
 							},
 						},
 					},
@@ -669,6 +670,11 @@ return {
 									cmd = "!",
 									args = { "git", "rm", "--cached", vim.fn.escape(picker:current().file, "#") },
 								})
+							end,
+						},
+						yazi_open = {
+							action = function(picker)
+								require("yazi").yazi({}, vim.fn.escape(picker:current().file, "#"))
 							end,
 						},
 					},
