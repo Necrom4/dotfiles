@@ -29,6 +29,8 @@ return {
 				{ "<leader>xx", name = "Root Dir", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>xX", name = "cwd", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>xf", name = "Floating", icon = { icon = " ", color = "yellow" } },
+				{ "<leader>xb", name = "Root Dir (bulk)", icon = { icon = "󰏫 ", color = "red" } },
+				{ "<leader>xB", name = "CWD (bulk)", icon = { icon = "󰏫 ", color = "red" } },
 				{ "<leader>X", group = "diagnostics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
 				{ "<leader>.", group = "Other", icon = { icon = "󰇘 ", color = "blue" } },
 				{ "<a-d>", group = "debug", icon = { icon = "󰃤 ", color = "red" } },
