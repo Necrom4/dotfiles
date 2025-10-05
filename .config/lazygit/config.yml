@@ -18,8 +18,6 @@ git:
     colorArg: never
     pager: "delta --paging=never --no-gitconfig --line-numbers --syntax-theme 'Dracula' --plus-style 'syntax #012800' --minus-style 'syntax #340001' --whitespace-error-style 'red reverse' --file-style 'omit' --hunk-header-style 'file line-number syntax' --hunk-header-decoration-style 'blue box' --hunk-header-line-number-style 'orange'"
 keybinding:
-  universal:
-    copyToClipboard: y
   branches:
     moveCommitsToNewBranch: "<c-n>"
 os:
