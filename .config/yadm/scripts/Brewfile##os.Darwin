@@ -61,6 +61,8 @@ brew "yt-dlp"
 cask "1password"
 # Application uninstaller
 cask "appcleaner"
+# Create and run Linux containers using lightweight virtual machines
+cask "container"
 # API documentation browser and code snippet manager
 cask "dash"
 # System-wide audio equaliser
