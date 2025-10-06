@@ -15,8 +15,8 @@ git:
   allBranchesLogCmds:
     - git log --graph --all --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
   paging:
-    colorArg: never
-    pager: "delta --paging=never --no-gitconfig --line-numbers --syntax-theme 'Dracula' --plus-style 'syntax #012800' --minus-style 'syntax #340001' --whitespace-error-style 'red reverse' --file-style 'omit' --hunk-header-style 'file line-number syntax' --hunk-header-decoration-style 'blue box' --hunk-header-line-number-style 'orange'"
+    colorArg: always
+    pager: "delta --paging=never"
 keybinding:
   branches:
     moveCommitsToNewBranch: "<c-n>"
