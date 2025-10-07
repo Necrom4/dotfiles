@@ -6,6 +6,8 @@ brew "cmatrix"
 brew "eza"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# Syntax-highlighting pager for git and diff output
+brew "git-delta"
 # Official CLI for the IPinfo IP Address API
 brew "ipinfo-cli"
 # Command-line pager for JSON data
