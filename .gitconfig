@@ -41,5 +41,3 @@
   features = side-by-side
 [delta "side-by-side"]
   side-by-side = true
-[merge]
-	conflictStyle = zdiff3
