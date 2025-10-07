@@ -35,6 +35,7 @@ return {
 			"stylelint-lsp",
 			"superhtml",
 			"taplo",
+			"tree-sitter-cli",
 			"typescript-language-server",
 			"vim-language-server",
 			"vint",
