@@ -20,7 +20,7 @@ return {
 			passed = "",
 			running = "",
 			running_animated = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
-			skipped = "◌",
+			skipped = "",
 			unknown = "",
 			watching = "",
 		},
