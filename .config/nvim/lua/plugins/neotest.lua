@@ -24,6 +24,9 @@ return {
 			unknown = "",
 			watching = "",
 		},
+		floating = {
+			border = "rounded",
+		},
 	},
 	keys = {
 		{ "<leader>t", false },
