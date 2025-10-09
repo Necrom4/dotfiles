@@ -34,6 +34,11 @@ return {
 			["<S-Tab>"] = { "fallback" },
 			["<C-j>"] = { "select_next", "fallback" },
 			["<C-k>"] = { "select_prev", "fallback" },
+			["<C-n>"] = {
+				function(cmp)
+					cmp.select_next({ jump_by = "source_id" })
+				end,
+			},
 			["<CR>"] = { "accept", "fallback" },
 			["<C-c>"] = { "cancel" },
 			["<C-e>"] = { "hide" },
