@@ -137,6 +137,13 @@ return {
 					module = "blink-emoji",
 					score_offset = 1000,
 					opts = { insert = true },
+					transform_items = function(ctx, items)
+						for _, item in ipairs(items) do
+							item.kind_icon = "󰱨"
+							item.kind_hl = "WarningMsg"
+						end
+						return items
+					end,
 				},
 				env = {
 					name = "Env",
@@ -158,6 +165,13 @@ return {
 					module = "blink-nerdfont",
 					score_offset = 1000,
 					opts = { insert = true },
+					transform_items = function(ctx, items)
+						for _, item in ipairs(items) do
+							item.kind_icon = ""
+							item.kind_hl = "WarningMsg"
+						end
+						return items
+					end,
 				},
 				path = { score_offset = 1000 },
 				ripgrep = {
