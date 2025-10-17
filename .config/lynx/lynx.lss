@@ -50,7 +50,7 @@ br:		normal:			default
 #	whereis	- whereis search target
 #
 #normal:normal:default:blue
-alink:		reverse:		yellow:		black
+alink:		reverse:		yellow:		blue
 status:		reverse:		yellow:		blue
 alert:		bold:			yellow:		red
 whereis:	reverse+underline:	magenta:	cyan
