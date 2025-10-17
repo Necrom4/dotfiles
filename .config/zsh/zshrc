@@ -133,3 +133,4 @@ for script in "$scripts_dir"/*.sh; do
     fi
 done
 unsetopt null_glob
+alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
