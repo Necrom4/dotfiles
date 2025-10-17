@@ -98,7 +98,7 @@ case_sensitive_searching=off
 #    Ukrainian Cyrillic (cp866u)
 #    Ukrainian Cyrillic (KOI8-U)
 #    Cyrillic-Asian (PT154)
-character_set=Western (ISO-8859-1)
+character_set=UNICODE (UTF-8)
 
 # cookie_accept_domains and cookie_reject_domains are comma-delimited
 # lists of domains from which Lynx should automatically accept or reject
