@@ -3,6 +3,8 @@ tap "homebrew/command-not-found"
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
+# Copy files from your terminal that actually paste into GUI apps
+brew "clippy"
 # Console Matrix
 brew "cmatrix"
 # Container runtimes on MacOS (and Linux) with minimal setup
