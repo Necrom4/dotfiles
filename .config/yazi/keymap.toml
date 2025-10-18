@@ -1,16 +1,5 @@
 [mgr]
 prepend_keymap = [
-  # defaults
-  { on = "j", run = "arrow 1", desc = "Down" },
-  { on = "k", run = "arrow -1", desc = "Up" },
-  { on = "Q", run = "quit", desc = "Quit the process" },
-  { on = "q", run = "quit --no-cwd-file", desc = "quit the process without outputting cwd-file" },
-  { on = "i", run = "spot", desc = "Spot hovered file" },
-  { on = "e", run = "open", desc = "Open selected files" },
-	{ on = "E", run = "open --interactive", desc = "Open selected files interactively" },
-	{ on = "<Space>", run = "toggle", desc = "Toggle the current selection state" },
-  { on = [ "b", "d" ], run = "plugin bookmarks delete", desc = "Delete a bookmark" },
-  { on = [ "b", "D" ], run = "plugin bookmarks delete_all", desc = "Delete all bookmarks" },
   # chmod
   { on = [ "c", "m" ], run = "plugin chmod", desc = "Chmod on selected files" },
   # compress
@@ -20,8 +9,6 @@ prepend_keymap = [
   { on = [ "c", "a", "l" ], run = "plugin compress -l", desc = "Archive selected files (compression level)" },
   { on = [ "c", "a", "u" ], run = "plugin compress -phl", desc = "Archive selected files (password+header+level)" },
   { on = [ "c", "a", "7" ], run = "plugin compress 7z", desc = "Archive selected files to 7z" },
-  # diff
-  { on = "<c-d>", run = "shell --block -- nvim -d \"$@\"", desc = "Diff the selected files" },
   # eza-preview
   { on = [ "T" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
   { on = [ "+" ], run = "plugin eza-preview inc-level", desc = "Increment tree level" },
@@ -70,4 +57,16 @@ prepend_keymap = [
   # zoom
   { on = "+", run = "plugin zoom 1", desc = "Zoom in hovered file" },
   { on = "-", run = "plugin zoom -1", desc = "Zoom out hovered file" },
+  # OTHER
+  # diff
+  { on = "<c-d>", run = "shell --block -- nvim -d \"$@\"", desc = "Diff the selected files" },
+  # DEFAULTS
+	{ on = "j", run = "arrow 1", desc = "Down" },
+	{ on = "k", run = "arrow -1", desc = "Up" },
+	{ on = "Q", run = "quit", desc = "Quit the process" },
+	{ on = "q", run = "quit --no-cwd-file", desc = "quit the process without outputting cwd-file" },
+	{ on = "i", run = "spot", desc = "Spot hovered file" },
+	{ on = "L", run = "open --interactive", desc = "Open selected files interactively" },
+	{ on = "<Space>", run = "toggle", desc = "Toggle the current selection state" },
+  { on = [ "c", "p" ], run = "copy path", desc = "Copy the file path" },
 ]
