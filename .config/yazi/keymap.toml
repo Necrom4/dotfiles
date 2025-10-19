@@ -59,8 +59,8 @@ prepend_keymap = [
   { on = "-", run = "plugin zoom -1", desc = "Zoom out hovered file" },
   # OTHER
   # copy
-  { on = [ "c", "c" ], run = "shell --block -- clippy \"$@\"", desc = "Copy selection to clipboard" },
-  { on = [ "c", "C" ], run = "shell --block -- clippy -t \"$@\"", desc = "Copy selection's content to clipboard" },
+  { on = [ "c", "c" ], run = "shell -- clippy \"$@\"", desc = "Copy selection to clipboard" },
+  { on = [ "c", "C" ], run = "shell -- clippy -t \"$@\"", desc = "Copy selection's content to clipboard" },
   # diff
   { on = "<c-d>", run = "shell --block -- nvim -d \"$@\"", desc = "Diff the selected files" },
   # DEFAULTS
