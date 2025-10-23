@@ -12,3 +12,32 @@ options.color_active_status = "black on 234"
 options.color_keystrokes = "green"
 options.color_sidebar = "white on black"
 options.color_sidebar_title = "black on 255 white"
+
+
+def agg_range(values):
+    # Filter out invalid or incompatible values
+    valid = []
+    for v in values:
+        if v is None:
+            continue
+        # ignore arrays like [1] value
+        if isinstance(v, (list, tuple, dict)):
+            continue
+        valid.append(v)
+
+    if not valid:
+        return None
+
+    try:
+        diff = max(valid) - min(valid)
+        return diff
+    except Exception:
+        return None
+
+
+def agg_non_empty(values):
+    return sum(1 for v in values if v is not None and v != "")
+
+
+vd.aggregator("range", agg_range, "returns (max - min)", type=float)
+vd.aggregator("non empty", agg_non_empty, "returns non empty values")
