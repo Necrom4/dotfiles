@@ -1,3 +1,5 @@
+import datetime
+
 options.motd_url = ""
 options.color_default = "255 on black"
 options.color_menu = "white on 234"
