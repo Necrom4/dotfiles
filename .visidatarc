@@ -1,6 +1,7 @@
 options.color_default = "255 on black"
 options.color_menu = "white on 234"
 options.color_menu_active = "white on black"
+options.color_menu_spec = "bold on 240"
 options.color_menu_help = "white on black"
 options.color_current_row = "bold on 240"
 options.color_current_col = ""
@@ -12,6 +13,7 @@ options.color_active_status = "black on 234"
 options.color_keystrokes = "green"
 options.color_sidebar = "white on black"
 options.color_sidebar_title = "black on 255 white"
+options.color_cmdpalette = "white on 234"
 
 
 def agg_range(values):
