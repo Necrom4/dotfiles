@@ -87,4 +87,5 @@ update_tool "TLDR" "tldr" "tldr --update"
 update_tool "Yazi packages" "ya" \
   "rm -rf ~/.config/yazi/plugins/* ~/.config/yazi/flavors/*" \
   "yadm checkout -- ~/.config/yazi/" \
-  "ya pkg upgrade"
+  "ya pkg upgrade" \
+  "git clone https://gitlab.com/WhoSowSee/whoosh.yazi.git ~/.config/yazi/plugins/whoosh.yazi"

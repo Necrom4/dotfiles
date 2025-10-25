@@ -88,11 +88,6 @@ use = "yazi-rs/plugins:smart-paste"
 rev = "9a52857"
 hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
-[[plugin.deps]]
-use = "WhoSowSee/whoosh"
-rev = "cba7239"
-hash = "c053ed009375d7e8f1557502f7a2d3a5"
-
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "5f56364"
