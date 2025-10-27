@@ -70,7 +70,7 @@ update_tool "Homebrew" "brew" "brew update" "brew upgrade"
 
 update_tool "Mise" "mise" "mise plugins update" "mise upgrade"
 
-update_tool "Ruby gems" "gem" "bundle install --gemfile=~/.config/yadm/scripts/Gemfile"
+update_tool "Ruby gems" "gem" "bundle update --gemfile=~/.config/yadm/scripts/Gemfile"
 
 # update_tool "neovim plugins" "nvim" \
 #   "nvim --headless '+Lazy! sync' +qa"
