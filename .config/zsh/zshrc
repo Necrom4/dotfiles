@@ -108,7 +108,7 @@ x() {
 
 zi() {
   local dir
-  dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -200')
+  dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -80')
   [[ -n "$dir" ]] && cd "$dir"
 }
 
