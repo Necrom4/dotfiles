@@ -106,6 +106,12 @@ x() {
 	rm -f -- "$tmp"
 }
 
+zi() {
+  local dir
+  dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -200')
+  [[ -n "$dir" ]] && cd "$dir"
+}
+
 vdpip () {
     local vd_path
     vd_path=$(brew --prefix visidata 2>/dev/null)
