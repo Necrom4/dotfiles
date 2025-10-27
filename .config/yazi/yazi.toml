@@ -11,3 +11,6 @@ prepend_fetchers = [
   { id = "git", name = "*/", run = "git" },
 ]
 
+[preview]
+max_width = 2000
+max_height = 4000
