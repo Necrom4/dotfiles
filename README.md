@@ -56,3 +56,15 @@ yadm bootstrap
 
 - Change the colors to match the Neovim `Tokyonight-moon` theme
 - Add the fonts `CommitMono Nerd Font Mono` and `LegacyComputing` (secondary)
+
+## Useful `just` commands
+
+```sh
+just list # lists all just commands
+just install # sets up tools
+just update # updates packages
+just pull # pull latest version of dotfiles repo
+just cleanup # clean brew and gems
+just brew-dump  # Write all installed packages into the Brewfile
+just brew-dump-clean # Uninstall all dependencies not present in the Brewfile
+```
