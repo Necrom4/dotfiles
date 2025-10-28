@@ -6,9 +6,7 @@ Configuration files for my personal work environment
 
 </center>
 
-- [Installation](#installation)
-- [Requirements](#requirements)
-- [Bootstrap](#bootstrap)
+<img width="1840" height="1195" alt="Screenshot 2025-10-28 at 13 08 38" src="https://github.com/user-attachments/assets/0b752d72-c06f-454f-9b6c-0d5a493f5c6c" />
 
 ## Installation
 
