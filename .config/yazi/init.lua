@@ -42,6 +42,10 @@ require("whoosh"):setup {
   -- Key generation for auto-assigning bookmark keys
   keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 
+  special_keys = {
+    previous_dir = "'",
+  },
+
   -- File path for storing user bookmarks
   path = (ya.target_family() == "windows" and os.getenv("APPDATA") .. "\\yazi\\config\\bookmark") or
          (os.getenv("HOME") .. "/.config/yazi/bookmark"),
