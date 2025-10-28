@@ -537,7 +537,7 @@ return {
 						key = "f",
 						desc = "Find File",
 						action = function()
-							Snacks.dashboard.pick("files")
+							Snacks.dashboard.pick("files", { cwd = "." })
 						end,
 					},
 					{
