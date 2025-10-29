@@ -14,7 +14,7 @@ fi
 
 gemfile=$HOME/.config/yadm/scripts/Gemfile
 
-if [ -f "$gemfile" ]; then
+if [ -f "$gemfile" ] && [ "$(yadm config local.class)" != "42" ]; then
   echo "Installing Ruby gems..."
   bundle install --gemfile="$gemfile"
 fi
