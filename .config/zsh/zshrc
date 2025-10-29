@@ -153,9 +153,9 @@ scripts_dir="${0:A:h}/zshrc.os"
 
 setopt null_glob
 for script in "$scripts_dir"/*.sh; do
-    if [[ -r "$script" ]]; then
-        source "$script"
-    fi
+    [[ "$script" == *"##"* ]] && continue
+    [[ -r "$script" ]] && source "$script"
 done
 unsetopt null_glob
+
 alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
