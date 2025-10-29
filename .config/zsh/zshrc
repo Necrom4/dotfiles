@@ -162,3 +162,6 @@ alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.l
 if [ "$(yadm config local.class)" == "Personal" ]; then
   alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
 fi
+if [ "$(yadm config local.class)" == "42" ]; then
+  alias cclean='bash ~/LinuxCleaner_42.sh'
+fi
