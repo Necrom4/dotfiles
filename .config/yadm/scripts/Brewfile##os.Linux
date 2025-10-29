@@ -8,6 +8,8 @@ brew "cmatrix"
 brew "eza"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# GitHub command-line tool
+brew "gh"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
 # Official CLI for the IPinfo IP Address API
