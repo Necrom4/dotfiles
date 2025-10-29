@@ -38,6 +38,8 @@ brew "sevenzip"
 brew "tldr"
 # Command-line interface to the freedesktop.org trashcan
 brew "trash-cli"
+# Terminal spreadsheet multitool for discovering and arranging data
+brew "visidata"
 # Yet Another Dotfiles Manager
 brew "yadm"
 # JavaScript package manager
