@@ -16,8 +16,6 @@ return {
 			"gopls",
 			"helm-ls",
 			"html-lsp",
-			"java-debug-adapter",
-			"jdtls",
 			"just-lsp",
 			"kube-linter",
 			"lua-language-server",
