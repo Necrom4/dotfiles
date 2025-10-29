@@ -159,3 +159,6 @@ done
 unsetopt null_glob
 
 alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
+if [ "$(yadm config local.class)" == "Personal" ]; then
+  alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
+fi
