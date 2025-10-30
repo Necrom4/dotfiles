@@ -23,7 +23,7 @@ return {
 			"pgformatter",
 			"php-debug-adapter",
 			"phpactor",
-			"postgrestools",
+			"postgres-language-server",
 			"pyright",
 			"rubocop",
 			"ruff",
