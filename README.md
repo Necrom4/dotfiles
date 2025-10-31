@@ -46,12 +46,6 @@ yadm clean -fdx
 yadm bootstrap
 ```
 
-`yadm` will request to execute the **bootstrap** scripts, which install the prerequisites. If no prompt appears, execute
-
-```sh
-yadm bootstrap
-```
-
 ### Terminal settings
 
 - Change the colors to match the Neovim `Tokyonight-moon` theme
