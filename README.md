@@ -38,7 +38,7 @@ sudo apt update && sudo apt install -y yadm
 yadm clone https://github.com/Necrom4/dotfiles.git
 ```
 
-### Reinstalling over and existing Repository
+### Reinstalling over an existing Repository
 
 ```sh
 yadm reset --hard
