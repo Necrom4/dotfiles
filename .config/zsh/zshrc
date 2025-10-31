@@ -40,6 +40,7 @@ plugins=(
   rake
   ruby
   web-search
+  yarn
   z
   zsh-autopair
   zsh-autosuggestions
