@@ -31,6 +31,8 @@ brew "ipinfo-cli"
 brew "jless"
 # Handy way to save and run project-specific commands
 brew "just"
+# Kubernetes CLI To Manage Your Clusters In Style!
+brew "k9s"
 # Lazier way to manage everything docker
 brew "lazydocker"
 # Simple terminal UI for git commands
@@ -41,6 +43,8 @@ brew "libyaml"
 brew "lynx"
 # Mac App Store command-line interface
 brew "mas"
+# Run a Kubernetes cluster locally
+brew "minikube"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility

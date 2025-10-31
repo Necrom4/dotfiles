@@ -33,6 +33,7 @@ plugins=(
   helm
   jsontools
   kubectl
+  minikube
   pip
   python
   rails
