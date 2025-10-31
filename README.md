@@ -38,6 +38,12 @@ sudo apt update && sudo apt install -y yadm
 yadm clone https://github.com/Necrom4/dotfiles.git
 ```
 
+### Set up everything
+
+```sh
+yadm bootstrap # launches set up and installation scripts
+```
+
 ### Reinstalling over an existing Repository
 
 ```sh
