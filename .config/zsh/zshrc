@@ -28,6 +28,7 @@ plugins=(
   docker
   docker-compose
   eza
+  gh
   git
   helm
   jsontools
