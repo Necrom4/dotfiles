@@ -1,8 +1,7 @@
 return {
-	"Necrom4/octo.nvim",
-	-- dir = "~/Documents/Code/Personal/octo.nvim/",
-	branch = "fix/replace-merge-commit-flag",
+	"pwntester/octo.nvim",
 	opts = {
+		default_merge_method = "merge",
 		picker = "snacks",
 	},
 }

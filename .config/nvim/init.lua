@@ -64,7 +64,7 @@ require("lazy").setup({
 		{ import = "lazyvim.plugins.extras.ui.treesitter-context" },
 		{ import = "lazyvim.plugins.extras.util.dot" },
 		{ import = "lazyvim.plugins.extras.util.gh" },
-		-- { import = "lazyvim.plugins.extras.util.octo" },
+		{ import = "lazyvim.plugins.extras.util.octo" },
 		{ import = "lazyvim.plugins.extras.util.startuptime" },
 		{ import = "lazyvim.plugins.extras.test.core" },
 		{ import = "plugins" },
