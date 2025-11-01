@@ -295,11 +295,25 @@ return {
 		-- Disable keymaps
 		{ "<leader>e", false },
 		{ "<leader>E", false },
-		{ "<leader>n", false },
-		{ "<leader>ft", false },
 		{ "<leader>fT", false },
-		{ "<leader>sc", false },
+		{ "<leader>ft", false },
+		{ "<leader>gB", false },
+		{ "<leader>gD", false },
+		{ "<leader>gI", false },
+		{ "<leader>gL", false },
+		{ "<leader>gP", false },
+		{ "<leader>gS", false },
+		{ "<leader>gY", false },
+		{ "<leader>gb", false },
+		{ "<leader>gd", false },
+		{ "<leader>gf", false },
+		{ "<leader>gi", false },
+		{ "<leader>gl", false },
+		{ "<leader>gp", false },
+		{ "<leader>gs", false },
+		{ "<leader>n", false },
 		{ "<leader>sC", false },
+		{ "<leader>sc", false },
 		{ "<leader>sR", false },
 		{ "<leader>sw", mode = { "n", "x" }, false },
 		{ "<leader>sW", mode = { "n", "x" }, false },
@@ -361,14 +375,6 @@ return {
 				vim.cmd("!git add " .. vim.fn.fnameescape(vim.fn.expand("%:p")))
 			end,
 			desc = "Add file",
-			silent = true,
-		},
-		{
-			"<leader>gD",
-			function()
-				vim.cmd("!git rm --cached " .. vim.fn.fnameescape(vim.fn.expand("%:p")))
-			end,
-			desc = "Remove file",
 			silent = true,
 		},
 		{
