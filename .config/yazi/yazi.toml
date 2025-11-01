@@ -1,3 +1,19 @@
+[opener]
+visidata = [
+	{ run = 'vd "$@"', block = true, desc = "Open in Visidata" },
+]
+
+[open]
+prepend_rules = [
+	{ name = "*.csv", use = "visidata" },
+	{ name = "*.json", use = "visidata" },
+	{ name = "*.sql", use = "visidata" },
+	{ name = "*.sqlite", use = "visidata" },
+	{ name = "*.tsv", use = "visidata" },
+	{ name = "*.yaml", use = "visidata" },
+	{ name = "*.yml", use = "visidata" },
+]
+
 [mgr]
 ratio = [ 1, 3, 4 ]
 linemode = "size"
