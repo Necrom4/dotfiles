@@ -45,4 +45,4 @@ def agg_non_empty(values):
 
 
 vd.aggregator("range", agg_range, "returns (max - min)", type=float)
-vd.aggregator("non empty", agg_non_empty, "returns non empty values")
+vd.aggregator("non_empty", agg_non_empty, "returns non empty values")
