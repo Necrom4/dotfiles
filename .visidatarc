@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+# https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
 
 options.color_active_status = "black on 234"
 options.color_bottom_hdr = "underline white"
