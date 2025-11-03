@@ -1,16 +1,17 @@
+#!/usr/bin/env bash
+
 case "$(uname)" in
-  Darwin)
-    export XDG_CONFIG_HOME="$HOME/.config"
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    export PATH="/opt/homebrew/bin:$PATH"
-    ;;
-  Linux)
-    # Optional fallback
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv 2>/dev/null)"
-    ;;
+Darwin)
+  export XDG_CONFIG_HOME="$HOME/.config"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  ;;
+Linux)
+  for BREW_PATH in "$HOME/homebrew/bin/brew" "$HOME/linuxbrew/.linuxbrew/bin/brew"; do
+    [ -x "$BREW_PATH" ] && eval "$("$BREW_PATH" shellenv)"
+  done
+  ;;
 esac
 
 eval "$(mise activate zsh)"
 
-# Load local, git-ignored machine-specific overrides
-[[ -f ~/.config/zsh/profile.local ]] && source ~/.config/zsh/profile.local
+[[ -f "$HOME/.config/zsh/profile.local" ]] && source "$HOME/.config/zsh/profile.local"
