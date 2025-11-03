@@ -15,6 +15,8 @@ brew "docker"
 brew "eza"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
+# Text mode browser and Gemini, NNTP, FTP, Gopher, Finger, and BitTorrent client
+brew "felinks"
 # Play, record, convert, and stream audio and video
 brew "ffmpeg"
 # Command-line fuzzy finder written in Go
