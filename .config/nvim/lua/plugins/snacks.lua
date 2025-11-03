@@ -116,7 +116,7 @@ local function disk()
 	if uname ~= "darwin" then
 		flag = "-h"
 	end
-	local mount_path = "/"
+	local mount_path = utils.term_cmd("yadm config local.class") == "42" and "~" or "/"
 	if uname == "wsl" then
 		mount_path = "/mnt/c"
 	elseif uname == "darwin" then
