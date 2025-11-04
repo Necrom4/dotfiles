@@ -9,6 +9,8 @@ brew "clippy"
 brew "cmatrix"
 # Container runtimes on MacOS (and Linux) with minimal setup
 brew "colima"
+# Create and run Linux containers using lightweight virtual machines
+brew "container"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Modern, maintained replacement for ls
@@ -87,8 +89,6 @@ brew "yt-dlp"
 cask "1password"
 # Application uninstaller
 cask "appcleaner"
-# Create and run Linux containers using lightweight virtual machines
-cask "container"
 # Photography workflow application and raw developer
 cask "darktable"
 # API documentation browser and code snippet manager
