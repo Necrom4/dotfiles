@@ -161,6 +161,7 @@ for script in "$scripts_dir"/*.sh; do
 done
 unsetopt null_glob
 
+export PATH="$(brew --prefix)/share/john:$PATH"
 alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
 if [ "$(yadm config local.class)" = "Personal" ]; then
   alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
