@@ -1,4 +1,5 @@
 tap "homebrew/command-not-found"
+tap "mutagen-io/mutagen"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
@@ -89,6 +90,8 @@ brew "yarn"
 brew "yazi"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
+# Fast file synchronization and network forwarding for remote development
+brew "mutagen-io/mutagen/mutagen"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Application uninstaller
