@@ -26,9 +26,9 @@ return {
 			},
 			signs = false,
 		})
-		-- opts.inlay_hints = vim.tbl_deep_extend("force", opts.inlay_hints, {
-		-- 	enabled = false,
-		-- })
+		opts.inlay_hints = vim.tbl_deep_extend("force", opts.inlay_hints, {
+			enabled = false,
+		})
 		-- opts.codelens = vim.tbl_deep_extend("force", opts.codelens, {
 		-- 	enabled = false,
 		-- })
