@@ -2,6 +2,7 @@ gui:
   theme:
     selectedLineBgColor:
       - blue
+  returnImmediately: true
 stats:
   graphs:
     - caption: CPU (%)
@@ -10,4 +11,3 @@ stats:
     - caption: Memory (%)
       statPath: DerivedStats.MemoryPercentage
       color: green
-
