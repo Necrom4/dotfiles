@@ -46,6 +46,8 @@ brew "k9s"
 brew "lazydocker"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Terminal-based SSH manager
+brew "lazyssh"
 # YAML Parser
 brew "libyaml"
 # Package manager for the Lua programming language
