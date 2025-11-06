@@ -126,6 +126,24 @@ vim.keymap.set("n", "<leader>Xq", function()
 	end
 end, { desc = "Quickfix List" })
 
+-- change LazyVim LSP functions keymaps from <leader>c to gr
+
+vim.keymap.set("n", "gra", function()
+	vim.lsp.action.source()
+end, { desc = "Source Action" })
+
+vim.keymap.set("n", "grc", function()
+	vim.lsp.codelens.run()
+end, { desc = "Run Codelens" })
+
+vim.keymap.set("n", "grC", function()
+	vim.lsp.codelens.refresh()
+end, { desc = "Run Codelens" })
+
+vim.keymap.set("n", "grR", function()
+	vim.lsp.buf.rename_file()
+end, { desc = "Rename File" })
+
 -- diff
 Snacks.toggle
 	.new({
