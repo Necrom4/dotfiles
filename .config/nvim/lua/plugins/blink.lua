@@ -19,6 +19,7 @@ return {
 		},
 		"moyiz/blink-emoji.nvim",
 		"bydlw98/blink-cmp-env",
+		"Kaiser-Yang/blink-cmp-git",
 		"folke/lazydev.nvim",
 		"MahanRahmati/blink-nerdfont.nvim",
 		"mikavilpas/blink-ripgrep.nvim",
@@ -93,6 +94,7 @@ return {
 					"calc",
 					"emoji",
 					"env",
+					"git",
 					"lazydev",
 					"lsp",
 					"nerdfont",
@@ -158,6 +160,12 @@ return {
 						show_braces = false,
 						show_documentation_window = true,
 					},
+				},
+				git = {
+					module = "blink-cmp-git",
+					name = "Git",
+					score_offset = 1000,
+					opts = {},
 				},
 				lazydev = {
 					name = "LazyDev",
