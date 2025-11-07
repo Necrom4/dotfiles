@@ -1,6 +1,9 @@
 return {
 	"folke/flash.nvim",
 	optional = true,
+	opts = {
+		highlight = { groups = { current = "FlashMatch" } },
+	},
 	specs = {
 		{
 			"folke/snacks.nvim",
