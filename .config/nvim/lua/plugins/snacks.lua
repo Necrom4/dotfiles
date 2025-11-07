@@ -521,7 +521,30 @@ return {
 		},
 	},
 	opts = {
-		bigfile = { enabled = true },
+		bigfile = {
+			enabled = true,
+			setup = function(ctx)
+				-- defaults
+				if vim.fn.exists(":NoMatchParen") ~= 0 then
+					vim.cmd([[NoMatchParen]])
+				end
+				Snacks.util.wo(0, { foldmethod = "manual", statuscolumn = "", conceallevel = 0 })
+				vim.b.minianimate_disable = true
+				vim.b.minihipatterns_disable = true
+				vim.schedule(function()
+					if vim.api.nvim_buf_is_valid(ctx.buf) then
+						vim.bo[ctx.buf].syntax = ctx.ft
+					end
+				end)
+
+				-- mine
+				vim.b.completion = false
+				vim.b.minidiff_disable = true
+				if vim.fn.exists(":UfoDetach") ~= 0 then
+					vim.cmd("UfoDetach")
+				end
+			end,
+		},
 		dashboard = {
 			enabled = true,
 			preset = {
