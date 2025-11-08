@@ -8,7 +8,7 @@ return {
 				disable_inside_gitdir = false,
 				on_yadm_attach = function()
 					vim.b.yadm_tracked = true
-					vim.b.minidiff_disable = true
+					require("mini.diff").disable(0)
 				end,
 			},
 		},
@@ -38,6 +38,7 @@ return {
 			require("gitsigns-yadm").yadm_signs(callback, { bufnr = bufnr })
 		end,
 		on_attach = function(buffer)
+			require("mini.diff").disable(buffer)
 			local gs = package.loaded.gitsigns
 
 			local function map(mode, l, r, desc)
