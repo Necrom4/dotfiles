@@ -1,7 +1,7 @@
 return {
 	"necrom4/convy.nvim",
 	-- dir = "~/Documents/Code/Personal/convy.nvim",
-	cmd = "Convy",
+	cmd = { "Convy", "ConvySeparator" },
 	opts = {
 		notifications = true,
 	},
