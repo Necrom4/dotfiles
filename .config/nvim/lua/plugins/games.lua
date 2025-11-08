@@ -20,11 +20,6 @@ return {
 		config = function() end,
 	},
 	{
-		"NStefan002/speedtyper.nvim",
-		branch = "v2",
-		cmd = "Speedtyper",
-	},
-	{
 		"jim-fx/sudoku.nvim",
 		cmd = "Sudoku",
 		config = function()
@@ -35,5 +30,20 @@ return {
 		"seandewar/nvimesweeper",
 		cmd = "Nvimesweeper",
 		opts = {},
+	},
+	{
+		"gisketch/triforce.nvim",
+		dependencies = {
+			"nvzone/volt",
+		},
+		config = function()
+			require("triforce").setup({})
+		end,
+	},
+	{
+		"nvzone/typr",
+		dependencies = "nvzone/volt",
+		opts = {},
+		cmd = { "Typr", "TyprStats" },
 	},
 }

@@ -29,6 +29,9 @@ return {
 		"marcoSven/blink-cmp-yanky",
 	},
 	opts = {
+		enabled = function()
+			return not vim.tbl_contains({ "typr" }, vim.bo.filetype)
+		end,
 		keymap = {
 			preset = "none",
 			["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
