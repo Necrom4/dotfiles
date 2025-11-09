@@ -1,22 +1,41 @@
-# --- Powerlevel10k Instant Prompt ---
+# ============================================================================
+# INSTANT PROMPT (Must be at the very top)
+# ============================================================================
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# --- Exports ---
+# ============================================================================
+# ENVIRONMENT VARIABLES
+# ============================================================================
+
+export PATH="$(brew --prefix)/share/john:$PATH"
+
+export PATH="$(brew --prefix)/opt/postgresql@18/bin:$PATH"
+export LDFLAGS="-L$(brew --prefix)/opt/postgresql@18/lib"
+export CPPFLAGS="-I$(brew --prefix)/opt/postgresql@18/include"
+
+if command -v nvim >/dev/null 2>&1; then
+  export EDITOR="nvim"
+elif command -v vim >/dev/null 2>&1; then
+  export EDITOR="vim"
+else
+  export EDITOR="vi"
+fi
+
+# ============================================================================
+# OH-MY-ZSH CONFIGURATION
+# ============================================================================
+
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
-export PATH="$(brew --prefix)/share/john:$PATH"
-export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/postgresql@18/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/postgresql@18/include"
 
-# --- Plugins Configuration ---
+# Plugin-specific settings (before sourcing oh-my-zsh)
 zstyle ':omz:plugins:eza' 'git-status' yes
 zstyle ':omz:plugins:eza' 'header' yes
 zstyle ':omz:plugins:eza' 'icons' yes
 zstyle ':omz:plugins:eza' 'color-scale' all
-
 zstyle ':omz:plugins:alias-finder' autoload yes
 zstyle ':omz:plugins:alias-finder' exact yes
 
@@ -56,28 +75,59 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# --- Editor Configuration ---
-if command -v nvim >/dev/null 2>&1; then
-  export EDITOR="nvim"
-elif command -v vim >/dev/null 2>&1; then
-  export EDITOR="vim"
-else
-  export EDITOR="vi"
-fi
+# ============================================================================
+# ZSH OPTIONS & VI MODE CONFIGURATION
+# ============================================================================
 
-# --- Aliases ---
+bindkey -v
+bindkey '^x' clear-screen
+bindkey '^h' vi-backward-char
+bindkey '^l' vi-forward-char
+bindkey -M vicmd ';' edit-command-line
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
+# Zsh Vi Mode colors
+ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
+ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
+
+# ============================================================================
+# ALIASES
+# ============================================================================
+
 alias vim="nvim"
 e() {
   "$EDITOR" "$@"
 }
+
 if command -v bat &> /dev/null; then
   alias cat="bat --theme=Dracula"
 elif command -v batcat &> /dev/null; then
   alias cat="batcat"
 fi
+
 alias ll='ls -la --total-size'
 alias la='ls -a'
 alias lt='ls --tree'
+
+alias j="just"
+alias jl="just --list"
+alias ju="just update"
+
+alias g="lazygit"
+alias y="yadm enter lazygit"
+
+alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
+
+if [ "$(yadm config local.class)" = "Personal" ]; then
+  alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
+fi
+
+if [ "$(yadm config local.class)" = "42" ]; then
+  alias cclean='bash ~/LinuxCleaner_42.sh'
+fi
+
+# Docker/Lazydocker with auto-start
 d() {
   if ! docker info > /dev/null 2>&1; then
     if command -v colima > /dev/null; then
@@ -99,77 +149,59 @@ d() {
   command -v lazydocker > /dev/null || { echo "lazydocker is not installed."; return 1; }
   lazydocker
 }
-alias g="lazygit"
-alias y="yadm enter lazygit"
-alias j="just"
-alias jl="just --list"
-alias ju="just update"
 
+# Yazi with directory change on exit
 x() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
 }
 
+# Z with fzf integration
 zi() {
   local dir
   dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -80')
   [[ -n "$dir" ]] && cd "$dir"
 }
 
-vdpip () {
-    local vd_path
-    vd_path=$(brew --prefix visidata 2>/dev/null)
+# VisiData pip wrapper
+vdpip() {
+  local vd_path
+  vd_path=$(brew --prefix visidata 2>/dev/null)
 
-    if [[ -z "$vd_path" ]]; then
-        echo "VisiData not found via Homebrew."
-        return 1
-    fi
+  if [[ -z "$vd_path" ]]; then
+    echo "VisiData not found via Homebrew."
+    return 1
+  fi
 
-    local vdp_python="$vd_path/libexec/bin/python3"
+  local vdp_python="$vd_path/libexec/bin/python3"
 
-    if [[ ! -x "$vdp_python" ]]; then
-        echo "Embedded Python not found at: $vdp_python"
-        return 1
-    fi
+  if [[ ! -x "$vdp_python" ]]; then
+    echo "Embedded Python not found at: $vdp_python"
+    return 1
+  fi
 
-    "$vdp_python" -m pip "$@"
+  "$vdp_python" -m pip "$@"
 }
 
-alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
-if [ "$(yadm config local.class)" = "Personal" ]; then
-  alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
-fi
-if [ "$(yadm config local.class)" = "42" ]; then
-  alias cclean='bash ~/LinuxCleaner_42.sh'
-fi
+# ============================================================================
+# PROMPT CONFIGURATION
+# ============================================================================
 
-# --- Bindkeys ---
-bindkey -v
-bindkey '^x' clear-screen
-bindkey '^h' vi-backward-char
-bindkey '^l' vi-forward-char
-bindkey -M vicmd ';' edit-command-line
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
-
-# --- Zsh Vi Mode Colors ---
-ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
-ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
-
-# --- Prompt ---
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# --- Source scripts --
+# ============================================================================
+# SOURCE ADDITIONAL SCRIPTS
+# ============================================================================
 
 scripts_dir="${0:A:h}/zshrc.os"
 
 setopt null_glob
 for script in "$scripts_dir"/*.sh; do
-    [[ "$script" == *"##"* ]] && continue
-    [[ -r "$script" ]] && source "$script"
+  [[ "$script" == *"##"* ]] && continue
+  [[ -r "$script" ]] && source "$script"
 done
 unsetopt null_glob
