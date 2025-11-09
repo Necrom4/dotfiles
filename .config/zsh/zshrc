@@ -3,9 +3,13 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# --- Oh My Zsh ---
+# --- Exports ---
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
+export PATH="$(brew --prefix)/share/john:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/postgresql@18/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/postgresql@18/include"
 
 # --- Plugins Configuration ---
 zstyle ':omz:plugins:eza' 'git-status' yes
@@ -135,6 +139,14 @@ vdpip () {
     "$vdp_python" -m pip "$@"
 }
 
+alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
+if [ "$(yadm config local.class)" = "Personal" ]; then
+  alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
+fi
+if [ "$(yadm config local.class)" = "42" ]; then
+  alias cclean='bash ~/LinuxCleaner_42.sh'
+fi
+
 # --- Bindkeys ---
 bindkey -v
 bindkey '^x' clear-screen
@@ -161,12 +173,3 @@ for script in "$scripts_dir"/*.sh; do
     [[ -r "$script" ]] && source "$script"
 done
 unsetopt null_glob
-
-export PATH="$(brew --prefix)/share/john:$PATH"
-alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
-if [ "$(yadm config local.class)" = "Personal" ]; then
-  alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
-fi
-if [ "$(yadm config local.class)" = "42" ]; then
-  alias cclean='bash ~/LinuxCleaner_42.sh'
-fi
