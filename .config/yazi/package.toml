@@ -30,8 +30,8 @@ hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
 use = "ahkohd/eza-preview"
-rev = "a97cf55"
-hash = "cc3aef07a8b1c3fe820f1fbb9a5a2483"
+rev = "7b00863"
+hash = "c538f3766b4b3bafbae3f0b7c3c3d763"
 
 [[plugin.deps]]
 use = "imsi32/yatline"
