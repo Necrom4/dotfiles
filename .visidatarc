@@ -5,6 +5,104 @@ import dateutil
 from visidata import vd, options, colors, BaseSheet, DirSheet, GraphSheet
 
 ################################################################################
+# visidata Tokyonight moon theme configuration
+
+# Tokyonight Moon color palette mapped to 256-color terminal codes
+# Using the closest matches to original Tokyonight colors
+TERMINAL = {
+    "black": 0,
+    "red": 1,
+    "green": 2,
+    "yellow": 3,
+    "blue": 4,
+    "magenta": 5,
+    "cyan": 6,
+    "gray": 8,
+    "bright_gray": 7,
+    "bright_red": 9,
+    "bright_green": 10,
+    "bright_yellow": 11,
+    "bright_blue": 12,
+    "bright_magenta": 13,
+    "bright_cyan": 14,
+    "white": 15,
+}
+
+TOKYONIGHT = {
+    # lualine statusline for menu colors
+    "bg": 233,
+    "bright_bg": 235,
+    "md": 60,
+    "fg": 75,
+    "hl": 208,
+}
+
+vd.themes["tokyonight-moon"] = dict(
+    # Base colors
+    color_default=f"{TERMINAL['white']}",
+    color_default_hdr=f"bold {TERMINAL['red']} on {TERMINAL['red']}",
+    # Key column highlighting with good contrast
+    color_key_col=f"{TERMINAL['bright_green']}",
+    # Current column/row (cursor position)
+    color_current_row=f"bold {TERMINAL['bright_cyan']} on {TOKYONIGHT['md']}",  # Inverted for visibility
+    color_current_col=f"on {TOKYONIGHT['bg']}",
+    color_current_cell=f"bold {TOKYONIGHT['hl']} on {TOKYONIGHT['md']}",
+    # Selected rows - high contrast for readability
+    color_selected_row=f"{TERMINAL['green']} on {TERMINAL['bright_green']}",  # Inverted green background
+    # Column separators
+    color_column_sep=f"{TERMINAL['white']}",
+    # Aggregator
+    color_aggregator=f"bold {TERMINAL['blue']} on {TOKYONIGHT['bg']}",
+    # Status bars and messages
+    color_status=f"{TERMINAL['blue']} on {TERMINAL['green']}",
+    color_active_status=f"{TOKYONIGHT['md']} on {TOKYONIGHT['bg']}",
+    color_error=f"bold {TERMINAL['bright_yellow']} on {TERMINAL['red']}",
+    color_warning=f"{TERMINAL['bright_yellow']}",
+    # Sidebar
+    color_sidebar=f"{TERMINAL['white']}",
+    color_sidebar_title=f"bold {TOKYONIGHT['fg']} on {TOKYONIGHT['bg']}",
+    color_longname_guide=f"{TOKYONIGHT['md']} on {TOKYONIGHT['bg']}",
+    color_heading=f"{TOKYONIGHT['fg']} on {TOKYONIGHT['bg']}",
+    # Cell content types
+    color_note_row=f"{TERMINAL['bright_blue']} on {TERMINAL['green']}",
+    # Graph colors
+    color_graph_hidden=f"{TERMINAL['blue']}",
+    # Canvas/plot colors
+    plot_colors=" ".join(
+        [
+            str(TERMINAL["green"]),
+            str(TERMINAL["bright_blue"]),
+            str(TERMINAL["bright_magenta"]),
+            str(TERMINAL["bright_cyan"]),
+            str(TERMINAL["bright_yellow"]),
+            str(TERMINAL["bright_red"]),
+        ]
+    ),
+    # Bottom sheet colors
+    color_bottom_hdr=f"{TERMINAL['cyan']} on {TOKYONIGHT['bright_bg']}",
+    # Command palette and menus
+    color_cmdpalette=f"{TERMINAL['white']} on {TOKYONIGHT['bg']}",
+    color_match=f"{TOKYONIGHT['fg']} on {TOKYONIGHT['bg']}",
+    color_menu=f"{TERMINAL['green']}",
+    color_menu_active=f"{TERMINAL['yellow']}",
+    color_menu_spec=f"{TERMINAL['bright_green']}",
+    color_menu_help=f"italic {TERMINAL['green']}",
+    # Hidden columns
+    color_hidden_col=f"{TERMINAL['gray']} on {TERMINAL['green']}",
+    # Add-on status colors
+    color_add_pending=f"italic {TERMINAL['bright_yellow']} on {TERMINAL['green']}",
+    color_change_pending=f"bold italic {TERMINAL['yellow']}",
+    color_delete_pending=f"italic {TERMINAL['red']}",
+    color_edit_cell=f"{TERMINAL['white']} on {TOKYONIGHT['bg']}",
+    color_edit_unfocused=f"{TOKYONIGHT['md']} on {TOKYONIGHT['bg']}",
+    color_keystrokes=f"{TERMINAL['magenta']}",
+    color_code=f"{TERMINAL['magenta']}",
+    disp_status_fmt="{sheet.sheetlist} ",
+    disp_rstatus_fmt="{sheet.threadStatus} {sheet.keystrokeStatus}   [:longname_status]{sheet.longname}[/]  {sheet.nRows:9d} {sheet.rowtype} {sheet.modifiedStatus}{sheet.selectedStatus}{vd.replayStatus}{vd.sidebarStatus}",
+)
+
+
+################################################################################
 # visidata gruvbox dark theme configuration
 
 # Gruvbox Dark color palette mapped to 256-color terminal codes
@@ -40,112 +138,84 @@ GRUVBOX = {
     'gray':          245,   # #928374 (gray)
 }
 
-vd.themes['gruvbox-dark'] = dict(
-  # Base colors
-  color_default = f'{GRUVBOX["fg1"]} on {GRUVBOX["bg0"]}',
-  color_default_hdr = f'bold {GRUVBOX["bright_yellow"]} on {GRUVBOX["bg0_s"]}',
-
-  # Key column highlighting with good contrast
-  color_key_col = f'{GRUVBOX["bright_green"]} on {GRUVBOX["bg0"]}',
-
-  # Current column/row (cursor position)
-  color_current_row = f'bold {GRUVBOX["bg0"]} on {GRUVBOX["blue"]}',  # Inverted for visibility
-  color_current_col = f'{GRUVBOX["bright_blue"]} on {GRUVBOX["bg0_s"]}',
-  color_current_cell = f'bold {GRUVBOX["bg0"]} on {GRUVBOX["bright_blue"]}',
-
-  # Selected rows - high contrast for readability
-  color_selected_row = f'{GRUVBOX["bg0"]} on {GRUVBOX["bright_green"]}',  # Inverted green background
-
-  # Column separators
-  color_column_sep = f'{GRUVBOX["bg2"]} on {GRUVBOX["bg0"]}',
-
-  # Aggregator
-  color_aggregator = f'bold {GRUVBOX["fg0"]} on {GRUVBOX["bg0_h"]}',
-
-  # Status bars and messages
-  color_status = f'{GRUVBOX["fg1"]} on {GRUVBOX["bg0_h"]}',
-  color_active_status = f'{GRUVBOX["fg2"]} on {GRUVBOX["bg0_s"]}',
-  color_error = f'bold {GRUVBOX["bright_red"]} on {GRUVBOX["bg0_h"]}',
-  color_warning = f'{GRUVBOX["bright_yellow"]} on {GRUVBOX["bg0_h"]}',
-
-  # Sidebar
-  color_sidebar = f'{GRUVBOX["fg0"]} on {GRUVBOX["bg2"]}',
-  color_sidebar_title = f'{GRUVBOX["bright_orange"]} on {GRUVBOX["bg2"]}',
-  color_longname_guide = f'{GRUVBOX["fg4"]} on {GRUVBOX["bg2"]}',
-  color_heading = f'{GRUVBOX["bright_orange"]} on {GRUVBOX["bg2"]}',
-
-  # Cell content types
-  color_note_row = f'{GRUVBOX["bright_blue"]} on {GRUVBOX["bg0"]}',
-
-  # Graph colors
-  color_graph_hidden = f'{GRUVBOX["blue"]}',
-
-  # Canvas/plot colors
-  plot_colors = ' '.join([
-      str(GRUVBOX["bright_green"]),
-      str(GRUVBOX["bright_blue"]),
-      str(GRUVBOX["bright_purple"]),
-      str(GRUVBOX["bright_aqua"]),
-      str(GRUVBOX["bright_orange"]),
-      str(GRUVBOX["bright_yellow"]),
-      str(GRUVBOX["bright_red"]),
-  ]),
-
-  # Bottom sheet colors
-  color_bottom_hdr = f'bold {GRUVBOX["bright_yellow"]} on {GRUVBOX["bg0_h"]}',
-
-  # Command palette and menus
-  color_cmdpalette = f'{GRUVBOX["fg1"]} on {GRUVBOX["bg3"]}',
-  color_menu = f'{GRUVBOX["fg1"]} on {GRUVBOX["bg3"]}',
-  color_menu_active = f'bold {GRUVBOX["bright_yellow"]} on {GRUVBOX["bg0_s"]}',
-  color_menu_help = f'italic {GRUVBOX["bg0_h"]} on {GRUVBOX["blue"]}',
-
-  # Hidden columns
-  color_hidden_col = f'{GRUVBOX["gray"]} on {GRUVBOX["bg0"]}',
-
-  # Add-on status colors
-  color_add_pending = f'{GRUVBOX["bright_yellow"]} on {GRUVBOX["bg0"]}',
-  color_change_pending = f'{GRUVBOX["bright_purple"]} on {GRUVBOX["bg0"]}',
-  color_delete_pending = f'{GRUVBOX["bright_red"]} on {GRUVBOX["bg0"]}',
-
-  disp_status_fmt = '{sheet.sheetlist} ',
-  disp_rstatus_fmt = '{sheet.threadStatus} {sheet.keystrokeStatus}   [:longname_status]{sheet.longname}[/]  {sheet.nRows:9d} {sheet.rowtype} {sheet.modifiedStatus}{sheet.selectedStatus}{vd.replayStatus}{vd.sidebarStatus}',
+vd.themes["gruvbox-dark"] = dict(
+    # Base colors
+    color_default=f"{GRUVBOX['fg1']} on {GRUVBOX['bg0']}",
+    color_default_hdr=f"bold {GRUVBOX['bright_yellow']} on {GRUVBOX['bg0_s']}",
+    # Key column highlighting with good contrast
+    color_key_col=f"{GRUVBOX['bright_green']} on {GRUVBOX['bg0']}",
+    # Current column/row (cursor position)
+    color_current_row=f"bold {GRUVBOX['bg0']} on {GRUVBOX['blue']}",  # Inverted for visibility
+    color_current_col=f"{GRUVBOX['bright_blue']} on {GRUVBOX['bg0_s']}",
+    color_current_cell=f"bold {GRUVBOX['bg0']} on {GRUVBOX['bright_blue']}",
+    # Selected rows - high contrast for readability
+    color_selected_row=f"{GRUVBOX['bg0']} on {GRUVBOX['bright_green']}",  # Inverted green background
+    # Column separators
+    color_column_sep=f"{GRUVBOX['bg2']} on {GRUVBOX['bg0']}",
+    # Aggregator
+    color_aggregator=f"bold {GRUVBOX['fg0']} on {GRUVBOX['bg0_h']}",
+    # Status bars and messages
+    color_status=f"{GRUVBOX['fg1']} on {GRUVBOX['bg0_h']}",
+    color_active_status=f"{GRUVBOX['fg2']} on {GRUVBOX['bg0_s']}",
+    color_error=f"bold {GRUVBOX['bright_red']} on {GRUVBOX['bg0_h']}",
+    color_warning=f"{GRUVBOX['bright_yellow']} on {GRUVBOX['bg0_h']}",
+    # Sidebar
+    color_sidebar=f"{GRUVBOX['fg0']} on {GRUVBOX['bg2']}",
+    color_sidebar_title=f"{GRUVBOX['bright_orange']} on {GRUVBOX['bg2']}",
+    color_longname_guide=f"{GRUVBOX['fg4']} on {GRUVBOX['bg2']}",
+    color_heading=f"{GRUVBOX['bright_orange']} on {GRUVBOX['bg2']}",
+    # Cell content types
+    color_note_row=f"{GRUVBOX['bright_blue']} on {GRUVBOX['bg0']}",
+    # Graph colors
+    color_graph_hidden=f"{GRUVBOX['blue']}",
+    # Canvas/plot colors
+    plot_colors=" ".join(
+        [
+            str(GRUVBOX["bright_green"]),
+            str(GRUVBOX["bright_blue"]),
+            str(GRUVBOX["bright_purple"]),
+            str(GRUVBOX["bright_aqua"]),
+            str(GRUVBOX["bright_orange"]),
+            str(GRUVBOX["bright_yellow"]),
+            str(GRUVBOX["bright_red"]),
+        ]
+    ),
+    # Bottom sheet colors
+    color_bottom_hdr=f"bold {GRUVBOX['bright_yellow']} on {GRUVBOX['bg0_h']}",
+    # Command palette and menus
+    color_cmdpalette=f"{GRUVBOX['fg1']} on {GRUVBOX['bg3']}",
+    color_menu=f"{GRUVBOX['fg1']} on {GRUVBOX['bg3']}",
+    color_menu_active=f"bold {GRUVBOX['bright_yellow']} on {GRUVBOX['bg0_s']}",
+    color_menu_help=f"italic {GRUVBOX['bg0_h']} on {GRUVBOX['blue']}",
+    # Hidden columns
+    color_hidden_col=f"{GRUVBOX['gray']} on {GRUVBOX['bg0']}",
+    # Add-on status colors
+    color_add_pending=f"{GRUVBOX['bright_yellow']} on {GRUVBOX['bg0']}",
+    color_change_pending=f"{GRUVBOX['bright_purple']} on {GRUVBOX['bg0']}",
+    color_delete_pending=f"{GRUVBOX['bright_red']} on {GRUVBOX['bg0']}",
+    disp_status_fmt="{sheet.sheetlist} ",
+    disp_rstatus_fmt="{sheet.threadStatus} {sheet.keystrokeStatus}   [:longname_status]{sheet.longname}[/]  {sheet.nRows:9d} {sheet.rowtype} {sheet.modifiedStatus}{sheet.selectedStatus}{vd.replayStatus}{vd.sidebarStatus}",
 )
 
-# vvv HERE WHILE I CREATE MY OWN THEME
-# if options.theme == '':
-#   options.theme = 'gruvbox-dark'
+
+if options.theme == "":
+    options.theme = "tokyonight-moon"
+
 
 ################################################################################
 # Set some UI preferences for better experience
 
-# vvv HERE WHILE I CREATE MY OWN THEME
-options.color_active_status = "black on 234"
-options.color_bottom_hdr = "underline white"
-options.color_cmdpalette = "white on 234"
-options.color_current_cell = "16 on white"
-options.color_current_col = ""
-options.color_current_row = "bold on 240"
-options.color_default = "255 on black"
-options.color_heading = "black on white"
-options.color_key_col = "cyan"
-options.color_keystrokes = "green"
-options.color_longname_guide = "green"
-options.color_menu = "white on 234"
-options.color_menu_active = "white on black"
-options.color_menu_help = "white on black"
-options.color_menu_spec = "bold on 240"
-options.color_sidebar = "white on black"
-options.color_sidebar_title = "black on 255 white"
-# ^^^ HERE WHILE I CREATE MY OWN THEME
+
 options.motd_url = ""
 vd.motd = ""
 
+
 @Sheet.after
 def afterLoad(sheet):
-  options.numeric_binning = True
-  options.disp_date_fmt = '%Y-%m-%d'
-  options.disp_menu_boxchars = '││──╭╮╰╯├┤'
+    options.numeric_binning = True
+    options.disp_date_fmt = "%Y-%m-%d"
+    options.disp_menu_boxchars = "││──╭╮╰╯├┤"
+
 
 ################################################################################
 # Key bindings
@@ -156,6 +226,7 @@ def afterLoad(sheet):
 
 ################################################################################
 # Aggregators
+
 
 def agg_range(values):
     # Filter out invalid or incompatible values
@@ -189,6 +260,7 @@ vd.aggregator("non_empty", agg_non_empty, "returns non empty values")
 ################################################################################
 # autotune.py
 # https://gist.github.com/cool-RR/47d8ebb7afc636a995fccf889aada8e9
+
 
 N_ROWS_FOR_TYPE_GUESSING = 100
 DEFAULT_FLOAT_PRECISION = 5
