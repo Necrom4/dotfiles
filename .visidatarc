@@ -44,27 +44,27 @@ vd.themes["tokyonight-moon"] = dict(
     # Key column highlighting with good contrast
     color_key_col=f"{TERMINAL['bright_green']}",
     # Current column/row (cursor position)
-    color_current_row=f"bold {TERMINAL['bright_cyan']} on {TOKYONIGHT['md']}",  # Inverted for visibility
+    color_current_row=f"bold {TERMINAL['bright_cyan']} on {TERMINAL['blue']}",
     color_current_col=f"on {TOKYONIGHT['bg']}",
-    color_current_cell=f"bold {TOKYONIGHT['hl']} on {TOKYONIGHT['md']}",
+    color_current_cell=f"bold {TOKYONIGHT['hl']} on {TERMINAL['blue']}",
     # Selected rows - high contrast for readability
-    color_selected_row=f"{TERMINAL['green']} on {TERMINAL['bright_green']}",  # Inverted green background
+    color_selected_row=f"on {TERMINAL['gray']}",
     # Column separators
     color_column_sep=f"{TERMINAL['white']}",
     # Aggregator
     color_aggregator=f"bold {TERMINAL['blue']} on {TOKYONIGHT['bg']}",
     # Status bars and messages
     color_status=f"{TERMINAL['blue']} on {TERMINAL['green']}",
-    color_active_status=f"{TOKYONIGHT['md']} on {TOKYONIGHT['bg']}",
+    color_active_status=f"{TERMINAL['blue']} on {TOKYONIGHT['bg']}",
     color_error=f"bold {TERMINAL['bright_yellow']} on {TERMINAL['red']}",
     color_warning=f"{TERMINAL['bright_yellow']}",
     # Sidebar
     color_sidebar=f"{TERMINAL['white']}",
     color_sidebar_title=f"bold {TOKYONIGHT['fg']} on {TOKYONIGHT['bg']}",
-    color_longname_guide=f"{TOKYONIGHT['md']} on {TOKYONIGHT['bg']}",
+    color_longname_guide=f"{TERMINAL['blue']} on {TOKYONIGHT['bg']}",
     color_heading=f"{TOKYONIGHT['fg']} on {TOKYONIGHT['bg']}",
     # Cell content types
-    color_note_row=f"{TERMINAL['bright_blue']} on {TERMINAL['green']}",
+    color_note_row=f"{TERMINAL['yellow']} on {TERMINAL['gray']}",
     # Graph colors
     color_graph_hidden=f"{TERMINAL['blue']}",
     # Canvas/plot colors
@@ -94,7 +94,7 @@ vd.themes["tokyonight-moon"] = dict(
     color_change_pending=f"bold italic {TERMINAL['yellow']}",
     color_delete_pending=f"italic {TERMINAL['red']}",
     color_edit_cell=f"{TERMINAL['white']} on {TOKYONIGHT['bg']}",
-    color_edit_unfocused=f"{TOKYONIGHT['md']} on {TOKYONIGHT['bg']}",
+    color_edit_unfocused=f"{TERMINAL['blue']} on {TOKYONIGHT['bg']}",
     color_keystrokes=f"{TERMINAL['magenta']}",
     color_code=f"{TERMINAL['magenta']}",
     disp_status_fmt="{sheet.sheetlist} ",
@@ -108,34 +108,34 @@ vd.themes["tokyonight-moon"] = dict(
 # Gruvbox Dark color palette mapped to 256-color terminal codes
 # Using the closest matches to original Gruvbox colors
 GRUVBOX = {
-    'bg0_h':         234,   # #1d2021 (hard dark)
-    'bg0':           235,   # #282828 (main dark)
-    'bg0_s':         236,   # #32302f
-    'bg1':           237,   # #3c3836
-    'bg2':           239,   # #504945
-    'bg3':           241,   # #665c54
-    'bg4':           243,   # #7c6f64
-    'fg0':           229,   # #fbf1c7 (hard light)
-    'fg':            223,   # #ebdbb2 (main light)
-    'fg1':           223,   # #ebdbb2 (main light)
-    'fg2':           250,   # #d5c4a1
-    'fg3':           248,   # #bdae93
-    'fg4':           246,   # #a89984
-    'red':           124,   # #cc241d (red)
-    'green':         106,   # #98971a (green)
-    'yellow':        172,   # #d79921 (yellow)
-    'blue':          66,    # #458588 (blue)
-    'purple':        132,   # #b16286 (purple)
-    'aqua':          108,   # #689d6a (aqua)
-    'orange':        166,   # #d65d0e (orange)
-    'bright_red':    167,   # #fb4934 (bright red)
-    'bright_green':  142,   # #b8bb26 (bright green)
-    'bright_yellow': 214,   # #fabd2f (bright yellow)
-    'bright_blue':   109,   # #83a598 (bright blue)
-    'bright_purple': 175,   # #d3869b (bright purple)
-    'bright_aqua':   108,   # #8ec07c (bright aqua)
-    'bright_orange': 208,   # #fe8019 (bright orange)
-    'gray':          245,   # #928374 (gray)
+    "bg0_h": 234,  # #1d2021 (hard dark)
+    "bg0": 235,  # #282828 (main dark)
+    "bg0_s": 236,  # #32302f
+    "bg1": 237,  # #3c3836
+    "bg2": 239,  # #504945
+    "bg3": 241,  # #665c54
+    "bg4": 243,  # #7c6f64
+    "fg0": 229,  # #fbf1c7 (hard light)
+    "fg": 223,  # #ebdbb2 (main light)
+    "fg1": 223,  # #ebdbb2 (main light)
+    "fg2": 250,  # #d5c4a1
+    "fg3": 248,  # #bdae93
+    "fg4": 246,  # #a89984
+    "red": 124,  # #cc241d (red)
+    "green": 106,  # #98971a (green)
+    "yellow": 172,  # #d79921 (yellow)
+    "blue": 66,  # #458588 (blue)
+    "purple": 132,  # #b16286 (purple)
+    "aqua": 108,  # #689d6a (aqua)
+    "orange": 166,  # #d65d0e (orange)
+    "bright_red": 167,  # #fb4934 (bright red)
+    "bright_green": 142,  # #b8bb26 (bright green)
+    "bright_yellow": 214,  # #fabd2f (bright yellow)
+    "bright_blue": 109,  # #83a598 (bright blue)
+    "bright_purple": 175,  # #d3869b (bright purple)
+    "bright_aqua": 108,  # #8ec07c (bright aqua)
+    "bright_orange": 208,  # #fe8019 (bright orange)
+    "gray": 245,  # #928374 (gray)
 }
 
 vd.themes["gruvbox-dark"] = dict(
