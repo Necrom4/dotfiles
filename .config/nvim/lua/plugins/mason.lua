@@ -9,8 +9,6 @@ return {
 			"clangd",
 			"debugpy",
 			"delve",
-			"docker-compose-language-service",
-			"dockerfile-language-server",
 			"gofumpt",
 			"golangci-lint",
 			"gopls",
