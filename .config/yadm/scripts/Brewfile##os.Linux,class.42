@@ -22,6 +22,8 @@ brew "just"
 brew "lazydocker"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Terminal-based SSH manager
+brew "lazyssh"
 # Text-based web browser
 brew "lynx"
 # Polyglot runtime manager (asdf rust clone)
