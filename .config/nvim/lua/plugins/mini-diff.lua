@@ -1,6 +1,7 @@
 return {
 	"nvim-mini/mini.diff",
 	version = false,
+	event = "VeryLazy",
 	config = function()
 		local MiniDiff = require("mini.diff")
 
