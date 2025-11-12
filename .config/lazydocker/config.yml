@@ -11,3 +11,9 @@ stats:
     - caption: Memory (%)
       statPath: DerivedStats.MemoryPercentage
       color: green
+
+customCommands:
+  images:
+    - name: "create container"
+      attach: false
+      command: "docker container create --name {{ .Image.Name }} {{ .Image.Name }}:{{ .Image.Tag }} sleep infinity"
