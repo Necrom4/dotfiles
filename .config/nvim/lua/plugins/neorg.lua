@@ -1,28 +1,40 @@
 return {
 	"nvim-neorg/neorg",
+	version = false,
+	dependencies = {
+		"nvim-neorg/tree-sitter-norg",
+		"benlubas/neorg-conceal-wrap",
+		"benlubas/neorg-interim-ls",
+	},
 	event = { "LazyFile" },
 	ft = { "norg" },
 	opts = {
 		load = {
-			-- Basics
-			["core.defaults"] = {}, -- Loads default modules
-			["core.concealer"] = {}, -- Handles visual rendering of markup
-			["core.dirman"] = { -- Manages workspaces
+			["core.autocommands"] = {},
+			["core.completion"] = {
+				config = { engine = { module_name = "external.lsp-completion" } },
+			},
+			["core.concealer"] = {},
+			["core.defaults"] = {},
+			["core.dirman"] = {
 				config = {
-					workspaces = {
-						notes = "~/notes",
-					},
+					workspaces = { notes = "~/.notes" },
 					default_workspace = "notes",
 				},
 			},
-			["core.autocommands"] = {},
+			["core.esupports.indent"] = {},
+			["core.export"] = {},
+			["core.export.html"] = {},
+			["core.export.markdown"] = {},
+			["core.highlights"] = {},
 			["core.integrations.treesitter"] = {},
 			["core.itero"] = {},
-			["core.highlights"] = {},
 			["core.keybinds"] = {},
 			["core.promo"] = {},
 			["core.qol.todo_items"] = {},
 			["core.syntax"] = {},
+			["external.conceal-wrap"] = {},
+			["external.interim-ls"] = {},
 		},
 	},
 	cmd = "Neorg",
@@ -46,7 +58,7 @@ return {
 						foldcolumn = "0",
 					},
 					on_win = function()
-						vim.cmd("Neorg workspace notes")
+						vim.cmd("Neorg index")
 					end,
 				})
 			end,
@@ -67,7 +79,7 @@ return {
 			silent = true,
 		},
 		{
-			"<a-x>",
+			"<c-a>",
 			"<Plug>(neorg.qol.todo-items.todo.task-cycle)",
 			ft = "norg",
 			silent = true,

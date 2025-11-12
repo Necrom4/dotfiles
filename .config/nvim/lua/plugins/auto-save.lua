@@ -2,11 +2,11 @@ return {
 	"okuuva/auto-save.nvim",
 	version = "*",
 	cmd = "ASToggle",
-	ft = { "norg" },
+	event = { "InsertLeave", "TextChanged" }, -- optional for lazy loading on trigger events
 	opts = {
 		debounce_delay = 500, -- delay after which a pending save is executed
 		trigger_events = {
-			immediate_save = { "BufLeave", "FocusLost" }, -- vim events that trigger an immediate save
+			immediate_save = { { "BufLeave", "FocusLost", pattern = { "*.norg" } } }, -- vim events that trigger an immediate save
 			defer_save = {
 				{ "InsertLeave", "TextChanged", pattern = { "*.erb", "*.css", "*.scss" } },
 			},
