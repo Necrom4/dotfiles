@@ -1,2 +1,9 @@
 [flavor]
 dark = "tokyo-night"
+
+[icon]
+prepend_dirs = [
+	{ name = "code", text = "" },
+	{ name = "games", text = "󰊴" },
+	{ name = ".local", text = "󱉭" },
+]
