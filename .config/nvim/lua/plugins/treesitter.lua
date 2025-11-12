@@ -26,6 +26,7 @@ return {
 				"csv",
 				"embedded_template",
 				"just",
+				"lua_patterns",
 				"make",
 				"passwd",
 				"scss",
