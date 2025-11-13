@@ -19,6 +19,7 @@ return {
 		},
 		"moyiz/blink-emoji.nvim",
 		"bydlw98/blink-cmp-env",
+		"newtoallofthis123/blink-cmp-fuzzy-path",
 		"Kaiser-Yang/blink-cmp-git",
 		"folke/lazydev.nvim",
 		"MahanRahmati/blink-nerdfont.nvim",
@@ -97,6 +98,7 @@ return {
 					"calc",
 					"emoji",
 					"env",
+					"fuzzy-path",
 					"git",
 					"lazydev",
 					"lsp",
@@ -162,6 +164,17 @@ return {
 						item_kind = require("blink.cmp.types").CompletionItemKind.Variable,
 						show_braces = false,
 						show_documentation_window = true,
+					},
+				},
+				["fuzzy-path"] = {
+					name = "Fuzzy Path",
+					module = "blink-cmp-fuzzy-path",
+					score_offset = 1000,
+					opts = {
+						filetypes = { "ruby", "*rb" },
+						trigger_char = "/",
+						max_results = 3,
+						search_tool = "fd",
 					},
 				},
 				git = {
