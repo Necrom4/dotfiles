@@ -3,7 +3,16 @@ dark = "tokyo-night"
 
 [icon]
 prepend_dirs = [
+	{ name = "Brewfile", text = "" },
 	{ name = "code", text = "" },
 	{ name = "games", text = "󰊴" },
+	{ name = "gimp", text = "" },
+	{ name = "homebrew", text = "" },
 	{ name = ".local", text = "󱉭" },
+	{ name = "nvim", text = "" },
+	{ name = ".oh-my-zsh", text = "" },
+	{ name = ".ssh", text = "󰣀" },
+	{ name = "Trash", text = "" },
+	{ name = "vscode", text = "" },
+	{ name = ".vscode", text = "" },
 ]
