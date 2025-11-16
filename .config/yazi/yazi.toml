@@ -4,7 +4,7 @@ visidata = [
 ]
 
 [open]
-prepend_rules = [
+append_rules = [
 	{ name = "*.csv", use = "visidata" },
 	{ name = "*.json", use = "visidata" },
 	{ name = "*.sql", use = "visidata" },
