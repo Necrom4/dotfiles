@@ -1,0 +1,5 @@
+hotKeys:
+  q:
+    shortCut: q
+    description: Quit k9s
+    command: q!
