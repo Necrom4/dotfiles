@@ -11,11 +11,12 @@ k9s:
   ui:
     enableMouse: false
     headless: false
-    logoless: false
+    logoless: true
     crumbsless: false
     splashless: false
     reactive: false
-    noIcons: false
+    skin: tokyonight
+    noIcons: true
     defaultsToFullScreen: false
     useFullGVRTitle: false
   skipLatestRevCheck: false
