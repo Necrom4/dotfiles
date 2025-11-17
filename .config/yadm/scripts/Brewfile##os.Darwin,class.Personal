@@ -50,6 +50,8 @@ brew "lazygit"
 brew "lazyssh"
 # YAML Parser
 brew "libyaml"
+# Package manager for the Lua programming language
+brew "luarocks"
 # Text-based web browser
 brew "lynx"
 # Mac App Store command-line interface
