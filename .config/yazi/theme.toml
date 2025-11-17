@@ -16,3 +16,8 @@ prepend_dirs = [
 	{ name = "vscode", text = "" },
 	{ name = ".vscode", text = "" },
 ]
+
+prepend_exts = [
+	{ name = "jar", text = "" },
+	{ name = "plist", text = "" },
+]
