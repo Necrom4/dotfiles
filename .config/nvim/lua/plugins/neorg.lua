@@ -2,7 +2,34 @@ return {
 	"nvim-neorg/neorg",
 	version = false,
 	dependencies = {
-		"nvim-neorg/tree-sitter-norg",
+		{
+			-- TODO: remove whenever norg is integrate into nvim-treesitter's main branch
+			"nvim-neorg/tree-sitter-norg",
+			build = {
+				"rockspec",
+				function()
+					local from = vim.fn.stdpath("data") .. "/lazy-rocks/tree-sitter-norg/lib/lua/5.1/parser/norg.so"
+					local to = vim.fn.stdpath("data") .. "/lazy/nvim-treesitter/parser/norg.so"
+					vim.fn.mkdir(vim.fn.fnamemodify(to, ":p:h"), "p")
+
+					pcall(vim.uv.fs_unlink, to)
+					local ok, err, err_name = vim.uv.fs_symlink(from, to, { dir = false, junction = false })
+					if not ok then
+						vim.notify(
+							("symlink %s → %s failed: %s %s"):format(from, to, err, err_name),
+							vim.log.levels.ERROR,
+							{ title = "tree-sitter-norg" }
+						)
+					else
+						vim.notify(
+							("symlink %s → %s created"):format(from, to),
+							vim.log.levels.INFO,
+							{ title = "tree-sitter-norg" }
+						)
+					end
+				end,
+			},
+		},
 		"benlubas/neorg-conceal-wrap",
 		"benlubas/neorg-interim-ls",
 	},
