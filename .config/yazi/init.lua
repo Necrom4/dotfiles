@@ -31,9 +31,10 @@ require("whoosh"):setup {
     { tag = "Documents", path = "~/Documents", key = "d" },
     { tag = "Downloads", path = "~/Downloads", key = "D" },
     { tag = "/tmp", path = "/tmp", key = "t" },
-    { tag = "nvim", path = "~/.config/nvim", key = "n" },
-    { tag = "yadm", path = "~/.config/yadm", key = "y" },
-    { tag = "zsh", path = "~/.config/zsh", key = "z" },
+    { tag = "~/.config/nvim", path = "~/.config/nvim", key = { "c", "n" } },
+    { tag = "~/.config/yadm", path = "~/.config/yadm", key = { "c", "y" } },
+    { tag = "~/.config/zsh", path = "~/.config/zsh", key = { "c", "z" } },
+    { tag = "~/.local/share/nvim", path = "~/.local/share/nvim", key = { "l", "s", "n" } },
   },
 
   -- Notification settings
