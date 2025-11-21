@@ -117,6 +117,8 @@ alias ju="just update"
 alias g="lazygit"
 alias y="yadm enter lazygit"
 
+alias watch="viddy -d -n 1 --shell zsh "$(which $1 | cut -d' ' -f 4-)""
+
 alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
 
 if [ "$(yadm config local.class)" = "Personal" ]; then
