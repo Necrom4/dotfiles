@@ -78,6 +78,8 @@ brew "speedtest-cli"
 brew "tldr"
 # Lightweight BitTorrent client
 brew "transmission-cli"
+# Modern watch command
+brew "viddy"
 # Terminal spreadsheet multitool for discovering and arranging data
 brew "visidata"
 # Internet file retriever
