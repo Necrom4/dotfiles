@@ -117,6 +117,7 @@ alias j="just"
 alias jl="just --list"
 alias ju="just update"
 
+alias d="lazydocker"
 alias g="lazygit"
 alias y="yadm enter lazygit"
 
@@ -131,29 +132,6 @@ fi
 if [ "$(yadm config local.class)" = "42" ]; then
   alias cclean='bash ~/LinuxCleaner_42.sh'
 fi
-
-# Docker/Lazydocker with auto-start
-d() {
-  if ! docker info > /dev/null 2>&1; then
-    if command -v colima > /dev/null; then
-      colima start
-    elif command -v open > /dev/null && [ -d "/Applications/Docker.app" ]; then
-      open -a Docker
-    elif command -v systemctl > /dev/null; then
-      sudo systemctl start docker
-    else
-      echo "No Docker backend found (colima, Docker Desktop, or systemd)."
-      return 1
-    fi
-
-    until docker info > /dev/null 2>&1; do
-      sleep 1
-    done
-  fi
-
-  command -v lazydocker > /dev/null || { echo "lazydocker is not installed."; return 1; }
-  lazydocker
-}
 
 # Yazi with directory change on exit
 x() {
