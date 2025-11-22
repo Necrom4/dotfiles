@@ -34,6 +34,7 @@ return {
 				"ssh_config",
 				"styled",
 				"superhtml",
+				"tmux",
 				"tsv",
 				"xml",
 				"zsh",

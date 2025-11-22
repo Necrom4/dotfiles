@@ -76,6 +76,8 @@ brew "sevenzip"
 brew "speedtest-cli"
 # Simplified and community-driven man pages
 brew "tldr"
+# Terminal multiplexer
+brew "tmux"
 # Lightweight BitTorrent client
 brew "transmission-cli"
 # Modern watch command
