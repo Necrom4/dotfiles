@@ -119,6 +119,8 @@ cask "notion"
 cask "plex"
 # VPN client focusing on security
 cask "protonvpn"
+# Control your tools with a few keystrokes
+cask "raycast"
 # Digital audio production application
 cask "reaper"
 # Music streaming service
