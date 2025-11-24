@@ -4,7 +4,7 @@ return {
 		spec = {
 			{
 				mode = { "n", "v" },
-				{ "<leader>cc", name = "Convert (interactive selection)", icon = { icon = " ", color = "orange" } },
+				{ "<leader>cc", group = "calc", icon = { icon = " ", color = "cyan" } },
 				{ "<leader>cC", name = "Color Picker", icon = { icon = " ", color = "orange" } },
 				{ "<leader>d", group = "diff", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>di", name = "Index", icon = { icon = " ", color = "blue" } },
