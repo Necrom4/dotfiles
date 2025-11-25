@@ -37,7 +37,7 @@
     dir                     # current directory
     # =========================[ Line #2 ]=========================
     newline                 # \n
-    # prompt_char           # prompt symbol
+    prompt_char             # HIDDEN unless post prompt
   )
 
   # The list of segments shown on the right. Fill it with less important segments.
@@ -114,6 +114,8 @@
     os_icon               # os identifier
     # =========================[ Line #2 ]=========================
     newline                 # \n
+    command_execution_time  # HIDDEN unless post prompt
+    time                    # HIDDEN unless post prompt
     # ip                    # ip address and bandwidth usage for a specified network interface
     # proxy                 # system-wide http/https/ftp proxy
     # battery               # internal battery
@@ -1685,7 +1687,7 @@
   # If set to true, time will update when you hit enter. This way prompts for the past
   # commands will contain the start times of their commands as opposed to the default
   # behavior where they contain the end times of their preceding commands.
-  typeset -g POWERLEVEL9K_TIME_UPDATE_ON_COMMAND=false
+  typeset -g POWERLEVEL9K_TIME_UPDATE_ON_COMMAND=true
   # Custom icon.
   typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION=
   # Custom prefix.
@@ -1730,7 +1732,15 @@
   #   - always:   Trim down prompt when accepting a command line.
   #   - same-dir: Trim down prompt when accepting a command line unless this is the first command
   #               typed after changing current working directory.
-  typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=same-dir
+  typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=off
+
+  function p10k-on-post-prompt() {
+    p10k display '1'=hide '1'=hide '2/right/time'=show '2/right/command_execution_time'=show '*/left_frame'=hide '*/right_frame'=hide '2/left/prompt_char'=show
+  }
+
+  function p10k-on-pre-prompt() {
+    p10k display '1'=show '1'=show '2/right/time'=hide '2/right/command_execution_time'=hide '*/left_frame'=show '*/right_frame'=show  '2/left/prompt_char'=hide
+  }
 
   # Instant prompt mode.
   #
