@@ -10,6 +10,7 @@ append_rules = [
 	{ name = "*.sql", use = "visidata" },
 	{ name = "*.sqlite", use = "visidata" },
 	{ name = "*.tsv", use = "visidata" },
+	{ name = "*.xlsx", use = "visidata" },
 	{ name = "*.yaml", use = "visidata" },
 	{ name = "*.yml", use = "visidata" },
 ]
