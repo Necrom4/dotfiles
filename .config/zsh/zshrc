@@ -109,9 +109,9 @@ elif command -v batcat &> /dev/null; then
   alias cat="batcat"
 fi
 
-alias ll='eza -la --total-size'
-alias la='eza -a'
-alias lt='eza --tree'
+alias ll='ls -la --total-size'
+alias la='ls -a'
+alias lt='ls --tree'
 
 alias j="just"
 alias jl="just --list"
