@@ -67,17 +67,6 @@ vd.themes["tokyonight-moon"] = dict(
     color_note_row=f"{TERMINAL['yellow']} on {TERMINAL['gray']}",
     # Graph colors
     color_graph_hidden=f"{TERMINAL['blue']}",
-    # Canvas/plot colors
-    plot_colors=" ".join(
-        [
-            str(TERMINAL["green"]),
-            str(TERMINAL["bright_blue"]),
-            str(TERMINAL["bright_magenta"]),
-            str(TERMINAL["bright_cyan"]),
-            str(TERMINAL["bright_yellow"]),
-            str(TERMINAL["bright_red"]),
-        ]
-    ),
     # Bottom sheet colors
     color_bottom_hdr=f"{TERMINAL['cyan']} on {TOKYONIGHT['bright_bg']}",
     # Command palette and menus
