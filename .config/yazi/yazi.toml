@@ -1,6 +1,6 @@
 [opener]
 visidata = [
-	{ run = 'vd "$@"', block = true, desc = "Open in Visidata" },
+	{ run = 'visidata "$@"', block = true, desc = "Visidata" },
 ]
 
 [open]
