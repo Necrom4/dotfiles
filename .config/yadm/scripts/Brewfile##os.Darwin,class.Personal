@@ -78,6 +78,8 @@ brew "speedtest-cli"
 brew "tldr"
 # Terminal multiplexer
 brew "tmux"
+# Command-line translator using Google Translate and more
+brew "translate-shell"
 # Lightweight BitTorrent client
 brew "transmission-cli"
 # Modern watch command
