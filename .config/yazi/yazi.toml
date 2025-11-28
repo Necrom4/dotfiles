@@ -6,6 +6,7 @@ visidata = [
 [open]
 append_rules = [
 	{ name = "*.csv", use = "visidata" },
+	{ name = "*.db", use = "visidata" },
 	{ name = "*.json", use = "visidata" },
 	{ name = "*.sql", use = "visidata" },
 	{ name = "*.sqlite", use = "visidata" },
