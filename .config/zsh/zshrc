@@ -10,15 +10,26 @@ fi
 # ENVIRONMENT VARIABLES
 # ============================================================================
 
-export PATH="$(brew --prefix)/share/john:$PATH"
+if [[ -x $(command -v brew) ]]; then
+  BREW_PREFIX=$(brew --prefix)
+elif [[ -x /usr/local/bin/brew ]]; then
+  BREW_PREFIX="/usr/local"
+elif [[ -x /opt/homebrew/bin/brew ]]; then
+  BREW_PREFIX="/opt/homebrew"
+else
+  BREW_PREFIX=""
+fi
 
-export PATH="$(brew --prefix)/opt/postgresql@18/bin:$PATH"
-export LDFLAGS="-L$(brew --prefix)/opt/postgresql@18/lib"
-export CPPFLAGS="-I$(brew --prefix)/opt/postgresql@18/include"
+if [[ -n "$BREW_PREFIX" ]]; then
+  export PATH="$BREW_PREFIX/share/john:$PATH"
+  export PATH="$BREW_PREFIX/opt/postgresql@18/bin:$PATH"
+  export LDFLAGS="-L$BREW_PREFIX/opt/postgresql@18/lib"
+  export CPPFLAGS="-I$BREW_PREFIX/opt/postgresql@18/include"
+fi
 
-if command -v nvim >/dev/null 2>&1; then
+if [[ -x $(command -v nvim) ]]; then
   export EDITOR="nvim"
-elif command -v vim >/dev/null 2>&1; then
+elif [[ -x $(command -v vim) ]]; then
   export EDITOR="vim"
 else
   export EDITOR="vi"
@@ -103,9 +114,9 @@ e() {
   "$EDITOR" "$@"
 }
 
-if command -v bat &> /dev/null; then
+if [[ -x $(command -v bat) ]]; then
   alias cat="bat --theme=Dracula"
-elif command -v batcat &> /dev/null; then
+elif [[ -x $(command -v batcat) ]]; then
   alias cat="batcat"
 fi
 
@@ -121,7 +132,7 @@ alias d="lazydocker"
 alias g="lazygit"
 alias y="yadm enter lazygit"
 
-alias watch="viddy -d -n 1 --shell zsh "$(which $1 | cut -d' ' -f 4-)""
+alias watch="viddy -d -n 1 --shell zsh "$@""
 
 alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
 
@@ -145,6 +156,10 @@ x() {
 
 # Z with fzf integration
 zi() {
+  if ! command -v z &>/dev/null; then
+    echo "z not found"
+    return 1
+  fi
   local dir
   dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -80')
   [[ -n "$dir" ]] && cd "$dir"
@@ -152,15 +167,17 @@ zi() {
 
 # VisiData pip wrapper
 vdpip() {
-  local vd_path
-  vd_path=$(brew --prefix visidata 2>/dev/null)
-
-  if [[ -z "$vd_path" ]]; then
-    echo "VisiData not found via Homebrew."
+  if ! command -v visidata &>/dev/null; then
+    echo "Visidata not found."
     return 1
   fi
 
-  local vdp_python="$vd_path/libexec/bin/python3"
+  local vdp_python
+  if [[ -n "$BREW_PREFIX" ]]; then
+    vdp_python="$BREW_PREFIX/opt/visidata/libexec/bin/python3"
+  else
+    vdp_python="$(command -v visidata | xargs dirname)/../libexec/bin/python3"
+  fi
 
   if [[ ! -x "$vdp_python" ]]; then
     echo "Embedded Python not found at: $vdp_python"
@@ -182,9 +199,11 @@ vdpip() {
 
 scripts_dir="${0:A:h}/zshrc.os"
 
-setopt null_glob
-for script in "$scripts_dir"/*.sh; do
-  [[ "$script" == *"##"* ]] && continue
-  [[ -r "$script" ]] && source "$script"
-done
-unsetopt null_glob
+if [[ -d "$scripts_dir" ]]; then
+  setopt null_glob
+  for script in "$scripts_dir"/*.sh; do
+    [[ "$script" == *"##"* ]] && continue
+    [[ -r "$script" ]] && source "$script"
+  done
+  unsetopt null_glob
+fi
