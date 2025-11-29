@@ -10,8 +10,8 @@ hash = "901741afba1979739b4650324265162e"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "2301ff8"
-hash = "8ad3e90b079190b4905f24a44f4ca06b"
+rev = "eaf6920"
+hash = "5b2eb0cc2050cec1e4de83cfa51a5b90"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
@@ -20,12 +20,12 @@ hash = "62251f94eb67648d42cdfcfb8be0fad2"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "2301ff8"
+rev = "eaf6920"
 hash = "56fdabc96fc1f4d53c96eb884b02a5be"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "2301ff8"
+rev = "eaf6920"
 hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
@@ -45,7 +45,7 @@ hash = "4d441b38138ce6492a4e10fa349fd65"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "2301ff8"
+rev = "eaf6920"
 hash = "bcda8eeb3f4013bae156aecabfc745e8"
 
 [[plugin.deps]]
@@ -55,12 +55,12 @@ hash = "215729a555fe5286f1eb35520963d08"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "2301ff8"
+rev = "eaf6920"
 hash = "4ee57085277d616acfa0ef1fef37dc00"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "2301ff8"
+rev = "eaf6920"
 hash = "27ca02f49fd236b5cc7bf03c243859fe"
 
 [[plugin.deps]]
@@ -80,12 +80,12 @@ hash = "e17c11b605d989568a1d1741ca17c584"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "2301ff8"
+rev = "eaf6920"
 hash = "9dee2bf990ea941ccf67df74bca45468"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "2301ff8"
+rev = "eaf6920"
 hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
 [[flavor.deps]]
