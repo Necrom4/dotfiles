@@ -116,7 +116,9 @@ local function disk()
 	if uname ~= "darwin" then
 		flag = "-h"
 	end
-	local mount_path = utils.term_cmd("yadm config local.class") == "42" and "~" or "/"
+	local mount_path = utils.in_yadm_env(function()
+		return utils.term_cmd("git config local.class")
+	end) == "42" and "~" or "/"
 	if uname == "wsl" then
 		mount_path = "/mnt/c"
 	elseif uname == "darwin" then
@@ -354,7 +356,7 @@ return {
 		{
 			"<leader>fc",
 			function()
-				utils.cmd_in_yadm(function(yadm_repo)
+				utils.in_yadm_env(function(yadm_repo)
 					Snacks.dashboard.pick("git_files", { cwd = yadm_repo })
 				end)
 			end,
@@ -590,7 +592,7 @@ return {
 						key = "c",
 						desc = "Config",
 						action = function()
-							utils.cmd_in_yadm(function(yadm_repo)
+							utils.in_yadm_env(function(yadm_repo)
 								Snacks.dashboard.pick("git_files", { cwd = yadm_repo })
 							end)
 						end,

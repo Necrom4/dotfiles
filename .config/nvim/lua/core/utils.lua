@@ -50,7 +50,7 @@ end
 M.original_git_dir = nil
 
 function M.switch_git_dir()
-	local yadm_repo = vim.fn.expand("~/.local/share/yadm/repo.git")
+	local yadm_repo = vim.fn.expand("$HOME/.local/share/yadm/repo.git")
 
 	if vim.env.GIT_DIR == yadm_repo then
 		vim.env.GIT_DIR = M.original_git_dir
@@ -63,16 +63,22 @@ function M.switch_git_dir()
 	end
 end
 
-function M.cmd_in_yadm(cmd)
+function M.in_yadm_env(fn)
 	local original_git_dir = vim.env.GIT_DIR
-	local home = vim.fn.expand("~")
-	local git_dir = vim.fn.expand("~/.local/share/yadm/repo.git")
+	local original_git_work_tree = vim.env.GIT_WORK_TREE
+	local home = vim.fn.expand("$HOME")
 
-	vim.env.GIT_DIR = git_dir
-	cmd(home)
+	vim.env.GIT_DIR = home .. "/.local/share/yadm/repo.git"
+	vim.env.GIT_WORK_TREE = home
+
+	local result = fn(home)
+
 	vim.schedule(function()
 		vim.env.GIT_DIR = original_git_dir
+		vim.env.GIT_WORK_TREE = original_git_work_tree
 	end)
+
+	return result
 end
 
 return M
