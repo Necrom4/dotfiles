@@ -76,6 +76,7 @@ plugins=(
   rails
   rake
   ruby
+  tailscale
   tmux
   web-search
   yarn
