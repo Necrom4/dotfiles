@@ -16,6 +16,8 @@ brew "container"
 brew "docker"
 # Platform keystore credential helper for Docker
 brew "docker-credential-helper"
+# Perl lib for reading and writing EXIF metadata
+brew "exiftool"
 # Modern, maintained replacement for ls
 brew "eza"
 # Simple, fast and user-friendly alternative to find
