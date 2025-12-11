@@ -113,6 +113,8 @@ cask "discord"
 # System-wide audio equaliser
 cask "eqmac"
 cask "font-commit-mono-nerd-font"
+# Free and open-source image editor
+cask "gimp"
 # Trading software
 cask "ibkr"
 # Neovim Client
