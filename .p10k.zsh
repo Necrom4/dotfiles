@@ -759,7 +759,7 @@
   # Yazi shell color.
   typeset -g POWERLEVEL9K_YAZI_FOREGROUND=178
   # Custom icon.
-  # typeset -g POWERLEVEL9K_YAZI_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_YAZI_VISUAL_IDENTIFIER_EXPANSION='󰥩'
 
   ######################[ nnn: nnn shell (https://github.com/jarun/nnn) ]#######################
   # Nnn shell color.
