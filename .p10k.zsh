@@ -110,6 +110,7 @@
     taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch              # CPU architecture
+    tmux_session                 # [CUSTOM] tmux session
     time                    # current time
     os_icon               # os identifier
     # =========================[ Line #2 ]=========================
@@ -1719,6 +1720,17 @@
     # instant_prompt_example. This will give us the same `example` prompt segment in the instant
     # and regular prompts.
     prompt_example
+  }
+
+  function prompt_tmux_session() {
+    if [[ -n $TMUX ]]; then
+      local session_name
+      session_name=$(tmux display-message -p '#S' 2>/dev/null)
+
+      p10k segment -f 40 -i "" -t "${session_name}"
+    else
+      p10k segment -s ABSENT
+    fi
   }
 
   # User-defined prompt segments can be customized the same way as built-in segments.
