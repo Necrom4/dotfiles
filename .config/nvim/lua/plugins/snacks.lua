@@ -614,7 +614,7 @@ return {
 				{
 					pane = 1,
 					section = "terminal",
-					cmd = "curl -s 'https://wttr.in/?0FQ' || echo",
+					cmd = "curl -s 'https://wttr.in/?0FQ' | sed 's/^/               /' || echo -n",
 					height = 6,
 				},
 				{ pane = 1, section = "startup" },
