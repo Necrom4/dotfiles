@@ -50,6 +50,8 @@ brew "lazydocker"
 brew "lazygit"
 # Terminal-based SSH manager
 brew "lazyssh"
+# Library for Qalculate! program
+brew "libqalculate"
 # YAML Parser
 brew "libyaml"
 # Package manager for the Lua programming language
@@ -68,6 +70,8 @@ brew "nmap"
 brew "poppler"
 # Object-relational database system
 brew "postgresql@18", restart_service: :changed
+# Multi-purpose desktop calculator
+brew "qalculate-qt"
 # SVG rendering tool and library
 brew "resvg"
 # Search tool like grep and The Silver Searcher
