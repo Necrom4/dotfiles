@@ -98,6 +98,8 @@ brew "viddy"
 brew "visidata"
 # Internet file retriever
 brew "wget"
+# Passive hostname, domain, and IP lookup tool
+brew "wtfis"
 # Yet Another Dotfiles Manager
 brew "yadm"
 # JavaScript package manager
