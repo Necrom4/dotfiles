@@ -2,19 +2,50 @@
 dark = "tokyo-night"
 
 [icon]
+prepend_conds = [
+	{ if = "hidden & dir", text = "" },
+]
+
 prepend_dirs = [
-	{ name = "Brewfile", text = "" },
+	{ name = ".Trash", text = "" },
+	{ name = ".android", text = "" },
+	{ name = ".cache", text = "" },
+	{ name = ".docker", text = "󰡨" },
+	{ name = ".gem", text = "" },
+	{ name = ".kube", text = "󱃾" },
+	{ name = ".links", text = "" },
+	{ name = ".local", text = "󱉭" },
+	{ name = ".minikube", text = "󱃾" },
+	{ name = ".notes", text = "" },
+	{ name = ".oh-my-zsh", text = "" },
+	{ name = ".pip", text = "󰌠" },
+	{ name = ".ssh", text = "󰣀" },
+	{ name = ".tor", text = "" },
+	{ name = ".vscode", text = "" },
+	{ name = "applications", text = "" },
+	{ name = "bin", text = "" },
+	{ name = "brewfile", text = "" },
 	{ name = "code", text = "" },
+	{ name = "dev", text = "" },
+	{ name = "etc", text = "󱁿" },
 	{ name = "games", text = "󰊴" },
 	{ name = "gimp", text = "" },
+	{ name = "go", text = "" },
+	{ name = "home", text = "󱂵" },
 	{ name = "homebrew", text = "" },
-	{ name = ".local", text = "󱉭" },
+	{ name = "mail", text = "" },
 	{ name = "nvim", text = "" },
-	{ name = ".oh-my-zsh", text = "" },
-	{ name = ".ssh", text = "󰣀" },
-	{ name = "Trash", text = "" },
+	{ name = "pkg", text = "" },
+	{ name = "private", text = "󰉐" },
+	{ name = "sbin", text = "" },
+	{ name = "share", text = "󱧱" },
+	{ name = "shared", text = "󱧱" },
+	{ name = "tmp", text = "󰴋" },
+	{ name = "trash", text = "" },
+	{ name = "users", text = "" },
+	{ name = "usr", text = "" },
+	{ name = "var", text = "󰉘" },
 	{ name = "vscode", text = "" },
-	{ name = ".vscode", text = "" },
 ]
 
 prepend_exts = [
