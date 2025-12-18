@@ -32,6 +32,8 @@ brew "fzf"
 brew "gh"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
+# Better way to clone, organize and manage multiple git repositories
+brew "git-get"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
 # Official CLI for the IPinfo IP Address API
