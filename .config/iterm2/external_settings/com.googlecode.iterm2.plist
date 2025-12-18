@@ -24,6 +24,8 @@
 	<integer>128000</integer>
 	<key>AitermURL</key>
 	<string>https://api.openai.com/v1/responses</string>
+	<key>Alert On Marks in Offscreen Sessions</key>
+	<true/>
 	<key>AllowClipboardAccess</key>
 	<true/>
 	<key>ClickToSelectCommand</key>
@@ -1196,6 +1198,8 @@
 	<integer>4</integer>
 	<key>LeftOption</key>
 	<integer>2</integer>
+	<key>Mark Alert Action</key>
+	<string>Ring Bell</string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
