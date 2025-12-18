@@ -27,7 +27,7 @@ prepend_dirs = [
 	{ name = "brewfile", text = "" },
 	{ name = "code", text = "" },
 	{ name = "dev", text = "" },
-	{ name = "etc", text = "󱁿" },
+	{ name = "etc", text = "󱁿" },
 	{ name = "games", text = "󰊴" },
 	{ name = "gimp", text = "" },
 	{ name = "go", text = "" },
