@@ -118,6 +118,8 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 # ALIASES
 # ============================================================================
 
+unalias ya 2>/dev/null
+
 alias vim="nvim"
 e() {
   "$EDITOR" "$@"
