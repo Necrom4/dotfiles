@@ -88,6 +88,11 @@ use = "yazi-rs/plugins:smart-paste"
 rev = "19dc890"
 hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:mount"
+rev = "19dc890"
+hash = "4fccaaf10c36dc2466e2438a386ff017"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "5f56364"
