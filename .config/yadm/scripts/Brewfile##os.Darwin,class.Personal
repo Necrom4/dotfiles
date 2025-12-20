@@ -96,6 +96,8 @@ brew "tmux"
 brew "translate-shell"
 # Lightweight BitTorrent client
 brew "transmission-cli"
+# F1 Live Timing TUI for all F1 sessions with variable delay to sync to your TV
+brew "undercutf1"
 # Modern watch command
 brew "viddy"
 # Terminal spreadsheet multitool for discovering and arranging data
