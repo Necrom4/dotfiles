@@ -71,7 +71,7 @@ update_tool "Homebrew" "brew" "brew update" "brew upgrade"
 update_tool "Mise" "mise" "mise plugins update" "mise upgrade"
 
 if [ "$(yadm config local.class)" != "42" ]; then
-  update_tool "Ruby gems" "gem" "bundle update --gemfile=~/.config/yadm/scripts/Gemfile"
+  update_tool "Ruby gems" "gem" "bundle update --gemfile=~/.config/yadm/scripts/Gemfile --all"
 fi
 
 # update_tool "neovim plugins" "nvim" \
