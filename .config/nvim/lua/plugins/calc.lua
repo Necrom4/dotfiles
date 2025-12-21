@@ -1,7 +1,6 @@
 return {
 	{
 		"necrom4/calcium.nvim",
-		-- dir = "/Users/diogopombeiro/Code/Personal/calcium.nvim",
 		opts = {},
 		cmd = { "Calcium" },
 		keys = {
@@ -10,9 +9,7 @@ return {
 		},
 	},
 	{
-
 		"necrom4/convy.nvim",
-		-- dir = "~/Documents/Code/Personal/convy.nvim",
 		cmd = { "Convy", "ConvySeparator" },
 		opts = {
 			notifications = true,
