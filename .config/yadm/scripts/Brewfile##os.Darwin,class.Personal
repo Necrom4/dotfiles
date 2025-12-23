@@ -1,5 +1,6 @@
 tap "homebrew/command-not-found"
 tap "mutagen-io/mutagen"
+tap "tonisives/tap"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
@@ -137,6 +138,8 @@ cask "ibkr"
 cask "neovide-app"
 # App to write, plan, collaborate, and get organised
 cask "notion"
+# System-wide Vim mode for macOS
+cask "ovim"
 # Home media player
 cask "plex"
 # VPN client focusing on security
