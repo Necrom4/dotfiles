@@ -65,6 +65,8 @@ brew "mas"
 brew "minikube"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# Deep clean and optimize your Mac
+brew "mole"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Port scanning utility for large networks
@@ -119,8 +121,6 @@ brew "yt-dlp"
 brew "mutagen-io/mutagen/mutagen"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
-# Application uninstaller
-cask "appcleaner"
 # Photography workflow application and raw developer
 cask "darktable"
 # API documentation browser and code snippet manager
