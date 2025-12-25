@@ -10,7 +10,7 @@ hash = "f107436db5d2cccccc11ab54bc97b761"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "19dc890"
+rev = "7ca66b4"
 hash = "5b2eb0cc2050cec1e4de83cfa51a5b90"
 
 [[plugin.deps]]
@@ -20,12 +20,12 @@ hash = "62251f94eb67648d42cdfcfb8be0fad2"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "19dc890"
+rev = "7ca66b4"
 hash = "56fdabc96fc1f4d53c96eb884b02a5be"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "19dc890"
+rev = "7ca66b4"
 hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
@@ -45,7 +45,7 @@ hash = "4d441b38138ce6492a4e10fa349fd65"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "19dc890"
+rev = "7ca66b4"
 hash = "bcda8eeb3f4013bae156aecabfc745e8"
 
 [[plugin.deps]]
@@ -55,13 +55,13 @@ hash = "215729a555fe5286f1eb35520963d08"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "19dc890"
+rev = "7ca66b4"
 hash = "4ee57085277d616acfa0ef1fef37dc00"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "19dc890"
-hash = "27ca02f49fd236b5cc7bf03c243859fe"
+rev = "7ca66b4"
+hash = "d2aa1b2f32c8b4fd1775e8f5c45f8fab"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-modified-time"
@@ -70,8 +70,8 @@ hash = "8fa6028ef832b34cf32f4ee43cb0ae35"
 
 [[plugin.deps]]
 use = "Lil-Dank/lazygit"
-rev = "8f37dc5"
-hash = "ee71543790f0ce3951161045a3787abd"
+rev = "a90fc71"
+hash = "894e801b788d0fca94627b58f8c9e1d4"
 
 [[plugin.deps]]
 use = "KKV9/compress"
@@ -80,17 +80,17 @@ hash = "e17c11b605d989568a1d1741ca17c584"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "19dc890"
+rev = "7ca66b4"
 hash = "9dee2bf990ea941ccf67df74bca45468"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "19dc890"
+rev = "7ca66b4"
 hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mount"
-rev = "19dc890"
+rev = "7ca66b4"
 hash = "4fccaaf10c36dc2466e2438a386ff017"
 
 [[flavor.deps]]
