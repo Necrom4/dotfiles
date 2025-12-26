@@ -179,3 +179,20 @@ require("yatline-githead"):setup({
 	show_untracked = true,
 	untracked_symbol = "?",
 })
+
+-- TEMPORARY FIX: Override yatline-modified-time to handle empty directories
+-- Remove this once https://github.com/wekauwau/yatline-modified-time.yazi/pull/4 is merged
+if Yatline then
+	function Yatline.coloreds.get:modified_time()
+		local h = cx.active.current.hovered
+		local modified_time = {}
+		local time = ""
+
+		if h and h.cha and h.cha.mtime then
+			time = " M: " .. os.date("%Y-%m-%d %H:%M", h.cha.mtime // 1) .. " "
+		end
+
+		table.insert(modified_time, { time, "silver" })
+		return modified_time
+	end
+end
