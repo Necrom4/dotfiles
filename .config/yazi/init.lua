@@ -79,7 +79,7 @@ require("yatline"):setup({
 	theme = tokyo_night_theme,
 
 	section_separator = { open = "", close = "" },
-	part_separator = { open = "", close = "" },
+	part_separator = { open = "", close = " " },
 	inverse_separator = { open = "", close = "" },
 
 	tab_width = 20,
@@ -179,6 +179,9 @@ require("yatline-githead"):setup({
 	show_untracked = true,
 	untracked_symbol = "?",
 })
+
+function Entity:padding() return " " end
+function Linemode:padding() return " " end
 
 -- TEMPORARY FIX: Override yatline-modified-time to handle empty directories
 -- Remove this once https://github.com/wekauwau/yatline-modified-time.yazi/pull/4 is merged
