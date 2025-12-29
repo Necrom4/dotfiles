@@ -35,7 +35,7 @@ else
   export EDITOR="vi"
 fi
 
-export ZSH_TMUX_CONFIG="$XDG_CONFIG_HOME/tmux/tmux.conf"
+export ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
 
 # ============================================================================
 # OH-MY-ZSH CONFIGURATION

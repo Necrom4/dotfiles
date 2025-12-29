@@ -24,7 +24,7 @@ if [[ ! -d "${HOME}/.oh-my-zsh/" ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
-if brew list | grep tmux >/dev/null 2>&1 && [ ! -d "$XDG_CONFIG_HOME/tmux/plugins/tpm" ]; then
+if brew list | grep tmux >/dev/null 2>&1 && [ ! -d "$HOME/.config/tmux/plugins/tpm" ]; then
   echo "Installing TMUX Plugin Manager..."
-  git clone https://github.com/tmux-plugins/tpm "$XDG_CONFIG_HOME/tmux/plugins/tpm"
+  git clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm"
 fi
