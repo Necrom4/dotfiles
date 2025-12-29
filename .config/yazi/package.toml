@@ -34,16 +34,6 @@ rev = "7b00863"
 hash = "c538f3766b4b3bafbae3f0b7c3c3d763"
 
 [[plugin.deps]]
-use = "imsi32/yatline"
-rev = "88bd1c5"
-hash = "981acbe9b758b1af3a8154c932bb936d"
-
-[[plugin.deps]]
-use = "imsi32/yatline-githead"
-rev = "f8f969e"
-hash = "4d441b38138ce6492a4e10fa349fd65"
-
-[[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
 rev = "7ca66b4"
 hash = "bcda8eeb3f4013bae156aecabfc745e8"
@@ -92,6 +82,16 @@ hash = "75fd60b2df7115e0a6ca31a6a804d320"
 use = "yazi-rs/plugins:mount"
 rev = "7ca66b4"
 hash = "4fccaaf10c36dc2466e2438a386ff017"
+
+[[plugin.deps]]
+use = "carlosedp/yatline"
+rev = "61d3a3a"
+hash = "37fe452b2406df3f24e33b429ef699c2"
+
+[[plugin.deps]]
+use = "TheronStein/yatline-githead"
+rev = "5cfe34d"
+hash = "6915e57a389a41b4d709f456cb3c1d6f"
 
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
