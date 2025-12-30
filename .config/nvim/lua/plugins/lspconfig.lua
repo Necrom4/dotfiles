@@ -6,7 +6,7 @@ return {
 				keys = {
 					{ "K", false },
 					{
-						"gk",
+						"gK",
 						function()
 							return vim.lsp.buf.hover()
 						end,
