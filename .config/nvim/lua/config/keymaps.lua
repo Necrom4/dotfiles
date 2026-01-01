@@ -126,7 +126,7 @@ vim.keymap.set("n", "<leader>Xq", function()
 	end
 end, { desc = "Quickfix List" })
 
--- change LazyVim LSP functions keymaps from <leader>c to gr
+-- change default LazyVim LSP functions keymaps from <leader>c to gr
 
 vim.keymap.set("n", "gra", function()
 	vim.lsp.action.source()

@@ -521,6 +521,42 @@ return {
 			desc = "Dashboard",
 			silent = true,
 		},
+		-- use Snacks for default LazyVim LSP function keymaps
+		{
+			"grd",
+			function()
+				Snacks.picker.lsp_definitions()
+			end,
+			desc = "vim.lsp.buf.lsp_definitions()",
+		},
+		{
+			"grD",
+			function()
+				Snacks.picker.lsp_declarations()
+			end,
+			desc = "vim.lsp.buf.lsp_declarations()",
+		},
+		{
+			"gri",
+			function()
+				Snacks.picker.lsp_implementations()
+			end,
+			desc = "vim.lsp.buf.lsp_implementations()",
+		},
+		{
+			"grr",
+			function()
+				Snacks.picker.lsp_references()
+			end,
+			desc = "vim.lsp.buf.references()",
+		},
+		{
+			"grt",
+			function()
+				Snacks.picker.lsp_type_definitions()
+			end,
+			desc = "vim.lsp.buf.lsp_type_definitions()",
+		},
 	},
 	opts = {
 		bigfile = {
