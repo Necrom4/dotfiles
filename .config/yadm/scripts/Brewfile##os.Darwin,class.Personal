@@ -91,6 +91,8 @@ brew "speedtest-cli"
 brew "tailscale"
 # User interface to the TELNET protocol
 brew "telnet"
+# Programmatically correct mistyped console commands
+brew "thefuck"
 # Simplified and community-driven man pages
 brew "tldr"
 # Terminal multiplexer
