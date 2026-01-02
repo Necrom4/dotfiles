@@ -157,31 +157,20 @@ fi
 
 # Yazi with directory change on exit
 x() {
-  local tmp cwd target arg
+  local tmp cwd target
 
   tmp="$(mktemp -t "yazi-cwd.XXXXXX")" || return 1
 
   if (( $# > 0 )); then
-    arg="$*"
-
-    target="${~arg}"
-
-    if [[ -d $target ]]; then
-      yazi "$target" --cwd-file="$tmp"
-    else
-      target="$(z -e -- "$@")" || {
-        rm -f -- "$tmp"
-        return 1
-      }
-      yazi "$target" --cwd-file="$tmp"
+    target="${~*}"
+    if [[ ! -d $target ]]; then
+      target="$(z -e -- "$@")" || target="${~*}"
     fi
-  else
-    yazi --cwd-file="$tmp"
   fi
 
-  if cwd="$(command cat -- "$tmp")" && [[ -n $cwd && $cwd != $PWD ]]; then
-    builtin cd -- "$cwd"
-  fi
+  yazi ${target:+"$target"} --cwd-file="$tmp"
+
+  [[ -s $tmp ]] && cwd="$(<"$tmp")" && [[ $cwd != "$PWD" ]] && builtin cd -- "$cwd"
 
   rm -f -- "$tmp"
 }
