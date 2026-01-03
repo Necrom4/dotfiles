@@ -229,8 +229,8 @@ local function processes()
 	return utils.term_cmd("ps ax | wc -l | awk '{print $1}'")
 end
 
--- IP ADDRESS
-local function ip_address()
+-- IP ADDRESSES
+local function local_ip_address()
 	if system_type ~= "darwin" then
 		return utils.term_cmd("hostname -I | awk '{print $1}'")
 	end
@@ -239,6 +239,10 @@ local function ip_address()
 		ip = utils.term_cmd("ipconfig getifaddr en1")
 	end
 	return ip ~= "" and ip or "N/A"
+end
+
+local function public_ip_address()
+	return utils.term_cmd("curl -s4 ifconfig.me")
 end
 
 -- RAM/DISK/UPTIME
@@ -269,13 +273,16 @@ local system_info = {
 		disk_used .. "/" .. disk_total .. "GB",
 		" " .. gen_graph(disk_percent)
 	),
-	string.format("│ UPTIME │ %-22s %s │", uptime_date, "󰃭 " .. gen_graph(uptime_percent, 14)),
+	string.format("│ UPTIME │ %-19s%5s%15s │", uptime_date, " ", "󰩠 " .. local_ip_address()),
 	string.format(
-		"│  │ %-12s %3s %-7s %22s │",
+		"│  │ %-5s%2s%3s%2s%-6s%7s%15s │",
 		battery_icon(battery_percentage(), battery_status()) .. " " .. battery_percentage() .. "%",
+		" ",
 		" " .. utils.term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'"),
+		" ",
 		" " .. processes(),
-		"󰩠 " .. ip_address()
+		" ",
+		" " .. public_ip_address()
 	),
 	"╰────────┴─────────────────────────────────────────╯",
 }
