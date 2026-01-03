@@ -273,15 +273,19 @@ local system_info = {
 		disk_used .. "/" .. disk_total .. "GB",
 		" " .. gen_graph(disk_percent)
 	),
-	string.format("│ UPTIME │ %-19s%5s%15s │", uptime_date, " ", "󰩠 " .. local_ip_address()),
+	string.format("│ UPTIME │ %-21s  %-19s │", uptime_date, "󰩠 " .. local_ip_address()),
 	string.format(
-		"│  │ %-5s%2s%3s%2s%-6s%7s%15s │",
-		battery_icon(battery_percentage(), battery_status()) .. " " .. battery_percentage() .. "%",
-		" ",
-		" " .. utils.term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'"),
-		" ",
-		" " .. processes(),
-		" ",
+		"│  │ %-28s  %-18s │",
+		battery_icon(battery_percentage(), battery_status())
+			.. " "
+			.. battery_percentage()
+			.. "%"
+			.. "  "
+			.. " "
+			.. utils.term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'")
+			.. "  "
+			.. " "
+			.. processes(),
 		" " .. public_ip_address()
 	),
 	"╰────────┴─────────────────────────────────────────╯",
