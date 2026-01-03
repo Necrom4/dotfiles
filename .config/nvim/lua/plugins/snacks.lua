@@ -5,17 +5,25 @@ local system_type = utils.system_type()
 -----DASHBOARD------
 --------------------
 
-local function make_graph(percent, width)
+local function gen_graph(percent, width)
 	percent = tonumber(percent) or 0
-	if percent ~= percent then
-		percent = 0
-	end
 	width = width or 20
-	if percent > 100 then
-		return string.rep("󰨔", width)
+
+	local start_empty, start_filled = "", ""
+	local mid_empty, mid_filled = "", ""
+	local end_empty, end_filled = "", ""
+
+	if percent <= 0 then
+		return start_empty .. string.rep(mid_empty, width - 2) .. end_empty
 	end
+	if percent >= 100 then
+		return start_filled .. string.rep(mid_filled, width - 2) .. end_filled
+	end
+
 	local filled = math.floor((percent / 100) * width)
-	return string.rep("■", filled) .. string.rep("□", width - filled)
+	filled = math.max(1, math.min(filled, width - 1))
+
+	return start_filled .. string.rep(mid_filled, filled - 1) .. string.rep(mid_empty, width - filled - 1) .. end_empty
 end
 
 -- WSL VERSION
@@ -245,29 +253,29 @@ local uptime_date, uptime_percent = uptime()
 -- SYSTEM INFO BOX
 local system_info = {
 	"╭────────┬─────────────────────────────────────────╮",
-	string.format("│ CPU    │ %-16s %s │", cpu_load .. "%", " " .. make_graph(cpu_load)),
+	string.format("│ CPU    │ %-16s %s │", cpu_load .. "%", " " .. gen_graph(cpu_load)),
 	string.format(
 		"│ RAM    │ %-16s %s │",
 		ram_used .. "/" .. ram_total .. "MB",
-		" " .. make_graph(ram_percent)
+		" " .. gen_graph(ram_percent)
 	),
 	string.format(
 		"│ SWAP   │ %-16s %s │",
 		swap_used .. "/" .. swap_total .. "MB",
-		"󰯍 " .. make_graph(swap_percent)
+		"󰯍 " .. gen_graph(swap_percent)
 	),
 	string.format(
 		"│ DISK   │ %-16s %s │",
 		disk_used .. "/" .. disk_total .. "GB",
-		"󰨆 " .. make_graph(disk_percent)
+		" " .. gen_graph(disk_percent)
 	),
-	string.format("│ UPTIME │ %-22s %s │", uptime_date, "󰃭 " .. make_graph(uptime_percent, 14)),
+	string.format("│ UPTIME │ %-22s %s │", uptime_date, "󰃭 " .. gen_graph(uptime_percent, 14)),
 	string.format(
 		"│  │ %-12s %3s %-7s %22s │",
 		battery_icon(battery_percentage(), battery_status()) .. " " .. battery_percentage() .. "%",
 		" " .. utils.term_cmd("who | awk '{print $1}' | sort -u | wc -l | awk '{print $1}'"),
 		" " .. processes(),
-		"󰍸 " .. ip_address()
+		"󰩠 " .. ip_address()
 	),
 	"╰────────┴─────────────────────────────────────────╯",
 }
