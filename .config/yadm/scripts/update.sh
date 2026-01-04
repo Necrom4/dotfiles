@@ -80,8 +80,6 @@ fi
 # update_tool "neovim mason" "nvim" \
 #   "nvim --headless '+MasonUpdate' +qa"
 
-update_tool "Oh My Zsh" "${ZSH:-$HOME/.oh-my-zsh}" "zsh -i -c 'omz update'"
-
 update_tool "Powerlevel10k" "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" "git -C \"${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k\" pull"
 
 update_tool "TLDR" "tldr" "tldr --update"
@@ -91,3 +89,5 @@ update_tool "Yazi packages" "ya" \
   "yadm checkout -- ~/.config/yazi/" \
   "ya pkg upgrade" \
   "git clone https://gitlab.com/WhoSowSee/whoosh.yazi.git ~/.config/yazi/plugins/whoosh.yazi"
+
+update_tool "Oh My Zsh" "${ZSH:-$HOME/.oh-my-zsh}" "zsh -i -c 'omz update'"

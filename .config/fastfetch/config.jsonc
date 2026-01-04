@@ -1,0 +1,220 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "padding": {
+      "top": 7,
+    },
+  },
+  "display": {
+    "separator": " ",
+    "size": {
+      "binaryPrefix": "jedec",
+    },
+    "bar": {
+      "border": {
+        "left": "\uee00",
+        "leftElapsed": "\uee03",
+        "right": "\uee02",
+        "rightElapsed": "\uee05",
+      },
+      "char": {
+        "total": "\uee01",
+        "elapsed": "\uee04",
+      },
+      "color": {
+        "total": null,
+      },
+    },
+  },
+  "modules": [
+    {
+      "type": "separator",
+      "string": "─",
+      "outputColor": "red",
+    },
+    {
+      "type": "title",
+    },
+    {
+      "type": "datetime",
+      "key": " ",
+      "format": "  {weekday-short} {day-in-month} {month-name-short} {year} {hour-pretty}:{minute-pretty}:{second-pretty} {timezone-name}",
+    },
+    {
+      "type": "separator",
+      "keyColor": "red",
+      "string": "─",
+      "outputColor": "red",
+    },
+    "break",
+    {
+      "type": "os",
+      "key": "╭─{icon}",
+      "keyColor": "yellow",
+      "format": "{name} {codename} {version} ({arch})",
+    },
+    {
+      "type": "kernel",
+      "key": "├─{icon}",
+      "keyColor": "yellow",
+    },
+    {
+      "type": "command",
+      "key": "├─",
+      "keyColor": "yellow",
+      "text": "USER_EXCLUDES='Safari.app'; USER_APPS=$(find /Applications -maxdepth 1 -name '*.app' -prune | grep -v -E \"($USER_EXCLUDES)\" | wc -l | xargs); SYSTEM_APPS=$( (find /System/Applications -maxdepth 1 -name '*.app' -prune; find /System/Applications/Utilities -maxdepth 1 -name '*.app' -prune) | wc -l | xargs); if [ -d /Applications/Safari.app ]; then SYSTEM_APPS=$((SYSTEM_APPS + 1)); fi; TOTAL=$((USER_APPS + SYSTEM_APPS)); echo \"Total: $TOTAL - User: $USER_APPS - System: $SYSTEM_APPS\"",
+    },
+    {
+      "type": "packages",
+      "key": "├─{icon}",
+      "keyColor": "yellow",
+    },
+    {
+      "type": "command",
+      "key": "├─",
+      "keyColor": "yellow",
+      "text": "yadm config local.class",
+      "format": "{#cyan}{result}",
+    },
+    {
+      "type": "terminal",
+      "key": "├─{icon}",
+      "keyColor": "yellow",
+    },
+    {
+      "type": "custom",
+      "key": "│",
+      "keyColor": "yellow",
+      "format": "{#black} {#red} {#green} {#yellow} {#blue} {#magenta} {#cyan} {#white}",
+    },
+    {
+      "type": "custom",
+      "key": "│",
+      "keyColor": "yellow",
+      "format": "{#bright_black} {#bright_red} {#bright_green} {#bright_yellow} {#bright_blue} {#bright_magenta} {#bright_cyan} {#bright_white}{#reset_default}",
+    },
+    {
+      "type": "terminalfont",
+      "key": "├─{icon}",
+      "keyColor": "yellow",
+      "format": "{combined}",
+    },
+    {
+      "type": "shell",
+      "key": "├─{icon}",
+      "keyColor": "yellow",
+    },
+    {
+      "type": "editor",
+      "key": "├─{icon}",
+      "keyColor": "yellow",
+    },
+    {
+      "type": "locale",
+      "key": "╰─{icon}",
+      "keyColor": "yellow",
+    },
+    "break",
+    {
+      "type": "cpuusage",
+      "key": "╭─{icon}",
+      "keyColor": "green",
+      "percent": {
+        "type": 3,
+      },
+    },
+    {
+      "type": "memory",
+      "key": "├─{icon}",
+      "keyColor": "green",
+      "percent": {
+        "type": 3,
+      },
+    },
+    {
+      "type": "swap",
+      "key": "├─{icon}",
+      "keyColor": "green",
+      "percent": {
+        "type": 3,
+      },
+    },
+    {
+      "type": "disk",
+      "key": "├─{icon}",
+      "keyColor": "green",
+      "folders": "/",
+      "percent": {
+        "type": 3,
+      },
+    },
+    {
+      "type": "processes",
+      "key": "├─{icon}",
+      "keyColor": "green",
+    },
+    {
+      "type": "brightness",
+      "key": "├─{icon}",
+      "keyColor": "green",
+    },
+    {
+      "type": "battery",
+      "key": "├─{icon}",
+      "keyColor": "green",
+      "percent": {
+        "type": 3,
+      },
+    },
+    {
+      "type": "poweradapter",
+      "key": "├─{icon}",
+      "keyColor": "green",
+    },
+    {
+      "type": "gamepad",
+      "key": "├─{icon}",
+      "keyColor": "green",
+    },
+    {
+      "type": "bluetooth",
+      "key": "├─{icon}",
+      "keyColor": "green",
+    },
+    {
+      "type": "sound",
+      "key": "╰─{icon}",
+      "keyColor": "green",
+    },
+    "break",
+    {
+      "type": "wifi",
+      "key": "╭─{icon}",
+      "format": "{ssid}",
+      "keyColor": "blue",
+    },
+    {
+      "type": "netio",
+      "key": "├─{icon}",
+      "keyColor": "blue",
+    },
+    {
+      "type": "localip",
+      "key": "├─{icon}",
+      "compact": true,
+      "keyColor": "blue",
+    },
+    {
+      "type": "publicip",
+      "key": "├─{icon}",
+      "keyColor": "blue",
+      "timeout": 1000,
+    },
+    {
+      "type": "uptime",
+      "key": "╰─{icon}",
+      "keyColor": "blue",
+      "format": "{boot-time} {#bright_blue}|{#reset_default} {formatted}",
+    },
+  ],
+}

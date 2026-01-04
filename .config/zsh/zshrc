@@ -1,5 +1,13 @@
 # ============================================================================
-# INSTANT PROMPT (Must be at the very top)
+# FASTFETCH (displays system info on startup)
+# ============================================================================
+
+if [[ -o interactive ]]; then
+  fastfetch
+fi
+
+# ============================================================================
+# INSTANT PROMPT (Anything below will run in the background)
 # ============================================================================
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
