@@ -2,8 +2,11 @@
 # FASTFETCH (displays system info on startup)
 # ============================================================================
 
-if [[ -o interactive ]]; then
-  fastfetch
+if [[ -o interactive ]] && [[ -z "$_ZSHRC_SOURCED" ]]; then
+  if (( $+commands[fastfetch] )); then
+    fastfetch
+  fi
+  export _ZSHRC_SOURCED=1
 fi
 
 # ============================================================================
