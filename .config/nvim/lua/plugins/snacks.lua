@@ -273,9 +273,9 @@ local system_info = {
 		disk_used .. "/" .. disk_total .. "GB",
 		" " .. gen_graph(disk_percent)
 	),
-	string.format("│ UPTIME │ %-21s  %-19s │", uptime_date, "󰩠 " .. local_ip_address()),
+	string.format("│ UPTIME │ %-20s  %-20s │", uptime_date, "󰩠 " .. local_ip_address()),
 	string.format(
-		"│  │ %-28s  %-18s │",
+		"│  │ %-27s  %-19s │",
 		battery_icon(battery_percentage(), battery_status())
 			.. " "
 			.. battery_percentage()
