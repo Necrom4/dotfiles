@@ -1,6 +1,28 @@
 local utils = require("core.utils")
 local system_type = utils.system_type()
 
+local has_fastfetch
+local function fastfetch_cmd(cmd)
+	if has_fastfetch == false then
+		return nil
+	end
+
+	if has_fastfetch == nil then
+		has_fastfetch = utils.term_cmd("command -v fastfetch") ~= ""
+	end
+
+	if not has_fastfetch then
+		return nil
+	end
+
+	local out = utils.term_cmd(cmd)
+	if out == "" then
+		return nil
+	end
+
+	return out
+end
+
 local function gen_graph(percent, width)
 	percent = tonumber(percent) or 0
 	width = width or 20
@@ -17,7 +39,11 @@ local function gen_graph(percent, width)
 	end
 
 	local filled = math.floor((percent / 100) * width)
-	filled = math.max(1, math.min(filled, width - 1))
+	filled = math.max(0, math.min(filled, width - 1))
+
+	if filled == 0 then
+		return start_empty .. string.rep(mid_empty, width - 2) .. end_empty
+	end
 
 	return start_filled .. string.rep(mid_filled, filled - 1) .. string.rep(mid_empty, width - filled - 1) .. end_empty
 end
@@ -79,10 +105,22 @@ local function neovide_version()
 end
 
 -- CPU
-local cpu_load = tonumber(utils.term_cmd("uptime"):match("load averages?:%s*([%d%.]+)")) or 0
+local cpu_load = tonumber(fastfetch_cmd([[fastfetch -s "CPUUsage" --format json |
+		  jq '(.[] | select(.type=="CPUUsage") | .result | add / length) as $avg | ($avg*100 | round)/100']])) or tonumber(
+	(utils.term_cmd("uptime"):match("load averages?:%s*([%d%.]+)"))
+) or 0
 
 -- RAM
 local function ram()
+	local ff_total = fastfetch_cmd([[fastfetch -s "Memory" --format json | jq '.[0].result.total']])
+	local ff_used = fastfetch_cmd([[fastfetch -s "Memory" --format json | jq '.[0].result.used']])
+
+	if ff_total and ff_used then
+		local ff_total_gb = tonumber(ff_total) / 1024 ^ 3
+		local ff_used_gb = tonumber(ff_used) / 1024 ^ 3
+		return math.floor(ff_used_gb * 10) / 10, math.floor(ff_total_gb * 10) / 10
+	end
+
 	if system_type ~= "darwin" then
 		local memory_output = utils.term_cmd("free -m | awk '/Mem:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
@@ -95,13 +133,22 @@ local function ram()
 	local memsize_str = utils.term_cmd("sysctl -n hw.memsize"):gsub("[^%d]", "")
 	local total_bytes = tonumber(memsize_str) or (8 * 1024 ^ 3)
 	local used_bytes = (active_pages + inactive_pages + wired_pages) * page_size
-	local used_mb = used_bytes / 1024 ^ 2
-	local total_mb = total_bytes / 1024 ^ 2
-	return math.floor(used_mb), math.floor(total_mb)
+	local used_gb = used_bytes / 1024 ^ 3
+	local total_gb = total_bytes / 1024 ^ 3
+	return math.floor(used_gb), math.floor(total_gb)
 end
 
 -- SWAP
 local function swap()
+	local ff_total = fastfetch_cmd([[fastfetch -s "Swap" --format json | jq '.[0].result.[0].total']])
+	local ff_used = fastfetch_cmd([[fastfetch -s "Swap" --format json | jq '.[0].result.[0].used']])
+
+	if ff_total and ff_used and tonumber(ff_total) and tonumber(ff_used) then
+		local total_gb = tonumber(ff_total) / 1000 ^ 3
+		local used_gb = tonumber(ff_used) / 1000 ^ 3
+		return math.floor(used_gb * 10) / 10, math.floor(total_gb * 10) / 10
+	end
+
 	if system_type ~= "darwin" then
 		local memory_output = utils.term_cmd("free -m | awk '/Swap:/ {print $3, $2}'")
 		local used_mb, total_mb = memory_output:match("(%d+)%s+(%d+)")
@@ -115,6 +162,15 @@ end
 
 -- DISK
 local function disk()
+	local ff_used = fastfetch_cmd([[fastfetch -s "Disk" --format json | jq '.[0].result.[0].bytes.used']])
+	local ff_total = fastfetch_cmd([[fastfetch -s "Disk" --format json | jq '.[0].result.[0].bytes.total']])
+
+	if ff_used and ff_total and tonumber(ff_used) and tonumber(ff_total) then
+		local used_gb = tonumber(ff_used) / 1000 ^ 3
+		local total_gb = tonumber(ff_total) / 1000 ^ 3
+		return math.floor(used_gb + 0.5), math.floor(total_gb + 0.5)
+	end
+
 	local uname = system_type
 	local flag = "-H"
 	if uname ~= "darwin" then
@@ -136,6 +192,16 @@ end
 
 -- UPTIME
 local function uptime()
+	local ff_uptime = fastfetch_cmd([[fastfetch -s "Uptime" --format json | jq '.[0].result.uptime']])
+
+	if ff_uptime then
+		local boot_time = os.time() - tonumber(ff_uptime)
+		local boot_date = os.date("%Y-%m-%d %H:%M:%S", boot_time)
+		local days_since_boot = math.floor(tonumber(ff_uptime) / 86400)
+		local uptime_percentage = math.min(days_since_boot / 14, 1) * 100
+		return boot_date, uptime_percentage
+	end
+
 	local boot_time, boot_date
 
 	if system_type ~= "darwin" then
@@ -156,7 +222,13 @@ local function uptime()
 end
 
 -- BATTERY
-local function battery_percentage()
+local function battery_capacity()
+	local ff_capacity = fastfetch_cmd([[fastfetch -s Battery --format json | jq '.[0].result.[0].capacity']])
+
+	if ff_capacity then
+		return math.floor(ff_capacity + 0.5)
+	end
+
 	local output = utils.term_cmd([[
 		for d in /sys/class/power_supply/*; do
 			case "$d" in */BAT*|*/CMD*|*/battery*)
@@ -169,6 +241,11 @@ local function battery_percentage()
 end
 
 local function battery_status()
+	local ff_status = fastfetch_cmd([[fastfetch -s Battery --format json | jq '.[0].result.[0].status']])
+
+	if ff_status then
+		return ff_status and ff_status:match("Charging") or ff_status:match("AC Power") or false
+	end
 	if system_type ~= "darwin" then
 		local status = utils.term_cmd([[
       (for d in /sys/class/power_supply/*; do
@@ -192,8 +269,8 @@ local function battery_status()
 	end
 end
 
-local function battery_icon(capacity, battery_status)
-	if battery_status then
+local function battery_icon(capacity, battery_stat)
+	if battery_stat then
 		return "󰂄"
 	end
 
@@ -219,6 +296,11 @@ end
 
 -- PROCESSES
 local function processes()
+	local ff_proc = fastfetch_cmd([[fastfetch -s "Processes" --format json | jq '.[0].result']])
+	if ff_proc then
+		return ff_proc
+	end
+
 	if system_type ~= "darwin" then
 		return utils.term_cmd("ps -e --no-headers | wc -l")
 	end
@@ -227,6 +309,11 @@ end
 
 -- IP ADDRESSES
 local function local_ip_address()
+	local ff_ip = fastfetch_cmd([[fastfetch -s "LocalIP" --format json | jq -r '.[0].result[0].ipv4']])
+	if ff_ip then
+		return ff_ip:match("([^/]+)")
+	end
+
 	if system_type ~= "darwin" then
 		return utils.term_cmd("hostname -I | awk '{print $1}'")
 	end
@@ -238,6 +325,11 @@ local function local_ip_address()
 end
 
 local function public_ip_address()
+	local ff_ip = fastfetch_cmd([[fastfetch -s "PublicIP" --format json | jq -r '.[0].result.ip']])
+	if ff_ip then
+		return ff_ip
+	end
+
 	return utils.term_cmd("curl -s4 ifconfig.me")
 end
 
@@ -256,12 +348,12 @@ local system_info = {
 	string.format("│ CPU    │ %-16s %s │", cpu_load .. "%", " " .. gen_graph(cpu_load)),
 	string.format(
 		"│ RAM    │ %-16s %s │",
-		ram_used .. "/" .. ram_total .. "MB",
+		ram_used .. "/" .. ram_total .. "GB",
 		" " .. gen_graph(ram_percent)
 	),
 	string.format(
 		"│ SWAP   │ %-16s %s │",
-		swap_used .. "/" .. swap_total .. "MB",
+		swap_used .. "/" .. swap_total .. "GB",
 		"󰯍 " .. gen_graph(swap_percent)
 	),
 	string.format(
@@ -272,9 +364,9 @@ local system_info = {
 	string.format("│ UPTIME │ %-20s  %-20s │", uptime_date, "󰩠 " .. local_ip_address()),
 	string.format(
 		"│  │ %-27s  %-19s │",
-		battery_icon(battery_percentage(), battery_status())
+		battery_icon(battery_capacity(), battery_status())
 			.. " "
-			.. battery_percentage()
+			.. battery_capacity()
 			.. "%"
 			.. "  "
 			.. " "
