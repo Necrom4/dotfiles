@@ -1,4 +1,4 @@
-local utils = require("core.utils")
+local utils = require("utils.general")
 local system_type = utils.system_type()
 
 -- Persistent undo

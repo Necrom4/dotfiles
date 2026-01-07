@@ -1,4 +1,4 @@
-local utils = require("core.utils")
+local utils = require("utils.general")
 
 return {
 	"saghen/blink.cmp",

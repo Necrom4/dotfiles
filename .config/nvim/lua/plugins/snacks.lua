@@ -1,5 +1,5 @@
-local utils = require("core.utils")
-local dashboard = require("core.dashboard")
+local utils = require("utils.general")
+local dashboard = require("utils.dashboard")
 
 return {
 	"folke/snacks.nvim",

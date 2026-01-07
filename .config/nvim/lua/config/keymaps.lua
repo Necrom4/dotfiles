@@ -1,4 +1,4 @@
-local utils = require("core.utils")
+local utils = require("utils.general")
 
 -- Reload zsh configuration by sourcing ~/.zshrc in a separate shell
 vim.keymap.set("n", "<leader>.s", function()

@@ -1,4 +1,4 @@
-local utils = require("core.utils")
+local utils = require("utils.general")
 local system_type = utils.system_type()
 
 local has_fastfetch
@@ -24,7 +24,10 @@ local function fastfetch_cmd(cmd)
 end
 
 local function gen_graph(percent, width)
-	percent = tonumber(percent) or 0
+	percent = tonumber(percent)
+	if not percent or percent ~= percent then
+		percent = 0
+	end
 	width = width or 20
 
 	local start_empty, start_filled = "", ""
