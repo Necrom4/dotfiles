@@ -21,7 +21,7 @@ fi
 # ENVIRONMENT VARIABLES
 # ============================================================================
 
-if [[ -x $(command -v brew) ]]; then
+if (( $+commands[brew] )); then
   BREW_PREFIX=$(brew --prefix)
 elif [[ -x /usr/local/bin/brew ]]; then
   BREW_PREFIX="/usr/local"
@@ -38,9 +38,9 @@ if [[ -n "$BREW_PREFIX" ]]; then
   export CPPFLAGS="-I$BREW_PREFIX/opt/postgresql@18/include"
 fi
 
-if [[ -x $(command -v nvim) ]]; then
+if (( $+commands[nvim] )); then
   export EDITOR="nvim"
-elif [[ -x $(command -v vim) ]]; then
+elif (( $+commands[vim] )); then
   export EDITOR="vim"
 else
   export EDITOR="vi"
@@ -136,9 +136,9 @@ e() {
   "$EDITOR" "$@"
 }
 
-if [[ -x $(command -v bat) ]]; then
+if (( $+commands[bat] )); then
   alias cat="bat --theme=Dracula"
-elif [[ -x $(command -v batcat) ]]; then
+elif (( $+commands[batcat] )); then
   alias cat="batcat"
 fi
 
