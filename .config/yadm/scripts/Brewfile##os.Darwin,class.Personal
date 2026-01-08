@@ -91,10 +91,14 @@ brew "sevenzip"
 brew "speedtest-cli"
 # Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale"
+# Terminal user interface for taskwarrior
+brew "taskwarrior-tui"
 # User interface to the TELNET protocol
 brew "telnet"
 # Programmatically correct mistyped console commands
 brew "thefuck"
+# Command-line time tracking application
+brew "timewarrior"
 # Simplified and community-driven man pages
 brew "tldr"
 # Terminal multiplexer
