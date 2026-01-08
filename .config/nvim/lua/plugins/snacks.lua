@@ -1,5 +1,4 @@
 local utils = require("utils.general")
-local dashboard = require("utils.dashboard")
 
 return {
 	"folke/snacks.nvim",
@@ -296,7 +295,6 @@ return {
 		dashboard = {
 			enabled = true,
 			preset = {
-				header = dashboard.header,
 				keys = {
 					{ icon = " ", key = "n", desc = "New File", action = ":ene" },
 					{
@@ -346,7 +344,13 @@ return {
 				},
 			},
 			sections = {
-				{ pane = 1, section = "header" },
+				function()
+					return {
+						header = require("utils.dashboard").header,
+						padding = 1,
+						pane = 1,
+					}
+				end,
 				{
 					pane = 1,
 					section = "terminal",
