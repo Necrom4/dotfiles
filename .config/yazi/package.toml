@@ -5,37 +5,37 @@ hash = "e02a788e5b8ae0fb47fd0193dda589cc"
 
 [[plugin.deps]]
 use = "boydaihungst/restore"
-rev = "6395e52"
-hash = "f107436db5d2cccccc11ab54bc97b761"
+rev = "4eda0bf"
+hash = "778941e7f1ebbacd60f4e254bb3c51de"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "80cd5b5"
+rev = "68f7d48"
 hash = "8da0b15a97b5dfd13941d1ecc617ac7c"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
-rev = "a36fdaf"
-hash = "c5c38bb8cd68d4426471efe0013ca0ac"
+rev = "179ebf6"
+hash = "57056b9728006881d580ccabe8154a9c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "80cd5b5"
+rev = "68f7d48"
 hash = "56fdabc96fc1f4d53c96eb884b02a5be"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "80cd5b5"
+rev = "68f7d48"
 hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
 use = "ahkohd/eza-preview"
-rev = "7b00863"
-hash = "c538f3766b4b3bafbae3f0b7c3c3d763"
+rev = "7a2d60f"
+hash = "eed8e19469f3dca38fd977eb938dd34e"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "80cd5b5"
+rev = "68f7d48"
 hash = "407d19bc4fb46eff5fa8ff8337644847"
 
 [[plugin.deps]]
@@ -45,13 +45,13 @@ hash = "215729a555fe5286f1eb35520963d08"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "80cd5b5"
-hash = "4ee57085277d616acfa0ef1fef37dc00"
+rev = "68f7d48"
+hash = "5cfd9b2bd3f8ec4e3245e3426a967f82"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "80cd5b5"
-hash = "170317244d60fbe70ad3cc3353358480"
+rev = "68f7d48"
+hash = "36a484acf6a0a0219c543ccb4cee218f"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-modified-time"
@@ -65,22 +65,22 @@ hash = "ab2e66065a94cca4886b303518e44bd8"
 
 [[plugin.deps]]
 use = "KKV9/compress"
-rev = "c264639"
-hash = "e17c11b605d989568a1d1741ca17c584"
+rev = "e2ae983"
+hash = "36b570e2164f6ad2317cfb839e42ef4"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "80cd5b5"
+rev = "68f7d48"
 hash = "a638db397a5a41d3f3a08a7427ccead1"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "80cd5b5"
+rev = "68f7d48"
 hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mount"
-rev = "80cd5b5"
+rev = "68f7d48"
 hash = "e2d4bfccf31e5ab05f46fee4797c5215"
 
 [[plugin.deps]]
