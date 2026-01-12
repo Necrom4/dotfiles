@@ -37,6 +37,8 @@ brew "gh"
 brew "git-delta"
 # Better way to clone, organize and manage multiple git repositories
 brew "git-get"
+# Cinematic Git commit replay tool
+brew "gitlogue"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
 # Official CLI for the IPinfo IP Address API
