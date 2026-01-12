@@ -110,7 +110,7 @@
     taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch              # CPU architecture
-    tmux_session                 # [CUSTOM] tmux session
+    # tmux_session                 # [CUSTOM] tmux session
     time                    # current time
     os_icon               # os identifier
     # =========================[ Line #2 ]=========================
