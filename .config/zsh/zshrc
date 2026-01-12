@@ -164,10 +164,10 @@ fi
 
 if (( $+commands[task] )) && (( $+commands[timew] )); then
   tsync() {
-    local uuid=$1 start=$2 end=$3
+    local uuid=$1
 
-    if [[ -z "$end" ]]; then
-      echo "Usage: sync_task <uuid> <start> <end>"
+    if [[ -z "$uuid" ]]; then
+      echo "Usage: sync_task <uuid> [start] [end]"
       return 1
     fi
 
@@ -175,13 +175,25 @@ if (( $+commands[task] )) && (( $+commands[timew] )); then
     local proj=$(task _get "$uuid.project")
     local tags=$(task _get "$uuid.tags" | tr ',' ' ')
 
-    [[ -z "$desc" ]] && { echo "Error: Task $uuid not found."; return 1; }
+    local start="${2:-$(task _get "$uuid.start")}"
+    local end="${3:-$(task _get "$uuid.end")}"
 
-    local timew_tags=("$desc")
-    [[ -n "$proj" ]] && timew_tags+=("$proj")
-    [[ -n "$tags" ]] && timew_tags+=($tags)
+    [[ -z "$desc" ]] && { echo "Error: Task '$uuid' not found."; return 1; }
 
-    timew track "$start" - "$end" "${timew_tags[@]}"
+    local timew_args=("$desc")
+    [[ -n "$proj" ]] && timew_args+=("$proj")
+    [[ -n "$tags" ]] && timew_args+=(${=tags})
+
+    if [[ -n "$start" && -n "$end" ]]; then
+      echo "Tracking (DOM/Args): $start - $end"
+      timew track "$start" - "$end" "${timew_args[@]}"
+    elif [[ -n "$start" ]]; then
+      echo "Starting timer at: $start"
+      timew start "$start" "${timew_args[@]}"
+    else
+      echo "No dates found. Starting live timer now..."
+      timew start "${timew_args[@]}"
+    fi
   }
 fi
 
