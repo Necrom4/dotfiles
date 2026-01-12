@@ -90,6 +90,8 @@ plugins=(
   rake
   ruby
   tailscale
+  taskwarrior
+  timewarrior
   tmux
   web-search
   yarn
