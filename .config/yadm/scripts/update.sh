@@ -90,4 +90,6 @@ update_tool "Yazi packages" "ya" \
   "ya pkg upgrade" \
   "git clone https://gitlab.com/WhoSowSee/whoosh.yazi.git ~/.config/yazi/plugins/whoosh.yazi"
 
+update_tool "Tmux TMP" "$HOME/.config/tmux/plugins/tpm/bin/" "$HOME/.config/tmux/plugins/tpm/bin/update_plugins all"
+
 update_tool "Oh My Zsh" "${ZSH:-$HOME/.oh-my-zsh}" "zsh -i -c 'omz update'"
