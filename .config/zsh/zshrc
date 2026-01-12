@@ -160,6 +160,29 @@ alias watch="viddy -d -n 1 --shell zsh "$@""
 
 alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
 
+if (( $+commands[task] )) && (( $+commands[timew] )); then
+  tsync() {
+    local uuid=$1 start=$2 end=$3
+
+    if [[ -z "$end" ]]; then
+      echo "Usage: sync_task <uuid> <start> <end>"
+      return 1
+    fi
+
+    local desc=$(task _get "$uuid.description")
+    local proj=$(task _get "$uuid.project")
+    local tags=$(task _get "$uuid.tags" | tr ',' ' ')
+
+    [[ -z "$desc" ]] && { echo "Error: Task $uuid not found."; return 1; }
+
+    local timew_tags=("$desc")
+    [[ -n "$proj" ]] && timew_tags+=("$proj")
+    [[ -n "$tags" ]] && timew_tags+=($tags)
+
+    timew track "$start" - "$end" "${timew_tags[@]}"
+  }
+fi
+
 if [ "$(yadm config local.class)" = "Personal" ]; then
   alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
 fi
