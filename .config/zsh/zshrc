@@ -158,7 +158,9 @@ alias y="yadm enter lazygit"
 
 alias watch="viddy -d -n 1 --shell zsh "$@""
 
-alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
+if (( $+commands[lynx] )); then
+  alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
+fi
 
 if (( $+commands[task] )) && (( $+commands[timew] )); then
   tsync() {
