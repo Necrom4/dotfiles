@@ -56,9 +56,9 @@ local function fetch_stats()
 			stats.battery_status = item.result[1].status
 		elseif item.type == "Processes" and item.result then
 			stats.processes = tostring(item.result)
-		elseif item.type == "LocalIP" and item.result and item.result[1] then
+		elseif item.type == "LocalIp" and item.result and item.result[1] then
 			stats.local_ip = item.result[1].ipv4
-		elseif item.type == "PublicIP" and item.result then
+		elseif item.type == "PublicIp" and item.result then
 			stats.public_ip = item.result.ip
 		elseif item.type == "Uptime" and item.result then
 			stats.uptime_seconds = item.result.uptime
