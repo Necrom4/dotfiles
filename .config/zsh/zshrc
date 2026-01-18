@@ -58,7 +58,7 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# OMZ plugin options (must be set before plugins load)
+# Plugin options
 zstyle ':omz:plugins:alias-finder' autoload yes
 zstyle ':omz:plugins:alias-finder' exact yes
 zstyle ':omz:plugins:eza' 'color-scale' all
@@ -71,18 +71,18 @@ ZSH_AUTOSUGGEST_STRATEGY=completion
 ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
 ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 
-# Annexes (no turbo - required for annexes to work)
+# Annexes
 zinit light-mode for \
   zdharma-continuum/zinit-annex-as-monitor \
   zdharma-continuum/zinit-annex-bin-gem-node \
   zdharma-continuum/zinit-annex-patch-dl \
   zdharma-continuum/zinit-annex-rust
 
-# Prompt theme (no turbo - needed for instant prompt)
+# Prompt theme
 zinit ice depth"1"
 zinit light romkatv/powerlevel10k
 
-# Core plugins & OMZ libs
+# Plugins
 zinit wait lucid for \
   OMZL::clipboard.zsh \
   OMZL::compfix.zsh \
@@ -96,14 +96,6 @@ zinit wait lucid for \
   OMZL::spectrum.zsh \
   OMZL::termsupport.zsh \
   OMZL::theme-and-appearance.zsh \
-  jeffreytse/zsh-vi-mode \
-    blockf \
-  zsh-users/zsh-completions \
-    atload"!_zsh_autosuggest_start" \
-  zsh-users/zsh-autosuggestions \
-  zsh-users/zsh-history-substring-search
-
-zinit wait"1" lucid for \
   OMZP::alias-finder \
   OMZP::aliases \
   OMZP::azure \
@@ -134,10 +126,17 @@ zinit wait"1" lucid for \
     as"completion" \
   OMZ::plugins/z/_z \
   zdharma-continuum/history-search-multi-word \
-  rswrz/timewarrior-omz
+  rswrz/timewarrior-omz \
+    blockf \
+  zsh-users/zsh-autosuggestions \
+  zsh-users/zsh-completions \
+    atload"!_zsh_autosuggest_start" \
+  zsh-users/zsh-history-substring-search \
+  jeffreytse/zsh-vi-mode
 
-
-zinit wait"1b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" for \
+# Syntax highlighting - loads last with compinit, triggers re-highlight on load
+zinit wait"0b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+  atload"_zsh_highlight" for \
   zdharma-continuum/fast-syntax-highlighting
 
 # ============================================================================
@@ -162,6 +161,7 @@ bindkey -M vicmd 'j' history-substring-search-down
 # ALIASES
 # ============================================================================
 
+unalias y 2>/dev/null
 unalias ya 2>/dev/null
 
 alias vim="nvim"
