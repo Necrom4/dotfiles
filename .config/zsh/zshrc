@@ -69,6 +69,9 @@ zstyle ':omz:plugins:eza' 'dirs-first' yes
 zstyle ':omz:plugins:eza' 'git-status' yes
 zstyle ':omz:plugins:eza' 'header' yes
 zstyle ':omz:plugins:eza' 'icons' yes
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:(cd|eza):*' fzf-preview '[[ -d $realpath ]] && eza -1 --color=always --icons $realpath || bat --theme=Dracula --color=always --style=plain --line-range=:250 $realpath'
 
 ZSH_AUTOSUGGEST_STRATEGY=completion
 ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
@@ -127,6 +130,7 @@ zinit wait lucid for \
   OMZP::z \
     as"completion" \
   OMZ::plugins/z/_z \
+  Aloxaf/fzf-tab \
   zdharma-continuum/history-search-multi-word \
   rswrz/timewarrior-omz \
     blockf \
