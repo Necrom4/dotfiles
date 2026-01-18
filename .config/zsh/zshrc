@@ -290,15 +290,15 @@ x() {
 }
 
 # Z with fzf integration
-# zi() {
-#   if ! command -v z &>/dev/null; then
-#     echo "z not found"
-#     return 1
-#   fi
-#   local dir
-#   dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -80')
-#   [[ -n "$dir" ]] && cd "$dir"
-# }
+zin() {
+  if ! command -v z &>/dev/null; then
+    echo "z not found"
+    return 1
+  fi
+  local dir
+  dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -80')
+  [[ -n "$dir" ]] && cd "$dir"
+}
 
 # VisiData pip wrapper
 vdpip() {
