@@ -13,6 +13,8 @@ brew "cmatrix"
 brew "colima"
 # Create and run Linux containers using lightweight virtual machines
 brew "container"
+# Securely send things from one computer to another
+brew "croc"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Platform keystore credential helper for Docker
