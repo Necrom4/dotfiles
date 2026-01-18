@@ -2,12 +2,12 @@
 # FASTFETCH (displays system info on startup)
 # ============================================================================
 
-if [[ -o interactive ]] && [[ -z "$_ZSHRC_SOURCED" ]]; then
-  if (( $+commands[fastfetch] )); then
-    fastfetch
-  fi
-  export _ZSHRC_SOURCED=1
-fi
+# if [[ -o interactive ]] && [[ -z "$_ZSHRC_SOURCED" ]]; then
+#   if (( $+commands[fastfetch] )); then
+#     fastfetch
+#   fi
+#   export _ZSHRC_SOURCED=1
+# fi
 
 # ============================================================================
 # INSTANT PROMPT (Anything below will run in the background)
@@ -47,15 +47,18 @@ else
 fi
 
 export ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
+# Created by `pipx` on 2025-12-30 17:17:47
+export PATH="$PATH:/Users/diogopombeiro/.local/bin"
 
 # ============================================================================
-# OH-MY-ZSH CONFIGURATION
+# ZINIT CONFIGURATION
 # ============================================================================
 
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-# Plugin-specific settings (before sourcing oh-my-zsh)
+# omz plugins options
 zstyle ':omz:plugins:alias-finder' autoload yes
 zstyle ':omz:plugins:alias-finder' exact yes
 zstyle ':omz:plugins:eza' 'color-scale' all
@@ -64,49 +67,114 @@ zstyle ':omz:plugins:eza' 'git-status' yes
 zstyle ':omz:plugins:eza' 'header' yes
 zstyle ':omz:plugins:eza' 'icons' yes
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#636DA6"
-ZSH_AUTOSUGGEST_STRATEGY=completion
+# Load annexes without Turbo (required for annexes)
+zinit light-mode for \
+  zdharma-continuum/zinit-annex-as-monitor \
+  zdharma-continuum/zinit-annex-bin-gem-node \
+  zdharma-continuum/zinit-annex-patch-dl \
+  zdharma-continuum/zinit-annex-rust
 
-plugins=(
-  alias-finder
-  aliases
-  azure
-  colored-man-pages
-  command-not-found
-  docker
-  docker-compose
-  emoji
-  eza
-  gh
-  git
-  helm
-  jsontools
-  kubectl
-  minikube
-  npm
-  pip
-  python
-  rails
-  rake
-  ruby
-  tailscale
-  taskwarrior
-  timewarrior
-  tmux
-  web-search
-  yarn
-  z
-  zsh-autopair
-  zsh-autosuggestions
-  zsh-history-substring-search
-  zsh-syntax-highlighting
-  zsh-vi-mode
-)
+# zsh-vi-mode config (must be set BEFORE plugin loads)
+ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
+ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
+# Fix for fast-syntax-highlighting: re-source FSH after zvm completes init
+zvm_after_init_commands+=('[ -f "${ZINIT[PLUGINS_DIR]}/zdharma-continuum---fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ] && source "${ZINIT[PLUGINS_DIR]}/zdharma-continuum---fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"')
 
-source $ZSH/oh-my-zsh.sh
+# Theme - no turbo, needed for instant prompt
+zinit ice depth"1"
+zinit light romkatv/powerlevel10k
+
+# OMZ libs - load early (wait"0") as they're dependencies
+zinit wait"0" lucid for \
+  OMZL::clipboard.zsh \
+  OMZL::compfix.zsh \
+  OMZL::completion.zsh \
+  OMZL::directories.zsh \
+  OMZL::functions.zsh \
+  OMZL::git.zsh \
+  OMZL::grep.zsh \
+  OMZL::history.zsh \
+  OMZL::key-bindings.zsh \
+  OMZL::misc.zsh \
+  OMZL::spectrum.zsh \
+  OMZL::termsupport.zsh \
+  OMZL::theme-and-appearance.zsh
+
+# Completions - load early with blockf to prevent compinit
+zinit wait"0b" lucid blockf for \
+  zsh-users/zsh-completions
+
+# Initialize completions
+zinit wait"0c" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" for \
+  zdharma-continuum/null
+
+# OMZ plugins - staggered loading
+zinit wait"1" lucid for \
+  OMZP::alias-finder \
+  OMZP::aliases \
+  OMZP::colored-man-pages \
+  OMZP::command-not-found \
+  OMZP::docker \
+  OMZP::docker-compose \
+  OMZP::eza \
+  OMZP::gh \
+  OMZP::git \
+  OMZP::jsontools \
+  OMZP::npm \
+  OMZP::pip \
+  OMZP::python \
+  OMZP::rails \
+  OMZP::rake \
+  OMZP::ruby \
+  OMZP::ssh \
+  OMZP::web-search \
+  OMZP::yarn \
+  OMZP::z
+
+# Heavier OMZ plugins - load slightly later
+zinit wait"2" lucid for \
+  OMZP::azure \
+  OMZP::helm \
+  OMZP::kubectl \
+  OMZP::minikube \
+  OMZP::tailscale \
+  OMZP::taskwarrior \
+  OMZP::tmux
+
+# Emoji plugin - load without turbo due to multibyte requirement
+# zinit lucid for \
+#   atload"setopt multibyte" \
+#   OMZP::emoji
+
+# Other plugins
+zinit wait"1" lucid for \
+  rswrz/timewarrior-omz
+
+# Autosuggestions
+zinit wait"0b" lucid atload"!_zsh_autosuggest_start" for \
+  zsh-users/zsh-autosuggestions \
+  zsh-users/zsh-history-substring-search
+
+# History search
+zinit wait"1" lucid for \
+  zdharma-continuum/history-search-multi-word
+
+# Vi-mode - load with callback for FSH integration
+zinit wait"0a" lucid for \
+  jeffreytse/zsh-vi-mode
+
+# Syntax highlighting - MUST load last, after vi-mode
+# Use zvm_after_init to ensure it loads after vi-mode completes widget setup
+zinit wait"0c" lucid atload"
+  # Reinitialize FSH after vi-mode to fix highlighting while typing
+  if (( \$+functions[_zsh_highlight] )); then
+    _zsh_highlight
+  fi
+" for \
+  zdharma-continuum/fast-syntax-highlighting
 
 # ============================================================================
-# ZSH OPTIONS & VI MODE CONFIGURATION
+# ZSH OPTIONS & KEYBINDINGS
 # ============================================================================
 
 insert-linebreak () {
@@ -122,10 +190,6 @@ bindkey "^[^M" insert-linebreak
 bindkey -M vicmd ';' edit-command-line
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
-
-# Zsh Vi Mode colors
-ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
-ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 
 # ============================================================================
 # ALIASES
@@ -226,15 +290,15 @@ x() {
 }
 
 # Z with fzf integration
-zi() {
-  if ! command -v z &>/dev/null; then
-    echo "z not found"
-    return 1
-  fi
-  local dir
-  dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -80')
-  [[ -n "$dir" ]] && cd "$dir"
-}
+# zi() {
+#   if ! command -v z &>/dev/null; then
+#     echo "z not found"
+#     return 1
+#   fi
+#   local dir
+#   dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -80')
+#   [[ -n "$dir" ]] && cd "$dir"
+# }
 
 # VisiData pip wrapper
 vdpip() {

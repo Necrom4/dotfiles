@@ -19,9 +19,12 @@ if [ -f "$gemfile" ] && [ "$(yadm config local.class)" != "42" ]; then
   bundle install --gemfile="$gemfile"
 fi
 
-if [[ ! -d "${HOME}/.oh-my-zsh/" ]]; then
-  echo "Installing Oh-my-zsh..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# Zinit Installation
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [ ! -d "$ZINIT_HOME" ]; then
+  echo "Installing Zinit..."
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 
 if brew list | grep tmux >/dev/null 2>&1 && [ ! -d "$HOME/.config/tmux/plugins/tpm" ]; then
