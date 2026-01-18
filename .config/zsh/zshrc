@@ -58,7 +58,7 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# omz plugins options
+# OMZ plugin options (must be set before plugins load)
 zstyle ':omz:plugins:alias-finder' autoload yes
 zstyle ':omz:plugins:alias-finder' exact yes
 zstyle ':omz:plugins:eza' 'color-scale' all
@@ -67,28 +67,25 @@ zstyle ':omz:plugins:eza' 'git-status' yes
 zstyle ':omz:plugins:eza' 'header' yes
 zstyle ':omz:plugins:eza' 'icons' yes
 
-# Load annexes without Turbo (required for annexes)
+ZSH_AUTOSUGGEST_STRATEGY=completion
+ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
+ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
+
+# Annexes (no turbo - required for annexes to work)
 zinit light-mode for \
   zdharma-continuum/zinit-annex-as-monitor \
   zdharma-continuum/zinit-annex-bin-gem-node \
   zdharma-continuum/zinit-annex-patch-dl \
   zdharma-continuum/zinit-annex-rust
 
-# zsh-vi-mode config (must be set BEFORE plugin loads)
-ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
-ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
-# Fix for fast-syntax-highlighting: re-source FSH after zvm completes init
-zvm_after_init_commands+=('[ -f "${ZINIT[PLUGINS_DIR]}/zdharma-continuum---fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ] && source "${ZINIT[PLUGINS_DIR]}/zdharma-continuum---fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"')
-
-# Theme - no turbo, needed for instant prompt
+# Prompt theme (no turbo - needed for instant prompt)
 zinit ice depth"1"
 zinit light romkatv/powerlevel10k
 
-# OMZ libs - load early (wait"0") as they're dependencies
-zinit wait"0" lucid for \
+# Core plugins & OMZ libs
+zinit wait lucid for \
   OMZL::clipboard.zsh \
   OMZL::compfix.zsh \
-  OMZL::completion.zsh \
   OMZL::directories.zsh \
   OMZL::functions.zsh \
   OMZL::git.zsh \
@@ -98,20 +95,18 @@ zinit wait"0" lucid for \
   OMZL::misc.zsh \
   OMZL::spectrum.zsh \
   OMZL::termsupport.zsh \
-  OMZL::theme-and-appearance.zsh
+  OMZL::theme-and-appearance.zsh \
+  jeffreytse/zsh-vi-mode \
+    blockf \
+  zsh-users/zsh-completions \
+    atload"!_zsh_autosuggest_start" \
+  zsh-users/zsh-autosuggestions \
+  zsh-users/zsh-history-substring-search
 
-# Completions - load early with blockf to prevent compinit
-zinit wait"0b" lucid blockf for \
-  zsh-users/zsh-completions
-
-# Initialize completions
-zinit wait"0c" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" for \
-  zdharma-continuum/null
-
-# OMZ plugins - staggered loading
 zinit wait"1" lucid for \
   OMZP::alias-finder \
   OMZP::aliases \
+  OMZP::azure \
   OMZP::colored-man-pages \
   OMZP::command-not-found \
   OMZP::docker \
@@ -119,7 +114,10 @@ zinit wait"1" lucid for \
   OMZP::eza \
   OMZP::gh \
   OMZP::git \
+  OMZP::helm \
   OMZP::jsontools \
+  OMZP::kubectl \
+  OMZP::minikube \
   OMZP::npm \
   OMZP::pip \
   OMZP::python \
@@ -127,50 +125,19 @@ zinit wait"1" lucid for \
   OMZP::rake \
   OMZP::ruby \
   OMZP::ssh \
-  OMZP::web-search \
-  OMZP::yarn \
-  OMZP::z
-
-# Heavier OMZ plugins - load slightly later
-zinit wait"2" lucid for \
-  OMZP::azure \
-  OMZP::helm \
-  OMZP::kubectl \
-  OMZP::minikube \
   OMZP::tailscale \
   OMZP::taskwarrior \
-  OMZP::tmux
-
-# Emoji plugin - load without turbo due to multibyte requirement
-# zinit lucid for \
-#   atload"setopt multibyte" \
-#   OMZP::emoji
-
-# Other plugins
-zinit wait"1" lucid for \
+  OMZP::tmux \
+  OMZP::web-search \
+  OMZP::yarn \
+  OMZP::z \
+    as"completion" \
+  OMZ::plugins/z/_z \
+  zdharma-continuum/history-search-multi-word \
   rswrz/timewarrior-omz
 
-# Autosuggestions
-zinit wait"0b" lucid atload"!_zsh_autosuggest_start" for \
-  zsh-users/zsh-autosuggestions \
-  zsh-users/zsh-history-substring-search
 
-# History search
-zinit wait"1" lucid for \
-  zdharma-continuum/history-search-multi-word
-
-# Vi-mode - load with callback for FSH integration
-zinit wait"0a" lucid for \
-  jeffreytse/zsh-vi-mode
-
-# Syntax highlighting - MUST load last, after vi-mode
-# Use zvm_after_init to ensure it loads after vi-mode completes widget setup
-zinit wait"0c" lucid atload"
-  # Reinitialize FSH after vi-mode to fix highlighting while typing
-  if (( \$+functions[_zsh_highlight] )); then
-    _zsh_highlight
-  fi
-" for \
+zinit wait"1b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" for \
   zdharma-continuum/fast-syntax-highlighting
 
 # ============================================================================
