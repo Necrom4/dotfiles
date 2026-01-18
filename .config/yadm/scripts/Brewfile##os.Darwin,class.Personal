@@ -43,6 +43,8 @@ brew "git-delta"
 brew "git-get"
 # Cinematic Git commit replay tool
 brew "gitlogue"
+# Command-line benchmarking tool
+brew "hyperfine"
 # Tools and libraries to manipulate images in select formats
 brew "imagemagick"
 # Official CLI for the IPinfo IP Address API
