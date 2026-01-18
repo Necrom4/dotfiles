@@ -52,8 +52,6 @@ else
 fi
 
 export ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
-# Created by `pipx` on 2025-12-30 17:17:47
-export PATH="$PATH:/Users/diogopombeiro/.local/bin"
 
 # ============================================================================
 # ZINIT CONFIGURATION
