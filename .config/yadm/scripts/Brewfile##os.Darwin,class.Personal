@@ -31,7 +31,7 @@ brew "fastfetch"
 brew "fd"
 # Text mode browser and Gemini, NNTP, FTP, Gopher, Finger, and BitTorrent client
 brew "felinks"
-# Play, record, convert, and stream audio and video
+# Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
 # Command-line fuzzy finder written in Go
 brew "fzf"
@@ -43,7 +43,7 @@ brew "git-delta"
 brew "git-get"
 # Cinematic Git commit replay tool
 brew "gitlogue"
-# Tools and libraries to manipulate images in many formats
+# Tools and libraries to manipulate images in select formats
 brew "imagemagick"
 # Official CLI for the IPinfo IP Address API
 brew "ipinfo-cli"
