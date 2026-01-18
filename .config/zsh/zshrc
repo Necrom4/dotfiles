@@ -123,6 +123,7 @@ zinit wait lucid for \
   OMZP::taskwarrior \
   OMZP::tmux \
   OMZP::web-search \
+  OMZP::yarn \
   OMZP::z \
     as"completion" \
   OMZ::plugins/z/_z \
@@ -139,6 +140,10 @@ zinit wait lucid for \
 zinit wait"0b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
   atload"_zsh_highlight" for \
   zdharma-continuum/fast-syntax-highlighting
+
+zinit wait"0c" lucid for \
+    atload"replace_plugin_aliases" \
+    zdharma-continuum/null
 
 # ============================================================================
 # ZSH OPTIONS & KEYBINDINGS
@@ -162,6 +167,12 @@ bindkey -M vicmd 'j' history-substring-search-down
 # ALIASES
 # ============================================================================
 
+replace_plugin_aliases() {
+  alias g="lazygit"
+  alias y="yadm enter lazygit"
+  unalias ya 2>/dev/null
+}
+
 alias vim="nvim"
 e() {
   "$EDITOR" "$@"
@@ -182,8 +193,6 @@ alias jl="just --list"
 alias ju="just update"
 
 alias d="lazydocker"
-alias g="lazygit"
-alias y="yadm enter lazygit"
 
 alias watch="viddy -d -n 1 --shell zsh "$@""
 
