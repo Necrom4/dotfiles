@@ -2,12 +2,12 @@
 # FASTFETCH (displays system info on startup)
 # ============================================================================
 
-# if [[ -o interactive ]] && [[ -z "$_ZSHRC_SOURCED" ]]; then
-#   if (( $+commands[fastfetch] )); then
-#     fastfetch
-#   fi
-#   export _ZSHRC_SOURCED=1
-# fi
+if [[ -o interactive ]] && [[ -z "$_ZSHRC_SOURCED" ]]; then
+  if (( $+commands[fastfetch] )); then
+    fastfetch
+  fi
+  export _ZSHRC_SOURCED=1
+fi
 
 # ============================================================================
 # INSTANT PROMPT (Anything below will run in the background)
@@ -21,22 +21,27 @@ fi
 # ENVIRONMENT VARIABLES
 # ============================================================================
 
-if (( $+commands[brew] )); then
-  BREW_PREFIX=$(brew --prefix)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  BREW_PREFIX="/opt/homebrew"
 elif [[ -x /usr/local/bin/brew ]]; then
   BREW_PREFIX="/usr/local"
-elif [[ -x /opt/homebrew/bin/brew ]]; then
-  BREW_PREFIX="/opt/homebrew"
 else
   BREW_PREFIX=""
 fi
 
+typeset -U PATH path
+
 if [[ -n "$BREW_PREFIX" ]]; then
-  export PATH="$BREW_PREFIX/share/john:$PATH"
-  export PATH="$BREW_PREFIX/opt/postgresql@18/bin:$PATH"
+  path=(
+    "$BREW_PREFIX/opt/postgresql@18/bin"
+    "$BREW_PREFIX/share/john"
+    $path
+  )
   export LDFLAGS="-L$BREW_PREFIX/opt/postgresql@18/lib"
   export CPPFLAGS="-I$BREW_PREFIX/opt/postgresql@18/include"
 fi
+
+path+=("$HOME/.local/bin")
 
 if (( $+commands[nvim] )); then
   export EDITOR="nvim"
@@ -93,7 +98,6 @@ zinit wait lucid for \
   OMZL::history.zsh \
   OMZL::key-bindings.zsh \
   OMZL::misc.zsh \
-  OMZL::spectrum.zsh \
   OMZL::termsupport.zsh \
   OMZL::theme-and-appearance.zsh \
   OMZP::alias-finder \
@@ -121,7 +125,6 @@ zinit wait lucid for \
   OMZP::taskwarrior \
   OMZP::tmux \
   OMZP::web-search \
-  OMZP::yarn \
   OMZP::z \
     as"completion" \
   OMZ::plugins/z/_z \
@@ -160,9 +163,6 @@ bindkey -M vicmd 'j' history-substring-search-down
 # ============================================================================
 # ALIASES
 # ============================================================================
-
-unalias y 2>/dev/null
-unalias ya 2>/dev/null
 
 alias vim="nvim"
 e() {
@@ -228,14 +228,6 @@ if (( $+commands[task] )) && (( $+commands[timew] )); then
   }
 fi
 
-if [ "$(yadm config local.class)" = "Personal" ]; then
-  alias vpnify="/Applications/Vpnify.app/Contents/MacOS/CLI/vpnify"
-fi
-
-if [ "$(yadm config local.class)" = "42" ]; then
-  alias cclean='bash ~/LinuxCleaner_42.sh'
-fi
-
 # Yazi with directory change on exit
 x() {
   local tmp cwd target
@@ -258,7 +250,7 @@ x() {
 
 # Z with fzf integration
 zin() {
-  if ! command -v z &>/dev/null; then
+  if (( ! $+commands[nvim] )); then
     echo "z not found"
     return 1
   fi
@@ -269,7 +261,7 @@ zin() {
 
 # VisiData pip wrapper
 vdpip() {
-  if ! command -v visidata &>/dev/null; then
+  if (( ! $+commands[visidata] )); then
     echo "Visidata not found."
     return 1
   fi
@@ -278,7 +270,7 @@ vdpip() {
   if [[ -n "$BREW_PREFIX" ]]; then
     vdp_python="$BREW_PREFIX/opt/visidata/libexec/bin/python3"
   else
-    vdp_python="$(command -v visidata | xargs dirname)/../libexec/bin/python3"
+    vdp_python="$( (( ! $+commands[visidata] )) | xargs dirname)/../libexec/bin/python3"
   fi
 
   if [[ ! -x "$vdp_python" ]]; then
@@ -289,7 +281,11 @@ vdpip() {
   "$vdp_python" -m pip "$@"
 }
 
-eval $(thefuck --alias)
+fuck() {
+  unfunction fuck
+  eval $(thefuck --alias)
+  fuck "$@"
+}
 
 # ============================================================================
 # LOAD ITERM2 SHELL INTEGRATION

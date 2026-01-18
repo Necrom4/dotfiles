@@ -1,8 +1,7 @@
 # -- VI-MODE --
 
 function zvm_vi_yank() {
-	zvm_yank
-	echo ${CUTBUFFER} | pbcopy
-	zvm_exit_visual_mode
+  zvm_yank
+  echo ${CUTBUFFER} | pbcopy
+  zvm_exit_visual_mode
 }
-
