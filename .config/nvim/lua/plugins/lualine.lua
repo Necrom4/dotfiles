@@ -156,7 +156,6 @@ return {
 					},
 					{ "overseer" },
 					{ "encoding" },
-					{ os_icon, color = { fg = "white" } },
 				},
 				lualine_y = {
 					{ "location" },
