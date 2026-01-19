@@ -42,7 +42,6 @@
     },
     {
       "type": "separator",
-      "keyColor": "red",
       "string": "─",
       "outputColor": "red",
     },
@@ -73,7 +72,7 @@
       "type": "command",
       "key": "├─",
       "keyColor": "yellow",
-      "text": "yadm config local.class",
+      "text": "git --git-dir=\"$HOME/.local/share/yadm/repo.git\" config local.class",
       "format": "{#cyan}{result}",
     },
     {
@@ -116,6 +115,25 @@
     },
     "break",
     {
+      "type": "wifi",
+      "key": "╭─{icon}",
+      "format": "{ssid}",
+      "keyColor": "blue",
+    },
+    {
+      "type": "localip",
+      "key": "├─{icon}",
+      "compact": true,
+      "keyColor": "blue",
+    },
+    {
+      "type": "publicip",
+      "key": "╰─{icon}",
+      "keyColor": "blue",
+      "timeout": 1000,
+    },
+    "break",
+    {
       "type": "cpuusage",
       "key": "╭─{icon}",
       "keyColor": "green",
@@ -154,11 +172,6 @@
       "keyColor": "green",
     },
     {
-      "type": "brightness",
-      "key": "├─{icon}",
-      "keyColor": "green",
-    },
-    {
       "type": "battery",
       "key": "├─{icon}",
       "keyColor": "green",
@@ -167,54 +180,10 @@
       },
     },
     {
-      "type": "poweradapter",
-      "key": "├─{icon}",
-      "keyColor": "green",
-    },
-    {
-      "type": "gamepad",
-      "key": "├─{icon}",
-      "keyColor": "green",
-    },
-    {
-      "type": "bluetooth",
-      "key": "├─{icon}",
-      "keyColor": "green",
-    },
-    {
-      "type": "sound",
-      "key": "╰─{icon}",
-      "keyColor": "green",
-    },
-    "break",
-    {
-      "type": "wifi",
-      "key": "╭─{icon}",
-      "format": "{ssid}",
-      "keyColor": "blue",
-    },
-    {
-      "type": "netio",
-      "key": "├─{icon}",
-      "keyColor": "blue",
-    },
-    {
-      "type": "localip",
-      "key": "├─{icon}",
-      "compact": true,
-      "keyColor": "blue",
-    },
-    {
-      "type": "publicip",
-      "key": "├─{icon}",
-      "keyColor": "blue",
-      "timeout": 1000,
-    },
-    {
       "type": "uptime",
       "key": "╰─{icon}",
-      "keyColor": "blue",
-      "format": "{boot-time} {#bright_blue}|{#reset_default} {formatted}",
+      "keyColor": "green",
+      "format": "{boot-time} {#bright_green}|{#reset_default} {formatted}",
     },
   ],
 }
