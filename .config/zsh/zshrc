@@ -90,32 +90,18 @@ zinit light-mode for \
 zinit ice depth"1"
 zinit light romkatv/powerlevel10k
 
-# Plugins
+# Plugins necessary instantly + completion providers
 zinit wait lucid for \
-  OMZL::clipboard.zsh \
   OMZL::compfix.zsh \
   OMZL::directories.zsh \
-  OMZL::functions.zsh \
-  OMZL::git.zsh \
-  OMZL::grep.zsh \
   OMZL::history.zsh \
   OMZL::key-bindings.zsh \
-  OMZL::misc.zsh \
-  OMZL::spectrum.zsh \
-  OMZL::termsupport.zsh \
-  OMZL::theme-and-appearance.zsh \
-  OMZP::alias-finder \
-  OMZP::aliases \
   OMZP::azure \
-  OMZP::colored-man-pages \
-  OMZP::command-not-found \
   OMZP::docker \
   OMZP::docker-compose \
-  OMZP::eza \
   OMZP::gh \
   OMZP::git \
   OMZP::helm \
-  OMZP::jsontools \
   OMZP::kubectl \
   OMZP::minikube \
   OMZP::npm \
@@ -128,13 +114,11 @@ zinit wait lucid for \
   OMZP::tailscale \
   OMZP::taskwarrior \
   OMZP::tmux \
-  OMZP::web-search \
   OMZP::yarn \
   OMZP::z \
     as"completion" \
   OMZ::plugins/z/_z \
   Aloxaf/fzf-tab \
-  zdharma-continuum/history-search-multi-word \
   rswrz/timewarrior-omz \
     blockf \
   zsh-users/zsh-autosuggestions \
@@ -143,12 +127,30 @@ zinit wait lucid for \
   zsh-users/zsh-history-substring-search \
   jeffreytse/zsh-vi-mode
 
-# Syntax highlighting - loads last with compinit, triggers re-highlight on load
+# Syntax highlighting - loads with compinit, triggers re-highlight on load
 zinit wait"0b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
   atload"_zsh_highlight" for \
   zdharma-continuum/fast-syntax-highlighting
 
-zinit wait"0c" lucid for \
+# Deferred plugins
+zinit wait"1" lucid for \
+  OMZL::clipboard.zsh \
+  OMZL::functions.zsh \
+  OMZL::grep.zsh \
+  OMZL::misc.zsh \
+  OMZL::spectrum.zsh \
+  OMZL::termsupport.zsh \
+  OMZP::alias-finder \
+  OMZP::aliases \
+  OMZP::colored-man-pages \
+  OMZP::command-not-found \
+  OMZP::eza \
+  OMZP::jsontools \
+  OMZP::web-search \
+  zdharma-continuum/history-search-multi-word
+
+# Override plugin aliases
+zinit wait"1b" lucid for \
     atload"replace_plugin_aliases" \
     zdharma-continuum/null
 
