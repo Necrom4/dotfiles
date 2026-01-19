@@ -2,5 +2,5 @@
 --layout='reverse'
 --height='30%'
 --info='inline-right'
---color='bg:-1,hl+:9,hl:6,spinner:9,prompt:9,header:#ff0000,info:8,pointer:7,marker:#ff0000,border:6,label:#ff0000'
+--color='hl+:#FF966C,hl:#65BCFF,spinner:#FF966C,prompt:#FF966C,header:#ff0000,info:#636DA6,pointer:#4FD6BE,marker:#ff0000,border:#589ED7,label:#ff0000'
 --bind "tab:down,btab:up"
