@@ -101,6 +101,7 @@ zinit wait lucid for \
   OMZL::history.zsh \
   OMZL::key-bindings.zsh \
   OMZL::misc.zsh \
+  OMZL::spectrum.zsh \
   OMZL::termsupport.zsh \
   OMZL::theme-and-appearance.zsh \
   OMZP::alias-finder \
