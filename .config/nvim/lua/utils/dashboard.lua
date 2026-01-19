@@ -61,7 +61,7 @@ local function fetch_stats()
 		elseif item.type == "PublicIp" and item.result then
 			stats.public_ip = item.result.ip
 		elseif item.type == "Uptime" and item.result then
-			stats.uptime_seconds = item.result.uptime
+			stats.uptime = item.result.bootTime
 		end
 	end
 
@@ -230,12 +230,8 @@ local function disk()
 end
 
 local function uptime()
-	if ff_stats and ff_stats.uptime_seconds then
-		local boot_time = os.time() - tonumber(ff_stats.uptime_seconds)
-		local boot_date = os.date("%Y-%m-%d %H:%M:%S", boot_time)
-		local days_since_boot = math.floor(tonumber(ff_stats.uptime_seconds) / 86400)
-		local uptime_percentage = math.min(days_since_boot / 14, 1) * 100
-		return boot_date, uptime_percentage
+	if ff_stats and ff_stats.uptime then
+		return ff_stats.uptime:sub(1, 19):gsub("T", " ")
 	end
 
 	local boot_time, boot_date
