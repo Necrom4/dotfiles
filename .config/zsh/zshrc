@@ -75,6 +75,8 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' fzf-flags --height=30%
 zstyle ':fzf-tab:complete:(cd|eza):*' fzf-preview '[[ -d $realpath ]] && eza -1 --color=always --icons $realpath || bat --theme=Dracula --color=always --style=plain --line-range=:250 $realpath'
 zstyle ':fzf-tab:complete:brew-(info|install|upgrade):*' fzf-preview 'CACHE="/tmp/brew-info-$word"; [[ -f $CACHE && $((EPOCHSECONDS - $(stat -f%m $CACHE))) -lt 86400 ]] || HOMEBREW_COLOR=1 brew info $word 2>/dev/null >$CACHE; cat $CACHE'
+zstyle ':fzf-tab:complete:just:*' fzf-preview \
+  'just --show $word 2>/dev/null | bat --theme=Dracula --color=always --style=plain -l Makefile'
 
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
