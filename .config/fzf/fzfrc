@@ -1,0 +1,6 @@
+--style full
+--layout='reverse'
+--height='30%'
+--info='inline-right'
+--color='bg:-1,hl+:9,hl:6,spinner:9,prompt:9,header:#ff0000,info:8,pointer:7,marker:#ff0000,border:6,label:#ff0000'
+--bind "tab:down,btab:up"
