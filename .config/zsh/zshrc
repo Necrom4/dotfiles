@@ -75,7 +75,7 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:(cd|eza):*' fzf-preview '[[ -d $realpath ]] && eza -1 --color=always --icons $realpath || bat --theme=Dracula --color=always --style=plain --line-range=:250 $realpath'
 zstyle ':fzf-tab:*' fzf-flags --height=30%
 
-ZSH_AUTOSUGGEST_STRATEGY=completion
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
 ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 
