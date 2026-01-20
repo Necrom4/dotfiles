@@ -3,4 +3,4 @@
 --height='30%'
 --info='inline-right'
 --color='hl+:#FF966C,hl:#65BCFF,spinner:#FF966C,prompt:#FF966C,header:#ff0000,info:#636DA6,pointer:#4FD6BE,marker:#ff0000,border:#589ED7,label:#ff0000'
---bind "tab:down,btab:up"
+--bind "tab:down,btab:up,ctrl-n:preview-down,ctrl-p:preview-up"
