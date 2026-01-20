@@ -74,7 +74,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' fzf-flags --height=30%
 zstyle ':fzf-tab:complete:(cd|eza):*' fzf-preview '[[ -d $realpath ]] && eza -1 --color=always --icons $realpath || bat --theme=Dracula --color=always --style=plain --line-range=:250 $realpath'
-zstyle ':fzf-tab:complete:(z|zshz):*' fzf-preview 'eza -1 --color=always --icons $word'
+zstyle ':fzf-tab:complete:(z|zshz):*' fzf-preview 'eza -L 3 -gh --git --icons=auto --color=always --color-scale=all --tree $word | head -80'
 zstyle ':fzf-tab:complete:brew-(info|install|upgrade):*' fzf-preview 'CACHE="/tmp/brew-info-$word"; [[ -f $CACHE && $((EPOCHSECONDS - $(stat -f%m $CACHE))) -lt 86400 ]] || HOMEBREW_COLOR=1 brew info $word 2>/dev/null >$CACHE; cat $CACHE'
 zstyle ':fzf-tab:complete:just:*' fzf-preview \
   'just --show $word 2>/dev/null | bat --theme=Dracula --color=always --style=plain -l Makefile'
@@ -268,17 +268,6 @@ x() {
   rm -f -- "$tmp"
 }
 
-# Z with fzf integration
-zin() {
-  if (( ! $+commands[nvim] )); then
-    echo "z not found"
-    return 1
-  fi
-  local dir
-  dir=$(z | awk '{$1=""; sub(/^ +/, ""); print }' | fzf --tac --preview 'eza -gh --git --icons=auto --color=always --color-scale=all --tree "$(echo {})" | head -80')
-  [[ -n "$dir" ]] && cd "$dir"
-}
-
 # VisiData pip wrapper
 vdpip() {
   if (( ! $+commands[visidata] )); then
@@ -306,7 +295,6 @@ fuck() {
   eval $(thefuck --alias)
   fuck "$@"
 }
-
 # ============================================================================
 # LOAD ITERM2 SHELL INTEGRATION
 # ============================================================================
