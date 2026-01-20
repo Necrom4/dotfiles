@@ -110,6 +110,7 @@
     taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch              # CPU architecture
+    shlvl
     # tmux_session                 # [CUSTOM] tmux session
     time                    # current time
     os_icon               # os identifier
@@ -1721,6 +1722,18 @@
     # and regular prompts.
     prompt_example
   }
+
+function prompt_shlvl() {
+  local levels=('󰎨' '󰎫' '󰎲' '󰎯')
+
+  local idx=$(( SHLVL - 1 ))
+
+  if (( SHLVL > 1 && idx <= ${#levels} )); then
+    p10k segment -f 76 -i "${levels[$idx]}"
+  elif (( SHLVL > 5 )); then
+    p10k segment -f 76 -i '󰎨' -t "($SHLVL)"
+  fi
+}
 
   function prompt_tmux_session() {
     if [[ -n $TMUX ]]; then
