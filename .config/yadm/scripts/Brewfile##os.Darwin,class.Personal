@@ -99,6 +99,8 @@ brew "sevenzip"
 brew "speedtest-cli"
 # Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale"
+# Feature-rich console based todo list manager
+brew "task"
 # User interface to the TELNET protocol
 brew "telnet"
 # Programmatically correct mistyped console commands
