@@ -4,6 +4,7 @@ return {
 		spec = {
 			{
 				mode = { "n", "v" },
+				{ "<leader>a", group = "annotations", icon = { icon = "󰆉 ", color = "cyan" } },
 				{ "<leader>cc", group = "calc", icon = { icon = " ", color = "cyan" } },
 				{ "<leader>cC", name = "Color Picker", icon = { icon = " ", color = "orange" } },
 				{ "<leader>d", group = "diff", icon = { icon = " ", color = "yellow" } },
