@@ -99,8 +99,6 @@ brew "sevenzip"
 brew "speedtest-cli"
 # Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale"
-# Terminal user interface for taskwarrior
-brew "taskwarrior-tui"
 # User interface to the TELNET protocol
 brew "telnet"
 # Programmatically correct mistyped console commands
@@ -131,6 +129,8 @@ brew "yadm"
 brew "yarn"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
+# Process YAML, JSON, XML, CSV and properties documents from the CLI
+brew "yq"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
 # Fast file synchronization and network forwarding for remote development
@@ -155,7 +155,7 @@ cask "neovide-app"
 # App to write, plan, collaborate, and get organised
 cask "notion"
 # System-wide Vim mode for macOS
-cask "ovim"
+cask "tonisives/tap/ovim"
 # Home media player
 cask "plex"
 # VPN client focusing on security
