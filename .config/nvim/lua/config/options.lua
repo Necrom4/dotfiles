@@ -4,6 +4,21 @@ vim.opt.list = false -- Show some invisible characters (tabs...
 vim.opt.scrolloff = 0 -- Lines of context
 vim.opt.wrap = false -- Disable line wrap
 
+if vim.fn.has("wsl") == 1 then
+	vim.g.clipboard = {
+		name = "WslClipboard",
+		copy = {
+			["+"] = "clip.exe",
+			["*"] = "clip.exe",
+		},
+		paste = {
+			["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+			["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+		},
+		cache_enabled = 0,
+	}
+end
+
 vim.opt.spelllang = { "en", "fr", "pt" }
 
 vim.diagnostic.config({
