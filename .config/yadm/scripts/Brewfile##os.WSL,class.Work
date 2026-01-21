@@ -1,0 +1,50 @@
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
+# Console Matrix
+brew "cmatrix"
+# Modern, maintained replacement for ls
+brew "eza"
+# Command-line fuzzy finder written in Go
+brew "fzf"
+# GitHub command-line tool
+brew "gh"
+# Syntax-highlighting pager for git and diff output
+brew "git-delta"
+# Official CLI for the IPinfo IP Address API
+brew "ipinfo-cli"
+# Command-line pager for JSON data
+brew "jless"
+# Handy way to save and run project-specific commands
+brew "just"
+# Lazier way to manage everything docker
+brew "lazydocker"
+# Simple terminal UI for git commands
+brew "lazygit"
+# YAML Parser
+brew "libyaml"
+# Text-based web browser
+brew "lynx"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# 7-Zip is a file archiver with a high compression ratio
+brew "sevenzip"
+# Simplified and community-driven man pages
+brew "tldr"
+# Command-line interface to the freedesktop.org trashcan
+brew "trash-cli"
+# Terminal spreadsheet multitool for discovering and arranging data
+brew "visidata"
+# Yet Another Dotfiles Manager
+brew "yadm"
+# JavaScript package manager
+brew "yarn"
+# Blazing fast terminal file manager written in Rust, based on async I/O
+brew "yazi"
+# Process YAML, JSON, XML, CSV and properties documents from the CLI
+brew "yq"
