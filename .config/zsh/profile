@@ -6,7 +6,7 @@ Darwin)
   eval "$(/opt/homebrew/bin/brew shellenv)"
   ;;
 Linux)
-  for BREW_PATH in "$HOME/homebrew/bin/brew" "$HOME/linuxbrew/.linuxbrew/bin/brew"; do
+  for BREW_PATH in "/home/linuxbrew/.linuxbrew/bin/brew" "$HOME/.linuxbrew/bin/brew"; do
     [ -x "$BREW_PATH" ] && eval "$("$BREW_PATH" shellenv)"
   done
   ;;
