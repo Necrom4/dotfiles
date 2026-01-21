@@ -4,40 +4,76 @@ brew "bat"
 brew "btop"
 # Console Matrix
 brew "cmatrix"
+# Securely send things from one computer to another
+brew "croc"
+# Pack, ship and run any application as a lightweight container
+brew "docker"
 # Modern, maintained replacement for ls
 brew "eza"
+# Like neofetch, but much faster because written mostly in C
+brew "fastfetch"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
+# Text mode browser and Gemini, NNTP, FTP, Gopher, Finger, and BitTorrent client
+brew "felinks"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # GitHub command-line tool
 brew "gh"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
+# Better way to clone, organize and manage multiple git repositories
+brew "git-get"
+# Command-line benchmarking tool
+brew "hyperfine"
 # Official CLI for the IPinfo IP Address API
 brew "ipinfo-cli"
 # Command-line pager for JSON data
 brew "jless"
 # Handy way to save and run project-specific commands
 brew "just"
+# Kubernetes CLI To Manage Your Clusters In Style!
+brew "k9s"
+# Kubernetes command-line interface
+brew "kubernetes-cli"
 # Lazier way to manage everything docker
 brew "lazydocker"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Terminal-based SSH manager
+brew "lazyssh"
+# Library for Qalculate! program
+brew "libqalculate"
 # YAML Parser
 brew "libyaml"
 # Text-based web browser
 brew "lynx"
+# Run a Kubernetes cluster locally
+brew "minikube"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Port scanning utility for large networks
+brew "nmap"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
+# Command-line interface for https://speedtest.net bandwidth tests
+brew "speedtest-cli"
+# Command-line time tracking application
+brew "timewarrior"
 # Simplified and community-driven man pages
 brew "tldr"
+# Terminal multiplexer
+brew "tmux"
+# Command-line translator using Google Translate and more
+brew "translate-shell"
 # Command-line interface to the freedesktop.org trashcan
 brew "trash-cli"
+# Modern watch command
+brew "viddy"
 # Terminal spreadsheet multitool for discovering and arranging data
 brew "visidata"
 # Yet Another Dotfiles Manager
@@ -48,3 +84,5 @@ brew "yarn"
 brew "yazi"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+go "cmd/go"
+go "cmd/gofmt"
