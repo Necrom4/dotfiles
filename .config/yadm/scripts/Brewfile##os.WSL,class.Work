@@ -62,6 +62,8 @@ brew "ripgrep"
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
+# Feature-rich console based todo list manager
+brew "task"
 # Command-line time tracking application
 brew "timewarrior"
 # Simplified and community-driven man pages
