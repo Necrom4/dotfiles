@@ -1723,26 +1723,19 @@
     prompt_example
   }
 
-function prompt_shlvl() {
-  local levels=('󰎨' '󰎫' '󰎲' '󰎯')
-
-  local idx=$(( SHLVL - 1 ))
-
-  if (( SHLVL > 1 && idx <= ${#levels} )); then
-    p10k segment -f 76 -i "${levels[$idx]}"
-  elif (( SHLVL > 5 )); then
-    p10k segment -f 76 -i '󰎨' -t "($SHLVL)"
-  fi
-}
-
-  function prompt_tmux_session() {
+  function prompt_shlvl() {
     if [[ -n $TMUX ]]; then
       local session_name
       session_name=$(tmux display-message -p '#S' 2>/dev/null)
-
       p10k segment -f 40 -i "" -t "${session_name}"
     else
-      p10k segment -s ABSENT
+      local levels=('󰎨' '󰎫' '󰎲' '󰎯')
+      local idx=$(( SHLVL - 1 ))
+      if (( SHLVL > 1 && idx <= ${#levels} )); then
+        p10k segment -f 76 -i "${levels[$idx]}"
+      elif (( SHLVL > 5 )); then
+        p10k segment -f 76 -i '󰎨' -t "($SHLVL)"
+      fi
     fi
   }
 
