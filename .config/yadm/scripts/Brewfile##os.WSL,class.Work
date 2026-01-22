@@ -46,6 +46,8 @@ brew "lazyssh"
 brew "libqalculate"
 # YAML Parser
 brew "libyaml"
+# Package manager for the Lua programming language
+brew "luarocks"
 # Text-based web browser
 brew "lynx"
 # Run a Kubernetes cluster locally
