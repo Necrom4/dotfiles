@@ -117,6 +117,8 @@ zinit wait lucid for \
   OMZP::ssh \
   OMZP::tailscale \
   OMZP::taskwarrior \
+    atclone'curl -sLo tmux.extra.conf https://github.com/ohmyzsh/ohmyzsh/raw/master/plugins/tmux/tmux.extra.conf' \
+    atpull'%atclone' \
   OMZP::tmux \
   OMZP::yarn \
   OMZP::z \
