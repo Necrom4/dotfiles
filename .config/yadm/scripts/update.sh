@@ -142,9 +142,6 @@ update_tool "Zinit" "dir:~/.local/share/zinit/zinit.git" \
 update_tool "Zinit plugins" "dir:~/.local/share/zinit/zinit.git" \
   "zsh:zinit update --parallel"
 
-update_tool "Powerlevel10k" "dir:${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" \
-  "git:${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
-
 update_tool "TLDR" "cmd:tldr" \
   "tldr --update"
 
