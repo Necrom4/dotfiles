@@ -1,3 +1,4 @@
+--ignore-case
 --style full
 --layout='reverse'
 --height='30%'
