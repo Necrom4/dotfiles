@@ -1,3 +1,4 @@
+tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
 tap "mutagen-io/mutagen"
 tap "tonisives/tap"
@@ -135,6 +136,8 @@ brew "yazi"
 brew "yq"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
+# High-performance, cross-platform network monitoring tool with TUI
+brew "domcyrus/rustnet/rustnet"
 # Fast file synchronization and network forwarding for remote development
 brew "mutagen-io/mutagen/mutagen"
 # Password manager that keeps all passwords secure behind one password
