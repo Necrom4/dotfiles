@@ -88,6 +88,8 @@ brew "trash-cli"
 brew "viddy"
 # Terminal spreadsheet multitool for discovering and arranging data
 brew "visidata"
+# Terminal-based Tetris clone
+brew "vitetris"
 # Yet Another Dotfiles Manager
 brew "yadm"
 # JavaScript package manager
