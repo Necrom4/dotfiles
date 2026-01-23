@@ -28,6 +28,8 @@ brew "git-delta"
 brew "git-get"
 # Command-line benchmarking tool
 brew "hyperfine"
+# Display an interface's bandwidth usage
+brew "iftop"
 # Official CLI for the IPinfo IP Address API
 brew "ipinfo-cli"
 # Command-line pager for JSON data
@@ -68,6 +70,8 @@ brew "resvg"
 brew "ripgrep"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
+# Prettier way to inspect network connections
+brew "snitch"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
 # Feature-rich console based todo list manager
