@@ -1,3 +1,4 @@
+tap "domcyrus/rustnet"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
@@ -28,8 +29,6 @@ brew "git-delta"
 brew "git-get"
 # Command-line benchmarking tool
 brew "hyperfine"
-# Display an interface's bandwidth usage
-brew "iftop"
 # Official CLI for the IPinfo IP Address API
 brew "ipinfo-cli"
 # Command-line pager for JSON data
@@ -70,8 +69,6 @@ brew "resvg"
 brew "ripgrep"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
-# Prettier way to inspect network connections
-brew "snitch"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
 # Feature-rich console based todo list manager
@@ -102,5 +99,7 @@ brew "yarn"
 brew "yazi"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+# High-performance, cross-platform network monitoring tool with TUI
+brew "domcyrus/rustnet/rustnet"
 go "cmd/go"
 go "cmd/gofmt"
