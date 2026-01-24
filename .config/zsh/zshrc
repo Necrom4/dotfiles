@@ -151,6 +151,7 @@ zinit wait"1" lucid for \
   OMZP::colored-man-pages \
   OMZP::command-not-found \
   OMZP::eza \
+  OMZP::grc \
   OMZP::jsontools \
   OMZP::web-search \
   zdharma-continuum/history-search-multi-word

@@ -44,6 +44,8 @@ brew "git-delta"
 brew "git-get"
 # Cinematic Git commit replay tool
 brew "gitlogue"
+# Colorize logfiles and command output
+brew "grc"
 # Command-line benchmarking tool
 brew "hyperfine"
 # Tools and libraries to manipulate images in select formats
