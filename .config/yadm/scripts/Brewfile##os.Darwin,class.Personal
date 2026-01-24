@@ -126,6 +126,8 @@ brew "up"
 brew "viddy"
 # Terminal spreadsheet multitool for discovering and arranging data
 brew "visidata"
+# Terminal-based Tetris clone
+brew "vitetris"
 # Internet file retriever
 brew "wget"
 # Passive hostname, domain, and IP lookup tool
