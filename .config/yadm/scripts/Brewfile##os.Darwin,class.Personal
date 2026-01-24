@@ -120,6 +120,8 @@ brew "translate-shell"
 brew "transmission-cli"
 # F1 Live Timing TUI for all F1 sessions with variable delay to sync to your TV
 brew "undercutf1"
+# Tool for writing command-line pipes with instant live preview
+brew "up"
 # Modern watch command
 brew "viddy"
 # Terminal spreadsheet multitool for discovering and arranging data
