@@ -1,6 +1,7 @@
 [tools]
 go = "latest"
 node = "latest"
+"pipx:nomadnet" = "latest"
 ruby = "latest"
 uv = "latest"
 
