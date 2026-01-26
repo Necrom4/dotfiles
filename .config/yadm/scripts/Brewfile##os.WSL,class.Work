@@ -31,8 +31,6 @@ brew "git-get"
 brew "grc"
 # Command-line benchmarking tool
 brew "hyperfine"
-# Official CLI for the IPinfo IP Address API
-brew "ipinfo-cli"
 # Command-line pager for JSON data
 brew "jless"
 # Handy way to save and run project-specific commands
