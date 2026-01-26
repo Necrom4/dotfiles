@@ -1,0 +1,45 @@
+{
+	"name": "Vimium C",
+	"@time": "26.1.2026, 22:40:15",
+	"time": 1769463615826,
+	"environment": {
+		"extension": "2.12.2",
+		"platform": "mac",
+		"chromium": 144
+	},
+	"exclusionRules": [
+		{
+			"passKeys": "",
+			"pattern": ":https://www.youtube.com/"
+		},
+		{
+			"passKeys": "",
+			"pattern": ":https://teams.microsoft.com/"
+		}
+	],
+	"keyLayout": 2,
+	"keyMappings": [
+		"#!no-check",
+		"unmap gt",
+		"unmap gT",
+		"unmap t",
+		"unmap x",
+		"unmap yt",
+		"map th previousTab",
+		"map tl nextTab",
+		"map tH firstTab",
+		"map tL lastTab",
+		"map tn createTab",
+		"map tq removeTab",
+		"map tp duplicateTab",
+		"unmap J",
+		"map J scrollFullPageDown",
+		"unmap K",
+		"map K scrollFullPageUp",
+		"unmap `",
+		"map ` Marks.activateCreate",
+		"map ' Marks.activate",
+		""
+	],
+	"vimSync": true
+}
