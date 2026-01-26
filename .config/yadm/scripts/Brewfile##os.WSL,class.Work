@@ -5,6 +5,8 @@ brew "bat"
 brew "btop"
 # Console Matrix
 brew "cmatrix"
+# Container runtimes on MacOS (and Linux) with minimal setup
+brew "colima"
 # Securely send things from one computer to another
 brew "croc"
 # Pack, ship and run any application as a lightweight container
