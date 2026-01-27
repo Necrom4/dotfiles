@@ -131,11 +131,6 @@ update_tool "Mise" "cmd:mise" \
   "mise plugins update" \
   "mise upgrade"
 
-if [ "$(yadm config local.class)" != "42" ]; then
-  update_tool "Ruby gems" "cmd:gem" \
-    "bundle update --gemfile=~/.config/yadm/scripts/Gemfile --all"
-fi
-
 update_tool "Zinit" "dir:~/.local/share/zinit/zinit.git" \
   "zsh:zinit self-update"
 

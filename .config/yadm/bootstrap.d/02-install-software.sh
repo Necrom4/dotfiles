@@ -12,11 +12,9 @@ if [ -f "$brewfile" ]; then
   brew bundle install --file="$brewfile"
 fi
 
-gemfile=$HOME/.config/yadm/scripts/Gemfile
-
-if [ -f "$gemfile" ] && [ "$(yadm config local.class)" != "42" ]; then
-  echo "Installing Ruby gems..."
-  bundle install --gemfile="$gemfile"
+if ! command -v mise >/dev/null 2>&1; then
+  echo "Installing mise packages..."
+  mise install
 fi
 
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
