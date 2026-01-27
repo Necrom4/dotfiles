@@ -35,6 +35,11 @@ return {
 			hl.BlinkCmpKindDBee = {
 				fg = "#FCA7EA",
 			}
+			hl.HauntAnnotation = {
+				fg = "#FCA7EA",
+				bg = "#383148",
+				italic = true,
+			}
 			hl["@neorg.markup.verbatim"] = {
 				bg = "#444A73",
 				fg = "#82AAFF",
