@@ -97,6 +97,8 @@ brew "viddy"
 brew "visidata"
 # Terminal-based Tetris clone
 brew "vitetris"
+# Access X11 clipboards from the command-line
+brew "xclip"
 # Yet Another Dotfiles Manager
 brew "yadm"
 # JavaScript package manager
