@@ -322,7 +322,7 @@ scripts_dir="${0:A:h}/zshrc.os"
 
 if [[ -d "$scripts_dir" ]]; then
   setopt null_glob
-  for script in "$scripts_dir"/*.sh; do
+  for script in "$scripts_dir"/*.sh "$scripts_dir"/*.zsh; do
     [[ "$script" == *"##"* ]] && continue
     [[ -r "$script" ]] && source "$script"
   done
