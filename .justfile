@@ -11,12 +11,18 @@
 @update:
     $HOME/.config/yadm/scripts/update.sh
 
-@cleanup:
+cleanup: clean-brew clean-mise clean-gems
+
+@clean-brew:
     brew cleanup -s
     brew cleanup --prune=all
+
+@clean-mise:
     mise cache clear
     mise cache prune
     mise prune
+
+@clean-gems:
     gem cleanup
 
 @brew-dump:
