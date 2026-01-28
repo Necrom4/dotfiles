@@ -32,7 +32,7 @@ return {
 				{ "<leader>xF", name = "CWD (floating)", icon = { icon = " ", color = "blue" } },
 				{ "<leader>xx", name = "Root Dir", icon = { icon = "󰙅 ", color = "yellow" } },
 				{ "<leader>xX", name = "CWD", icon = { icon = "󰙅 ", color = "yellow" } },
-				{ "<leader>X", group = "diagnostics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
+				{ "<leader>Q", group = "quickfix", icon = { icon = "󱖫 ", color = "green" } },
 				{ "<leader>.", group = "Other", icon = { icon = "󰇘 ", color = "blue" } },
 				{ "<a-d>", group = "debug", icon = { icon = "󰃤 ", color = "red" } },
 				{ "gs", group = "surround", icon = { icon = "󰅲 ", color = "yellow" } },

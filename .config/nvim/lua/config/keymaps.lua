@@ -111,7 +111,7 @@ vim.keymap.del("n", "<leader>xq")
 vim.keymap.set("v", "<leader>sM", "<cmd>norm! K<cr>", { desc = "Man Pages" })
 
 -- location list
-vim.keymap.set("n", "<leader>Xl", function()
+vim.keymap.set("n", "<leader>Ql", function()
 	local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
 	if not success and err then
 		vim.notify(err, vim.log.levels.ERROR)
@@ -119,7 +119,7 @@ vim.keymap.set("n", "<leader>Xl", function()
 end, { desc = "Location List" })
 
 -- quickfix list
-vim.keymap.set("n", "<leader>Xq", function()
+vim.keymap.set("n", "<leader>Qq", function()
 	local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
 	if not success and err then
 		vim.notify(err, vim.log.levels.ERROR)

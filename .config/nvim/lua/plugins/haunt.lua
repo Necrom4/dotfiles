@@ -15,13 +15,9 @@ return {
 			haunt.annotate()
 		end, { desc = "Annotate" })
 
-		map("n", prefix .. "t", function()
-			haunt.toggle_annotation()
-		end, { desc = "Toggle" })
-
-		map("n", prefix .. "T", function()
+		map("n", "<leader>uN", function()
 			haunt.toggle_all_lines()
-		end, { desc = "Toggle all" })
+		end, { desc = "Toggle Annotations" })
 
 		map("n", prefix .. "d", function()
 			haunt.delete()
@@ -34,25 +30,25 @@ return {
 		-- move
 		map("n", "]n", function()
 			haunt.prev()
-		end, { desc = "Previous" })
+		end, { desc = "Previous Annotation" })
 
 		map("n", "[n", function()
 			haunt.next()
-		end, { desc = "Next" })
+		end, { desc = "Next Annotation" })
 
 		-- picker
 		map("n", "<leader>sA", function()
 			haunt_picker.show()
-		end, { desc = "Picker" })
+		end, { desc = "Annotations" })
 
 		-- quickfix
-		map("n", prefix .. "q", function()
+		map("n", "<leader>Qa", function()
 			haunt.to_quickfix()
-		end, { desc = "Quickfix" })
+		end, { desc = "Annotations" })
 
-		map("n", prefix .. "Q", function()
+		map("n", "<leader>QA", function()
 			haunt.to_quickfix({ current_buffer = true })
-		end, { desc = "Buffer Quickfix" })
+		end, { desc = "Buffer Annotations" })
 
 		-- yank
 		map("n", prefix .. "y", function()
