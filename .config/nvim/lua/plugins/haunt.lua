@@ -1,7 +1,8 @@
 return {
 	"TheNoeTrevino/haunt.nvim",
 	opts = {
-		sign = "",
+		sign = "󰆉",
+		sign_hl = "MiniIconsPurple",
 		annotation_prefix = "󰆉 ",
 	},
 	init = function()
