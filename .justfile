@@ -1,3 +1,9 @@
+alias c := cleanup
+alias i := install
+alias u := update
+
+host := `uname -s`
+
 @default:
     just --list
 
@@ -11,19 +17,26 @@
 @update:
     $HOME/.config/yadm/scripts/update.sh
 
-cleanup: clean-brew clean-mise clean-gems
+cleanup: clean-apt clean-brew clean-mise clean-gems
+
+clean-apt:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [[ "{{ host }}" != "Linux" ]] && exit 0
+    sudo apt autoremove -y
+    sudo apt autoclean
 
 @clean-brew:
     brew cleanup -s
     brew cleanup --prune=all
 
+@clean-gems:
+    gem cleanup
+
 @clean-mise:
     mise cache clear
     mise cache prune
     mise prune
-
-@clean-gems:
-    gem cleanup
 
 @brew-dump:
     brew bundle dump --file=$HOME/.config/yadm/scripts/Brewfile --describe --force
