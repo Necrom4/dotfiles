@@ -193,10 +193,6 @@ alias ll='ls -la --total-size'
 alias la='ls -a'
 alias lt='ls --tree'
 
-alias j="just"
-alias jl="just --list"
-alias ju="just update"
-
 alias d="lazydocker"
 
 alias watch="viddy -d -n 1 --shell zsh "$@""
