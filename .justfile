@@ -1,4 +1,4 @@
-alias c := cleanup
+alias c := clean
 alias i := install
 alias u := update
 
@@ -7,17 +7,13 @@ host := `uname -s`
 @default:
     just --list
 
-@pull:
-    yadm fetch
-    yadm reset --hard origin/master
+@brew-dump:
+    brew bundle dump --file=$HOME/.config/yadm/scripts/Brewfile --describe --force
 
-@install:
-    yadm bootstrap
+@brew-dump-clean:
+    brew bundle cleanup --file=$HOME/.config/yadm/scripts/Brewfile --force
 
-@update:
-    $HOME/.config/yadm/scripts/update.sh
-
-cleanup: clean-apt clean-brew clean-mise clean-gems
+clean: clean-apt clean-brew clean-mise clean-gems
 
 clean-apt:
     #!/usr/bin/env bash
@@ -38,8 +34,12 @@ clean-apt:
     mise cache prune
     mise prune
 
-@brew-dump:
-    brew bundle dump --file=$HOME/.config/yadm/scripts/Brewfile --describe --force
+@install:
+    yadm bootstrap
 
-@brew-dump-clean:
-    brew bundle cleanup --file=$HOME/.config/yadm/scripts/Brewfile --force
+@update:
+    $HOME/.config/yadm/scripts/update.sh
+
+@pull:
+    yadm fetch
+    yadm reset --hard origin/master
