@@ -123,6 +123,10 @@ update_tool() {
 # Tool Updates
 # =============================================================================
 
+update_tool "System packages (apt)" "cmd:apt" \
+  "sudo apt update" \
+  "sudo apt upgrade -y"
+
 update_tool "Homebrew" "cmd:brew" \
   "brew update" \
   "brew upgrade"
