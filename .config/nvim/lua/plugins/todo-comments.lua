@@ -1,5 +1,10 @@
 return {
 	"folke/todo-comments.nvim",
+	opts = {
+		keywords = {
+			TEST = { icon = " ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+		},
+	},
 	keys = {
 		{ "<leader>xt", false },
 		{ "<leader>xT", false },
