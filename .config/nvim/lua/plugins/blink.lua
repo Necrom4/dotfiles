@@ -2,7 +2,6 @@ local utils = require("utils.general")
 
 return {
 	"saghen/blink.cmp",
-	event = { "InsertEnter", "CmdlineEnter" },
 	dependencies = {
 		{
 			"saghen/blink.compat",
@@ -161,10 +160,11 @@ return {
 					name = "Env",
 					module = "blink-cmp-env",
 					opts = {
-						item_kind = require("blink.cmp.types").CompletionItemKind.Variable,
+						item_kind = vim.lsp.protocol.CompletionItemKind.Variable,
 						show_braces = false,
 						show_documentation_window = true,
 					},
+					score_offset = 1000,
 				},
 				["fuzzy-path"] = {
 					name = "Fuzzy Path",
@@ -234,11 +234,11 @@ return {
 					name = "blink-cmp-words",
 					module = "blink-cmp-words.thesaurus",
 					opts = {
-						score_offset = 300,
 						definition_pointers = { "!", "&", "^" },
 						similarity_pointers = { "&", "^" },
 						similarity_depth = 2,
 					},
+					score_offset = 300,
 				},
 				yank = {
 					name = "yank",
