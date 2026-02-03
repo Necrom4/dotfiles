@@ -87,7 +87,7 @@ return {
 				enabled = "Close ",
 				disabled = "Open ",
 			},
-		}):map("<leader>D")
+		}):map("<leader>Db")
 
 		return opts
 	end,

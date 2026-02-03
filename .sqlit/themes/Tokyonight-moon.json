@@ -1,0 +1,38 @@
+{
+  "_note": "Customize colors in the theme object then reselect the theme.",
+  "theme": {
+    "name": "Tokyonight-moon",
+    "dark": true,
+    "primary": "#C099FF",
+    "secondary": "#3B4261",
+    "accent": "#828BB8",
+    "warning": "#FFC777",
+    "error": "#C53B53",
+    "success": "#4FD6BE",
+    "foreground": "#C8D3F5",
+    "background": "#000000",
+    "surface": "#000000",
+    "panel": "#000000",
+    "variables": {
+      "border": "#636DA6",
+      "border-blurred": "red",
+      "button-color-foreground": "red",
+      "footer-background": "#1E2030",
+      "footer-description-foreground": "red",
+      "footer-key-foreground": "#828BB8",
+      "input-cursor-background": "red",
+      "input-cursor-foreground": "red",
+      "input-selection-background": "#3B4261 25%",
+      "input-selection-foreground": "red",
+      "mode-insert-color": "#C3E88D",
+      "mode-normal-color": "#82AAFF",
+      "scrollbar": "#C099FF",
+      "scrollbar-active": "#C099FF",
+      "scrollbar-background": "ansi_black",
+      "scrollbar-background-active": "red",
+      "scrollbar-background-hover": "red",
+      "scrollbar-corner-color": "red",
+      "scrollbar-hover": "red"
+    }
+  }
+}
