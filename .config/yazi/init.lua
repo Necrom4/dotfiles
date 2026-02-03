@@ -1,3 +1,5 @@
+require("duckdb"):setup()
+
 require("eza-preview"):setup({
 	level = 3,
 	follow_symlinks = true,

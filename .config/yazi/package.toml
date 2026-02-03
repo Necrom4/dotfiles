@@ -93,6 +93,11 @@ use = "TheronStein/yatline-githead"
 rev = "5cfe34d"
 hash = "6915e57a389a41b4d709f456cb3c1d6f"
 
+[[plugin.deps]]
+use = "wylie102/duckdb"
+rev = "3f8c863"
+hash = "87b9233a74325e95011670ed20bbd0d4"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "8e6296f"

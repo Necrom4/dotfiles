@@ -11,6 +11,8 @@ brew "colima"
 brew "croc"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
+# Embeddable SQL OLAP Database Management System
+brew "duckdb"
 # Perl lib for reading and writing EXIF metadata
 brew "exiftool"
 # Modern, maintained replacement for ls
