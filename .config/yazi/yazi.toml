@@ -24,14 +24,13 @@ linemode = "size"
 prepend_previewers = [
 	{ url = "*/", run = "eza-preview" },
   { url = "*.csv", run = "duckdb" },
-  { url = "*.tsv", run = "duckdb" },
-  { url = "*.json", run = "duckdb" },
+  { url = "*.db", run = "duckdb" },
+  { url = "*.duckdb", run = "duckdb" },
+  { url = "*.json", run = "piper -- jq -C '.' \"$1\"" },
   { url = "*.parquet", run = "duckdb" },
+  { url = "*.tsv", run = "duckdb" },
   { url = "*.txt", run = "duckdb" },
   { url = "*.xlsx", run = "duckdb" },
-  { url = "*.db", run = "duckdb" },
-  { url = "*.duckdb", run = "duckdb" }
-
 ]
 prepend_preloaders = [
   { url = "*.csv", run = "duckdb", multi = false },
