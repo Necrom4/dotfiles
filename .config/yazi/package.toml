@@ -10,7 +10,7 @@ hash = "778941e7f1ebbacd60f4e254bb3c51de"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "6f50636"
+rev = "230b9c6"
 hash = "8da0b15a97b5dfd13941d1ecc617ac7c"
 
 [[plugin.deps]]
@@ -20,12 +20,12 @@ hash = "57056b9728006881d580ccabe8154a9c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "6f50636"
+rev = "230b9c6"
 hash = "56fdabc96fc1f4d53c96eb884b02a5be"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "6f50636"
+rev = "230b9c6"
 hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
@@ -35,7 +35,7 @@ hash = "eed8e19469f3dca38fd977eb938dd34e"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "6f50636"
+rev = "230b9c6"
 hash = "407d19bc4fb46eff5fa8ff8337644847"
 
 [[plugin.deps]]
@@ -45,12 +45,12 @@ hash = "215729a555fe5286f1eb35520963d08"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "6f50636"
+rev = "230b9c6"
 hash = "f69e4737c2fb8ceec58a2950faf13c46"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "6f50636"
+rev = "230b9c6"
 hash = "270915fa8282a19908449530ff66f7e2"
 
 [[plugin.deps]]
@@ -70,18 +70,18 @@ hash = "424ada4807b20ccd4fc85d1d7c26d1e4"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "6f50636"
+rev = "230b9c6"
 hash = "6ce49cf5b4c7c0d9cce8a1062ed478d3"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "6f50636"
+rev = "230b9c6"
 hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mount"
-rev = "6f50636"
-hash = "563e4068979d1466d3dfc2e70a296947"
+rev = "230b9c6"
+hash = "9ad20d763df07ce40fd09de549d914b0"
 
 [[plugin.deps]]
 use = "carlosedp/yatline"
