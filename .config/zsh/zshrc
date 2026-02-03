@@ -62,11 +62,11 @@ zstyle ':omz:plugins:eza' 'icons' yes
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' fzf-flags --height=30%
-zstyle ':fzf-tab:complete:(cd|eza):*' fzf-preview '[[ -d $realpath ]] && eza -1 --color=always --icons $realpath || bat --theme=Dracula --color=always --style=plain --line-range=:250 $realpath'
+zstyle ':fzf-tab:complete:(cd|eza):*' fzf-preview '[[ -d $realpath ]] && eza -1 --color=always --icons $realpath || bat --color=always --style=plain --line-range=:250 $realpath'
 zstyle ':fzf-tab:complete:(z|zshz):*' fzf-preview 'eza -L 3 -gh --git --icons=auto --color=always --color-scale=all --tree $word | head -80'
 zstyle ':fzf-tab:complete:brew-(info|install|upgrade):*' fzf-preview 'F=( -c %Y ); [[ $(uname) == Darwin ]] && F=( -f %m ); CACHE="/tmp/brew-info-$word"; [[ -f $CACHE && $((EPOCHSECONDS - $(stat $F $CACHE))) -lt 86400 ]] || HOMEBREW_COLOR=1 brew info $word 2>/dev/null >$CACHE; cat $CACHE'
 zstyle ':fzf-tab:complete:just:*' fzf-preview \
-  'just --show $word 2>/dev/null | bat --theme=Dracula --color=always --style=plain -l Makefile'
+  'just --show $word 2>/dev/null | bat --color=always --style=plain -l Makefile'
 
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
@@ -184,9 +184,7 @@ e() {
 }
 
 if (( $+commands[bat] )); then
-  alias cat="bat --theme=Dracula"
-elif (( $+commands[batcat] )); then
-  alias cat="batcat"
+  alias cat="bat"
 fi
 
 alias ll='ls -la --total-size'
