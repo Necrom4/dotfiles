@@ -22,7 +22,7 @@ linemode = "size"
 
 [plugin]
 prepend_previewers = [
-	{ name = "*/", run = "eza-preview" },
+	{ url = "*/", run = "eza-preview" },
 ]
 prepend_fetchers = [
   { id = "git", name = "*", run = "git" },
