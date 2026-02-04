@@ -1,4 +1,6 @@
 tap "domcyrus/rustnet"
+# Automate deployment, configuration, and upgrading
+brew "ansible"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
@@ -33,6 +35,8 @@ brew "git-delta"
 brew "git-get"
 # Colorize logfiles and command output
 brew "grc"
+# Kubernetes package manager
+brew "helm"
 # Command-line benchmarking tool
 brew "hyperfine"
 # Command-line pager for JSON data
@@ -53,8 +57,6 @@ brew "lazygit"
 brew "lazyssh"
 # Library for Qalculate! program
 brew "libqalculate"
-# YAML Parser
-brew "libyaml"
 # Package manager for the Lua programming language
 brew "luarocks"
 # Text-based web browser
