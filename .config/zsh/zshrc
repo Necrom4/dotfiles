@@ -100,7 +100,6 @@ zinit wait lucid for \
   OMZP::npm \
   OMZP::pip \
   OMZP::python \
-  OMZP::rails \
   OMZP::rake \
   OMZP::ruby \
   OMZP::ssh \
@@ -142,6 +141,7 @@ zinit wait"1" lucid for \
   OMZP::eza \
   OMZP::grc \
   OMZP::jsontools \
+  OMZP::rails \
   OMZP::web-search \
   zdharma-continuum/history-search-multi-word
 
