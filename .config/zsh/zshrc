@@ -135,6 +135,10 @@ zinit wait"1" lucid for \
   OMZL::spectrum.zsh \
   OMZL::termsupport.zsh \
   OMZP::alias-finder \
+    atclone'
+      curl -sLo cheatsheet.py https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/aliases/cheatsheet.py;
+      curl -sLo termcolor.py https://raw.githubusercontent.com/termcolor/termcolor/1.1.0/termcolor.py' \
+    atpull'%atclone' \
   OMZP::aliases \
   OMZP::colored-man-pages \
   OMZP::command-not-found \
