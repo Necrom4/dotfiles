@@ -417,7 +417,7 @@
 
     if [[ -n $VCS_STATUS_LOCAL_BRANCH ]]; then
       local branch=${(V)VCS_STATUS_LOCAL_BRANCH}
-      local max_len=22
+      local max_len=23
 
       # 1. Standard prefix shortening
       branch=${branch/feature\//feat/}
@@ -435,16 +435,20 @@
 
         # 3. Strip Ticket ID
         if (( $#branch > max_len )); then
-           if [[ $branch =~ ^(.*[^/]/|)(([A-Za-z]+-[0-9]+)|([0-9]+))[-_](.+)$ ]]; then
-             branch="${match[1]}${match[5]}"
-           fi
+          if [[ $branch =~ ^([^/ ]+/)([A-Za-z]+-[0-9]+|[0-9]+)[\ -_](.+)$ ]]; then
+            branch="${match[1]}${match[3]}"
+          elif [[ $branch =~ ^([A-Za-z]+-[0-9]+|[0-9]+)[\ -_](.+)$ ]]; then
+            branch="${match[2]}"
+          fi
         fi
 
         # 4. Hard truncate & add icon
         if (( $#branch > max_len )); then
-           branch="${branch:0:$((max_len-1))}"
+           branch="${branch:0:$((max_len-1))}"
+           branch="${branch%[\ -_]}"
         fi
       fi
+
       res+="${clean}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${branch//\%/%%}"
     fi
 
