@@ -417,10 +417,33 @@
 
     if [[ -n $VCS_STATUS_LOCAL_BRANCH ]]; then
       local branch=${(V)VCS_STATUS_LOCAL_BRANCH}
-      # If local branch name is at most 32 characters long, show it in full.
-      # Otherwise, truncate to the first 32 characters and add "...".
-      if (( $#branch > 32 )); then
-        branch="${branch:0:32}"
+      local max_len=22
+
+      # 1. Standard prefix shortening
+      branch=${branch/feature\//feat/}
+      branch=${branch/bugfix\//fix/}
+      branch=${branch/hotfix\//hfx/}
+      branch=${branch/release\//rls/}
+      branch=${branch/refactor\//rfct/}
+
+      if (( $#branch > max_len )); then
+        # 2. Shortest prefixes
+        branch=${branch/feat\//ft/}
+        branch=${branch/fix\//fx/}
+        branch=${branch/rls\//rl/}
+        branch=${branch/rfct\//rf/}
+
+        # 3. Strip Ticket ID
+        if (( $#branch > max_len )); then
+           if [[ $branch =~ ^(.*[^/]/|)(([A-Za-z]+-[0-9]+)|([0-9]+))[-_](.+)$ ]]; then
+             branch="${match[1]}${match[5]}"
+           fi
+        fi
+
+        # 4. Hard truncate & add icon
+        if (( $#branch > max_len )); then
+           branch="${branch:0:$((max_len-1))}"
+        fi
       fi
       res+="${clean}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${branch//\%/%%}"
     fi
