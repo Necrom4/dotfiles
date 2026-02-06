@@ -106,14 +106,14 @@
     # ram                   # free RAM
     # swap                  # used swap
     todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
-    timewarrior             # timewarrior tracking status (https://timewarrior.net/)
-    taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
+    # timewarrior             # timewarrior tracking status (https://timewarrior.net/)
+    # taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch              # CPU architecture
     shlvl
     # tmux_session                 # [CUSTOM] tmux session
     time                    # current time
-    os_icon               # os identifier
+    # os_icon               # os identifier
     # =========================[ Line #2 ]=========================
     newline                 # \n
     command_execution_time  # HIDDEN unless post prompt
@@ -1750,7 +1750,7 @@
     if [[ -n $TMUX ]]; then
       local session_name
       session_name=$(tmux display-message -p '#S' 2>/dev/null)
-      p10k segment -f 40 -i "" -t "${session_name}"
+      p10k segment -f 40 -i ""
     else
       local levels=('󰎨' '󰎫' '󰎲' '󰎯')
       local idx=$(( SHLVL - 1 ))
