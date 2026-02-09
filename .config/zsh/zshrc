@@ -302,20 +302,17 @@ rg-fzf() {
     FZF_DEFAULT_COMMAND="$RG_PREFIX '' '$search_path'" \
       fzf --ansi \
       --sort \
-      --preview="[[ ! -z {} ]] && rg --pretty --context 5 {q} {}" \
       --phony \
       --bind "change:reload:$RG_PREFIX {q} '$search_path'" \
+      --preview="[[ ! -z {} ]] && rg --pretty --context 5 {q} {}" \
       --preview-window="70%:wrap" \
       --print-query
     )
 
   local query=$(echo "$out" | head -n 1)
-  local file=$(echo "$out" | head -n 2 | tail -n 1)
+  if [ -z "$query" ]; then return; fi
 
-  if [ -n "$file" ]; then
-    # Run rg one last time on the specific file to output all matches
-    rg --line-number --no-heading --color=always "$query" "$file"
-  fi
+  rg --line-number "$query" "$search_path"
 }
 
 # ============================================================================
