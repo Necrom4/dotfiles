@@ -291,16 +291,20 @@ fuck() {
 
 # FZF a word inside all in the current path
 rg-fzf() {
-  RG_PREFIX="rg --files-with-matches"
-  local file
+  RG_PREFIX="rg --files-with-matches --smart-case"
+  # Pass paths to use or use `.`
+  local search_path="${1:-.}"
   # We store the search query in a variable so we can use it after fzf exits
   # We use --print-query so fzf returns two lines: 1. Your typed string, 2. The selected file
   local out
   out=$(
-    FZF_DEFAULT_COMMAND="$RG_PREFIX '$1'" \
-      fzf --sort --preview="[[ ! -z {} ]] && rg --pretty --context 5 {q} {}" \
-      --phony -q "$1" \
-      --bind "change:reload:$RG_PREFIX {q}" \
+    # Run the initial command against the search_path
+    FZF_DEFAULT_COMMAND="$RG_PREFIX '' '$search_path'" \
+      fzf --ansi \
+      --sort \
+      --preview="[[ ! -z {} ]] && rg --pretty --context 5 {q} {}" \
+      --phony \
+      --bind "change:reload:$RG_PREFIX {q} '$search_path'" \
       --preview-window="70%:wrap" \
       --print-query
     )
