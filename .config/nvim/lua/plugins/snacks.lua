@@ -195,6 +195,7 @@ return {
 					vim.b.minianimate_disable = not vim.b.minianimate_disable
 					require("smear_cursor").toggle()
 				end
+				vim.cmd("Winsep toggle")
 			end,
 			silent = true,
 		},
