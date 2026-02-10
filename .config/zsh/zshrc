@@ -129,6 +129,7 @@ zinit wait"0b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
 # Deferred plugins
 zinit wait"1" lucid for \
   OMZL::clipboard.zsh \
+  OMZL::completion.zsh \
   OMZL::functions.zsh \
   OMZL::grep.zsh \
   OMZL::misc.zsh \
