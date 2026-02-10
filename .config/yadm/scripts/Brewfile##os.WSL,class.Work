@@ -11,6 +11,8 @@ brew "cmatrix"
 brew "colima"
 # Securely send things from one computer to another
 brew "croc"
+# Load/unload environment variables based on $PWD
+brew "direnv"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Embeddable SQL OLAP Database Management System

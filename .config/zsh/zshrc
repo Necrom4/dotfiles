@@ -93,6 +93,7 @@ zinit wait lucid for \
   OMZP::argocd \
   OMZP::azure \
   OMZP::cp \
+  OMZP::direnv \
   OMZP::docker \
   OMZP::docker-compose \
     atload'unalias x 2>/dev/null' \
