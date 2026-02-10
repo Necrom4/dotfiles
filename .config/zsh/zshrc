@@ -43,6 +43,24 @@ fi
 export FZF_DEFAULT_OPTS_FILE=$HOME/.config/fzf/fzfrc
 export ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
 
+# Add $PR var that represents the path of the current project's root
+function update_project_root_var() {
+  local dir="$PWD"
+  while [[ "$dir" != "/" ]]; do
+      if [[ -d "$dir/.git" ]]; then
+          export PR="$dir"
+          return
+      fi
+      dir="${dir:h}"
+  done
+  unset PR
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd update_project_root_var
+
+update_project_root_var
+
 # ============================================================================
 # ZINIT CONFIGURATION
 # ============================================================================
