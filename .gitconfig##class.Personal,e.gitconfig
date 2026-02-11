@@ -39,6 +39,7 @@
 	navigate = true
 	plus-style = "syntax #012800"
 	syntax-theme = "Dracula"
+	tabs = 2
 	whitespace-error-style = "red reverse"
 [delta "side-by-side"]
 	side-by-side = true
