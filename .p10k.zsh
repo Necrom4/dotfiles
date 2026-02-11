@@ -50,6 +50,7 @@
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
     direnv                  # direnv status (https://direnv.net/)
+    mise_env                # [CUSTOM] mise env status
     asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
     virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
     anaconda                # conda environment (https://conda.io/)
@@ -110,8 +111,7 @@
     # taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch              # CPU architecture
-    shlvl
-    # tmux_session                 # [CUSTOM] tmux session
+    shlvl                   # [CUSTOM] shell level
     time                    # current time
     # os_icon               # os identifier
     # =========================[ Line #2 ]=========================
@@ -627,7 +627,7 @@
   # Direnv color.
   typeset -g POWERLEVEL9K_DIRENV_FOREGROUND=178
   # Custom icon.
-  typeset -g POWERLEVEL9K_DIRENV_VISUAL_IDENTIFIER_EXPANSION=''
+  # typeset -g POWERLEVEL9K_DIRENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   ###############[ asdf: asdf version manager (https://github.com/asdf-vm/asdf) ]###############
   # Default asdf color. Only used to display tools for which there is no color override (see below).
@@ -1763,6 +1763,12 @@
       elif (( SHLVL > 5 )); then
         p10k segment -f 76 -i '󰎨' -t "($SHLVL)"
       fi
+    fi
+  }
+
+  function prompt_mise_env() {
+    if [[ $(mise config get 2>/dev/null) == "[env]"* ]]; then
+      p10k segment -f 178 -i ''
     fi
   }
 
