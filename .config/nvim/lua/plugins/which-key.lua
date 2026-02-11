@@ -27,6 +27,7 @@ return {
 				{ "<leader>tt", icon = { icon = " ", color = "red" } },
 				{ "<leader>tT", icon = { icon = " ", color = "red" } },
 				{ "<leader>T", group = "test", icon = { icon = "󰱑", color = "red" } },
+				{ "<leader>uc", group = "conceal", icon = { icon = "", color = "red" } },
 				{ "<leader>x", group = "explorer", icon = { icon = "󰙅 ", color = "yellow" } },
 				{ "<leader>xf", name = "Root Dir (floating)", icon = { icon = " ", color = "blue" } },
 				{ "<leader>xF", name = "CWD (floating)", icon = { icon = " ", color = "blue" } },
