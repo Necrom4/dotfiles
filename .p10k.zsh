@@ -50,7 +50,7 @@
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
     direnv                  # direnv status (https://direnv.net/)
-    mise_env                # [CUSTOM] mise env status
+    mise                    # [CUSTOM] mise env status
     asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
     virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
     anaconda                # conda environment (https://conda.io/)
@@ -1766,8 +1766,8 @@
     fi
   }
 
-  function prompt_mise_env() {
-    if [[ $(mise config get 2>/dev/null) == "[env]"* ]]; then
+  function prompt_mise() {
+    if [[ -n $(mise config 2>/dev/null | grep -v ".config/mise") ]]; then
       p10k segment -f 178 -i ''
     fi
   }
