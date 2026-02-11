@@ -1,10 +1,15 @@
 [tools]
+"gem:bundler" = "latest"
+"gem:rails" = "latest"
+"gem:rake" = "latest"
 go = "latest"
 node = "latest"
 "pipx:nomadnet" = "latest"
 "pipx:sqlit-tui" = "latest"
 ruby = "latest"
 uv = "latest"
+"gem:rspec" = "latest"
+"gem:rubocop" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby", "node"]
