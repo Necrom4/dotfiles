@@ -1,0 +1,43 @@
+[user]
+	name = Diogo Pombeiro
+[commit]
+	verbose = true
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
+	tool = nvimdiff
+[color "diff"]
+	commit = "#3BA08E"
+	context = "#636DA6"
+	frag = "#1ABC9C"
+	meta = "#C8D3F5"
+	new = "#C3E88D"
+	newMoved = "#FFC777"
+	old = "#E26A75"
+	oldMoved = "#FF966C"
+[column]
+	ui = auto
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	features = side-by-side
+	file-style = "omit"
+	hunk-header-decoration-style = "blue box"
+	hunk-header-line-number-style = "orange"
+	hunk-header-style = "file line-number syntax"
+	line-numbers = true
+	minus-style = "syntax #340001"
+	navigate = true
+	plus-style = "syntax #012800"
+	syntax-theme = "Dracula"
+	whitespace-error-style = "red reverse"
+[delta "side-by-side"]
+	side-by-side = true
