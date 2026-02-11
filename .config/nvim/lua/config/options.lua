@@ -17,12 +17,16 @@ vim.filetype.add({
 })
 vim.filetype.add({
 	pattern = {
-		[".*%.sh##.*"] = "sh",
+		[".*%.(%a+)##.*"] = function(_, _, capture)
+			return capture
+		end,
 	},
 })
 vim.filetype.add({
 	pattern = {
-		[".*%.zsh##.*"] = "zsh",
+		[".*##.*e%.(%a+)$"] = function(_, _, capture)
+			return capture
+		end,
 	},
 })
 vim.filetype.add({
