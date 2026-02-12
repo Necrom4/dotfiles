@@ -1,3 +1,82 @@
+[env]
+BREWFILE = "$HOME/.config/yadm/scripts/Brewfile"
+
+[tasks."brew:dump"]
+description = "Dump installed packages to Brewfile"
+run = "brew bundle dump --file=$BREWFILE --describe --force"
+quiet = true
+
+[tasks."brew:remove unlisted"]
+description = "Remove packages not listed in Brewfile"
+run = "brew bundle cleanup --file=$BREWFILE --force"
+quiet = true
+
+[tasks."clean:apt"]
+run = ["sudo apt autoremove -y", "sudo apt autoclean"]
+quiet = true
+
+[tasks."clean:brew"]
+run = ["brew cleanup -s", "brew cleanup --prune=all"]
+quiet = true
+
+[tasks."clean:gem"]
+run = "gem cleanup"
+quiet = true
+
+[tasks."clean:mise"]
+run = ["mise prune", "mise cache clear", "mise cache prune"]
+quiet = true
+
+[tasks.install]
+description = "Bootstrap dotfiles via yadm"
+run = "yadm bootstrap"
+
+[tasks."update:apt"]
+description = "System packages (apt)"
+run = ["sudo apt update", "sudo apt upgrade -y"]
+quiet = true
+
+[tasks."update:brew"]
+run = ["brew update", "brew upgrade"]
+quiet = true
+
+[tasks."update:mise"]
+run = ["mise plugins update", "mise upgrade"]
+quiet = true
+
+[tasks."update:tldr"]
+run = "tldr --update"
+quiet = true
+
+[tasks."update:tmux-tmp"]
+run = "$HOME/.config/tmux/plugins/tpm/bin/update_plugins all"
+quiet = true
+
+[tasks."update:yazi-plugins"]
+run = [
+  "rm -rf ~/.config/yazi/plugins/* ~/.config/yazi/flavors/*",
+  "yadm checkout -- ~/.config/yazi/",
+  "ya pkg upgrade",
+  "git clone https://gitlab.com/WhoSowSee/whoosh.yazi.git ~/.config/yazi/plugins/whoosh.yazi"
+]
+quiet = true
+
+[tasks."update:zinit"]
+run = ["zsh -c 'source ~/.zshrc; zinit self-update'"]
+quiet = true
+
+[tasks."update:zsh-plugins"]
+run = ["zsh -c 'source ~/.zshrc; zinit update --parallel'"]
+quiet = true
+
+[tasks."yadm:reset"]
+description = "Hard reset dotfiles from origin"
+run = [
+  "yadm fetch",
+  "yadm reset --hard origin/master"
+]
+quiet = true
+
 [tools]
 "gem:bundler" = "latest"
 "gem:rails" = "latest"
@@ -13,6 +92,7 @@ uv = "latest"
 "pipx:mvw" = "latest"
 
 [settings]
+env_shell_expand = true
 idiomatic_version_file_enable_tools = ["ruby", "node"]
 
 [settings.pipx]

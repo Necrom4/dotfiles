@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#MISE description="Run all clean:*"
+#MISE quiet=true
+
+source "$(cd "$(dirname "$0")" && pwd)/utils/colors.sh"
+T_OK="${GREEN}${BOLD}"
+T_WARNING="${YELLOW}${BOLD}"
+T_ERROR="${RED}${BOLD}"
+T_PROGRAM="${CYAN}${BOLD}"
+
+CONTINUE_ALL=""
+
+tasks=$(mise tasks ls --raw | awk '$1 ~ /^clean:.+/ && $1 != "clean" {print $1}')
+
+for task in $tasks; do
+  name="${task#clean:}"
+
+  if ! command -v "$name" >/dev/null 2>&1; then
+    printf "${T_WARNING}[clean:%s]${NC} not found, skipping.\\n" "$name"
+    continue
+  fi
+
+  if [ -z "$CONTINUE_ALL" ]; then
+    printf "${T_PROGRAM}[clean:%s]${NC} [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel] " "$name"
+    read -r -n 1 input
+    echo
+    case "$input" in
+    [aA]*) CONTINUE_ALL="true" ;;
+    [nN]*) continue ;;
+    [cC]*)
+      printf "[${T_ERROR}CANCELLED${NC}]\\n"
+      exit 1
+      ;;
+    *) ;;
+    esac
+  else
+    printf "${T_PROGRAM}[clean:%s]${NC}\\n" "$name"
+  fi
+
+  mise run "$task" && printf "[${T_OK}SUCCEEDED${NC}]\\n" || printf "[${T_ERROR}FAILED${NC}]\\n"
+done
