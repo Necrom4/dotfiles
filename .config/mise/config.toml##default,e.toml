@@ -12,21 +12,25 @@ run = "brew bundle dump --file=$BREWFILE --describe --force"
 description = "Remove packages not listed in Brewfile"
 run = "brew bundle cleanup --file=$BREWFILE --force"
 
-[tasks.clean]
-depends = ["clean:brew", "clean:mise", "clean:gem"]
-
 [tasks."clean:apt"]
-confirm = "Sure APT?"
+description = "apt cleanup"
 run = ["sudo apt autoremove -y", "sudo apt autoclean"]
+quiet = true
 
 [tasks."clean:brew"]
+description = "Homebrew cleanup"
 run = ["brew cleanup -s", "brew cleanup --prune=all"]
+quiet = true
 
 [tasks."clean:gem"]
+description = "Ruby gems cleanup"
 run = "gem cleanup"
+quiet = true
 
 [tasks."clean:mise"]
+description = "Mise cleanup"
 run = ["mise prune", "mise cache clear", "mise cache prune"]
+quiet = true
 
 [tasks.install]
 description = "Bootstrap dotfiles via yadm"

@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#MISE description="Run all clean:*"
+#MISE quiet=true
+
+source "$(cd "$(dirname "$0")" && pwd)/utils/colors.sh"
+T_OK="${GREEN}${BOLD}"
+T_WARNING="${YELLOW}${BOLD}"
+T_ERROR="${RED}${BOLD}"
+T_PROGRAM="${CYAN}${BOLD}"
+
+CONTINUE_ALL=""
+
+# Get list of clean tasks (excluding the main clean task itself)
+tasks=$(mise tasks ls --raw | grep '^clean:' | grep -v '^clean$')
+
+for task in $tasks; do
+  name="${task#clean:}"
+
+  # Check if command exists
+  if ! command -v "$name" >/dev/null 2>&1; then
+    printf "[${T_WARNING}SKIPPING${NC}] ${T_PROGRAM}%s${NC} not found.\\n" "$name"
+    continue
+  fi
+
+  # Prompt Logic
+  if [ -z "$CONTINUE_ALL" ]; then
+    while true; do
+      printf "${MAGENTA}[clean:%s]${NC} [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel] " "$name"
+      read -r -n 1 input
+      case "$input" in
+      [yY]*)
+        printf "\\n"
+        break
+        ;;
+      [aA]*)
+        CONTINUE_ALL="true"
+        printf "\\n"
+        break
+        ;;
+      [nN]*)
+        printf "\\n[${T_WARNING}SKIPPING${NC}]\\n"
+        continue 2
+        ;;
+      [cC]*)
+        printf "\\n[${T_ERROR}CANCELLED${NC}]\\n"
+        exit 1
+        ;;
+      *) printf "\\nInvalid input. Please enter Y, A, N or C.\\n" ;;
+      esac
+    done
+  fi
+
+  # Execution
+  if mise run "$task"; then
+    printf "[${T_OK}SUCCEEDED${NC}]\\n"
+  else
+    printf "[${T_ERROR}FAILED${NC}]\\n"
+  fi
+done
