@@ -14,7 +14,6 @@ return {
 			"gopls",
 			"helm-ls",
 			"html-lsp",
-			"just-lsp",
 			"kube-linter",
 			"lua-language-server",
 			"marksman",

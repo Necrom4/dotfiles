@@ -60,8 +60,6 @@ brew "ipinfo-cli"
 brew "jless"
 # Enhanced version of john, a UNIX password cracker
 brew "john-jumbo"
-# Handy way to save and run project-specific commands
-brew "just"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
 # Lazier way to manage everything docker

@@ -47,8 +47,6 @@ brew "hyperfine"
 brew "jless"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
-# Handy way to save and run project-specific commands
-brew "just"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
 # Kubernetes command-line interface
@@ -123,5 +121,3 @@ brew "yq"
 brew "zip"
 # High-performance, cross-platform network monitoring tool with TUI
 brew "domcyrus/rustnet/rustnet"
-go "cmd/go"
-go "cmd/gofmt"
