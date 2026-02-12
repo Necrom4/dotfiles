@@ -7,6 +7,7 @@ return {
 				{ "<leader>a", group = "annotations", icon = { icon = "󰆉 ", color = "cyan" } },
 				{ "<leader>cc", group = "calc", icon = { icon = " ", color = "cyan" } },
 				{ "<leader>cC", name = "Color Picker", icon = { icon = " ", color = "orange" } },
+				{ "<leader>cP", name = "Pwned?", icon = { icon = " ", color = "red" } },
 				{ "<leader>d", group = "diff", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>di", name = "Index", icon = { icon = " ", color = "blue" } },
 				{ "<leader>dh", name = "History", icon = { icon = " ", color = "green" } },
