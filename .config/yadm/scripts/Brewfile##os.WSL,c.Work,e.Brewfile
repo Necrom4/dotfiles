@@ -35,6 +35,8 @@ brew "gh"
 brew "git-delta"
 # Better way to clone, organize and manage multiple git repositories
 brew "git-get"
+# Deliver Go binaries as fast and easily as possible
+brew "goreleaser"
 # Colorize logfiles and command output
 brew "grc"
 # Kubernetes package manager
@@ -73,6 +75,8 @@ brew "neovim"
 brew "nmap"
 # Swiss-army knife of markup format conversion
 brew "pandoc"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # SVG rendering tool and library
