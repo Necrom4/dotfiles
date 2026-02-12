@@ -30,9 +30,9 @@ clean-apt:
     gem cleanup
 
 @clean-mise:
+    mise prune
     mise cache clear
     mise cache prune
-    mise prune
 
 @install:
     yadm bootstrap

@@ -1,0 +1,2 @@
+[tools]
+"pipx:sqlit-tui" = "latest"
