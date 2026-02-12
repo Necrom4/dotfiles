@@ -10,50 +10,32 @@ T_PROGRAM="${CYAN}${BOLD}"
 
 CONTINUE_ALL=""
 
-# Get list of clean tasks (excluding the main clean task itself)
-tasks=$(mise tasks ls --raw | awk '{print $1}' | grep '^clean:' | grep -v '^clean$')
+tasks=$(mise tasks ls --raw | awk '$1 ~ /^clean:.+/ && $1 != "clean" {print $1}')
 
 for task in $tasks; do
   name="${task#clean:}"
 
-  # Check if command exists
   if ! command -v "$name" >/dev/null 2>&1; then
     printf "${T_WARNING}[clean:%s]${NC} not found, skipping.\\n" "$name"
     continue
   fi
 
-  # Prompt Logic
   if [ -z "$CONTINUE_ALL" ]; then
-    while true; do
-      printf "${T_PROGRAM}[clean:%s]${NC} [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel] " "$name"
-      read -r -n 1 input
-      case "$input" in
-      [yY]*)
-        printf "\\n"
-        break
-        ;;
-      [aA]*)
-        CONTINUE_ALL="true"
-        printf "\\n"
-        break
-        ;;
-      [nN]*)
-        printf "\\n"
-        continue 2
-        ;;
-      [cC]*)
-        printf "\\n[${T_ERROR}CANCELLED${NC}]\\n"
-        exit 1
-        ;;
-      *) printf "\\nInvalid input. Please enter Y, A, N or C.\\n" ;;
-      esac
-    done
+    printf "${T_PROGRAM}[clean:%s]${NC} [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel] " "$name"
+    read -r -n 1 input
+    echo
+    case "$input" in
+    [aA]*) CONTINUE_ALL="true" ;;
+    [nN]*) continue ;;
+    [cC]*)
+      printf "[${T_ERROR}CANCELLED${NC}]\\n"
+      exit 1
+      ;;
+    *) ;;
+    esac
+  else
+    printf "${T_PROGRAM}[clean:%s]${NC}\\n" "$name"
   fi
 
-  # Execution
-  if mise run "$task"; then
-    printf "[${T_OK}SUCCEEDED${NC}]\\n"
-  else
-    printf "[${T_ERROR}FAILED${NC}]\\n"
-  fi
+  mise run "$task" && printf "[${T_OK}SUCCEEDED${NC}]\\n" || printf "[${T_ERROR}FAILED${NC}]\\n"
 done

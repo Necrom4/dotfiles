@@ -10,58 +10,42 @@ T_PROGRAM="${CYAN}${BOLD}"
 
 CONTINUE_ALL=""
 
-# Helper to check if update target exists
 check_exists() {
   local target="$1"
   case "$target" in
-  zinit) [ -d "$HOME/.local/share/zinit/zinit.git" ] ;;
-  tmux) [ -d "$HOME/.config/tmux/plugins/tpm" ] ;;
-  yazi) command -v ya >/dev/null 2>&1 ;;
+  tmux-tmp) [ -d "$HOME/.config/tmux/plugins/tpm" ] ;;
+  yazi-plugins) command -v ya >/dev/null 2>&1 ;;
+  zinit | zsh-plugins) [ -d "$HOME/.local/share/zinit/zinit.git" ] ;;
   *) command -v "$target" >/dev/null 2>&1 ;;
   esac
 }
 
-tasks=$(mise tasks ls --raw | awk '{print $1}' | grep '^update:' | grep -v '^update$')
+tasks=$(mise tasks ls --raw | awk '$1 ~ /^update:.+/ && $1 != "update" {print $1}')
 
 for task in $tasks; do
   name="${task#update:}"
 
   if ! check_exists "$name"; then
     printf "${T_WARNING}[update:%s]${NC} not found, skipping.\\n" "$name"
-
     continue
   fi
 
   if [ -z "$CONTINUE_ALL" ]; then
-    while true; do
-      printf "${T_PROGRAM}[update:%s]${NC} [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel] " "$name"
-      read -r -n 1 input
-      case "$input" in
-      [yY]*)
-        printf "\\n"
-        break
-        ;;
-      [aA]*)
-        CONTINUE_ALL="true"
-        printf "\\n"
-        break
-        ;;
-      [nN]*)
-        printf "\\n"
-        continue 2
-        ;;
-      [cC]*)
-        printf "\\n[${T_ERROR}CANCELLED${NC}]\\n"
-        exit 1
-        ;;
-      *) printf "\\nInvalid input. Please enter Y, A, N or C.\\n" ;;
-      esac
-    done
+    printf "${T_PROGRAM}[update:%s]${NC} [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel] " "$name"
+    read -r -n 1 input
+    echo
+    case "$input" in
+    [aA]*) CONTINUE_ALL="true" ;;
+    [nN]*) continue ;;
+    [cC]*)
+      printf "[${T_ERROR}CANCELLED${NC}]\\n"
+      exit 1
+      ;;
+    *) ;;
+    esac
+  else
+    printf "${T_PROGRAM}[update:%s]${NC}\\n" "$name"
   fi
 
-  if mise run "$task"; then
-    printf "[${T_OK}SUCCEEDED${NC}]\\n"
-  else
-    printf "[${T_ERROR}FAILED${NC}]\\n"
-  fi
+  mise run "$task" && printf "[${T_OK}SUCCEEDED${NC}]\\n" || printf "[${T_ERROR}FAILED${NC}]\\n"
 done
