@@ -1,6 +1,17 @@
 [env]
 BREWFILE = "$HOME/.config/yadm/scripts/Brewfile"
 
+# [hooks]
+# enter = """
+# output=$(mise config get env 2>/dev/null || true)
+# if [ -n "$output" ]; then
+#   green=$(tput setaf 2)
+#   reset=$(tput sgr0)
+#   echo "[${green}env${reset}]"
+#   echo "$output" | awk -F'=' '{print $1}' | sed '/^$/d'
+# fi
+# """
+
 [tasks."brew:dump"]
 description = "Dump installed packages to Brewfile"
 run = "brew bundle dump --file=$BREWFILE --describe --force"
@@ -94,6 +105,7 @@ uv = "latest"
 [settings]
 env_shell_expand = true
 idiomatic_version_file_enable_tools = ["ruby", "node"]
+experimental = true
 
 [settings.pipx]
 uvx = true
