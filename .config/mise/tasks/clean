@@ -11,21 +11,21 @@ T_PROGRAM="${CYAN}${BOLD}"
 CONTINUE_ALL=""
 
 # Get list of clean tasks (excluding the main clean task itself)
-tasks=$(mise tasks ls --raw | grep '^clean:' | grep -v '^clean$')
+tasks=$(mise tasks ls --raw | awk '{print $1}' | grep '^clean:' | grep -v '^clean$')
 
 for task in $tasks; do
   name="${task#clean:}"
 
   # Check if command exists
   if ! command -v "$name" >/dev/null 2>&1; then
-    printf "[${T_WARNING}SKIPPING${NC}] ${T_PROGRAM}%s${NC} not found.\\n" "$name"
+    printf "${T_WARNING}[clean:%s]${NC} not found, skipping.\\n" "$name"
     continue
   fi
 
   # Prompt Logic
   if [ -z "$CONTINUE_ALL" ]; then
     while true; do
-      printf "${MAGENTA}[clean:%s]${NC} [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel] " "$name"
+      printf "${T_PROGRAM}[clean:%s]${NC} [${T_OK}Y${NC}es/${T_OK}A${NC}ll/${T_WARNING}N${NC}o/${T_ERROR}C${NC}ancel] " "$name"
       read -r -n 1 input
       case "$input" in
       [yY]*)
@@ -38,7 +38,7 @@ for task in $tasks; do
         break
         ;;
       [nN]*)
-        printf "\\n[${T_WARNING}SKIPPING${NC}]\\n"
+        printf "\\n"
         continue 2
         ;;
       [cC]*)

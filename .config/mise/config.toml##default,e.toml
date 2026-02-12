@@ -13,28 +13,54 @@ description = "Remove packages not listed in Brewfile"
 run = "brew bundle cleanup --file=$BREWFILE --force"
 
 [tasks."clean:apt"]
-description = "apt cleanup"
 run = ["sudo apt autoremove -y", "sudo apt autoclean"]
 quiet = true
 
 [tasks."clean:brew"]
-description = "Homebrew cleanup"
 run = ["brew cleanup -s", "brew cleanup --prune=all"]
 quiet = true
 
 [tasks."clean:gem"]
-description = "Ruby gems cleanup"
 run = "gem cleanup"
 quiet = true
 
 [tasks."clean:mise"]
-description = "Mise cleanup"
 run = ["mise prune", "mise cache clear", "mise cache prune"]
 quiet = true
 
 [tasks.install]
 description = "Bootstrap dotfiles via yadm"
 run = "yadm bootstrap"
+
+[tasks."update:apt"]
+description = "System packages (apt)"
+run = ["sudo apt update", "sudo apt upgrade -y"]
+
+[tasks."update:brew"]
+run = ["brew update", "brew upgrade"]
+
+[tasks."update:mise"]
+run = ["mise plugins update", "mise upgrade"]
+
+[tasks."update:zinit"]
+run = ["zsh -c 'source ~/.zshrc; zinit self-update'"]
+
+[tasks."update:zsh-plugins"]
+run = ["zsh -c 'source ~/.zshrc; zinit update --parallel'"]
+
+[tasks."update:tldr"]
+run = "tldr --update"
+
+[tasks."update:yazi-packages"]
+run = [
+  "rm -rf ~/.config/yazi/plugins/* ~/.config/yazi/flavors/*",
+  "yadm checkout -- ~/.config/yazi/",
+  "ya pkg upgrade",
+  "git clone https://gitlab.com/WhoSowSee/whoosh.yazi.git ~/.config/yazi/plugins/whoosh.yazi"
+]
+
+[tasks."update:tmux-tmp"]
+run = "$HOME/.config/tmux/plugins/tpm/bin/update_plugins all"
 
 [tasks."yadm:reset"]
 description = "Hard reset dotfiles from origin"
