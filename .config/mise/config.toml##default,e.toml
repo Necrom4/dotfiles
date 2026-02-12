@@ -1,2 +1,43 @@
+[env]
+BREWFILE = "$HOME/.config/yadm/scripts/Brewfile"
+
+[settings]
+env_shell_expand = true
+
+[tasks."brew:dump"]
+description = "Dump installed packages to Brewfile"
+run = "brew bundle dump --file=$BREWFILE --describe --force"
+
+[tasks."brew:remove unlisted"]
+description = "Remove packages not listed in Brewfile"
+run = "brew bundle cleanup --file=$BREWFILE --force"
+
+[tasks.clean]
+depends = ["clean:brew", "clean:mise", "clean:gem"]
+
+[tasks."clean:apt"]
+confirm = "Sure APT?"
+run = ["sudo apt autoremove -y", "sudo apt autoclean"]
+
+[tasks."clean:brew"]
+run = ["brew cleanup -s", "brew cleanup --prune=all"]
+
+[tasks."clean:gem"]
+run = "gem cleanup"
+
+[tasks."clean:mise"]
+run = ["mise prune", "mise cache clear", "mise cache prune"]
+
+[tasks.install]
+description = "Bootstrap dotfiles via yadm"
+run = "yadm bootstrap"
+
+[tasks."yadm:reset"]
+description = "Hard reset dotfiles from origin"
+run = [
+  "yadm fetch",
+  "yadm reset --hard origin/master"
+]
+
 [tools]
 "pipx:sqlit-tui" = "latest"
