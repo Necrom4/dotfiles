@@ -21,54 +21,64 @@ for _, fpath in ipairs(settingsfiles) do
 	dofile(fpath)
 end
 
+local plugin_specs = {
+	-- add LazyVim and import its plugins
+	{ "LazyVim/LazyVim", import = "lazyvim.plugins" },
+	-- import/override with your plugins
+	{ import = "lazyvim.plugins.extras.coding.blink" },
+	{ import = "lazyvim.plugins.extras.coding.luasnip" },
+	{ import = "lazyvim.plugins.extras.coding.neogen" },
+	{ import = "lazyvim.plugins.extras.coding.yanky" },
+	{ import = "lazyvim.plugins.extras.dap.core" },
+	{ import = "lazyvim.plugins.extras.dap.nlua" },
+	{ import = "lazyvim.plugins.extras.editor.aerial" },
+	{ import = "lazyvim.plugins.extras.editor.dial" },
+	{ import = "lazyvim.plugins.extras.editor.illuminate" },
+	{ import = "lazyvim.plugins.extras.editor.inc-rename" },
+	{ import = "lazyvim.plugins.extras.editor.mini-move" },
+	{ import = "lazyvim.plugins.extras.editor.navic" },
+	{ import = "lazyvim.plugins.extras.editor.overseer" },
+	{ import = "lazyvim.plugins.extras.editor.refactoring" },
+	{ import = "lazyvim.plugins.extras.editor.snacks_explorer" },
+	{ import = "lazyvim.plugins.extras.editor.snacks_picker" },
+	{ import = "lazyvim.plugins.extras.formatting.prettier" },
+	{ import = "lazyvim.plugins.extras.lang.ansible" },
+	{ import = "lazyvim.plugins.extras.lang.clangd" },
+	{ import = "lazyvim.plugins.extras.lang.docker" },
+	{ import = "lazyvim.plugins.extras.lang.git" },
+	{ import = "lazyvim.plugins.extras.lang.go" },
+	{ import = "lazyvim.plugins.extras.lang.helm" },
+	{ import = "lazyvim.plugins.extras.lang.java" },
+	{ import = "lazyvim.plugins.extras.lang.json" },
+	{ import = "lazyvim.plugins.extras.lang.markdown" },
+	{ import = "lazyvim.plugins.extras.lang.php" },
+	{ import = "lazyvim.plugins.extras.lang.python" },
+	{ import = "lazyvim.plugins.extras.lang.ruby" },
+	{ import = "lazyvim.plugins.extras.lang.tailwind" },
+	{ import = "lazyvim.plugins.extras.lang.toml" },
+	{ import = "lazyvim.plugins.extras.lang.typescript" },
+	{ import = "lazyvim.plugins.extras.lang.yaml" },
+	{ import = "lazyvim.plugins.extras.linting.eslint" },
+	{ import = "lazyvim.plugins.extras.ui.mini-animate" },
+	{ import = "lazyvim.plugins.extras.ui.smear-cursor" },
+	{ import = "lazyvim.plugins.extras.ui.treesitter-context" },
+	{ import = "lazyvim.plugins.extras.util.dot" },
+	{ import = "lazyvim.plugins.extras.util.octo" },
+	{ import = "lazyvim.plugins.extras.util.startuptime" },
+	{ import = "lazyvim.plugins.extras.test.core" },
+}
+
+local status, class_extras = pcall(require, "manifests.extras")
+if status and type(class_extras) == "table" then
+	for _, extra_path in ipairs(class_extras) do
+		table.insert(plugin_specs, extra_path)
+	end
+end
+
+table.insert(plugin_specs, { import = "plugins" })
+
 require("lazy").setup({
-	spec = {
-		-- add LazyVim and import its plugins
-		{ "LazyVim/LazyVim", import = "lazyvim.plugins" },
-		-- import/override with your plugins
-		{ import = "lazyvim.plugins.extras.coding.blink" },
-		{ import = "lazyvim.plugins.extras.coding.luasnip" },
-		{ import = "lazyvim.plugins.extras.coding.neogen" },
-		{ import = "lazyvim.plugins.extras.coding.yanky" },
-		{ import = "lazyvim.plugins.extras.dap.core" },
-		{ import = "lazyvim.plugins.extras.dap.nlua" },
-		{ import = "lazyvim.plugins.extras.editor.aerial" },
-		{ import = "lazyvim.plugins.extras.editor.dial" },
-		{ import = "lazyvim.plugins.extras.editor.illuminate" },
-		{ import = "lazyvim.plugins.extras.editor.inc-rename" },
-		{ import = "lazyvim.plugins.extras.editor.mini-move" },
-		{ import = "lazyvim.plugins.extras.editor.navic" },
-		{ import = "lazyvim.plugins.extras.editor.overseer" },
-		{ import = "lazyvim.plugins.extras.editor.refactoring" },
-		{ import = "lazyvim.plugins.extras.editor.snacks_explorer" },
-		{ import = "lazyvim.plugins.extras.editor.snacks_picker" },
-		{ import = "lazyvim.plugins.extras.formatting.prettier" },
-		{ import = "lazyvim.plugins.extras.lang.ansible" },
-		{ import = "lazyvim.plugins.extras.lang.clangd" },
-		{ import = "lazyvim.plugins.extras.lang.docker" },
-		{ import = "lazyvim.plugins.extras.lang.git" },
-		{ import = "lazyvim.plugins.extras.lang.go" },
-		{ import = "lazyvim.plugins.extras.lang.helm" },
-		{ import = "lazyvim.plugins.extras.lang.java" },
-		{ import = "lazyvim.plugins.extras.lang.json" },
-		{ import = "lazyvim.plugins.extras.lang.markdown" },
-		{ import = "lazyvim.plugins.extras.lang.php" },
-		{ import = "lazyvim.plugins.extras.lang.python" },
-		{ import = "lazyvim.plugins.extras.lang.ruby" },
-		{ import = "lazyvim.plugins.extras.lang.tailwind" },
-		{ import = "lazyvim.plugins.extras.lang.toml" },
-		{ import = "lazyvim.plugins.extras.lang.typescript" },
-		{ import = "lazyvim.plugins.extras.lang.yaml" },
-		{ import = "lazyvim.plugins.extras.linting.eslint" },
-		{ import = "lazyvim.plugins.extras.ui.mini-animate" },
-		{ import = "lazyvim.plugins.extras.ui.smear-cursor" },
-		{ import = "lazyvim.plugins.extras.ui.treesitter-context" },
-		{ import = "lazyvim.plugins.extras.util.dot" },
-		{ import = "lazyvim.plugins.extras.util.octo" },
-		{ import = "lazyvim.plugins.extras.util.startuptime" },
-		{ import = "lazyvim.plugins.extras.test.core" },
-		{ import = "plugins" },
-	},
+	spec = plugin_specs,
 	defaults = {
 		-- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
 		-- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
