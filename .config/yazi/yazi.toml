@@ -1,19 +1,24 @@
 [opener]
 visidata = [
-	{ run = 'visidata "$@"', block = true, desc = "Visidata" },
+	{ run = 'visidata %s', block = true, desc = "Visidata" },
+]
+bookokrat = [
+	{ run = 'bookokrat %s', block = true, desc = "Bookokrat" },
 ]
 
 [open]
-append_rules = [
-	{ name = "*.csv", use = "visidata" },
-	{ name = "*.db", use = "visidata" },
-	{ name = "*.json", use = "visidata" },
-	{ name = "*.sql", use = "visidata" },
-	{ name = "*.sqlite", use = "visidata" },
-	{ name = "*.tsv", use = "visidata" },
-	{ name = "*.xlsx", use = "visidata" },
-	{ name = "*.yaml", use = "visidata" },
-	{ name = "*.yml", use = "visidata" },
+prepend_rules = [
+	{ url = "*.csv", use = [ "edit", "reveal", "visidata" ] },
+	{ url = "*.db", use = [ "edit", "reveal", "visidata" ] },
+	{ url = "*.epub", use = [ "bookokrat", "edit", "reveal" ] },
+	{ url = "*.json", use = [ "edit", "reveal", "visidata" ] },
+	{ url = "*.pdf", use = [ "bookokrat", "edit", "reveal" ] },
+	{ url = "*.sql", use = [ "edit", "reveal", "visidata" ] },
+	{ url = "*.sqlite", use = [ "edit", "reveal", "visidata" ] },
+	{ url = "*.tsv", use = [ "edit", "reveal", "visidata" ] },
+	{ url = "*.xlsx", use = [ "edit", "reveal", "visidata" ] },
+	{ url = "*.yaml", use = [ "edit", "reveal", "visidata" ] },
+	{ url = "*.yml", use = [ "edit", "reveal", "visidata" ] },
 ]
 
 [mgr]
