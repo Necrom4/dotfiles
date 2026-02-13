@@ -90,6 +90,7 @@ run = [
 
 [tools]
 "pipx:sqlit-tui" = "latest"
+uv = "latest"
 
 [settings]
 env_shell_expand = true
