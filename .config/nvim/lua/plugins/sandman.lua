@@ -7,6 +7,7 @@ return {
 		allow = {
 			"blink-cmp-git",
 			"camouflage.nvim",
+			"codediff.nvim",
 			"conform.nvim",
 			"diffview.nvim",
 			"gitsigns.nvim",
