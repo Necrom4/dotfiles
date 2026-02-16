@@ -100,7 +100,6 @@ ruby = "latest"
 uv = "latest"
 "gem:rspec" = "latest"
 "gem:rubocop" = "latest"
-"pipx:mvw" = "latest"
 
 [settings]
 env_shell_expand = true
