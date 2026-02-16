@@ -46,8 +46,6 @@ brew "gh"
 brew "git-delta"
 # Better way to clone, organize and manage multiple git repositories
 brew "git-get"
-# Cinematic Git commit replay tool
-brew "gitlogue"
 # Colorize logfiles and command output
 brew "grc"
 # Command-line benchmarking tool
