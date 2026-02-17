@@ -89,11 +89,6 @@ rev = "61d3a3a"
 hash = "37fe452b2406df3f24e33b429ef699c2"
 
 [[plugin.deps]]
-use = "TheronStein/yatline-githead"
-rev = "5cfe34d"
-hash = "6915e57a389a41b4d709f456cb3c1d6f"
-
-[[plugin.deps]]
 use = "wylie102/duckdb"
 rev = "3f8c863"
 hash = "87b9233a74325e95011670ed20bbd0d4"
@@ -102,6 +97,11 @@ hash = "87b9233a74325e95011670ed20bbd0d4"
 use = "yazi-rs/plugins:piper"
 rev = "88990a6"
 hash = "25aee698dd1081001008ce0cb1cc4da3"
+
+[[plugin.deps]]
+use = "imsi32/yatline-githead"
+rev = "929e52c"
+hash = "8282baf02fcd6aac00ccad2276775358"
 
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
