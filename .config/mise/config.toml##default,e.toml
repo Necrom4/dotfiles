@@ -91,8 +91,9 @@ run = [
 [tools]
 "pipx:sqlit-tui" = "latest"
 uv = "latest"
+go = "latest"
+node = "latest"
 
 [settings]
 env_shell_expand = true
 experimental = true
-
