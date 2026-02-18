@@ -12,11 +12,8 @@ api.map("gt", "T");
 api.unmap("<ctrl-i>");
 
 // set theme
-const hintsCss =
-  "font-size: 15px; font-family: 'CommitMono Nerd Font Mono', sans-serif; border: solid 1px; border-radius: 25%; border-color: #e0def4; color: #ebbcba !important; background: #191724; background-color: #191724";
-
-api.Hints.style('border: solid 2px #373B41; color: #52C196; background: initial; background-color: #1D1F21;');
-api.Hints.style("border: solid 2px #373B41 !important; padding: 1px !important; color: #C5C8C6 !important; background: #1D1F21 !important;", "text");
+api.Hints.style('border: solid 2px #373B41; color: #4FD6BE; background: initial; background-color: #1D1F21;');
+api.Hints.style("border: solid 2px #373B41 !important; padding: 1px !important; color: #C8D3F5 !important; background: #1D1F21 !important;", "text");
 api.Visual.style('marks', 'background-color: #52C19699;');
 api.Visual.style('cursor', 'background-color: #81A2BE;');
 
@@ -29,20 +26,20 @@ settings.theme = `
   --font-size: 15px;
   --font-weight: bold;
 
-  --fg: #C5C8C6;
+  --fg: #C8D3F5;
   --bg: #282A2E;
   --bg-dark: #1D1F21;
   --border: #373b41;
   --main-fg: #81A2BE;
-  --accent-fg: #52C196;
-  --info-fg: #AC7BBA;
+  --accent-fg: #4FD6BE;
+  --info-fg: #C099FF;
   --select: #585858;
 
   /* Unused Alternate Colors */
-  /* --cyan: #4CB3BC; */
-  /* --orange: #DE935F; */
-  /* --red: #CC6666; */
-  /* --yellow: #CBCA77; */
+  /* --cyan: #65BCFF; */
+  /* --orange: #FF966C; */
+  /* --red: #FF757F; */
+  /* --yellow: #FFC777; */
 }
 
 /* ---------- Generic ---------- */
