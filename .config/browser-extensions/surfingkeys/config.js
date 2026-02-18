@@ -81,6 +81,18 @@ api.map("<Space>sy", "oy");
 api.unmap("oy");
 api.unmap("ox");
 
+// tabs
+api.map("<Tab><Tab>", "on");
+api.unmap("on");
+api.map("<Tab>l", ">>");
+api.unmap(">>");
+api.map("<Tab>h", "<<");
+api.unmap("<<");
+
+// windows
+api.map("<Ctrl-w>i", "oi");
+api.unmap("oi");
+
 // set theme
 api.Hints.style(
   "font-family: sans-serif; font-size: 13px; border: solid 2px #373B41; color: #4FD6BE; background: initial; background-color: #1D1F21;",
