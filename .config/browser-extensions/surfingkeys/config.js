@@ -1,22 +1,13 @@
 settings.defaultSearchEngine = "d";
 settings.enableEmojiInsertion = true;
 
-// an example to create a new mapping `ctrl-y`
-api.mapkey("<ctrl-y>", "Show me the money", function () {
-  api.Front.showPopup(
-    "a well-known phrase uttered by characters in the 1996 film Jerry Maguire (Escape to close).",
-  );
-});
-
-api.unmap("<ctrl-h>");
-api.unmap("e");
-api.unmap("d");
+api.unmap("<Ctrl-h>");
 
 // edition
 api.map("eu", ";U");
+api.unmap(";U");
 api.map("eU", ";u");
 api.unmap(";u");
-api.unmap(";U");
 
 // find
 api.unmap("t");
@@ -56,12 +47,16 @@ api.map("`", "m");
 
 // navigation
 api.map("J", "d");
+api.unmap("d");
 api.map("K", "e");
+api.unmap("e");
 api.map("H", "S");
+api.unmap("S");
 api.map("L", "D");
+api.unmap("d");
 api.map("[<Tab>", "E");
-api.map("]<Tab>", "R");
 api.unmap("E");
+api.map("]<Tab>", "R");
 api.unmap("R");
 
 // set theme
