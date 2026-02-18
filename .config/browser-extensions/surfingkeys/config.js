@@ -65,6 +65,22 @@ api.unmap("E");
 api.map("]<Tab>", "R");
 api.unmap("R");
 
+// search
+api.unmap("ob");
+api.map("<Space>ss", "od");
+api.unmap("od");
+api.map("<Space>sw", "oe");
+api.unmap("oe");
+api.map("<Space>sg", "og");
+api.unmap("og");
+api.unmap("oh");
+api.unmap("om");
+api.unmap("os");
+api.unmap("ow");
+api.map("<Space>sy", "oy");
+api.unmap("oy");
+api.unmap("ox");
+
 // set theme
 api.Hints.style(
   "font-family: sans-serif; font-size: 13px; border: solid 2px #373B41; color: #4FD6BE; background: initial; background-color: #1D1F21;",
