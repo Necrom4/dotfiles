@@ -1,3 +1,6 @@
+settings.defaultSearchEngine = "d";
+settings.enableEmojiInsertion = true;
+
 // an example to create a new mapping `ctrl-y`
 api.mapkey("<ctrl-y>", "Show me the money", function () {
   api.Front.showPopup(
@@ -5,16 +8,71 @@ api.mapkey("<ctrl-y>", "Show me the money", function () {
   );
 });
 
-// an example to replace `T` with `gt`, click `Default mappings` to see how `T` works.
-api.map("gt", "T");
+api.unmap("<ctrl-h>");
+api.unmap("e");
+api.unmap("d");
 
-// an example to remove mapkey `Ctrl-i`
-api.unmap("<ctrl-i>");
+// edition
+api.map("eu", ";U");
+api.map("eU", ";u");
+api.unmap(";u");
+api.unmap(";U");
+
+// find
+api.unmap("t");
+api.mapkey("<Space><Space>", "Find urls", function () {
+  api.Front.openOmnibar({ type: "URLs" });
+});
+api.mapkey("<Space>f'", "Find marks", function () {
+  api.Front.openOmnibar({ type: "VIMarks" });
+});
+api.mapkey("<Space>f:", "Find commands", function () {
+  api.Front.openOmnibar({ type: "Commands" });
+});
+api.mapkey("<Space>fb", "Find bookmarks", function () {
+  api.Front.openOmnibar({ type: "Bookmarks" });
+});
+api.mapkey("<Space>fe", "Find searchEngine", function () {
+  api.Front.openOmnibar({ type: "SearchEngine" });
+});
+api.mapkey("<Space>fh", "Find History", function () {
+  api.Front.openOmnibar({ type: "History" });
+});
+api.mapkey("<Space>fr", "Find recently closed", function () {
+  api.Front.openOmnibar({ type: "RecentlyClosed" });
+});
+api.mapkey("<Space>ft", "Find tabs", function () {
+  api.Front.openOmnibar({ type: "Tabs" });
+});
+api.mapkey("<Space>fu", "Find subURLs", function () {
+  api.Front.openOmnibar({ type: "TabURLs" });
+});
+api.mapkey("<Space>fw", "Find windows", function () {
+  api.Front.openOmnibar({ type: "Windows" });
+});
+
+// marks
+api.map("`", "m");
+
+// navigation
+api.map("J", "d");
+api.map("K", "e");
+api.map("H", "S");
+api.map("L", "D");
+api.map("[<Tab>", "E");
+api.map("]<Tab>", "R");
+api.unmap("E");
+api.unmap("R");
 
 // set theme
-api.Hints.style('border: solid 2px #373B41; color: #4FD6BE; background: initial; background-color: #1D1F21;');
-api.Hints.style("border: solid 2px #373B41 !important; padding: 1px !important; color: #FF966C !important; background: #1D1F21 !important;", "text");
-api.Visual.style('cursor', 'background-color: #FF966C;');
+api.Hints.style(
+  "border: solid 2px #373B41; color: #4FD6BE; background: initial; background-color: #1D1F21;",
+);
+api.Hints.style(
+  "border: solid 2px #373B41 !important; padding: 1px !important; color: #FF966C !important; background: #1D1F21 !important;",
+  "text",
+);
+api.Visual.style("cursor", "background-color: #FF966C;");
 
 settings.theme = `
 /* Edit these variables for easy theme making */
