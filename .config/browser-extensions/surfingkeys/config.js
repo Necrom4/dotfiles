@@ -42,6 +42,12 @@ api.mapkey("<Space>fw", "Find windows", function () {
   api.Front.openOmnibar({ type: "Windows" });
 });
 
+// hints
+api.map("F", "gf");
+api.unmap("gf");
+api.map("gf", "L");
+api.unmap("L");
+
 // marks
 api.map("`", "m");
 
