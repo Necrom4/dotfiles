@@ -12,42 +12,13 @@ api.map("gt", "T");
 api.unmap("<ctrl-i>");
 
 // set theme
-// ---- Hints ----
-// Hints have to be defined separately
-// Uncomment to enable
-
 const hintsCss =
   "font-size: 15px; font-family: 'CommitMono Nerd Font Mono', sans-serif; border: solid 1px; border-radius: 25%; border-color: #e0def4; color: #ebbcba !important; background: #191724; background-color: #191724";
 
-// Tomorrow-Night
 api.Hints.style('border: solid 2px #373B41; color: #52C196; background: initial; background-color: #1D1F21;');
 api.Hints.style("border: solid 2px #373B41 !important; padding: 1px !important; color: #C5C8C6 !important; background: #1D1F21 !important;", "text");
 api.Visual.style('marks', 'background-color: #52C19699;');
 api.Visual.style('cursor', 'background-color: #81A2BE;');
-
-// Nord
-/* -- DELETE LINE TO ENABLE THEME
-Hints.style('border: solid 2px #4C566A; color:#A3BE8C; background: initial; background-color: #3B4252;');
-Hints.style("border: solid 2px #4C566A !important; padding: 1px !important; color: #E5E9F0 !important; background: #3B4252 !important;", "text");
-Visual.style('marks', 'background-color: #A3BE8C99;');
-Visual.style('cursor', 'background-color: #88C0D0;');
--- DELETE LINE TO ENABLE THEME */
-
-// Doom One
-/* -- DELETE LINE TO ENABLE THEME
-Hints.style('border: solid 2px #282C34; color:#98be65; background: initial; background-color: #2E3440;');
-Hints.style("border: solid 2px #282C34 !important; padding: 1px !important; color: #51AFEF !important; background: #2E3440 !important;", "text");
-Visual.style('marks', 'background-color: #98be6599;');
-Visual.style('cursor', 'background-color: #51AFEF;');
--- DELETE LINE TO ENABLE THEME */
-
-// Monokai
-/* -- DELETE LINE TO ENABLE THEME
-Hints.style('border: solid 2px #2D2E2E; color:#F92660; background: initial; background-color: #272822;');
-Hints.style("border: solid 2px #2D2E2E !important; padding: 1px !important; color: #A6E22E !important; background: #272822 !important;", "text");
-Visual.style('marks', 'background-color: #A6E22E99;');
-Visual.style('cursor', 'background-color: #F92660;');
--- DELETE LINE TO ENABLE THEME */
 
 settings.theme = `
 /* Edit these variables for easy theme making */
@@ -58,13 +29,6 @@ settings.theme = `
   --font-size: 15px;
   --font-weight: bold;
 
-  /* -------------- */
-  /* --- THEMES --- */
-  /* -------------- */
-
-  /* -------------------- */
-  /* -- Tomorrow Night -- */
-  /* -------------------- */
   --fg: #C5C8C6;
   --bg: #282A2E;
   --bg-dark: #1D1F21;
@@ -79,67 +43,6 @@ settings.theme = `
   /* --orange: #DE935F; */
   /* --red: #CC6666; */
   /* --yellow: #CBCA77; */
-
-  /* -------------------- */
-  /* --      NORD      -- */
-  /* -------------------- */
-  /* -- DELETE LINE TO ENABLE THEME
-  --fg: #E5E9F0;
-  --bg: #3B4252;
-  --bg-dark: #2E3440;
-  --border: #4C566A;
-  --main-fg: #88C0D0;
-  --accent-fg: #A3BE8C;
-  --info-fg: #5E81AC;
-  --select: #4C566A;
-  -- DELETE LINE TO ENABLE THEME */
-
-  /* Unused Alternate Colors */
-  /* --orange: #D08770; */
-  /* --red: #BF616A; */
-  /* --yellow: #EBCB8B; */
-
-  /* -------------------- */
-  /* --    DOOM ONE    -- */
-  /* -------------------- */
-  /* -- DELETE LINE TO ENABLE THEME
-  --fg: #51AFEF;
-  --bg: #2E3440;
-  --bg-dark: #21242B;
-  --border: #2257A0;
-  --main-fg: #51AFEF;
-  --accent-fg: #98be65;
-  --info-fg: #C678DD;
-  --select: #4C566A;
-  -- DELETE LINE TO ENABLE THEME */
-
-  /* Unused Alternate Colors */
-  /* --border-alt: #282C34; */
-  /* --cyan: #46D9FF; */
-  /* --orange: #DA8548; */
-  /* --red: #FF6C6B; */
-  /* --yellow: #ECBE7B; */
-
-  /* -------------------- */
-  /* --    MONOKAI    -- */
-  /* -------------------- */
-  /* -- DELETE LINE TO ENABLE THEME
-  --fg: #F8F8F2;
-  --bg: #272822;
-  --bg-dark: #1D1E19;
-  --border: #2D2E2E;
-  --main-fg: #F92660;
-  --accent-fg: #E6DB74;
-  --info-fg: #A6E22E;
-  --select: #556172;
-  -- DELETE LINE TO ENABLE THEME */
-
-  /* Unused Alternate Colors */
-  /* --red: #E74C3C; */
-  /* --orange: #FD971F; */
-  /* --blue: #268BD2; */
-  /* --violet: #9C91E4; */
-  /* --cyan: #66D9EF; */
 }
 
 /* ---------- Generic ---------- */
