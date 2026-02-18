@@ -13,31 +13,29 @@ api.unmap("<ctrl-i>");
 
 // set theme
 api.Hints.style('border: solid 2px #373B41; color: #4FD6BE; background: initial; background-color: #1D1F21;');
-api.Hints.style("border: solid 2px #373B41 !important; padding: 1px !important; color: #C8D3F5 !important; background: #1D1F21 !important;", "text");
-api.Visual.style('marks', 'background-color: #52C19699;');
-api.Visual.style('cursor', 'background-color: #81A2BE;');
+api.Hints.style("border: solid 2px #373B41 !important; padding: 1px !important; color: #FF966C !important; background: #1D1F21 !important;", "text");
+api.Visual.style('cursor', 'background-color: #FF966C;');
 
 settings.theme = `
 /* Edit these variables for easy theme making */
 :root {
   /* Font */
   --font: 'CommitMono Nerd Font Mono', sans-serif;
-
   --font-size: 15px;
-  --font-weight: bold;
+  --font-weight: normal;
 
   --fg: #C8D3F5;
   --bg: #282A2E;
-  --bg-dark: #1D1F21;
+  --bg-dark: #1D1F2188;
   --border: #373b41;
   --main-fg: #81A2BE;
   --accent-fg: #4FD6BE;
   --info-fg: #C099FF;
   --select: #585858;
 
+  --cursor: #FF966C;
   /* Unused Alternate Colors */
   /* --cyan: #65BCFF; */
-  /* --orange: #FF966C; */
   /* --red: #FF757F; */
   /* --yellow: #FFC777; */
 }
@@ -215,8 +213,6 @@ input {
 /* ---------- ACE Editor ---------- */
 #sk_editor {
   background: var(--bg-dark) !important;
-  height: 50% !important;
-  /* Remove this to restore the default editor size */
 }
 
 .ace_dialog-bottom {
@@ -240,13 +236,12 @@ input {
 }
 
 .ace_cursor {
-  color: var(--fg) !important;
+  color: var(--cursor) !important;
 }
 
 .normal-mode .ace_cursor {
-  background-color: var(--fg) !important;
+  background-color: var(--cursor) !important;
   border: var(--fg) !important;
-  opacity: 0.7 !important;
 }
 
 .ace_marker-layer .ace_selection {
