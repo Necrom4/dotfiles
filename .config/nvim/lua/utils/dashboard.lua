@@ -21,9 +21,8 @@ local function fetch_stats()
 		return nil
 	end
 
-	local json_output = utils.term_cmd(
-		[[fastfetch -s CPUUsage:Memory:Swap:Disk:Uptime:Battery:Processes:LocalIP:PublicIP --format json]]
-	)
+	local json_output =
+		utils.term_cmd([[fastfetch -s CPUUsage:Memory:Swap:Disk:Uptime:Battery:Processes:LocalIP --format json]])
 
 	if json_output == "" then
 		return nil
@@ -58,8 +57,6 @@ local function fetch_stats()
 			stats.processes = tostring(item.result)
 		elseif item.type == "LocalIp" and item.result and item.result[1] then
 			stats.local_ip = item.result[1].ipv4
-		elseif item.type == "PublicIp" and item.result then
-			stats.public_ip = item.result.ip
 		elseif item.type == "Uptime" and item.result then
 			stats.uptime = item.result.bootTime
 		end
@@ -384,18 +381,20 @@ local system_info = {
 	),
 	string.format("│ UPTIME │ %-20s  %-20s │", uptime_date, "󰩠 " .. local_ip_address()),
 	string.format(
-		"│  │ %-27s  %-19s │",
+		"│  │ %-46s │",
 		battery_icon(battery_capacity(), battery_status())
 			.. " "
 			.. battery_capacity()
 			.. "%"
-			.. "  "
-			.. " "
+			.. "     "
 			.. utils.term_cmd("users | tr ' ' '\\n' | sort -u | wc -l | tr -d ' '")
-			.. "  "
+			.. "  "
+			.. utils.in_yadm_env(function()
+				return utils.term_cmd("git config local.class")
+			end)
+			.. "    "
 			.. " "
-			.. processes(),
-		" " .. public_ip_address()
+			.. processes()
 	),
 	"╰────────┴─────────────────────────────────────────╯",
 }
