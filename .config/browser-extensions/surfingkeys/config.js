@@ -1,5 +1,6 @@
 settings.defaultSearchEngine = "d";
 settings.enableEmojiInsertion = true;
+settings.hintAlign = "left";
 
 api.unmap("<Ctrl-h>");
 
