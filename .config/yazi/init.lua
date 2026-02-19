@@ -154,16 +154,16 @@ require("yatline-modified-time"):setup()
 
 require("yatline-githead"):setup({
 	show_branch = true,
-	branch_prefix = "",
+	branch_prefix = " ",
 	branch_color = "#C8D3F5",
-	branch_symbol = "",
+	branch_symbol = " ",
 	branch_borders = "",
 
 	commit_symbol = "@",
 
 	show_behind_ahead = true,
-	behind_symbol = "",
-	ahead_symbol = "",
+	behind_remote_symbol = "",
+	ahead_remote_symbol = "",
 
 	show_stashes = true,
 	stashes_symbol = "",
