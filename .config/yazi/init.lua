@@ -30,6 +30,7 @@ require("whoosh"):setup {
   -- Configuration bookmarks (cannot be deleted through plugin)
   bookmarks = {
     { tag = "Home", path = "~", key = "~" },
+    { tag = "Project Root", path = "$PR", key = "p" },
     { tag = "Documents", path = "~/Documents", key = "d" },
     { tag = "Downloads", path = "~/Downloads", key = "D" },
     { tag = "/tmp", path = "/tmp", key = "t" },
