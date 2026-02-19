@@ -60,11 +60,19 @@ api.unmap("e");
 api.map("H", "S");
 api.unmap("S");
 api.map("L", "D");
-api.unmap("d");
+api.unmap("D");
+api.map("<Shift-Tab>", "T");
+api.unmap("T");
 api.map("[<Tab>", "E");
 api.unmap("E");
 api.map("]<Tab>", "R");
 api.unmap("R");
+api.map("[<Shift-Tab>", "g0");
+api.unmap("g0");
+api.map("]<Shift-Tab>", "g$");
+api.unmap("g$");
+api.map("[;", "<Ctrl-6>");
+api.unmap("<Ctrl-6>");
 
 // search
 api.unmap("ob");
@@ -85,10 +93,22 @@ api.unmap("ox");
 // tabs
 api.map("<Tab><Tab>", "on");
 api.unmap("on");
+api.map("<Tab>q", "x");
+api.unmap("x");
+api.map("<Tab>Q", "X");
+api.unmap("X");
+api.map("<Tab>w", "W");
+api.unmap("W");
 api.map("<Tab>l", ">>");
 api.unmap(">>");
 api.map("<Tab>h", "<<");
 api.unmap("<<");
+api.map("<Tab>g", ";G");
+api.unmap(";G");
+api.map("<Tab>p", "<Alt-p>");
+api.unmap("<Alt-p>");
+api.map("<Tab>m", "<Alt-m>");
+api.unmap("<Alt-m>");
 
 // windows
 api.map("<Ctrl-w>i", "oi");
