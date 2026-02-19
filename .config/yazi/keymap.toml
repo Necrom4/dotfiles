@@ -76,7 +76,7 @@ prepend_keymap = [
 	{ on = "Q", run = "quit", desc = "Quit the process" },
 	{ on = "q", run = "quit --no-cwd-file", desc = "quit the process without outputting cwd-file" },
 	{ on = "i", run = "spot", desc = "Spot hovered file" },
-	{ on = "L", run = "open --interactive", desc = "Open selected files interactively" },
+	{ on = "<Tab>", run = "tab_create --current", desc = "Create a new tab with CWD" },
 	{ on = "<Space>", run = "toggle", desc = "Toggle the current selection state" },
   { on = [ "c", "p" ], run = "copy path", desc = "Copy the file path" },
 ]
