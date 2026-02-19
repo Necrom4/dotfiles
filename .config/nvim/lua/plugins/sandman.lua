@@ -6,6 +6,7 @@ return {
 		env_block = false,
 		allow = {
 			"blink-cmp-git",
+			"blink.cmp",
 			"camouflage.nvim",
 			"codediff.nvim",
 			"conform.nvim",
