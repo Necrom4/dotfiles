@@ -329,27 +329,32 @@ fuck() {
 # FZF a word inside all in the current path
 rg-fzf() {
   RG_PREFIX="rg --files-with-matches --smart-case"
-  # Pass paths to use or use `.`
-  local search_path="${1:-.}"
-  # We store the search query in a variable so we can use it after fzf exits
-  # We use --print-query so fzf returns two lines: 1. Your typed string, 2. The selected file
+
+  # Expand path(s) or default to current directory
+  local search_paths
+  if [[ $# -eq 0 ]]; then
+    search_paths="."
+  else
+    # Expand all arguments (globs get expanded by the shell before we see them)
+    search_paths=$(printf "'%s' " "$@")
+  fi
+
   local out
   out=$(
-    # Run the initial command against the search_path
-    FZF_DEFAULT_COMMAND="$RG_PREFIX '' '$search_path'" \
+    FZF_DEFAULT_COMMAND="$RG_PREFIX '' $search_paths" \
       fzf --ansi \
       --sort \
       --phony \
-      --bind "change:reload:$RG_PREFIX {q} '$search_path'" \
+      --bind "change:reload:$RG_PREFIX {q} $search_paths" \
       --preview="[[ ! -z {} ]] && rg --pretty --context 5 {q} {}" \
       --preview-window="70%:wrap" \
       --print-query
-    )
+  )
 
   local query=$(echo "$out" | head -n 1)
-  if [ -z "$query" ]; then return; fi
+  [ -z "$query" ] && return
 
-  rg --line-number "$query" "$search_path"
+  rg --line-number "$query" $search_paths
 }
 
 # ============================================================================
