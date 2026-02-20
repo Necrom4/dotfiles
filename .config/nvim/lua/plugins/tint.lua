@@ -36,7 +36,7 @@ return {
 					disabled = "Enable ",
 				},
 			})
-			:map("<c-w>d")
+			:map("<leader>uDw")
 		return {}
 	end,
 }
