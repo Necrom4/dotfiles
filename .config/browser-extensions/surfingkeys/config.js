@@ -12,34 +12,34 @@ api.unmap(";u");
 
 // find
 api.unmap("t");
-api.mapkey("<Space><Space>", "Find urls", function () {
+api.mapkey("ss", "Find urls", function () {
   api.Front.openOmnibar({ type: "URLs" });
 });
-api.mapkey("<Space>f'", "Find marks", function () {
+api.mapkey("s'", "Find marks", function () {
   api.Front.openOmnibar({ type: "VIMarks" });
 });
-api.mapkey("<Space>f:", "Find commands", function () {
+api.mapkey("s:", "Find commands", function () {
   api.Front.openOmnibar({ type: "Commands" });
 });
-api.mapkey("<Space>fb", "Find bookmarks", function () {
+api.mapkey("sb", "Find bookmarks", function () {
   api.Front.openOmnibar({ type: "Bookmarks" });
 });
-api.mapkey("<Space>fe", "Find searchEngine", function () {
+api.mapkey("se", "Find searchEngine", function () {
   api.Front.openOmnibar({ type: "SearchEngine" });
 });
-api.mapkey("<Space>fh", "Find History", function () {
+api.mapkey("sh", "Find History", function () {
   api.Front.openOmnibar({ type: "History" });
 });
-api.mapkey("<Space>fr", "Find recently closed", function () {
+api.mapkey("sr", "Find recently closed", function () {
   api.Front.openOmnibar({ type: "RecentlyClosed" });
 });
-api.mapkey("<Space>ft", "Find tabs", function () {
+api.mapkey("st", "Find tabs", function () {
   api.Front.openOmnibar({ type: "Tabs" });
 });
-api.mapkey("<Space>fu", "Find subURLs", function () {
+api.mapkey("su", "Find subURLs", function () {
   api.Front.openOmnibar({ type: "TabURLs" });
 });
-api.mapkey("<Space>fw", "Find windows", function () {
+api.mapkey("sw", "Find windows", function () {
   api.Front.openOmnibar({ type: "Windows" });
 });
 
@@ -61,53 +61,58 @@ api.map("H", "S");
 api.unmap("S");
 api.map("L", "D");
 api.unmap("D");
-api.map("<Shift-Tab>", "T");
-api.unmap("T");
-api.map("[<Tab>", "E");
+api.map("[t", "E");
 api.unmap("E");
-api.map("]<Tab>", "R");
+api.map("]t", "R");
 api.unmap("R");
-api.map("[<Shift-Tab>", "g0");
+api.map("[T", "g0");
 api.unmap("g0");
-api.map("]<Shift-Tab>", "g$");
+api.map("]T", "g$");
 api.unmap("g$");
 api.map("[;", "<Ctrl-6>");
 api.unmap("<Ctrl-6>");
 
 // search
+api.unmap("sb");
+api.unmap("sd");
+api.unmap("se");
+api.unmap("sg");
+api.unmap("sh");
+api.unmap("sm");
+api.unmap("ss");
+api.unmap("sw");
+api.unmap("sy");
 api.unmap("ob");
-api.map("<Space>ss", "od");
+api.map("sd", "od");
 api.unmap("od");
-api.map("<Space>sw", "oe");
-api.unmap("oe");
-api.map("<Space>sg", "og");
+api.map("sg", "og");
 api.unmap("og");
 api.unmap("oh");
 api.unmap("om");
 api.unmap("os");
 api.unmap("ow");
-api.map("<Space>sy", "oy");
+api.map("sy", "oy");
 api.unmap("oy");
 api.unmap("ox");
 
 // tabs
-api.map("<Tab><Tab>", "on");
+api.map("tn", "on");
 api.unmap("on");
-api.map("<Tab>q", "x");
+api.map("tq", "x");
 api.unmap("x");
-api.map("<Tab>Q", "X");
+api.map("tQ", "X");
 api.unmap("X");
-api.map("<Tab>w", "W");
+api.map("tw", "W");
 api.unmap("W");
-api.map("<Tab>l", ">>");
+api.map("tl", ">>");
 api.unmap(">>");
-api.map("<Tab>h", "<<");
+api.map("th", "<<");
 api.unmap("<<");
-api.map("<Tab>g", ";G");
+api.map("tg", ";G");
 api.unmap(";G");
-api.map("<Tab>p", "<Alt-p>");
+api.map("tp", "<Alt-p>");
 api.unmap("<Alt-p>");
-api.map("<Tab>m", "<Alt-m>");
+api.map("tm", "<Alt-m>");
 api.unmap("<Alt-m>");
 
 // windows
