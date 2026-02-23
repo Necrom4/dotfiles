@@ -71,6 +71,8 @@ brew "mise"
 brew "neovim"
 # Port scanning utility for large networks
 brew "nmap"
+# Command-line Git information tool
+brew "onefetch"
 # Swiss-army knife of markup format conversion
 brew "pandoc"
 # Package compiler and linker metadata toolkit
