@@ -65,12 +65,23 @@ function update_project_root_var() {
       dir="${dir:h}"
   done
   unset PR
+
+last_PR=""
+
+onefetch_on_enter() {
+  if [[ -n "$PR" && "$PR" != "$last_PR" ]]; then
+    if command -v onefetch >/dev/null 2>&1; then
+      onefetch --no-color-palette --nerd-fonts .
+    fi
+    last_PR="$PR"
+  elif [[ -z "$PR" ]]; then
+    last_PR=""
+  fi
 }
 
 autoload -Uz add-zsh-hook
 add-zsh-hook chpwd update_project_root_var
-
-update_project_root_var
+add-zsh-hook chpwd onefetch_on_enter
 
 # ============================================================================
 # ZINIT CONFIGURATION
