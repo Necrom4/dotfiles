@@ -55,16 +55,13 @@ export FZF_DEFAULT_OPTS_FILE=$HOME/.config/fzf/fzfrc
 export ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
 
 # Add $PR var that represents the path of the current project's root
-function update_project_root_var() {
-  local dir="$PWD"
-  while [[ "$dir" != "/" ]]; do
-      if [[ -d "$dir/.git" ]]; then
-          export PR="$dir"
-          return
-      fi
-      dir="${dir:h}"
-  done
-  unset PR
+update_project_root_var() {
+  if [[ -e .git ]] || git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    export PR=$(git rev-parse --show-toplevel 2>/dev/null)
+  else
+    unset PR
+  fi
+}
 
 last_PR=""
 
