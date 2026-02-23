@@ -4,12 +4,6 @@ settings.hintAlign = "left";
 
 api.unmap("<Ctrl-h>");
 
-// edition
-api.map("eu", ";U");
-api.unmap(";U");
-api.map("eU", ";u");
-api.unmap(";u");
-
 // find
 api.unmap("t");
 api.mapkey("ss", "Find urls", function () {
@@ -71,6 +65,12 @@ api.map("]T", "g$");
 api.unmap("g$");
 api.map("[;", "<Ctrl-6>");
 api.unmap("<Ctrl-6>");
+
+// edition
+api.map("eu", ";U");
+api.unmap(";U");
+api.map("eU", ";u");
+api.unmap(";u");
 
 // search
 api.unmap("sb");
@@ -359,14 +359,6 @@ input {
 
 .ace_marker-layer .ace_selection {
   background: var(--select) !important;
-}
-
-.ace_editor,
-.ace_dialog span,
-.ace_dialog input {
-  font-family: var(--font);
-  font-size: var(--font-size);
-  font-weight: var(--font-weight);
 }
 `;
 // click `Save` button to make above settings to take effect.</ctrl-i></ctrl-y>
