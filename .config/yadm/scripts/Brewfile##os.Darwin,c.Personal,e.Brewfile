@@ -84,6 +84,8 @@ brew "mole"
 brew "neovim"
 # Port scanning utility for large networks
 brew "nmap"
+# Command-line Git information tool
+brew "onefetch"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Object-relational database system
