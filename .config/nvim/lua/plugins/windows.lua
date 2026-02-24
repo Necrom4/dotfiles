@@ -12,32 +12,6 @@ return {
 		},
 	},
 	{
-		"nvim-zh/colorful-winsep.nvim",
-		event = { "WinLeave" },
-		opts = {
-			border = "rounded",
-			animate = {
-				enabled = "progressive",
-				progressive = {
-					vertical_delay = 20,
-					horizontal_delay = 2,
-				},
-			},
-			indicator_for_2wins = {
-				symbols = {
-					start_left = "󰄾",
-					end_left = "",
-					start_down = "",
-					end_down = "",
-					start_up = "",
-					end_up = "",
-					start_right = "",
-					end_right = "",
-				},
-			},
-		},
-	},
-	{
 		"s1n7ax/nvim-window-picker",
 		name = "window-picker",
 		version = "2.*",

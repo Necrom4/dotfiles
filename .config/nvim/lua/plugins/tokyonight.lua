@@ -35,9 +35,6 @@ return {
 			hl.BlinkCmpKindDBee = {
 				fg = "#FCA7EA",
 			}
-			hl.ColorfulWinSep = {
-				fg = "#65BCFF",
-			}
 			hl.HauntAnnotation = {
 				fg = "#FCA7EA",
 				bg = "#383148",
