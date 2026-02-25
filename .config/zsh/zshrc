@@ -106,6 +106,9 @@ zstyle ':fzf-tab:complete:just:*' fzf-preview \
   'just --show $word 2>/dev/null | bat --color=always --style=plain -l Makefile'
 
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZVM_CLIPBOARD_COPY_CMD='clipcopy'
+ZVM_CLIPBOARD_PASTE_CMD='clippaste'
+ZVM_SYSTEM_CLIPBOARD_ENABLED=true
 ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
 ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
 
