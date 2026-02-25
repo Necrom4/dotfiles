@@ -52,7 +52,7 @@ k9s:
       numKeyColor: *magenta
     # CrumbView attributes for history navigation.
     crumbs:
-      fgColor: *white
+      fgColor: *background
       bgColor: *cyan
       activeColor: *yellow
     # Resource status and update styles
@@ -85,7 +85,7 @@ k9s:
     table:
       fgColor: *foreground
       bgColor: default
-      cursorFgColor: *white
+      cursorFgColor: *background
       cursorBgColor: *background
       markColor: darkgoldenrod
       # Header row styles.
