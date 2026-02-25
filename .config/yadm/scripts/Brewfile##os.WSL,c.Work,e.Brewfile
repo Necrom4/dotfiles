@@ -1,6 +1,4 @@
 tap "domcyrus/rustnet"
-# Automate deployment, configuration, and upgrading
-brew "ansible"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Terminal EPUB Book Reader
