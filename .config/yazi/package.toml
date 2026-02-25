@@ -10,8 +10,8 @@ hash = "778941e7f1ebbacd60f4e254bb3c51de"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "25918dc"
-hash = "8da0b15a97b5dfd13941d1ecc617ac7c"
+rev = "b224ddf"
+hash = "815dd20e682dec52bb92864037fa5f53"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
@@ -20,12 +20,12 @@ hash = "57056b9728006881d580ccabe8154a9c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "25918dc"
-hash = "56fdabc96fc1f4d53c96eb884b02a5be"
+rev = "b224ddf"
+hash = "187cc58ba7ac3befd49c342129e6f1b6"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "25918dc"
+rev = "b224ddf"
 hash = "6fa6a05a81c98dd000fbca3cca6e9682"
 
 [[plugin.deps]]
@@ -35,8 +35,8 @@ hash = "eed8e19469f3dca38fd977eb938dd34e"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "25918dc"
-hash = "407d19bc4fb46eff5fa8ff8337644847"
+rev = "b224ddf"
+hash = "c887903a63a2ff520081b6d90a4b3392"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-tokyo-night"
@@ -45,12 +45,12 @@ hash = "215729a555fe5286f1eb35520963d08"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "25918dc"
-hash = "f69e4737c2fb8ceec58a2950faf13c46"
+rev = "b224ddf"
+hash = "f6e6a829c6dc6c900a75bebe422a5c33"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "25918dc"
+rev = "b224ddf"
 hash = "270915fa8282a19908449530ff66f7e2"
 
 [[plugin.deps]]
@@ -70,18 +70,18 @@ hash = "424ada4807b20ccd4fc85d1d7c26d1e4"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "25918dc"
-hash = "6ce49cf5b4c7c0d9cce8a1062ed478d3"
+rev = "b224ddf"
+hash = "d38879886586f10c8763d0943c329fd2"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "25918dc"
-hash = "75fd60b2df7115e0a6ca31a6a804d320"
+rev = "b224ddf"
+hash = "3f8d49413bc8691b4c652eb417a20178"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mount"
-rev = "25918dc"
-hash = "9ad20d763df07ce40fd09de549d914b0"
+rev = "b224ddf"
+hash = "91937a4a9b779eabc6983e258befdfe9"
 
 [[plugin.deps]]
 use = "carlosedp/yatline"
@@ -95,8 +95,8 @@ hash = "87b9233a74325e95011670ed20bbd0d4"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "88990a6"
-hash = "25aee698dd1081001008ce0cb1cc4da3"
+rev = "b224ddf"
+hash = "384464b6df8cb807425c521f8cd790f3"
 
 [[plugin.deps]]
 use = "imsi32/yatline-githead"
