@@ -68,7 +68,7 @@ last_PR=""
 onefetch_on_enter() {
   if [[ -n "$PR" && "$PR" != "$last_PR" ]]; then
     if command -v onefetch >/dev/null 2>&1; then
-      onefetch --no-color-palette --nerd-fonts .
+      onefetch --no-title --no-color-palette --nerd-fonts .
     fi
     last_PR="$PR"
   elif [[ -z "$PR" ]]; then
