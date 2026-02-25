@@ -6,6 +6,15 @@ api.unmap("<Ctrl-h>");
 
 // find
 api.unmap("t");
+api.unmap("sb");
+api.unmap("sd");
+api.unmap("se");
+api.unmap("sg");
+api.unmap("sh");
+api.unmap("sm");
+api.unmap("ss");
+api.unmap("sw");
+api.unmap("sy");
 api.mapkey("ss", "Find urls", function () {
   api.Front.openOmnibar({ type: "URLs" });
 });
@@ -73,15 +82,6 @@ api.map("eU", ";u");
 api.unmap(";u");
 
 // search
-api.unmap("sb");
-api.unmap("sd");
-api.unmap("se");
-api.unmap("sg");
-api.unmap("sh");
-api.unmap("sm");
-api.unmap("ss");
-api.unmap("sw");
-api.unmap("sy");
 api.unmap("ob");
 api.map("sd", "od");
 api.unmap("od");
