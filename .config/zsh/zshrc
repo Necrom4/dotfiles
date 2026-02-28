@@ -65,8 +65,17 @@ update_project_root_var() {
 
 last_PR=""
 
-onefetch_on_enter() {
+project_enter_print() {
   if [[ -n "$PR" && "$PR" != "$last_PR" ]]; then
+    if command -v mise >/dev/null 2>&1; then
+      output=$(mise config get env 2>/dev/null || true)
+      if [ -n "$output" ]; then
+        yellow=$(tput setaf 11)
+        reset=$(tput sgr0)
+        echo "[${yellow}env${reset}]"
+        echo "$output" | awk -F'=' '{print $1}' | sed '/^$/d'
+      fi
+    fi
     if command -v onefetch >/dev/null 2>&1; then
       onefetch --no-title --no-color-palette --nerd-fonts --type prose programming markup data
     fi
@@ -78,7 +87,7 @@ onefetch_on_enter() {
 
 autoload -Uz add-zsh-hook
 add-zsh-hook chpwd update_project_root_var
-add-zsh-hook chpwd onefetch_on_enter
+add-zsh-hook chpwd project_enter_print
 
 # ============================================================================
 # ZINIT CONFIGURATION
