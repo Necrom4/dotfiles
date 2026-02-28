@@ -2,7 +2,7 @@ local colored = true
 
 return {
 	"catgoose/nvim-colorizer.lua",
-	event = { "BufNewFile", "BufReadPost" },
+	event = "BufReadPre",
 	opts = function()
 		Snacks.toggle({
 			id = "colorizer",
@@ -17,15 +17,23 @@ return {
 		}):map("<leader>uC")
 
 		return {
-			user_default_options = {
-				RGB = true,
-				RRGGBB = true,
-				names = true,
-				RRGGBBAA = true,
-				rgb_fn = true,
-				hsl_fn = false,
-				css = true,
-				css_fn = true,
+			lazy_load = true,
+			options = {
+				parsers = {
+					css = true,
+					hex = {
+						rrggbbaa = true,
+						aarrggbb = true,
+					},
+					tailwind = {
+						enable = true,
+						lsp = true,
+					},
+					sass = {
+						enable = true,
+					},
+					xterm = { enable = true },
+				},
 				always_update = true,
 			},
 		}
