@@ -10,8 +10,8 @@ hash = "778941e7f1ebbacd60f4e254bb3c51de"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "b224ddf"
-hash = "815dd20e682dec52bb92864037fa5f53"
+rev = "1962818"
+hash = "f0c8c378184d5f8abd1b095a443d336d"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
@@ -20,12 +20,12 @@ hash = "57056b9728006881d580ccabe8154a9c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "b224ddf"
+rev = "1962818"
 hash = "187cc58ba7ac3befd49c342129e6f1b6"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "b224ddf"
+rev = "1962818"
 hash = "6fa6a05a81c98dd000fbca3cca6e9682"
 
 [[plugin.deps]]
@@ -35,7 +35,7 @@ hash = "eed8e19469f3dca38fd977eb938dd34e"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "b224ddf"
+rev = "1962818"
 hash = "c887903a63a2ff520081b6d90a4b3392"
 
 [[plugin.deps]]
@@ -45,13 +45,13 @@ hash = "215729a555fe5286f1eb35520963d08"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "b224ddf"
+rev = "1962818"
 hash = "f6e6a829c6dc6c900a75bebe422a5c33"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "b224ddf"
-hash = "270915fa8282a19908449530ff66f7e2"
+rev = "1962818"
+hash = "26db011a778f261d730d4f5f8bf24b3f"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-modified-time"
@@ -70,17 +70,17 @@ hash = "424ada4807b20ccd4fc85d1d7c26d1e4"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "b224ddf"
-hash = "d38879886586f10c8763d0943c329fd2"
+rev = "1962818"
+hash = "fa268cb59989a87780605fdcfb8d99a9"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "b224ddf"
+rev = "1962818"
 hash = "3f8d49413bc8691b4c652eb417a20178"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mount"
-rev = "b224ddf"
+rev = "1962818"
 hash = "91937a4a9b779eabc6983e258befdfe9"
 
 [[plugin.deps]]
@@ -95,7 +95,7 @@ hash = "87b9233a74325e95011670ed20bbd0d4"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "b224ddf"
+rev = "1962818"
 hash = "384464b6df8cb807425c521f8cd790f3"
 
 [[plugin.deps]]
