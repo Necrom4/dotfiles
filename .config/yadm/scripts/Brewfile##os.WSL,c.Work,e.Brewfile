@@ -93,8 +93,8 @@ brew "task"
 brew "thefuck"
 # Command-line time tracking application
 brew "timewarrior"
-# Simplified and community-driven man pages
-brew "tldr"
+# Official tldr client written in Rust
+brew "tlrc"
 # Terminal multiplexer
 brew "tmux"
 # Command-line translator using Google Translate and more
