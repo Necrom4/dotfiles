@@ -37,8 +37,6 @@ brew "git-get"
 brew "goreleaser"
 # Colorize logfiles and command output
 brew "grc"
-# Kubernetes package manager
-brew "helm"
 # Command-line benchmarking tool
 brew "hyperfine"
 # Command-line pager for JSON data
