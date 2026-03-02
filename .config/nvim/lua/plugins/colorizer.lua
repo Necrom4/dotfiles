@@ -2,7 +2,7 @@ local colored = true
 
 return {
 	"catgoose/nvim-colorizer.lua",
-	event = "BufReadPre",
+	event = "LazyFile",
 	opts = function()
 		Snacks.toggle({
 			id = "colorizer",

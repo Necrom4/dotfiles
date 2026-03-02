@@ -2,7 +2,7 @@ return {
 	"okuuva/auto-save.nvim",
 	version = "*",
 	cmd = "ASToggle",
-	event = { "InsertLeave", "TextChanged" }, -- optional for lazy loading on trigger events
+	ft = { "norg", "eruby", "css", "scss" },
 	opts = {
 		debounce_delay = 500, -- delay after which a pending save is executed
 		trigger_events = {

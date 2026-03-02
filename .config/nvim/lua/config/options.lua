@@ -13,24 +13,12 @@ vim.diagnostic.config({
 vim.filetype.add({
 	pattern = {
 		[".env.*"] = "sh",
-	},
-})
-vim.filetype.add({
-	pattern = {
 		[".*%.(%a+)##.*"] = function(_, _, capture)
 			return capture
 		end,
-	},
-})
-vim.filetype.add({
-	pattern = {
 		[".*##.*e%.(%a+)$"] = function(_, _, capture)
 			return capture
 		end,
-	},
-})
-vim.filetype.add({
-	pattern = {
 		[".*%.tpl%.yaml"] = "helm",
 	},
 })

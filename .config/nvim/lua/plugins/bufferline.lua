@@ -1,6 +1,6 @@
 return {
 	"akinsho/bufferline.nvim",
-	events = { "BufWinEnter" },
+	event = { "BufWinEnter" },
 	opts = {
 		options = {
 			mode = "tabs",

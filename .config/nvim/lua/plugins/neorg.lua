@@ -33,8 +33,7 @@ return {
 		"benlubas/neorg-conceal-wrap",
 		"benlubas/neorg-interim-ls",
 	},
-	event = { "LazyFile" },
-	ft = { "norg" },
+	ft = "norg",
 	opts = {
 		load = {
 			["core.autocommands"] = {},
