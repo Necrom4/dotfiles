@@ -40,6 +40,9 @@ return {
 				bg = "#383148",
 				italic = true,
 			}
+			hl["@markup.quote"] = {
+				fg = "#787E93",
+			}
 			hl["@neorg.markup.verbatim"] = {
 				bg = "#444A73",
 				fg = "#82AAFF",

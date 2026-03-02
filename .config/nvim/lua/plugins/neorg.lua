@@ -106,7 +106,7 @@ return {
 			silent = true,
 		},
 		{
-			"<c-x>",
+			"<a-x>",
 			"<Plug>(neorg.qol.todo-items.todo.task-cycle)",
 			ft = "norg",
 			silent = true,
