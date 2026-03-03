@@ -1,5 +1,4 @@
 local utils = require("utils.general")
-local system_type = utils.system_type()
 
 -- Persistent undo
 vim.opt.undofile = true

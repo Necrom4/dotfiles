@@ -6,7 +6,7 @@ return {
 	event = "VeryLazy",
 	opts = function()
 		Snacks.toggle({
-			id = "comouflage_toggle",
+			id = "camouflage_toggle",
 			name = "values",
 			get = function()
 				return concealed
@@ -30,7 +30,7 @@ return {
 		}):map("<leader>ucC")
 
 		Snacks.toggle({
-			id = "comouflage_follow_cursor",
+			id = "camouflage_follow_cursor",
 			name = "cursor line",
 			get = function()
 				return concealed_line

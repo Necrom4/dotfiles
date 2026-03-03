@@ -6,23 +6,31 @@ function M.term_cmd(cmd)
 	return vim.fn.system(wrapped_cmd):gsub("%s+$", "")
 end
 
--- GET OS
+-- GET OS (memoized -- OS does not change during a session)
+local _system_type_cache = nil
+
 function M.system_type()
+	if _system_type_cache then
+		return _system_type_cache
+	end
+
 	if vim.fn.has("wsl") == 1 then
-		return "wsl"
-	end
-
-	local sysname = vim.loop.os_uname().sysname:lower()
-
-	if sysname:find("darwin") then
-		return "darwin"
-	elseif sysname:find("windows") then
-		return "windows"
-	elseif sysname:find("linux") then
-		return "linux"
+		_system_type_cache = "wsl"
 	else
-		return "unknown"
+		local sysname = (vim.uv or vim.loop).os_uname().sysname:lower()
+
+		if sysname:find("darwin") then
+			_system_type_cache = "darwin"
+		elseif sysname:find("windows") then
+			_system_type_cache = "windows"
+		elseif sysname:find("linux") then
+			_system_type_cache = "linux"
+		else
+			_system_type_cache = "unknown"
+		end
 	end
+
+	return _system_type_cache
 end
 
 -- YADM

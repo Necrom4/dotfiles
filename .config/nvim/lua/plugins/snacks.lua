@@ -1,5 +1,3 @@
-local utils = require("utils.general")
-
 return {
 	"folke/snacks.nvim",
 	keys = {
@@ -67,7 +65,7 @@ return {
 		{
 			"<leader>fc",
 			function()
-				utils.in_yadm_env(function(yadm_repo)
+				require("utils.general").in_yadm_env(function(yadm_repo)
 					Snacks.dashboard.pick("git_files", { cwd = yadm_repo })
 				end)
 			end,
@@ -93,7 +91,7 @@ return {
 		{
 			"<leader>gy",
 			function()
-				utils.switch_git_dir()
+				require("utils.general").switch_git_dir()
 			end,
 			desc = "Toggle Repo",
 			silent = true,
@@ -328,7 +326,7 @@ return {
 						key = "c",
 						desc = "Config",
 						action = function()
-							utils.in_yadm_env(function(yadm_repo)
+							require("utils.general").in_yadm_env(function(yadm_repo)
 								Snacks.dashboard.pick("git_files", { cwd = yadm_repo })
 							end)
 						end,

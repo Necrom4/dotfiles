@@ -1,26 +1,3 @@
-local utils = require("utils.general")
-local system_type = utils.system_type()
-
-local function os_icon()
-	local uname = system_type
-	if uname ~= "darwin" then
-		local linux_name = utils.term_cmd("lsb_release -is"):lower()
-
-		local icon = ""
-		if linux_name:find("ubuntu") then
-			icon = ""
-		elseif linux_name:find("debian") then
-			icon = ""
-		elseif linux_name:find("arch") then
-			icon = "󰣇"
-		end
-
-		return icon
-	else
-		return ""
-	end
-end
-
 local function scrollbar()
 	local sbar = { "▔", "🭶", "🭷", "🭸", "🭹", "🭺", "🭻", "▁" }
 	local curr_line = vim.api.nvim_win_get_cursor(0)[1]

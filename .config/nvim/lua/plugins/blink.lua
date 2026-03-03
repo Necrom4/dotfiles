@@ -1,5 +1,3 @@
-local utils = require("utils.general")
-
 return {
 	"saghen/blink.cmp",
 	dependencies = {
@@ -92,6 +90,7 @@ return {
 		signature = { enabled = true },
 		sources = {
 			default = function()
+				local utils = require("utils.general")
 				local base = {
 					"buffer",
 					"calc",

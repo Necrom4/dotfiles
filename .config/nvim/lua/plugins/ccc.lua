@@ -1,6 +1,5 @@
 return {
 	"uga-rosa/ccc.nvim",
-	event = { "BufWinEnter" },
 	opts = {
 		highlighter = {
 			auto_enable = false,
