@@ -114,6 +114,7 @@ zstyle ':fzf-tab:complete:brew-(info|install|upgrade):*' fzf-preview 'F=( -c %Y 
 zstyle ':fzf-tab:complete:just:*' fzf-preview \
   'just --show $word 2>/dev/null | bat --color=always --style=plain -l Makefile'
 
+FZF_DEFAULT_COMMAND='fd --hidden --type l --type f --type d --exclude .git --exclude .cache'
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZVM_CLIPBOARD_COPY_CMD='clipcopy'
 ZVM_CLIPBOARD_PASTE_CMD='clippaste'
