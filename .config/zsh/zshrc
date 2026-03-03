@@ -374,7 +374,13 @@ rg-fzf() {
   local query=$(echo "$out" | head -n 1)
   [ -z "$query" ] && return
 
-  rg --line-number "$query" $search_paths
+  local files=$(echo "$out" | tail -n +2)
+
+  if [[ -z "$files" ]]; then
+    rg --line-number "$query" $search_paths
+  else
+    echo "$files" | xargs rg --line-number --with-filename "$query"
+  fi
 }
 
 # ============================================================================
