@@ -14,11 +14,10 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local vimsettings = "~/.config/nvim/lua/core"
-local settingsfiles = vim.fn.split(vim.fn.globpath(vimsettings, "*.lua"), "\n")
-
-for _, fpath in ipairs(settingsfiles) do
-	dofile(fpath)
+local startup_dir = vim.fn.stdpath("config") .. "/lua/core"
+for _, file in ipairs(vim.fn.globpath(startup_dir, "*.lua", false, true)) do
+	local mod = "core." .. vim.fn.fnamemodify(file, ":t:r")
+	require(mod)
 end
 
 local plugin_specs = {

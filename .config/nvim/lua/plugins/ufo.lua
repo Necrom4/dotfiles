@@ -1,4 +1,4 @@
-local Fold = require("core.fold")
+local Fold = require("modules.ufo")
 
 local ftMap = {
 	vim = "indent",

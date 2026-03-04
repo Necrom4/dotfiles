@@ -348,7 +348,7 @@ return {
 			sections = {
 				function()
 					return {
-						header = require("utils.dashboard").header,
+						header = require("modules.dashboard").header,
 						padding = 1,
 						pane = 1,
 					}
