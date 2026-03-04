@@ -43,6 +43,7 @@ return {
 		"kevinhwang91/promise-async",
 		"nvim-treesitter/nvim-treesitter",
 	},
+	event = { "BufReadPost", "BufNewFile" },
 	init = function()
 		vim.opt.foldcolumn = "1"
 		vim.opt.foldlevelstart = 99
