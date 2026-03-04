@@ -8,14 +8,24 @@ return {
 		},
 		lualine_bold = true,
 		on_highlights = function(hl, c)
+			hl.BlinkCmpKindDBee = {
+				fg = "#FCA7EA",
+			}
+			hl.BlinkCmpKindFile = {
+				link = "BlinkCmpKindFolder",
+			}
 			hl.CursorLine = {
 				bg = "none",
 			}
-			hl.WinSeparator = {
-				fg = "#C8D3F5",
+			hl.FlashLabel = {
+				fg = "#000000",
+				bg = "#FF966C",
+				bold = true,
 			}
-			hl.WhichKeyNormal = {
-				bg = "none",
+			hl.HauntAnnotation = {
+				fg = "#FCA7EA",
+				bg = "#383148",
+				italic = true,
 			}
 			hl.TreesitterContext = {
 				bg = "none",
@@ -24,21 +34,14 @@ return {
 				underline = true,
 				sp = "#636DA6",
 			}
-			hl.FlashLabel = {
-				fg = "#000000",
-				bg = "#FF966C",
-				bold = true,
+			hl.UfoFoldedEllipsis = {
+				link = "FoldColumn",
 			}
-			hl.BlinkCmpKindFile = {
-				link = "BlinkCmpKindFolder",
+			hl.WhichKeyNormal = {
+				bg = "none",
 			}
-			hl.BlinkCmpKindDBee = {
-				fg = "#FCA7EA",
-			}
-			hl.HauntAnnotation = {
-				fg = "#FCA7EA",
-				bg = "#383148",
-				italic = true,
+			hl.WinSeparator = {
+				fg = "#C8D3F5",
 			}
 			hl["@markup.quote"] = {
 				fg = "#787E93",
