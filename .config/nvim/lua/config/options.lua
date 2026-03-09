@@ -19,6 +19,10 @@ vim.filetype.add({
 		[".*##.*e%.(%a+)$"] = function(_, _, capture)
 			return capture
 		end,
+		[".*%.yaml%.j2"] = "yamljinja",
+		[".*%.yml%.j2"] = "yamljinja",
 		[".*%.tpl%.yaml"] = "helm",
 	},
 })
+
+vim.treesitter.language.register("yaml", "yamljinja")

@@ -2,6 +2,12 @@ return {
 	"neovim/nvim-lspconfig",
 	opts = function(_, opts)
 		opts.servers = vim.tbl_deep_extend("force", opts.servers, {
+			jinja_lsp = {
+				filetypes = { "jinja", "yamljinja" },
+			},
+			yamlls = {
+				filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values", "yamljinja" },
+			},
 			["*"] = {
 				keys = {
 					{ "K", false },
