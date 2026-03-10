@@ -250,6 +250,27 @@ if (( $+commands[bat] )); then
   alias cat="bat"
 fi
 
+if (( $+commands[pandoc] )); then
+  catmd() {
+    local pager=true
+    local args=()
+
+    for arg in "$@"; do
+      if [[ "$arg" == "-pp" ]]; then
+        pager=false
+      else
+        args+=("$arg")
+      fi
+    done
+
+    if $pager; then
+      pandoc -i "${args[1]}" -w ansi | less -R
+    else
+      pandoc -i "${args[1]}" -w ansi
+    fi
+  }
+fi
+
 alias ll='ls -la --total-size'
 alias la='ls -a'
 alias lt='ls --tree'
