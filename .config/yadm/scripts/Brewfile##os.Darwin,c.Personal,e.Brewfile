@@ -2,6 +2,8 @@ tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
 tap "mutagen-io/mutagen"
 tap "tonisives/tap"
+# Improved shell history for zsh, bash, fish and nushell
+brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Terminal EPUB Book Reader

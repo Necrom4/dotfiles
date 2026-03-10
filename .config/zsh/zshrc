@@ -114,6 +114,7 @@ zstyle ':fzf-tab:complete:brew-(info|install|upgrade):*' fzf-preview 'F=( -c %Y 
 zstyle ':fzf-tab:complete:just:*' fzf-preview \
   'just --show $word 2>/dev/null | bat --color=always --style=plain -l Makefile'
 
+(( $+commands[atuin] )) && export ATUIN_NOBIND='true'
 FZF_DEFAULT_COMMAND='fd --hidden --type l --type f --type d --exclude .git --exclude .cache'
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZVM_CLIPBOARD_COPY_CMD='clipcopy'
@@ -171,12 +172,41 @@ zinit wait lucid for \
   OMZP::z \
     as"completion" \
   OMZ::plugins/z/_z \
+    atload'
+      function _setup_atuin_viins() {
+        bindkey -M viins "^r" atuin-search
+      }
+      function _setup_atuin_vicmd() {
+        bindkey -M vicmd "k" atuin-up-search-vicmd
+        bindkey -M vicmd "^r" atuin-search-vicmd
+      }
+      zvm_after_init_commands+=(_setup_atuin_viins)
+      zvm_after_lazy_keybindings_commands+=(_setup_atuin_vicmd)
+    ' \
+    if'(( $+commands[atuin] ))' \
+  atuinsh/atuin \
   Aloxaf/fzf-tab \
   rswrz/timewarrior-omz \
-    blockf \
-  zsh-users/zsh-autosuggestions \
-  zsh-users/zsh-completions \
     atload"!_zsh_autosuggest_start" \
+  zsh-users/zsh-autosuggestions \
+    blockf \
+  zsh-users/zsh-completions \
+    atload'
+      function _setup_substring_viins() {
+        bindkey -M viins "$terminfo[kcuu1]" history-substring-search-up
+        bindkey -M viins "$terminfo[kcud1]" history-substring-search-down
+        bindkey -M viins "^k" history-substring-search-up
+        bindkey -M viins "^j" history-substring-search-down
+      }
+      function _setup_substring_vicmd() {
+        if ! zle -la | grep -q "^atuin-up-search-vicmd$"; then
+          bindkey -M vicmd "k" history-substring-search-up
+          bindkey -M vicmd "j" history-substring-search-down
+        fi
+      }
+      zvm_after_init_commands+=(_setup_substring_viins)
+      zvm_after_lazy_keybindings_commands+=(_setup_substring_vicmd)
+    ' \
   zsh-users/zsh-history-substring-search \
   jeffreytse/zsh-vi-mode
 
@@ -228,9 +258,12 @@ bindkey '^x' clear-screen
 bindkey '^h' vi-backward-char
 bindkey '^l' vi-forward-char
 bindkey "^[^M" insert-linebreak
-bindkey -M vicmd ';' edit-command-line
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+
+function _setup_vicmd() {
+  bindkey -M vicmd ';' edit-command-line
+}
+
+zvm_after_lazy_keybindings_commands+=(_setup_vicmd)
 
 # ============================================================================
 # ALIASES

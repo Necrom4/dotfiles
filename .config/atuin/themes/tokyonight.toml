@@ -1,0 +1,12 @@
+[theme]
+name = "tokyonight"
+
+[colors]
+AlertInfo = "#4FD6BE"
+AlertWarn = "#0DB9D7"
+AlertError = "#C53B53"
+Annotation = "#C099FF"
+Base = "#C8D3F5"
+Guidance = "#787E93"
+Important = "#65BCFF"
+Title = "#ff0000"
