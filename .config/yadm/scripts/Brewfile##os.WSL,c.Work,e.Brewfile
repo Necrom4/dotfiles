@@ -1,4 +1,5 @@
 tap "domcyrus/rustnet"
+tap "necrom4/tap"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
@@ -121,3 +122,5 @@ brew "yq"
 brew "zip"
 # High-performance, cross-platform network monitoring tool with TUI
 brew "domcyrus/rustnet/rustnet"
+# Swiss SBB/CFF/FFS timetable app for the terminal
+brew "necrom4/tap/sbb-tui"
