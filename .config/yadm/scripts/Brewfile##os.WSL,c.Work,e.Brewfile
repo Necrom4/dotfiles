@@ -1,4 +1,6 @@
 tap "domcyrus/rustnet"
+# Improved shell history for zsh, bash, fish and nushell
+brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Terminal EPUB Book Reader
