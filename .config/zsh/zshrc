@@ -187,11 +187,12 @@ zinit wait lucid for \
   atuinsh/atuin \
   Aloxaf/fzf-tab \
   rswrz/timewarrior-omz \
-    atload"!_zsh_autosuggest_start" \
-  zsh-users/zsh-autosuggestions \
     blockf \
+  zsh-users/zsh-autosuggestions \
   zsh-users/zsh-completions \
     atload'
+      _zsh_autosuggest_start
+
       function _setup_substring_viins() {
         bindkey -M viins "$terminfo[kcuu1]" history-substring-search-up
         bindkey -M viins "$terminfo[kcud1]" history-substring-search-down
