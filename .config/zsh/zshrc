@@ -239,8 +239,7 @@ zinit wait"1" lucid for \
   OMZP::grc \
   OMZP::jsontools \
   OMZP::rails \
-  OMZP::web-search \
-  zdharma-continuum/history-search-multi-word
+  OMZP::web-search
 
 # Override plugin aliases
 zinit wait"1b" lucid for \
