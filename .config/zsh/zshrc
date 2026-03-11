@@ -157,6 +157,7 @@ zinit wait lucid for \
   OMZP::k9s \
   OMZP::kubectl \
   OMZP::minikube \
+  OMZP::mise \
   OMZP::npm \
   OMZP::pip \
   OMZP::python \
