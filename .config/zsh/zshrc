@@ -116,6 +116,8 @@ zstyle ':fzf-tab:complete:just:*' fzf-preview \
 
 (( $+commands[atuin] )) && export ATUIN_NOBIND='true'
 FZF_DEFAULT_COMMAND='fd --hidden --type l --type f --type d --exclude .git --exclude .cache'
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="bold,underline"
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="bg=red,fg=white,bold,underline"
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZVM_CLIPBOARD_COPY_CMD='clipcopy'
 ZVM_CLIPBOARD_PASTE_CMD='clippaste'
