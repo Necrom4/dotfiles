@@ -1,7 +1,7 @@
 return {
 	"mikavilpas/yazi.nvim",
 	opts = {
-		floating_window_scaling_factor = 0.7,
+		floating_window_scaling_factor = 0.8,
 		yazi_floating_window_winblend = 20,
 	},
 	keys = {
