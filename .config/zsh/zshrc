@@ -145,6 +145,7 @@ _setup_vicmd() {
 zvm_after_lazy_keybindings_commands+=(_setup_vicmd)
 
 _setup_history_substring_search_keybindings() {
+  _zsh_autosuggest_start
   bindkey -M viins '^[[A' history-substring-search-up
   bindkey -M viins '^[[B' history-substring-search-down
   [[ -n "$terminfo[kcuu1]" ]] && bindkey -M viins "$terminfo[kcuu1]" history-substring-search-up
@@ -156,7 +157,6 @@ _setup_history_substring_search_keybindings() {
     bindkey -M vicmd "j" history-substring-search-down
   fi
 }
-zvm_after_init_commands+=(_setup_history_substring_search_keybindings)
 
 _setup_atuin_keybindings() {
   bindkey -M viins "^r" atuin-search
@@ -176,15 +176,22 @@ zinit ice depth"1"
 zinit light romkatv/powerlevel10k
 zinit snippet OMZL::history.zsh
 zinit light-mode for \
-  zsh-users/zsh-autosuggestions \
-  zsh-users/zsh-history-substring-search \
-    atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-  zdharma-continuum/fast-syntax-highlighting \
     depth"1" \
   jeffreytse/zsh-vi-mode
 
-# Turbo-loaded plugins (aliases, completions, tools)
-zinit wait lucid for \
+# Interactive UX plugins (load first after prompt, ~instant)
+zinit wait"0a" lucid light-mode for \
+  zsh-users/zsh-autosuggestions \
+    atload'_setup_history_substring_search_keybindings' \
+  zsh-users/zsh-history-substring-search
+
+# Syntax highlighting + compinit
+zinit wait"0b" lucid light-mode for \
+    atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+  zdharma-continuum/fast-syntax-highlighting
+
+# Aliases, completions, tools
+zinit wait"0c" lucid for \
   OMZL::compfix.zsh \
   OMZL::directories.zsh \
   OMZP::ansible \
