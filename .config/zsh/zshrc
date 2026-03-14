@@ -115,33 +115,77 @@ zstyle ':fzf-tab:complete:just:*' fzf-preview \
   'just --show $word 2>/dev/null | bat --color=always --style=plain -l Makefile'
 
 (( $+commands[atuin] )) && export ATUIN_NOBIND='true'
+DISABLE_MAGIC_FUNCTIONS=true
 FZF_DEFAULT_COMMAND='fd --hidden --type l --type f --type d --exclude .git --exclude .cache'
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="bold,underline"
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="bg=red,fg=white,bold,underline"
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZVM_CLIPBOARD_COPY_CMD='clipcopy'
 ZVM_CLIPBOARD_PASTE_CMD='clippaste'
+ZVM_INIT_MODE=sourcing
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true
-ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
 ZVM_VI_HIGHLIGHT_BACKGROUND=#636DA6
+ZVM_VI_HIGHLIGHT_FOREGROUND=#82AAFF
 
-# Annexes
+# KEYBINDINGS
+bindkey -v
+bindkey '^x' clear-screen
+bindkey '^h' vi-backward-char
+bindkey '^l' vi-forward-char
+
+insert-linebreak () {
+  zle vi-end-of-line
+  LBUFFER+=\ \\$'\n'
+}
+zle -N insert-linebreak
+
+_setup_vicmd() {
+  bindkey -M vicmd "^M" insert-linebreak
+}
+zvm_after_lazy_keybindings_commands+=(_setup_vicmd)
+
+_setup_history_substring_search_keybindings() {
+  bindkey -M viins '^[[A' history-substring-search-up
+  bindkey -M viins '^[[B' history-substring-search-down
+  [[ -n "$terminfo[kcuu1]" ]] && bindkey -M viins "$terminfo[kcuu1]" history-substring-search-up
+  [[ -n "$terminfo[kcud1]" ]] && bindkey -M viins "$terminfo[kcud1]" history-substring-search-down
+  bindkey -M viins "^k" history-substring-search-up
+  bindkey -M viins "^j" history-substring-search-down
+  if (( $+commands[atuin] )); then
+    bindkey -M vicmd "k" history-substring-search-up
+    bindkey -M vicmd "j" history-substring-search-down
+  fi
+}
+zvm_after_init_commands+=(_setup_history_substring_search_keybindings)
+
+_setup_atuin_keybindings() {
+  bindkey -M viins "^r" atuin-search
+  bindkey -M vicmd "k" atuin-up-search-vicmd
+  bindkey -M vicmd "^r" atuin-search-vicmd
+}
+
+# LOAD PLUGINS
 zinit light-mode for \
   zdharma-continuum/zinit-annex-as-monitor \
   zdharma-continuum/zinit-annex-bin-gem-node \
   zdharma-continuum/zinit-annex-patch-dl \
   zdharma-continuum/zinit-annex-rust
 
-# Prompt theme
+# Synchronously-loaded plugins (needed immediately)
 zinit ice depth"1"
 zinit light romkatv/powerlevel10k
+zinit snippet OMZL::history.zsh
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-history-substring-search
+zinit ice atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"
+zinit light zdharma-continuum/fast-syntax-highlighting
+zinit ice depth"1"
+zinit light jeffreytse/zsh-vi-mode
 
-# Plugins necessary instantly + completion providers
+# Turbo-loaded plugins (aliases, completions, tools)
 zinit wait lucid for \
   OMZL::compfix.zsh \
   OMZL::directories.zsh \
-  OMZL::history.zsh \
-  OMZL::key-bindings.zsh \
   OMZP::ansible \
   OMZP::argocd \
   OMZP::azure \
@@ -175,49 +219,13 @@ zinit wait lucid for \
   OMZP::z \
     as"completion" \
   OMZ::plugins/z/_z \
-    atload'
-      function _setup_atuin_viins() {
-        bindkey -M viins "^r" atuin-search
-      }
-      function _setup_atuin_vicmd() {
-        bindkey -M vicmd "k" atuin-up-search-vicmd
-        bindkey -M vicmd "^r" atuin-search-vicmd
-      }
-      zvm_after_init_commands+=(_setup_atuin_viins)
-      zvm_after_lazy_keybindings_commands+=(_setup_atuin_vicmd)
-    ' \
+    atload'_setup_atuin_keybindings' \
     if'(( $+commands[atuin] ))' \
   atuinsh/atuin \
   Aloxaf/fzf-tab \
   rswrz/timewarrior-omz \
     blockf \
-  zsh-users/zsh-autosuggestions \
-  zsh-users/zsh-completions \
-    atload'
-      _zsh_autosuggest_start
-
-      function _setup_substring_viins() {
-        bindkey -M viins "$terminfo[kcuu1]" history-substring-search-up
-        bindkey -M viins "$terminfo[kcud1]" history-substring-search-down
-        bindkey -M viins "^k" history-substring-search-up
-        bindkey -M viins "^j" history-substring-search-down
-      }
-      function _setup_substring_vicmd() {
-        if ! zle -la | grep -q "^atuin-up-search-vicmd$"; then
-          bindkey -M vicmd "k" history-substring-search-up
-          bindkey -M vicmd "j" history-substring-search-down
-        fi
-      }
-      zvm_after_init_commands+=(_setup_substring_viins)
-      zvm_after_lazy_keybindings_commands+=(_setup_substring_vicmd)
-    ' \
-  zsh-users/zsh-history-substring-search \
-  jeffreytse/zsh-vi-mode
-
-# Syntax highlighting - loads with compinit, triggers re-highlight on load
-zinit wait"0b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-  atload"_zsh_highlight" for \
-  zdharma-continuum/fast-syntax-highlighting
+  zsh-users/zsh-completions
 
 # Deferred plugins
 zinit wait"1" lucid for \
@@ -245,28 +253,7 @@ zinit wait"1" lucid for \
 # Override plugin aliases
 zinit wait"1b" lucid for \
     atload"override_aliases" \
-    zdharma-continuum/null
-
-# ============================================================================
-# ZSH OPTIONS & KEYBINDINGS
-# ============================================================================
-
-insert-linebreak () {
-  LBUFFER+=\ \\$'\n'
-}
-zle -N insert-linebreak
-
-bindkey -v
-bindkey '^x' clear-screen
-bindkey '^h' vi-backward-char
-bindkey '^l' vi-forward-char
-bindkey "^[^M" insert-linebreak
-
-function _setup_vicmd() {
-  bindkey -M vicmd ';' edit-command-line
-}
-
-zvm_after_lazy_keybindings_commands+=(_setup_vicmd)
+  zdharma-continuum/null
 
 # ============================================================================
 # ALIASES
