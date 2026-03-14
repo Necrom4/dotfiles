@@ -12,6 +12,4 @@ Linux)
   ;;
 esac
 
-eval "$(mise activate zsh)"
-
 [[ -f "$HOME/.config/zsh/profile.local" ]] && source "$HOME/.config/zsh/profile.local"
