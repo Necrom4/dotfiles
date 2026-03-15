@@ -93,6 +93,8 @@ run = [
 uv = "latest"
 go = "latest"
 node = "latest"
+"go:github.com/hjr265/gittop" = "latest"
+"pipx:ghgrab" = "latest"
 
 [settings]
 env_shell_expand = true

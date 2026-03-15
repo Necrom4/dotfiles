@@ -62,6 +62,8 @@ brew "libqalculate"
 brew "luarocks"
 # Text-based web browser
 brew "lynx"
+# Like sed, awk, cut, join & sort for name-indexed data such as CSV
+brew "miller"
 # Run a Kubernetes cluster locally
 brew "minikube"
 # Polyglot runtime manager (asdf rust clone)
@@ -84,6 +86,8 @@ brew "resvg"
 brew "ripgrep"
 # Wrapper around ripgrep that adds multiple rich file types
 brew "ripgrep-all"
+# Fast and accurate code counter with complexity and COCOMO estimates
+brew "scc"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
@@ -116,6 +120,8 @@ brew "yadm"
 brew "yarn"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
+# Command-line tool that draw plots on the terminal
+brew "youplot"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
 # Compression and file packaging/archive utility
