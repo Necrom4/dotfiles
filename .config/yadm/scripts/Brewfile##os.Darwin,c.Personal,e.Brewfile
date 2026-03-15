@@ -1,6 +1,7 @@
 tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
 tap "mutagen-io/mutagen"
+tap "necrom4/tap"
 tap "tonisives/tap"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
@@ -152,6 +153,8 @@ brew "yt-dlp"
 brew "domcyrus/rustnet/rustnet"
 # Fast file synchronization and network forwarding for remote development
 brew "mutagen-io/mutagen/mutagen"
+# Swiss SBB/CFF/FFS timetable app for the terminal
+brew "necrom4/tap/sbb-tui"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Photography workflow application and raw developer
