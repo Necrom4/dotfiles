@@ -101,6 +101,8 @@ brew "resvg"
 brew "ripgrep"
 # Tools for Multiple Arcade Machine Emulator
 brew "rom-tools"
+# Fast and accurate code counter with complexity and COCOMO estimates
+brew "scc"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
