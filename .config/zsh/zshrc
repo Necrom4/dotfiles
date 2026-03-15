@@ -67,10 +67,10 @@ last_PR=""
 
 project_enter_print() {
   if [[ -n "$PR" && "$PR" != "$last_PR" ]]; then
-    if command -v onefetch >/dev/null 2>&1; then
+    if (( $+commands[onefetch] )); then
       onefetch --no-title --no-color-palette --nerd-fonts --type prose programming markup data
     fi
-    if command -v mise >/dev/null 2>&1; then
+    if (( $+commands[mise] )); then
       output=$(mise config get env 2>/dev/null || true)
       if [ -n "$output" ]; then
         yellow=$(tput setaf 11)
@@ -277,9 +277,7 @@ e() {
   "$EDITOR" "$@"
 }
 
-if (( $+commands[bat] )); then
-  alias cat="bat"
-fi
+(( $+commands[bat] )) && alias cat="bat"
 
 if (( $+commands[pandoc] )); then
   catmd() {
@@ -307,14 +305,10 @@ alias la='ls -a'
 alias lt='ls --tree'
 
 alias d="lazydocker"
-alias g="lazygit"
-alias y="yadm enter lazygit"
 
-alias watch="viddy -d -n 1 --shell zsh "$@""
+alias watch="viddy -d -n 1 --shell zsh"
 
-if (( $+commands[lynx] )); then
-  alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
-fi
+(( $+commands[lynx] )) && alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
 
 if (( $+commands[task] )) && (( $+commands[timew] )); then
   tsync() {
@@ -382,7 +376,7 @@ vdpip() {
   if [[ -n "$BREW_PREFIX" ]]; then
     vdp_python="$BREW_PREFIX/opt/visidata/libexec/bin/python3"
   else
-    vdp_python="$( (( ! $+commands[visidata] )) | xargs dirname)/../libexec/bin/python3"
+    vdp_python="$(command -v visidata | xargs dirname)/../libexec/bin/python3"
   fi
 
   if [[ ! -x "$vdp_python" ]]; then

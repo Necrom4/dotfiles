@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-if ! command -v brew >/dev/null 2>&1; then
+if (( ! $+commands[brew] )); then
   echo "Installing homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
