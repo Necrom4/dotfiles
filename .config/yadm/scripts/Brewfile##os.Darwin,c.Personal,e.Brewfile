@@ -77,6 +77,8 @@ brew "libyaml"
 brew "luarocks"
 # Mac App Store command-line interface
 brew "mas"
+# Like sed, awk, cut, join & sort for name-indexed data such as CSV
+brew "miller"
 # Run a Kubernetes cluster locally
 brew "minikube"
 # Polyglot runtime manager (asdf rust clone)
