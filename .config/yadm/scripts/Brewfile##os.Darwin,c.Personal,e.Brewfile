@@ -105,7 +105,7 @@ brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
 # Easiest, most secure way to use WireGuard and 2FA
-brew "tailscale"
+brew "tailscale", restart_service: :changed
 # Feature-rich console based todo list manager
 brew "task"
 # User interface to the TELNET protocol
