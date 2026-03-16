@@ -4,7 +4,10 @@ gui:
   branchColorPatterns: {}
   customIcons:
     filenames: {}
-    extensions: {}
+    extensions:
+      ".j2":
+        icon: ""
+        color: "#b51010"
   scrollHeight: 2
   scrollPastBottom: true
   scrollOffMargin: 2

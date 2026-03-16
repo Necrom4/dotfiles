@@ -49,6 +49,7 @@ prepend_dirs = [
 ]
 
 prepend_exts = [
+	{ name = "j2", text = "", fg = "#b51010" },
 	{ name = "jar", text = "" },
 	{ name = "plist", text = "" },
 ]

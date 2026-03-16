@@ -1,0 +1,6 @@
+extensions:
+  j2:
+    icon:
+      glyph: ""
+      style:
+        foreground: Red
