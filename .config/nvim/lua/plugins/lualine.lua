@@ -54,7 +54,17 @@ return {
 				},
 			},
 			sections = {
-				lualine_a = { "mode" },
+				lualine_a = {
+					{
+						"mode",
+						fmt = function(str)
+							if vim.o.columns < 100 then
+								return str:sub(1, 1)
+							end
+							return str
+						end,
+					},
+				},
 				lualine_b = {
 					{
 						"branch",
@@ -94,7 +104,14 @@ return {
 				},
 
 				lualine_c = {
-					LazyVim.lualine.root_dir(),
+					(function()
+						local c = LazyVim.lualine.root_dir()
+						local orig = c.cond
+						c.cond = function()
+							return vim.o.columns > 80 and (not orig or orig())
+						end
+						return c
+					end)(),
 					{
 						LazyVim.lualine.pretty_path(),
 						separator = "",
@@ -107,6 +124,9 @@ return {
 					},
 					{
 						"navic",
+						cond = function()
+							return vim.o.columns > 80
+						end,
 					},
 				},
 				lualine_x = {
@@ -152,6 +172,9 @@ return {
 								}
 							end
 						end,
+						cond = function()
+							return vim.o.columns > 80
+						end,
 					},
 					{
 						"diagnostics",
@@ -161,14 +184,28 @@ return {
 							info = icons.diagnostics.Info,
 							hint = icons.diagnostics.Hint,
 						},
+						cond = function()
+							return vim.o.columns > 80
+						end,
 					},
 					{ "overseer" },
-					{ "encoding" },
+					{
+						"encoding",
+						cond = function()
+							return vim.o.columns > 80
+						end,
+					},
 				},
 				lualine_y = {
 					{ "location" },
 					{ "progress", separator = "", padding = { left = 1, right = 1 } },
-					{ scrollbar, padding = { left = 0, right = 0 } },
+					{
+						scrollbar,
+						padding = { left = 0, right = 0 },
+						cond = function()
+							return vim.o.columns > 80
+						end,
+					},
 				},
 				lualine_z = {},
 			},
