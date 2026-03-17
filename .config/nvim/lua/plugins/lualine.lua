@@ -58,6 +58,37 @@ return {
 				lualine_b = {
 					{
 						"branch",
+						fmt = function(str)
+							local max_len = 23
+
+							-- 1. Standard prefix shortening
+							str = str:gsub("^feature/", "feat/")
+							str = str:gsub("^bugfix/", "fix/")
+							str = str:gsub("^hotfix/", "hfx/")
+							str = str:gsub("^release/", "rls/")
+							str = str:gsub("^refactor/", "rfct/")
+
+							if #str > max_len then
+								-- 2. Shortest prefixes
+								str = str:gsub("^feat/", "ft/")
+								str = str:gsub("^fix/", "fx/")
+								str = str:gsub("^rls/", "rl/")
+								str = str:gsub("^rfct/", "rf/")
+
+								-- 3. Strip ticket ID
+								if #str > max_len then
+									str = str:gsub("^(.-/)[A-Za-z]+-[0-9]+[-_]", "%1")
+									str = str:gsub("^(.-/)[0-9]+[-_]", "%1")
+								end
+
+								-- 4. Hard truncate & add icon
+								if #str > max_len then
+									str = ("%s"):format(str:sub(1, max_len - 1))
+								end
+							end
+
+							return str
+						end,
 						icon = icons.git.branch or "", -- Use a custom icon if LazyVim.config.icons.git.branch is not set
 					},
 				},
