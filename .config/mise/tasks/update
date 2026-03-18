@@ -46,13 +46,16 @@ done
 [[ ${#available[@]} -eq 0 ]] && die "No updatable tools found."
 
 # ── Interactive selection (pure bash, no dependencies) ────────────────────────
+# Uses the alternate screen buffer so terminal scrollback is preserved.
+# Navigate with j/k or arrow keys, space to toggle, Enter to confirm.
 
 declare -A selected
 for task in "${available[@]}"; do
   selected["$task"]=1 # default: all selected
 done
 
-needs_apt=0
+cursor=0
+needs_sudo=0
 sudo_pass=""
 
 # Enter alternate screen buffer (preserves scrollback)
@@ -62,70 +65,116 @@ tput smcup 2>/dev/null || printf '\033[?1049h'
 cleanup_screen() { tput rmcup 2>/dev/null || printf '\033[?1049l'; }
 trap cleanup_screen EXIT
 
-print_menu() {
-  # Clear alternate screen without touching main scrollback
-  tput clear 2>/dev/null || printf '\033[2J\033[H'
+# Hide cursor during menu rendering
+tput civis 2>/dev/null
 
-  printf "${BOLD}╭─────────────────────────────────────────╮${NC}\n"
-  printf "${BOLD}│        Select updates to run            │${NC}\n"
-  printf "${BOLD}╰─────────────────────────────────────────╯${NC}\n\n"
-
-  local i=1
-  for task in "${available[@]}"; do
-    local name="${task#update:}"
-    if [[ ${selected["$task"]} -eq 1 ]]; then
-      printf "  %d) ${T_PROGRAM}󰡖${NC} %s\n" "$i" "$name"
-    else
-      printf "  %d) ${T_ERROR}󰄱${NC} %s\n" "$i" "$name"
-    fi
-    ((i++))
-  done
-
-  # Check if apt is among selected
-  needs_apt=0
+check_needs_sudo() {
+  needs_sudo=0
   for task in "${available[@]}"; do
     if [[ "${task#update:}" == "apt" ]] && [[ ${selected["$task"]} -eq 1 ]]; then
-      needs_apt=1
-      break
+      needs_sudo=1
+      return
     fi
   done
+}
 
-  echo
-  if [[ $needs_apt -eq 1 ]]; then
-    if [[ -n "$sudo_pass" ]]; then
-      printf "  ${T_OK}sudo password:${NC} ••••••••\n"
+print_menu() {
+  local el=$'\033[K' # clear to end of line
+  local buf=""
+
+  # Move cursor to top-left
+  buf+='\033[H'
+
+  buf+="${BOLD}╭─────────────────────────────────────────╮${NC}${el}\n"
+  buf+="${BOLD}│        Select updates to run            │${NC}${el}\n"
+  buf+="${BOLD}╰─────────────────────────────────────────╯${NC}${el}\n"
+  buf+="${el}\n"
+
+  local i=0
+  for task in "${available[@]}"; do
+    local name="${task#update:}"
+
+    if [[ $i -eq $cursor ]]; then
+      if [[ ${selected["$task"]} -eq 1 ]]; then
+        buf+="  ${BOLD}▸${NC} ${T_PROGRAM}󰡖${NC} ${name}${el}\n"
+      else
+        buf+="  ${BOLD}▸${NC} ${T_ERROR}󰄱${NC} ${name}${el}\n"
+      fi
     else
-      printf "  ${T_WARNING}sudo password:${NC} (not set — required for apt)\n"
+      if [[ ${selected["$task"]} -eq 1 ]]; then
+        buf+="    ${T_PROGRAM}󰡖${NC} ${name}${el}\n"
+      else
+        buf+="    ${T_ERROR}󰄱${NC} ${name}${el}\n"
+      fi
     fi
-    echo
+    ((i++)) || true
+  done
+
+  check_needs_sudo
+
+  buf+="${el}\n"
+  if [[ $needs_sudo -eq 1 ]]; then
+    buf+="  ${T_WARNING}sudo required — password will be requested${NC}${el}\n"
+  fi
+  buf+="${el}\n"
+
+  buf+="  ${BOLD}Space${NC}) Toggle    "
+  buf+="${BOLD}a${NC}) Toggle all    "
+  buf+="${T_OK}${BOLD}Enter${NC}) Confirm    "
+  buf+="${T_ERROR}q${NC}) Quit${el}"
+
+  # Clear everything below the frame
+  buf+='\033[J'
+
+  # Single write — no flicker
+  printf '%b' "$buf"
+}
+
+# Read a single keypress, handling escape sequences for arrow keys
+read_key() {
+  local key
+  IFS= read -rsn1 key
+
+  # Handle escape sequences (arrow keys)
+  if [[ "$key" == $'\033' ]]; then
+    local seq
+    IFS= read -rsn1 -t 0.01 seq
+    if [[ "$seq" == "[" ]]; then
+      IFS= read -rsn1 -t 0.01 seq
+      case "$seq" in
+      A) key="UP" ;;
+      B) key="DOWN" ;;
+      *) key="ESC" ;;
+      esac
+    else
+      key="ESC"
+    fi
   fi
 
-  printf "  ${BOLD}a${NC}) Toggle all    "
-  printf "${BOLD}p${NC}) Set sudo password    "
-  printf "${T_OK}${BOLD}Enter${NC}) Confirm    "
-  printf "${T_ERROR}q${NC}) Quit\n\n"
-  printf "  > "
+  printf '%s' "$key"
 }
 
 while true; do
   print_menu
-  read -r -n 1 key
-  echo
+  key="$(read_key)"
 
   case "$key" in
-  [1-9])
-    idx=$((key - 1))
-    if [[ $idx -lt ${#available[@]} ]]; then
-      task="${available[$idx]}"
-      if [[ ${selected["$task"]} -eq 1 ]]; then
-        selected["$task"]=0
-      else
-        selected["$task"]=1
-      fi
+  k | UP)
+    ((cursor > 0)) && ((cursor--)) || true
+    ;;
+  j | DOWN)
+    ((cursor < ${#available[@]} - 1)) && ((cursor++)) || true
+    ;;
+  " ")
+    # Space or Ctrl-Space: toggle item at cursor
+    task="${available[$cursor]}"
+    if [[ ${selected["$task"]} -eq 1 ]]; then
+      selected["$task"]=0
+    else
+      selected["$task"]=1
     fi
     ;;
   a | A)
-    # If all selected, deselect all; otherwise select all
     all_on=1
     for task in "${available[@]}"; do
       [[ ${selected["$task"]} -eq 0 ]] && all_on=0 && break
@@ -134,30 +183,32 @@ while true; do
       selected["$task"]=$((all_on ? 0 : 1))
     done
     ;;
-  p | P)
-    printf "\n  sudo password: "
-    read -rs sudo_pass
-    echo
-    ;;
-  q | Q)
+  q | Q | ESC)
+    tput cnorm 2>/dev/null
     cleanup_screen
     trap - EXIT
     printf "${T_ERROR}Cancelled.${NC}\n"
     exit 1
     ;;
   "")
-    # Confirm — validate sudo password if apt is selected
-    if [[ $needs_apt -eq 1 ]] && [[ -z "$sudo_pass" ]]; then
-      printf "\n  ${T_ERROR}sudo password required for apt update.${NC} Press any key..."
-      read -r -n 1
-      continue
+    # Enter: confirm — prompt for sudo password if needed
+    check_needs_sudo
+    if [[ $needs_sudo -eq 1 ]]; then
+      tput cnorm 2>/dev/null # show cursor for password input
+      printf "\n\n  sudo password: "
+      read -rs sudo_pass
+      if [[ -z "$sudo_pass" ]]; then
+        tput civis 2>/dev/null
+        continue
+      fi
     fi
     break
     ;;
   esac
 done
 
-# Leave alternate screen buffer — main scrollback is back
+# Restore cursor and leave alternate screen
+tput cnorm 2>/dev/null
 cleanup_screen
 trap - EXIT
 
