@@ -18,14 +18,4 @@ check_exists() {
   esac
 }
 
-check_needs_sudo() {
-  needs_sudo=0
-  for task in "${available[@]}"; do
-    if [[ "${task#update:}" == "apt" ]] && [[ ${selected["$task"]} -eq 1 ]]; then
-      needs_sudo=1
-      return
-    fi
-  done
-}
-
 source "$(cd "$(dirname "$0")" && pwd)/utils/parallel-tasks"

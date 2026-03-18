@@ -8,7 +8,6 @@
 #   MENU_TITLE="Select updates to run            │"    # box title (pad to 33 chars + trailing │)
 #   TMUX_WINDOW="mise-updates"                         # tmux window name
 #   check_exists() { ... }                             # optional: custom tool existence check
-#   check_needs_sudo() { ... }                         # optional: set needs_sudo=1 if sudo needed
 #   source "$(cd "$(dirname "$0")" && pwd)/utils/parallel-tasks"
 
 source "$(cd "$(dirname "$0")" && pwd)/utils/colors.sh"
@@ -23,12 +22,9 @@ die() {
   exit 1
 }
 
-# Defaults for optional overrides
+# Default check_exists if caller didn't define one
 if ! declare -f check_exists >/dev/null 2>&1; then
   check_exists() { command -v "$1" >/dev/null 2>&1; }
-fi
-if ! declare -f check_needs_sudo >/dev/null 2>&1; then
-  check_needs_sudo() { needs_sudo=0; }
 fi
 
 # ── Gather available tasks ───────────────────────────────────────────────────
@@ -46,6 +42,25 @@ for task in "${all_tasks[@]}"; do
 done
 
 [[ ${#available[@]} -eq 0 ]] && die "No ${PREFIX} tasks found."
+
+# Detect which tasks require sudo by inspecting their script content
+declare -A task_needs_sudo
+for task in "${available[@]}"; do
+  if mise tasks "$task" --json 2>/dev/null | grep -q "sudo"; then
+    task_needs_sudo["$task"]=1
+  fi
+done
+
+# Check if any currently selected task requires sudo
+check_needs_sudo() {
+  needs_sudo=0
+  for task in "${available[@]}"; do
+    if [[ ${task_needs_sudo["$task"]:-0} -eq 1 ]] && [[ ${selected["$task"]} -eq 1 ]]; then
+      needs_sudo=1
+      return
+    fi
+  done
+}
 
 # ── Interactive picker ───────────────────────────────────────────────────────
 
@@ -196,8 +211,8 @@ make_cmd() {
   local name="${task#${PREFIX}:}"
   local cmd=""
 
-  # Pre-authenticate sudo if password was provided for this task
-  if [[ "$name" == "apt" ]] && [[ -n "$sudo_pass" ]]; then
+  # Pre-authenticate sudo if password was provided and task needs it
+  if [[ ${task_needs_sudo["$task"]:-0} -eq 1 ]] && [[ -n "$sudo_pass" ]]; then
     cmd="printf '%s\n' '$(printf '%s' "$sudo_pass" | sed "s/'/'\\\\''/g")' | sudo -S true 2>/dev/null; "
     cmd+="mise run $task"
   else
