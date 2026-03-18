@@ -29,33 +29,35 @@ fi
 
 # ── Gather available tasks ───────────────────────────────────────────────────
 
-mapfile -t all_tasks < <(mise tasks ls --raw | awk -v p="^${PREFIX}:.+" '$1 ~ p && $1 != "'"${PREFIX}"'" {print $1}')
-
 available=()
-for task in "${all_tasks[@]}"; do
+while IFS= read -r task; do
   name="${task#${PREFIX}:}"
   if check_exists "$name"; then
     available+=("$task")
   else
     printf "${T_WARNING}[%s]${NC} not found, skipping.\n" "$task"
   fi
-done
+done < <(mise tasks ls --raw | awk -v p="^${PREFIX}:.+" '$1 ~ p && $1 != "'"${PREFIX}"'" {print $1}')
 
 [[ ${#available[@]} -eq 0 ]] && die "No ${PREFIX} tasks found."
 
-# Detect which tasks require sudo by inspecting their script content
-declare -A task_needs_sudo
-for task in "${available[@]}"; do
-  if mise tasks "$task" --json 2>/dev/null | grep -q "sudo"; then
-    task_needs_sudo["$task"]=1
+# Parallel arrays: selected[i] and sudo_tasks[i] correspond to available[i]
+selected=()
+sudo_tasks=()
+for i in "${!available[@]}"; do
+  selected+=("1")
+  if mise tasks "${available[$i]}" --json 2>/dev/null | grep -q "sudo"; then
+    sudo_tasks+=("1")
+  else
+    sudo_tasks+=("0")
   fi
 done
 
 # Check if any currently selected task requires sudo
 check_needs_sudo() {
   needs_sudo=0
-  for task in "${available[@]}"; do
-    if [[ ${task_needs_sudo["$task"]:-0} -eq 1 ]] && [[ ${selected["$task"]} -eq 1 ]]; then
+  for i in "${!available[@]}"; do
+    if [[ ${sudo_tasks[$i]} -eq 1 ]] && [[ ${selected[$i]} -eq 1 ]]; then
       needs_sudo=1
       return
     fi
@@ -63,9 +65,6 @@ check_needs_sudo() {
 }
 
 # ── Interactive picker ───────────────────────────────────────────────────────
-
-declare -A selected
-for task in "${available[@]}"; do selected["$task"]=1; done
 
 cursor=0
 needs_sudo=0
@@ -90,13 +89,13 @@ print_menu() {
   for task in "${available[@]}"; do
     local name="${task#${PREFIX}:}"
     if [[ $i -eq $cursor ]]; then
-      if [[ ${selected["$task"]} -eq 1 ]]; then
+      if [[ ${selected[$i]} -eq 1 ]]; then
         buf+="  ${BOLD}▸${NC} ${T_PROGRAM}󰡖${NC} ${name}${el}\n"
       else
         buf+="  ${BOLD}▸${NC} ${T_ERROR}󰄱${NC} ${name}${el}\n"
       fi
     else
-      if [[ ${selected["$task"]} -eq 1 ]]; then
+      if [[ ${selected[$i]} -eq 1 ]]; then
         buf+="    ${T_PROGRAM}󰡖${NC} ${name}${el}\n"
       else
         buf+="    ${T_ERROR}󰄱${NC} ${name}${el}\n"
@@ -150,20 +149,19 @@ while true; do
   k | UP) ((cursor > 0)) && ((cursor--)) || true ;;
   j | DOWN) ((cursor < ${#available[@]} - 1)) && ((cursor++)) || true ;;
   " ")
-    task="${available[$cursor]}"
-    if [[ ${selected["$task"]} -eq 1 ]]; then
-      selected["$task"]=0
+    if [[ ${selected[$cursor]} -eq 1 ]]; then
+      selected[$cursor]=0
     else
-      selected["$task"]=1
+      selected[$cursor]=1
     fi
     ;;
   a)
     all_on=1
-    for task in "${available[@]}"; do
-      [[ ${selected["$task"]} -eq 0 ]] && all_on=0 && break
+    for i in "${!available[@]}"; do
+      [[ ${selected[$i]} -eq 0 ]] && all_on=0 && break
     done
-    for task in "${available[@]}"; do
-      selected["$task"]=$((all_on ? 0 : 1))
+    for i in "${!available[@]}"; do
+      selected[$i]=$((all_on ? 0 : 1))
     done
     ;;
   q | ESC)
@@ -197,8 +195,12 @@ trap - EXIT
 # ── Build chosen list ────────────────────────────────────────────────────────
 
 chosen=()
-for task in "${available[@]}"; do
-  [[ ${selected["$task"]} -eq 1 ]] && chosen+=("$task")
+chosen_sudo=()
+for i in "${!available[@]}"; do
+  if [[ ${selected[$i]} -eq 1 ]]; then
+    chosen+=("${available[$i]}")
+    chosen_sudo+=("${sudo_tasks[$i]}")
+  fi
 done
 [[ ${#chosen[@]} -eq 0 ]] && die "Nothing selected."
 
@@ -208,11 +210,12 @@ done
 # prints a title, runs the task, shows 󰸞/󱎘 result, waits for keypress
 make_cmd() {
   local task="$1"
+  local needs_sudo="$2"
   local name="${task#${PREFIX}:}"
   local cmd=""
 
   # Pre-authenticate sudo if password was provided and task needs it
-  if [[ ${task_needs_sudo["$task"]:-0} -eq 1 ]] && [[ -n "$sudo_pass" ]]; then
+  if [[ "$needs_sudo" -eq 1 ]] && [[ -n "$sudo_pass" ]]; then
     cmd="printf '%s\n' '$(printf '%s' "$sudo_pass" | sed "s/'/'\\\\''/g")' | sudo -S true 2>/dev/null; "
     cmd+="mise run $task"
   else
@@ -229,18 +232,19 @@ inside_tmux=false
 
 if $inside_tmux; then
   current_session="$(tmux display-message -p '#S')"
-  tmux new-window -t "$current_session" -n "$TMUX_WINDOW" "$(make_cmd "${chosen[0]}")"
+  tmux new-window -t "$current_session" -n "$TMUX_WINDOW" "$(make_cmd "${chosen[0]}" "${chosen_sudo[0]}")"
   target="$current_session:$TMUX_WINDOW"
 else
   tmux kill-session -t "$TMUX_WINDOW" 2>/dev/null || true
   tmux new-session -d -s "$TMUX_WINDOW" -x "$(tput cols)" -y "$(tput lines)" \
-    "$(make_cmd "${chosen[0]}")"
+    "$(make_cmd "${chosen[0]}" "${chosen_sudo[0]}")"
   target="$TMUX_WINDOW"
 fi
 
 # Each split rebalances with tiled layout to prevent "pane too small" errors
-for task in "${chosen[@]:1}"; do
-  tmux split-window -t "$target" "$(make_cmd "$task")"
+for i in "${!chosen[@]}"; do
+  [[ $i -eq 0 ]] && continue
+  tmux split-window -t "$target" "$(make_cmd "${chosen[$i]}" "${chosen_sudo[$i]}")"
   tmux select-layout -t "$target" tiled >/dev/null
 done
 
