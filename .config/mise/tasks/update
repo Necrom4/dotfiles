@@ -55,8 +55,17 @@ done
 needs_apt=0
 sudo_pass=""
 
+# Enter alternate screen buffer (preserves scrollback)
+tput smcup 2>/dev/null || printf '\033[?1049h'
+
+# Restore main screen on exit (Ctrl-C, errors, etc.)
+cleanup_screen() { tput rmcup 2>/dev/null || printf '\033[?1049l'; }
+trap cleanup_screen EXIT
+
 print_menu() {
-  clear
+  # Clear alternate screen without touching main scrollback
+  tput clear 2>/dev/null || printf '\033[2J\033[H'
+
   printf "${BOLD}╭─────────────────────────────────────────╮${NC}\n"
   printf "${BOLD}│        Select updates to run            │${NC}\n"
   printf "${BOLD}╰─────────────────────────────────────────╯${NC}\n\n"
@@ -131,7 +140,9 @@ while true; do
     echo
     ;;
   q | Q)
-    printf "\n${T_ERROR}Cancelled.${NC}\n"
+    cleanup_screen
+    trap - EXIT
+    printf "${T_ERROR}Cancelled.${NC}\n"
     exit 1
     ;;
   "")
@@ -145,6 +156,10 @@ while true; do
     ;;
   esac
 done
+
+# Leave alternate screen buffer — main scrollback is back
+cleanup_screen
+trap - EXIT
 
 # ── Build final task list ────────────────────────────────────────────────────
 
