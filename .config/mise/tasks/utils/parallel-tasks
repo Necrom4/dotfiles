@@ -38,10 +38,11 @@ done
 
 (( $#available )) || die "No ${PREFIX} tasks found."
 
-# Detect which tasks require sudo by inspecting their script content
+# Detect which tasks require sudo (single batch call via jq)
 typeset -A sudo_tasks
-for task in $available; do
-  mise tasks "$task" --json 2>/dev/null | grep -q "sudo" && sudo_tasks[$task]=1
+for task in "${(@f)$(mise tasks ls --json 2>/dev/null \
+  | jq -r '.[] | select(any(.run[]?; contains("sudo"))) | .name')}"; do
+  sudo_tasks[$task]=1
 done
 
 # Associative array: selected["task:name"] = 0 or 1
@@ -51,8 +52,8 @@ for task in $available; do selected[$task]=1; done
 # Check if any currently selected task requires sudo
 check_needs_sudo() {
   needs_sudo=0
-  for task in $available; do
-    if (( ${+sudo_tasks[$task]} )) && (( selected[$task] )); then
+  for task in ${(k)sudo_tasks}; do
+    if (( ${+selected[$task]} )) && (( selected[$task] )); then
       needs_sudo=1
       return
     fi
@@ -65,11 +66,16 @@ cursor=1  # zsh arrays are 1-indexed
 needs_sudo=0
 sudo_pass=""
 
+check_needs_sudo
+
 # Alternate screen buffer preserves terminal scrollback
 cleanup_screen() { echoti rmcup 2>/dev/null || printf '\033[?1049l'; }
 echoti smcup 2>/dev/null || printf '\033[?1049h'
 echoti civis 2>/dev/null
 trap cleanup_screen EXIT
+
+local -r pfx_cursor="  ${BOLD}▸${NC} "
+local -r pfx_normal="    "
 
 # Buffered to a single printf '%b' call to avoid visible redraws
 print_menu() {
@@ -80,23 +86,14 @@ print_menu() {
   buf+="${BOLD}│        ${MENU_TITLE}${NC}${el}\n"
   buf+="${BOLD}╰─────────────────────────────────────────╯${NC}${el}\n${el}\n"
 
-  local i=0 name icon color
+  local i=0 name pfx icon color
   for task in $available; do
     (( ++i ))
     name="${task#${PREFIX}:}"
-    if (( selected[$task] )); then
-      icon="󰡖" color="$T_PROGRAM"
-    else
-      icon="󰄱" color="$T_ERROR"
-    fi
-    if (( i == cursor )); then
-      buf+="  ${BOLD}▸${NC} ${color}${icon}${NC} ${name}${el}\n"
-    else
-      buf+="    ${color}${icon}${NC} ${name}${el}\n"
-    fi
+    if (( i == cursor )); then pfx=$pfx_cursor; else pfx=$pfx_normal; fi
+    if (( selected[$task] )); then icon="󰡖" color=$T_PROGRAM; else icon="󰄱" color=$T_ERROR; fi
+    buf+="${pfx}${color}${icon}${NC} ${name}${el}\n"
   done
-
-  check_needs_sudo
 
   buf+="${el}\n"
   if (( needs_sudo )); then
@@ -113,35 +110,35 @@ print_menu() {
   printf '%b' "$buf"
 }
 
-# Reads one keypress, translating arrow escape sequences to UP/DOWN/ESC
+# Reads one keypress into REPLY, translating arrow escape sequences
 read_key() {
-  local key seq
-  read -rsk1 key
-  if [[ "$key" == $'\033' ]]; then
+  read -rsk1 REPLY
+  if [[ "$REPLY" == $'\033' ]]; then
+    local seq
     read -rsk1 -t 0.01 seq
     if [[ "$seq" == "[" ]]; then
       read -rsk1 -t 0.01 seq
       case "$seq" in
-      A) key="UP" ;; B) key="DOWN" ;; *) key="ESC" ;;
+      A) REPLY="UP" ;; B) REPLY="DOWN" ;; *) REPLY="ESC" ;;
       esac
     else
-      key="ESC"
+      REPLY="ESC"
     fi
   fi
-  print -rn -- "$key"
 }
 
 # j/k, arrows, space, a, q/Esc, Enter
 while true; do
   print_menu
-  key="$(read_key)"
+  read_key
 
-  case "$key" in
+  case "$REPLY" in
   k | UP) (( cursor = cursor > 1 ? cursor - 1 : 1 )) ;;
   j | DOWN) (( cursor = cursor < $#available ? cursor + 1 : $#available )) ;;
   " ")
     local task=$available[$cursor]
     selected[$task]=$(( !selected[$task] ))
+    check_needs_sudo
     ;;
   a)
     local all_on=1
@@ -150,6 +147,7 @@ while true; do
     done
     local val=$(( !all_on ))
     for task in $available; do selected[$task]=$val; done
+    check_needs_sudo
     ;;
   q | ESC)
     echoti cnorm 2>/dev/null
@@ -158,9 +156,8 @@ while true; do
     printf "${T_ERROR}Cancelled.${NC}\n"
     exit 1
     ;;
-  "")
+  $'\n')
     # On confirm, prompt for sudo password if check_needs_sudo set the flag
-    check_needs_sudo
     if (( needs_sudo )); then
       echoti cnorm 2>/dev/null
       printf "\n\n  ${T_ERROR}sudo${NC} password: "
@@ -194,14 +191,11 @@ done
 make_cmd() {
   local task="$1"
   local name="${task#${PREFIX}:}"
-  local cmd=""
+  local cmd="mise run $task"
 
   # Pre-authenticate sudo if password was provided and task needs it
   if (( ${+sudo_tasks[$task]} )) && [[ -n "$sudo_pass" ]]; then
-    cmd="printf '%s\n' '${sudo_pass//\'/\'\\\'\'}' | sudo -S true 2>/dev/null; "
-    cmd+="mise run $task"
-  else
-    cmd="mise run $task"
+    cmd="printf '%s\n' ${(qq)sudo_pass} | sudo -S true 2>/dev/null; $cmd"
   fi
 
   printf 'printf "\\n\\033[1;36m── %s ──\\033[0m\\n"; %s && printf "\\n\\033[1;32m󰸞 %s succeeded\\033[0m\\n" || printf "\\n\\033[1;31m󱎘 %s failed\\033[0m\\n"; printf "\\n(press Enter to close)"; read -rsk1' \
