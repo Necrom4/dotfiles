@@ -3,16 +3,13 @@
 #MISE quiet=true
 
 set -euo pipefail
-
 source "$(cd "$(dirname "$0")" && pwd)/utils/colors.sh"
+
 T_OK="${GREEN}${BOLD}"
 T_WARNING="${YELLOW}${BOLD}"
 T_ERROR="${RED}${BOLD}"
 T_PROGRAM="${CYAN}${BOLD}"
-
 TMUX_WINDOW="mise-updates"
-
-# ── Helpers ──────────────────────────────────────────────────────────────────
 
 check_exists() {
   local target="$1"
@@ -45,28 +42,19 @@ done
 
 [[ ${#available[@]} -eq 0 ]] && die "No updatable tools found."
 
-# ── Interactive selection (pure bash, no dependencies) ────────────────────────
-# Uses the alternate screen buffer so terminal scrollback is preserved.
-# Navigate with j/k or arrow keys, space to toggle, Enter to confirm.
+# ── Interactive selection ────────────────────────────────────────────────────
 
 declare -A selected
-for task in "${available[@]}"; do
-  selected["$task"]=1 # default: all selected
-done
+for task in "${available[@]}"; do selected["$task"]=1; done
 
 cursor=0
 needs_sudo=0
 sudo_pass=""
 
-# Enter alternate screen buffer (preserves scrollback)
-tput smcup 2>/dev/null || printf '\033[?1049h'
-
-# Restore main screen on exit (Ctrl-C, errors, etc.)
 cleanup_screen() { tput rmcup 2>/dev/null || printf '\033[?1049l'; }
-trap cleanup_screen EXIT
-
-# Hide cursor during menu rendering
+tput smcup 2>/dev/null || printf '\033[?1049h'
 tput civis 2>/dev/null
+trap cleanup_screen EXIT
 
 check_needs_sudo() {
   needs_sudo=0
@@ -79,21 +67,16 @@ check_needs_sudo() {
 }
 
 print_menu() {
-  local el=$'\033[K' # clear to end of line
-  local buf=""
-
-  # Move cursor to top-left
-  buf+='\033[H'
+  local el=$'\033[K'
+  local buf='\033[H'
 
   buf+="${BOLD}╭─────────────────────────────────────────╮${NC}${el}\n"
   buf+="${BOLD}│        Select updates to run            │${NC}${el}\n"
-  buf+="${BOLD}╰─────────────────────────────────────────╯${NC}${el}\n"
-  buf+="${el}\n"
+  buf+="${BOLD}╰─────────────────────────────────────────╯${NC}${el}\n${el}\n"
 
   local i=0
   for task in "${available[@]}"; do
     local name="${task#update:}"
-
     if [[ $i -eq $cursor ]]; then
       if [[ ${selected["$task"]} -eq 1 ]]; then
         buf+="  ${BOLD}▸${NC} ${T_PROGRAM}󰡖${NC} ${name}${el}\n"
@@ -122,35 +105,26 @@ print_menu() {
   buf+="${BOLD}a${NC}) Toggle all    "
   buf+="${T_OK}${BOLD}Enter${NC}) Confirm    "
   buf+="${T_ERROR}q${NC}) Quit${el}"
-
-  # Clear everything below the frame
   buf+='\033[J'
 
-  # Single write — no flicker
   printf '%b' "$buf"
 }
 
-# Read a single keypress, handling escape sequences for arrow keys
 read_key() {
   local key
   IFS= read -rsn1 key
-
-  # Handle escape sequences (arrow keys)
   if [[ "$key" == $'\033' ]]; then
     local seq
     IFS= read -rsn1 -t 0.01 seq
     if [[ "$seq" == "[" ]]; then
       IFS= read -rsn1 -t 0.01 seq
       case "$seq" in
-      A) key="UP" ;;
-      B) key="DOWN" ;;
-      *) key="ESC" ;;
+      A) key="UP" ;; B) key="DOWN" ;; *) key="ESC" ;;
       esac
     else
       key="ESC"
     fi
   fi
-
   printf '%s' "$key"
 }
 
@@ -159,14 +133,9 @@ while true; do
   key="$(read_key)"
 
   case "$key" in
-  k | UP)
-    ((cursor > 0)) && ((cursor--)) || true
-    ;;
-  j | DOWN)
-    ((cursor < ${#available[@]} - 1)) && ((cursor++)) || true
-    ;;
+  k | UP) ((cursor > 0)) && ((cursor--)) || true ;;
+  j | DOWN) ((cursor < ${#available[@]} - 1)) && ((cursor++)) || true ;;
   " ")
-    # Space or Ctrl-Space: toggle item at cursor
     task="${available[$cursor]}"
     if [[ ${selected["$task"]} -eq 1 ]]; then
       selected["$task"]=0
@@ -191,10 +160,9 @@ while true; do
     exit 1
     ;;
   "")
-    # Enter: confirm — prompt for sudo password if needed
     check_needs_sudo
     if [[ $needs_sudo -eq 1 ]]; then
-      tput cnorm 2>/dev/null # show cursor for password input
+      tput cnorm 2>/dev/null
       printf "\n\n  sudo password: "
       read -rs sudo_pass
       if [[ -z "$sudo_pass" ]]; then
@@ -207,28 +175,25 @@ while true; do
   esac
 done
 
-# Restore cursor and leave alternate screen
 tput cnorm 2>/dev/null
 cleanup_screen
 trap - EXIT
 
-# ── Build final task list ────────────────────────────────────────────────────
+# ── Build chosen list ────────────────────────────────────────────────────────
 
 chosen=()
 for task in "${available[@]}"; do
   [[ ${selected["$task"]} -eq 1 ]] && chosen+=("$task")
 done
-
 [[ ${#chosen[@]} -eq 0 ]] && die "Nothing selected."
 
-# ── Helpers for tmux commands ─────────────────────────────────────────────────
+# ── Launch tmux panes ────────────────────────────────────────────────────────
 
 make_cmd() {
   local task="$1"
   local name="${task#update:}"
   local cmd=""
 
-  # If this is the apt task, prepend the sudo password via stdin
   if [[ "$name" == "apt" ]] && [[ -n "$sudo_pass" ]]; then
     cmd="printf '%s\n' '$(printf '%s' "$sudo_pass" | sed "s/'/'\\\\''/g")' | sudo -S true 2>/dev/null; "
     cmd+="mise run $task"
@@ -236,44 +201,33 @@ make_cmd() {
     cmd="mise run $task"
   fi
 
-  # Wrap: show status on exit, keep pane open
   printf 'printf "\\n\\033[1;36m── %s ──\\033[0m\\n"; %s && printf "\\n\\033[1;32m✓ %s succeeded\\033[0m\\n" || printf "\\n\\033[1;31m✗ %s failed\\033[0m\\n"; printf "\\n(press any key to close)"; read -r -n 1' \
     "$name" "$cmd" "$name" "$name"
 }
-
-# ── Launch tmux panes with tiled layout ──────────────────────────────────────
 
 inside_tmux=false
 [[ -n "${TMUX:-}" ]] && inside_tmux=true
 
 if $inside_tmux; then
-  # ── Already in tmux: new window in current session ─────────────────────
   current_session="$(tmux display-message -p '#S')"
   tmux new-window -t "$current_session" -n "$TMUX_WINDOW" "$(make_cmd "${chosen[0]}")"
   target="$current_session:$TMUX_WINDOW"
 else
-  # ── Not in tmux: new session ───────────────────────────────────────────
   tmux kill-session -t "$TMUX_WINDOW" 2>/dev/null || true
   tmux new-session -d -s "$TMUX_WINDOW" -x "$(tput cols)" -y "$(tput lines)" \
     "$(make_cmd "${chosen[0]}")"
   target="$TMUX_WINDOW"
 fi
 
-# Split a new pane for each remaining task, rebalancing after each split
-# to avoid "pane too small" errors
 for task in "${chosen[@]:1}"; do
   tmux split-window -t "$target" "$(make_cmd "$task")"
   tmux select-layout -t "$target" tiled >/dev/null
 done
 
-# Final tiled layout + select first pane
 tmux select-layout -t "$target" tiled >/dev/null
 tmux select-pane -t "$target.{top-left}"
-
-# Clear the password from memory
 sudo_pass=""
 
-# Attach / switch
 if $inside_tmux; then
   tmux select-window -t "$target"
 else
