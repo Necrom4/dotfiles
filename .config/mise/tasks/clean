@@ -3,21 +3,10 @@
 #MISE quiet=true
 
 set -euo pipefail
-
 source "$(cd "$(dirname "$0")" && pwd)/utils/colors.sh"
-T_OK="${GREEN}${BOLD}"
-T_WARNING="${YELLOW}${BOLD}"
-T_ERROR="${RED}${BOLD}"
-T_PROGRAM="${CYAN}${BOLD}"
 
+EL=$'\033[K'
 TMUX_WINDOW="mise-clean"
-
-# ── Helpers ──────────────────────────────────────────────────────────────────
-
-die() {
-  printf "${T_ERROR}%s${NC}\n" "$1" >&2
-  exit 1
-}
 
 # ── Gather available tasks ───────────────────────────────────────────────────
 
@@ -26,110 +15,122 @@ mapfile -t all_tasks < <(mise tasks ls --raw | awk '$1 ~ /^clean:.+/ && $1 != "c
 available=()
 for task in "${all_tasks[@]}"; do
   name="${task#clean:}"
-  if command -v "$name" >/dev/null 2>&1; then
+  if command -v "$name" &>/dev/null; then
     available+=("$task")
   else
-    printf "${T_WARNING}[%s]${NC} not found, skipping.\n" "$task"
+    printf "${YELLOW}${BOLD}[%s]${NC} not found, skipping.\n" "$task"
   fi
 done
+((${#available[@]})) || {
+  printf "${RED}${BOLD}No cleanable tools found.${NC}\n" >&2
+  exit 1
+}
 
-[[ ${#available[@]} -eq 0 ]] && die "No cleanable tools found."
-
-# ── Interactive selection (pure bash, no dependencies) ────────────────────────
+# ── Interactive selection ────────────────────────────────────────────────────
 
 declare -A selected
-for task in "${available[@]}"; do
-  selected["$task"]=1 # default: all selected
-done
+for task in "${available[@]}"; do selected["$task"]=1; done
+
+cursor=0
+max=$((${#available[@]} - 1))
+
+cleanup() { tput cnorm rmcup 2>/dev/null || printf '\033[?25h\033[?1049l'; }
+tput smcup civis 2>/dev/null || printf '\033[?1049h\033[?25l'
+trap cleanup EXIT
 
 print_menu() {
-  clear
-  printf "${BOLD}╭─────────────────────────────────────────╮${NC}\n"
-  printf "${BOLD}│        Select clean tasks to run        │${NC}\n"
-  printf "${BOLD}╰─────────────────────────────────────────╯${NC}\n\n"
+  local buf='\033[H'
+  buf+="${BOLD}╭─────────────────────────────────────────╮${NC}${EL}\n"
+  buf+="${BOLD}│        Select clean tasks to run        │${NC}${EL}\n"
+  buf+="${BOLD}╰─────────────────────────────────────────╯${NC}${EL}\n${EL}\n"
 
-  local i=1
+  local i=0 ptr icon color
   for task in "${available[@]}"; do
-    local name="${task#clean:}"
+    [[ $i -eq $cursor ]] && ptr="${BOLD}▸${NC} " || ptr="  "
     if [[ ${selected["$task"]} -eq 1 ]]; then
-      printf "  %d) ${T_PROGRAM}󰡖${NC} %s\n" "$i" "$name"
+      icon="󰡖" color="${CYAN}${BOLD}"
     else
-      printf "  %d) ${T_ERROR}󰄱${NC} %s\n" "$i" "$name"
+      icon="󰄱" color="${RED}${BOLD}"
     fi
-    ((i++))
+    buf+="  ${ptr}${color}${icon}${NC} ${task#clean:}${EL}\n"
+    ((i++)) || true
   done
 
-  echo
-  printf "  ${BOLD}a${NC}) Toggle all    "
-  printf "${T_OK}${BOLD}Enter${NC}) Confirm    "
-  printf "${T_ERROR}q${NC}) Quit\n\n"
-  printf "  > "
+  buf+="${EL}\n${EL}\n"
+  buf+="  ${BOLD}Space${NC}) Toggle    "
+  buf+="${BOLD}a${NC}) Toggle all    "
+  buf+="${GREEN}${BOLD}Enter${NC}) Confirm    "
+  buf+="${RED}${BOLD}q${NC}) Quit${EL}\033[J"
+
+  printf '%b' "$buf"
+}
+
+read_key() {
+  local key
+  IFS= read -rsn1 key
+  if [[ "$key" == $'\033' ]]; then
+    local seq
+    IFS= read -rsn1 -t 0.01 seq
+    if [[ "$seq" == "[" ]]; then
+      IFS= read -rsn1 -t 0.01 seq
+      case "$seq" in A) key=UP ;; B) key=DOWN ;; *) key=ESC ;; esac
+    else key=ESC; fi
+  fi
+  printf '%s' "$key"
+}
+
+toggle() {
+  local t="${available[$cursor]}"
+  selected["$t"]=$((selected["$t"] ^ 1))
 }
 
 while true; do
   print_menu
-  read -r -n 1 key
-  echo
-
-  case "$key" in
-  [1-9])
-    idx=$((key - 1))
-    if [[ $idx -lt ${#available[@]} ]]; then
-      task="${available[$idx]}"
-      if [[ ${selected["$task"]} -eq 1 ]]; then
-        selected["$task"]=0
-      else
-        selected["$task"]=1
-      fi
-    fi
-    ;;
+  case "$(read_key)" in
+  k | UP) ((cursor > 0)) && ((cursor--)) || true ;;
+  j | DOWN) ((cursor < max)) && ((cursor++)) || true ;;
+  " ") toggle ;;
   a | A)
-    all_on=1
-    for task in "${available[@]}"; do
-      [[ ${selected["$task"]} -eq 0 ]] && all_on=0 && break
-    done
-    for task in "${available[@]}"; do
-      selected["$task"]=$((all_on ? 0 : 1))
-    done
+    local_all=1
+    for task in "${available[@]}"; do [[ ${selected["$task"]} -eq 0 ]] && local_all=0 && break; done
+    for task in "${available[@]}"; do selected["$task"]=$((local_all ^ 1)); done
     ;;
-  q | Q)
-    printf "\n${T_ERROR}Cancelled.${NC}\n"
+  q | ESC)
+    cleanup
+    trap - EXIT
+    printf "${RED}${BOLD}Cancelled.${NC}\n"
     exit 1
     ;;
-  "")
-    break
-    ;;
+  "") break ;;
   esac
 done
 
-# ── Build final task list ────────────────────────────────────────────────────
+cleanup
+trap - EXIT
+
+# ── Build chosen list ────────────────────────────────────────────────────────
 
 chosen=()
 for task in "${available[@]}"; do
   [[ ${selected["$task"]} -eq 1 ]] && chosen+=("$task")
 done
+((${#chosen[@]})) || {
+  printf "${RED}${BOLD}Nothing selected.${NC}\n" >&2
+  exit 1
+}
 
-[[ ${#chosen[@]} -eq 0 ]] && die "Nothing selected."
-
-# ── Helpers for tmux commands ─────────────────────────────────────────────────
+# ── Launch tmux panes ────────────────────────────────────────────────────────
 
 make_cmd() {
-  local task="$1"
-  local name="${task#clean:}"
-
+  local task="$1" name="${task#clean:}"
   printf 'printf "\\n\\033[1;36m── %s ──\\033[0m\\n"; mise run %s && printf "\\n\\033[1;32m✓ %s succeeded\\033[0m\\n" || printf "\\n\\033[1;31m✗ %s failed\\033[0m\\n"; printf "\\n(press any key to close)"; read -r -n 1' \
     "$name" "$task" "$name" "$name"
 }
 
-# ── Launch tmux panes with tiled layout ──────────────────────────────────────
-
-inside_tmux=false
-[[ -n "${TMUX:-}" ]] && inside_tmux=true
-
-if $inside_tmux; then
-  current_session="$(tmux display-message -p '#S')"
-  tmux new-window -t "$current_session" -n "$TMUX_WINDOW" "$(make_cmd "${chosen[0]}")"
-  target="$current_session:$TMUX_WINDOW"
+if [[ -n "${TMUX:-}" ]]; then
+  session="$(tmux display-message -p '#S')"
+  tmux new-window -t "$session" -n "$TMUX_WINDOW" "$(make_cmd "${chosen[0]}")"
+  target="$session:$TMUX_WINDOW"
 else
   tmux kill-session -t "$TMUX_WINDOW" 2>/dev/null || true
   tmux new-session -d -s "$TMUX_WINDOW" -x "$(tput cols)" -y "$(tput lines)" \
@@ -141,12 +142,7 @@ for task in "${chosen[@]:1}"; do
   tmux split-window -t "$target" "$(make_cmd "$task")"
   tmux select-layout -t "$target" tiled >/dev/null
 done
-
 tmux select-layout -t "$target" tiled >/dev/null
 tmux select-pane -t "$target.{top-left}"
 
-if $inside_tmux; then
-  tmux select-window -t "$target"
-else
-  tmux attach-session -t "$TMUX_WINDOW"
-fi
+[[ -n "${TMUX:-}" ]] && tmux select-window -t "$target" || tmux attach-session -t "$TMUX_WINDOW"
