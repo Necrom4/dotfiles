@@ -28,4 +28,4 @@ check_needs_sudo() {
   done
 }
 
-source "$(cd "$(dirname "$0")" && pwd)/utils/parallel-tasks.sh"
+source "$(cd "$(dirname "$0")" && pwd)/utils/parallel-tasks"

@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
-# utils/parallel-tasks.sh — shared logic for interactive task selection + parallel tmux panes
+
+# Interactive task picker + parallel tmux pane launcher.
+# Source this from a mise task script — do not execute directly.
 #
-# Expected variables (set by caller before sourcing):
-#   PREFIX       — task prefix, e.g. "update" or "clean"
-#   MENU_TITLE   — title shown in the selection box, e.g. "Select updates to run"
-#   TMUX_WINDOW  — tmux window/session name, e.g. "mise-updates"
-#
-# Optional overrides (define before sourcing):
-#   check_exists()      — custom existence check; default: command -v
-#   check_needs_sudo()  — sets needs_sudo=1 if sudo is required; default: noop
+# Usage:
+#   PREFIX="update"                                    # mise task prefix (update, clean, ...)
+#   MENU_TITLE="Select updates to run            │"    # box title (pad to 33 chars + trailing │)
+#   TMUX_WINDOW="mise-updates"                         # tmux window name
+#   check_exists() { ... }                             # optional: custom tool existence check
+#   check_needs_sudo() { ... }                         # optional: set needs_sudo=1 if sudo needed
+#   source "$(cd "$(dirname "$0")" && pwd)/utils/parallel-tasks"
 
 source "$(cd "$(dirname "$0")" && pwd)/utils/colors.sh"
 
@@ -22,12 +23,10 @@ die() {
   exit 1
 }
 
-# Default check_exists if caller didn't define one
+# Defaults for optional overrides
 if ! declare -f check_exists >/dev/null 2>&1; then
   check_exists() { command -v "$1" >/dev/null 2>&1; }
 fi
-
-# Default check_needs_sudo if caller didn't define one
 if ! declare -f check_needs_sudo >/dev/null 2>&1; then
   check_needs_sudo() { needs_sudo=0; }
 fi
@@ -48,7 +47,7 @@ done
 
 [[ ${#available[@]} -eq 0 ]] && die "No ${PREFIX} tasks found."
 
-# ── Interactive selection ────────────────────────────────────────────────────
+# ── Interactive picker ───────────────────────────────────────────────────────
 
 declare -A selected
 for task in "${available[@]}"; do selected["$task"]=1; done
@@ -57,11 +56,13 @@ cursor=0
 needs_sudo=0
 sudo_pass=""
 
+# Alternate screen buffer preserves terminal scrollback
 cleanup_screen() { tput rmcup 2>/dev/null || printf '\033[?1049l'; }
 tput smcup 2>/dev/null || printf '\033[?1049h'
 tput civis 2>/dev/null
 trap cleanup_screen EXIT
 
+# Buffered to a single printf '%b' call to avoid visible redraws
 print_menu() {
   local el=$'\033[K'
   local buf='\033[H'
@@ -106,6 +107,7 @@ print_menu() {
   printf '%b' "$buf"
 }
 
+# Reads one keypress, translating arrow escape sequences to UP/DOWN/ESC
 read_key() {
   local key
   IFS= read -rsn1 key
@@ -124,6 +126,7 @@ read_key() {
   printf '%s' "$key"
 }
 
+# j/k, arrows, space, a, q/Esc, Enter — also Ctrl-Space and Q (undocumented)
 while true; do
   print_menu
   key="$(read_key)"
@@ -131,7 +134,7 @@ while true; do
   case "$key" in
   k | UP) ((cursor > 0)) && ((cursor--)) || true ;;
   j | DOWN) ((cursor < ${#available[@]} - 1)) && ((cursor++)) || true ;;
-  " " | TAB)
+  " ")
     task="${available[$cursor]}"
     if [[ ${selected["$task"]} -eq 1 ]]; then
       selected["$task"]=0
@@ -139,7 +142,7 @@ while true; do
       selected["$task"]=1
     fi
     ;;
-  a | A)
+  a)
     all_on=1
     for task in "${available[@]}"; do
       [[ ${selected["$task"]} -eq 0 ]] && all_on=0 && break
@@ -156,6 +159,7 @@ while true; do
     exit 1
     ;;
   "")
+    # On confirm, prompt for sudo password if check_needs_sudo set the flag
     check_needs_sudo
     if [[ $needs_sudo -eq 1 ]]; then
       tput cnorm 2>/dev/null
@@ -185,11 +189,14 @@ done
 
 # ── Launch tmux panes ────────────────────────────────────────────────────────
 
+# Builds the shell command string that runs inside each tmux pane:
+# prints a title, runs the task, shows 󰸞/󱎘 result, waits for keypress
 make_cmd() {
   local task="$1"
   local name="${task#${PREFIX}:}"
   local cmd=""
 
+  # Pre-authenticate sudo if password was provided for this task
   if [[ "$name" == "apt" ]] && [[ -n "$sudo_pass" ]]; then
     cmd="printf '%s\n' '$(printf '%s' "$sudo_pass" | sed "s/'/'\\\\''/g")' | sudo -S true 2>/dev/null; "
     cmd+="mise run $task"
@@ -197,10 +204,11 @@ make_cmd() {
     cmd="mise run $task"
   fi
 
-  printf 'printf "\\n\\033[1;36m── %s ──\\033[0m\\n"; %s && printf "\\n\\033[1;32m✓ %s succeeded\\033[0m\\n" || printf "\\n\\033[1;31m✗ %s failed\\033[0m\\n"; printf "\\n(press any key to close)"; read -r -n 1' \
+  printf 'printf "\\n\\033[1;36m── %s ──\\033[0m\\n"; %s && printf "\\n\\033[1;32m󰸞 %s succeeded\\033[0m\\n" || printf "\\n\\033[1;31m󱎘 %s failed\\033[0m\\n"; printf "\\n(press Enter to close)"; read -r -n 1' \
     "$name" "$cmd" "$name" "$name"
 }
 
+# Open a tmux window (or session if not in tmux), then split into tiled panes
 inside_tmux=false
 [[ -n "${TMUX:-}" ]] && inside_tmux=true
 
@@ -215,6 +223,7 @@ else
   target="$TMUX_WINDOW"
 fi
 
+# Each split rebalances with tiled layout to prevent "pane too small" errors
 for task in "${chosen[@]:1}"; do
   tmux split-window -t "$target" "$(make_cmd "$task")"
   tmux select-layout -t "$target" tiled >/dev/null
