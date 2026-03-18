@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 #MISE description="Run all clean:* in parallel tmux panes"
 #MISE quiet=true
 
-set -euo pipefail
+setopt ERR_EXIT PIPE_FAIL NO_UNSET
 
 PREFIX="clean"
 MENU_TITLE="Select clean tasks to run        │"
 TMUX_WINDOW="mise-clean"
 
-source "$(cd "$(dirname "$0")" && pwd)/utils/parallel-tasks"
+source "${0:A:h}/utils/parallel-tasks"

@@ -1,21 +1,20 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 #MISE description="Run all update:* in parallel tmux panes"
 #MISE quiet=true
 
-set -euo pipefail
+setopt ERR_EXIT PIPE_FAIL NO_UNSET
 
 PREFIX="update"
 MENU_TITLE="Select updates to run            │"
 TMUX_WINDOW="mise-updates"
 
 check_exists() {
-  local target="$1"
-  case "$target" in
-  tmux-tmp) [ -d "$HOME/.config/tmux/plugins/tpm" ] ;;
+  case "$1" in
+  tmux-tmp) [[ -d "$HOME/.config/tmux/plugins/tpm" ]] ;;
   yazi-plugins) command -v ya >/dev/null 2>&1 ;;
-  zinit | zsh-plugins) [ -d "$HOME/.local/share/zinit/zinit.git" ] ;;
-  *) command -v "$target" >/dev/null 2>&1 ;;
+  zinit | zsh-plugins) [[ -d "$HOME/.local/share/zinit/zinit.git" ]] ;;
+  *) command -v "$1" >/dev/null 2>&1 ;;
   esac
 }
 
-source "$(cd "$(dirname "$0")" && pwd)/utils/parallel-tasks"
+source "${0:A:h}/utils/parallel-tasks"
