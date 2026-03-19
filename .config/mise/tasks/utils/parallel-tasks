@@ -23,7 +23,7 @@ die() {
 }
 
 # Default check_exists if caller didn't define one
-(( ${+functions[check_exists]} )) || check_exists() { command -v "$1" >/dev/null 2>&1; }
+(( ${+functions[check_exists]} )) || check_exists() { (( $+commands[$1] )) }
 
 # ── Gather available tasks ───────────────────────────────────────────────────
 

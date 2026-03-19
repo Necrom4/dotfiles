@@ -10,10 +10,10 @@ TMUX_WINDOW="mise-updates"
 
 check_exists() {
   case "$1" in
-  tmux-tmp) [[ -d "$HOME/.config/tmux/plugins/tpm" ]] ;;
-  yazi-plugins) command -v ya >/dev/null 2>&1 ;;
-  zinit | zsh-plugins) [[ -d "$HOME/.local/share/zinit/zinit.git" ]] ;;
-  *) command -v "$1" >/dev/null 2>&1 ;;
+    tmux-tmp) [[ -d "$HOME/.config/tmux/plugins/tpm" ]] ;;
+    yazi-plugins) (( $+commands[ya] )) ;;
+    zinit | zsh-plugins) [[ -d "$HOME/.local/share/zinit/zinit.git" ]] ;;
+    *) (( $+commands[$1] )) ;;
   esac
 }
 
