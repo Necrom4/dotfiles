@@ -85,7 +85,7 @@ gui:
   spinner:
     frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
     rate: 50
-  statusPanelView: dashboard
+  statusPanelView: allBranchesLog
   switchToFilesAfterStashPop: true
   switchToFilesAfterStashApply: true
   switchTabsWithPanelJumpKeys: false
@@ -110,9 +110,29 @@ git:
   autoForwardBranches: onlyMainBranches
   fetchAll: true
   autoStageResolvedConflicts: true
-  branchLogCmd: git log --graph --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
+  branchLogCmd: >-
+    git log
+    --graph
+    --color=always
+    --all
+    --topo-order
+    --date=relative
+    --pretty=format:'
+    %C(#FFC777)%h%C(reset)
+    %C(#4FD6BE)%cd%C(reset) %C(magenta)·%C(reset)%C(auto)%d%C(reset) %C(#C8D3F5)%s%C(reset)
+    %C(#636DA6)· %cn%C(reset)'
   allBranchesLogCmds:
-    - git log --graph --all --color=always --format=format:'%C(#FFC777)%>|(17)%h%C(reset) %C(#4FD6BE)[%ar]%C(reset)%x09%C(#E26A75)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#65BCFF)- %an%C(reset)'
+    - >-
+      git log
+      --graph
+      --color=always
+      --all
+      --topo-order
+      --date=relative
+      --pretty=format:'
+      %C(#FFC777)%h%C(reset)
+      %C(#4FD6BE)%cd%C(reset) %C(magenta)·%C(reset)%C(auto)%d%C(reset) %C(#C8D3F5)%s%C(reset)
+      %C(#636DA6)· %cn%C(reset)'
   ignoreWhitespaceInDiffView: false
   diffContextSize: 3
   renameSimilarityThreshold: 50
