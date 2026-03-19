@@ -40,8 +40,7 @@ done
 
 # Detect which tasks require sudo (single batch call via jq)
 typeset -A sudo_tasks
-for task in "${(@f)$(mise tasks ls --json 2>/dev/null \
-  | jq -r '.[] | select(any(.run[]?; contains("sudo"))) | .name')}"; do
+for task in "${(@f)$(mise tasks ls --json 2>/dev/null | jq -r '.[] | select(any(.run[]?; contains("sudo"))) | .name')}"; do
   sudo_tasks[$task]=1
 done
 
@@ -119,7 +118,7 @@ read_key() {
     if [[ "$seq" == "[" ]]; then
       read -rsk1 -t 0.01 seq
       case "$seq" in
-      A) REPLY="UP" ;; B) REPLY="DOWN" ;; *) REPLY="ESC" ;;
+        A) REPLY="UP" ;; B) REPLY="DOWN" ;; *) REPLY="ESC" ;;
       esac
     else
       REPLY="ESC"
@@ -127,48 +126,47 @@ read_key() {
   fi
 }
 
-# j/k, arrows, space, a, q/Esc, Enter
 while true; do
   print_menu
   read_key
 
   case "$REPLY" in
-  k | UP) (( cursor = cursor > 1 ? cursor - 1 : 1 )) ;;
-  j | DOWN) (( cursor = cursor < $#available ? cursor + 1 : $#available )) ;;
-  " ")
-    local task=$available[$cursor]
-    selected[$task]=$(( !selected[$task] ))
-    check_needs_sudo
-    ;;
-  a)
-    local all_on=1
-    for task in $available; do
-      (( selected[$task] )) || { all_on=0; break; }
-    done
-    local val=$(( !all_on ))
-    for task in $available; do selected[$task]=$val; done
-    check_needs_sudo
-    ;;
-  q | ESC)
-    echoti cnorm 2>/dev/null
-    cleanup_screen
-    trap - EXIT
-    printf "${T_ERROR}Cancelled.${NC}\n"
-    exit 1
-    ;;
-  $'\n')
-    # On confirm, prompt for sudo password if check_needs_sudo set the flag
-    if (( needs_sudo )); then
+    k | UP) (( cursor = cursor > 1 ? cursor - 1 : 1 )) ;;
+    j | DOWN) (( cursor = cursor < $#available ? cursor + 1 : $#available )) ;;
+    " ")
+      local task=$available[$cursor]
+      selected[$task]=$(( !selected[$task] ))
+      check_needs_sudo
+      ;;
+    a)
+      local all_on=1
+      for task in $available; do
+        (( selected[$task] )) || { all_on=0; break; }
+      done
+      local val=$(( !all_on ))
+      for task in $available; do selected[$task]=$val; done
+      check_needs_sudo
+      ;;
+    q | ESC)
       echoti cnorm 2>/dev/null
-      printf "\n\n  ${T_ERROR}sudo${NC} password: "
-      read -rs sudo_pass
-      if [[ -z "$sudo_pass" ]]; then
-        echoti civis 2>/dev/null
-        continue
+      cleanup_screen
+      trap - EXIT
+      printf "${T_ERROR}Cancelled.${NC}\n"
+      exit 1
+      ;;
+    $'\n')
+      # On confirm, prompt for sudo password if check_needs_sudo set the flag
+      if (( needs_sudo )); then
+        echoti cnorm 2>/dev/null
+        printf "\n\n  ${T_ERROR}sudo${NC} password: "
+        read -rs sudo_pass
+        if [[ -z "$sudo_pass" ]]; then
+          echoti civis 2>/dev/null
+          continue
+        fi
       fi
-    fi
-    break
-    ;;
+      break
+      ;;
   esac
 done
 
@@ -198,7 +196,7 @@ make_cmd() {
     cmd="printf '%s\n' ${(qq)sudo_pass} | sudo -S true 2>/dev/null; $cmd"
   fi
 
-  printf 'printf "\\n\\033[1;36m── %s ──\\033[0m\\n"; %s && printf "\\n\\033[1;32m󰸞 %s succeeded\\033[0m\\n" || printf "\\n\\033[1;31m󱎘 %s failed\\033[0m\\n"; printf "\\n(press Enter to close)"; read -rsk1' \
+  printf 'printf "\\n\\033[1;36m── %s ──\\033[0m\\n"; %s && printf "\\n\\033[1;32m󰸞 %s succeeded\\033[0m\\n" || printf "\\n\\033[1;31m󱎘 %s failed\\033[0m\\n"; printf "\\n(press any key to close)"; read -rsk1' \
     "$name" "$cmd" "$name" "$name"
 }
 
