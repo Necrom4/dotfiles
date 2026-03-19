@@ -4,4 +4,5 @@ return {
 	"golangci-lint",
 	"gopls",
 	"helm-ls",
+	"jinja-lsp",
 }
