@@ -41,6 +41,7 @@ quiet = true
 [tasks.install]
 description = "Bootstrap dotfiles via yadm"
 run = "yadm bootstrap"
+quiet = true
 
 [tasks."update:apt"]
 description = "System packages (apt)"
@@ -60,7 +61,7 @@ run = "tldr --update"
 quiet = true
 
 [tasks."update:tmux-tmp"]
-run = "$HOME/.config/tmux/plugins/tpm/bin/update_plugins all"
+run = "$HOME/.config/tmux/plugins/tpm/bin/install_plugins && $HOME/.config/tmux/plugins/tpm/bin/update_plugins all"
 quiet = true
 
 [tasks."update:yazi-plugins"]
