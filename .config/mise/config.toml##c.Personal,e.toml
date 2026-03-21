@@ -96,7 +96,6 @@ quiet = true
 go = "latest"
 node = "latest"
 "pipx:nomadnet" = "latest"
-"pipx:sqlit-tui" = "latest"
 ruby = "latest"
 uv = "latest"
 "gem:rspec" = "latest"
