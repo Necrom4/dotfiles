@@ -380,13 +380,11 @@ local system_info = {
 		" " .. gen_graph(disk_percent)
 	),
 	string.format(
-		"│ UPTIME │ %-21s  %s │",
+		"│ UPTIME │ %-21s %3d%% %s %s │",
 		uptime_date,
-		battery_capacity()
-			.. "% "
-			.. battery_icon(battery_capacity(), battery_status())
-			.. " "
-			.. gen_graph(battery_capacity(), 10)
+		battery_capacity(),
+		battery_icon(battery_capacity(), battery_status()),
+		gen_graph(battery_capacity(), 10)
 	),
 	string.format(
 		"│  │ %-46s │",
