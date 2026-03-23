@@ -379,15 +379,18 @@ local system_info = {
 		disk_used .. "/" .. disk_total .. "GB",
 		" " .. gen_graph(disk_percent)
 	),
-	string.format("│ UPTIME │ %-20s  %-20s │", uptime_date, "󰩠 " .. local_ip_address()),
+	string.format(
+		"│ UPTIME │ %-21s  %s │",
+		uptime_date,
+		battery_capacity()
+			.. "% "
+			.. battery_icon(battery_capacity(), battery_status())
+			.. " "
+			.. gen_graph(battery_capacity(), 10)
+	),
 	string.format(
 		"│  │ %-46s │",
-		battery_icon(battery_capacity(), battery_status())
-			.. " "
-			.. battery_capacity()
-			.. "%"
-			.. "     "
-			.. utils.term_cmd("users | tr ' ' '\\n' | sort -u | wc -l | tr -d ' '")
+		utils.term_cmd("users | tr ' ' '\\n' | sort -u | wc -l | tr -d ' '")
 			.. "  "
 			.. utils.in_yadm_env(function()
 				return utils.term_cmd("git config local.class")
@@ -395,6 +398,9 @@ local system_info = {
 			.. "    "
 			.. " "
 			.. processes()
+			.. "     "
+			.. "󰩠 "
+			.. local_ip_address()
 	),
 	"╰────────┴─────────────────────────────────────────╯",
 }
