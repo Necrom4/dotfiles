@@ -196,8 +196,26 @@ make_cmd() {
     cmd="printf '%s\n' ${(qq)sudo_pass} | sudo -S true 2>/dev/null; $cmd"
   fi
 
-  printf 'printf "\\n\\033[1;36m── %s ──\\033[0m\\n"; %s && printf "\\n\\033[1;32m󰸞 %s succeeded\\033[0m\\n" || printf "\\n\\033[1;31m󱎘 %s failed\\033[0m\\n"; printf "\\n(press any key to close)"; read -rsk1' \
-    "$name" "$cmd" "$name" "$name"
+  cat <<EOF
+printf "\n\033[1;36m── ${name} ──\033[0m\n"
+__ms0=\$(date +%s%3N)
+${cmd} && __ok=1 || __ok=0
+__el=\$(( \$(date +%s%3N) - __ms0 ))
+if (( __el >= 60000 )); then
+  __fmt="\$((__el/60000))m \$((__el%60000/1000)).\$((__el%1000))s"
+elif (( __el >= 1000 )); then
+  __fmt="\$((__el/1000)).\$((__el%1000))s"
+else
+  __fmt="\${__el}ms"
+fi
+if (( __ok )); then
+  printf "\n\033[1;32m[󰸞] ${name} succeeded in %s\033[0m\n" "\$__fmt"
+else
+  printf "\n\033[1;31m[󱎘] ${name} failed after %s\033[0m\n" "\$__fmt"
+fi
+printf "\n(press any key to close)"
+read -rsk1
+EOF
 }
 
 # Open a tmux window (or session if not in tmux), then split into tiled panes
