@@ -197,24 +197,16 @@ make_cmd() {
   fi
 
   cat <<EOF
-printf "\n\033[1;36m── ${name} ──\033[0m\n"
-__ms0=\$(date +%s%3N)
-${cmd} && __ok=1 || __ok=0
-__el=\$(( \$(date +%s%3N) - __ms0 ))
-if (( __el >= 60000 )); then
-  __fmt="\$((__el/60000))m \$((__el%60000/1000)).\$((__el%1000))s"
-elif (( __el >= 1000 )); then
-  __fmt="\$((__el/1000)).\$((__el%1000))s"
-else
-  __fmt="\${__el}ms"
-fi
-if (( __ok )); then
-  printf "\n\033[1;32m[󰸞] ${name} succeeded in %s\033[0m\n" "\$__fmt"
-else
-  printf "\n\033[1;31m[󱎘] ${name} failed after %s\033[0m\n" "\$__fmt"
-fi
-printf "\n(press any key to close)"
-read -rsk1
+  printf "\n\033[1;36m── ${name} ──\033[0m\n"
+  SECONDS=0
+  ${cmd} && __ok=1 || __ok=0
+  if (( __ok )); then
+    printf "\n\033[1;32m[󰸞] ${name} succeeded in %ds\033[0m\n" "\$SECONDS"
+  else
+    printf "\n\033[1;31m[󱎘] ${name} failed after %ds\033[0m\n" "\$SECONDS"
+  fi
+  printf "\n(press any key to close)"
+  read -rsk1
 EOF
 }
 
