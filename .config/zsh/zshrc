@@ -257,7 +257,8 @@ zinit wait"1" lucid for \
   OMZP::grc \
   OMZP::jsontools \
   OMZP::rails \
-  OMZP::web-search
+  OMZP::web-search \
+  reegnz/jq-zsh-plugin
 
 # Override plugin aliases
 zinit wait"1b" lucid for \
