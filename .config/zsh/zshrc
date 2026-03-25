@@ -360,9 +360,9 @@ x() {
     fi
   fi
 
-  tmux unbind -n "M-["
+  [[ -n $TMUX ]] && tmux unbind -n "M-["
   yazi ${target:+"$target"} --cwd-file="$tmp"
-  tmux bind -n "M-[" previous-window
+  [[ -n $TMUX ]] && tmux bind -n "M-[" previous-window
 
   [[ -s $tmp ]] && cwd="$(<"$tmp")" && [[ $cwd != "$PWD" ]] && builtin cd -- "$cwd"
 
