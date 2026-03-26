@@ -90,7 +90,6 @@ run = [
 quiet = true
 
 [tools]
-"pipx:sqlit-tui" = "latest"
 uv = "latest"
 go = "latest"
 node = "latest"
