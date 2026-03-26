@@ -93,6 +93,8 @@ brew "neovim"
 brew "nmap"
 # Command-line Git information tool
 brew "onefetch"
+# Swiss-army knife of markup format conversion
+brew "pandoc"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Object-relational database system
