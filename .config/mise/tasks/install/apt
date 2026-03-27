@@ -1,0 +1,40 @@
+#!/usr/bin/env zsh
+#MISE description="Install missing apt packages"
+#MISE env={APTFILE="$HOME/.config/yadm/scripts/aptfile"}
+#MISE quiet=true
+
+source "${HOME}/.config/mise/tasks/utils/colors"
+
+T_OK="${GREEN}${BOLD}"
+T_WARNING="${YELLOW}${BOLD}"
+T_ERROR="${RED}${BOLD}"
+T_PROGRAM="${CYAN}${BOLD}"
+
+if [[ ! -f "$APTFILE" ]]; then
+  exit 0
+fi
+
+# Read packages into array
+packages=("${(@f)$(sed -e 's/#.*//' -e '/^[[:space:]]*$/d' "$APTFILE")}")
+(( $#packages == 0 )) && exit 0
+
+missing_packages=()
+
+# Check installation status silently
+for pkg in $packages; do
+  if ! dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q "ok installed"; then
+    missing_packages+=("$pkg")
+    printf "${T_WARNING}[?] ${T_PROGRAM}%s${NC} ${T_WARNING}not found${NC}\n" "$pkg"
+  fi
+done
+
+if (( $#missing_packages > 0 )); then
+  printf "${BOLD}Installing${NC} ${T_PROGRAM}%s${NC}\n\n" "${missing_packages[*]}"
+
+  sudo apt-get update
+  sudo apt-get install -y "${missing_packages[@]}"
+
+  printf "${T_OK}[󰸞] Missing packages installed successfully${NC}\n"
+else
+  printf "${T_OK}[󰸞] All packages already installed${NC}\n"
+fi
