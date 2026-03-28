@@ -387,7 +387,7 @@ local system_info = {
 		gen_graph(battery_capacity(), 10)
 	),
 	string.format(
-		"│  │ %-21s %6s %17s │",
+		"│  │ %-15s %8s %21s │",
 		utils.term_cmd("users | tr ' ' '\\n' | sort -u | wc -l | tr -d ' '")
 			.. "  "
 			.. utils.in_yadm_env(function()
