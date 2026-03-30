@@ -1,0 +1,113 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": [],
+    "compatibility.enableUnfocusedAcrylic": true,
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{d8e96812-b789-5068-a5ae-10b2fb53e95f}",
+    "keybindings": 
+    [
+        {
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "Terminal.DuplicatePaneAuto",
+            "keys": "alt+shift+d"
+        }
+    ],
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        "defaults": 
+        {
+            "colorScheme": "Tokyonight Moon",
+            "font": 
+            {
+                "face": "CommitMono Nerd Font Mono, LegacyComputing",
+                "size": 12
+            },
+            "opacity": 85,
+            "padding": "8,8,0,8",
+            "useAcrylic": false
+        },
+        "list": 
+        [
+            {
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Eingabeaufforderung"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            },
+            {
+                "colorScheme": "Tokyonight Moon",
+                "guid": "{d8e96812-b789-5068-a5ae-10b2fb53e95f}",
+                "hidden": false,
+                "name": "Ubuntu 24.04.1 LTS",
+                "source": "CanonicalGroupLimited.Ubuntu24.04LTS_79rhkp1fndgsc"
+            },
+            {
+                "guid": "{963ff2f7-6aed-5ce3-9d91-90d99571f53a}",
+                "hidden": true,
+                "name": "Ubuntu-24.04",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{680f1ab7-3962-59d1-b4f6-168101331e28}",
+                "hidden": true,
+                "name": "Ubuntu",
+                "source": "Microsoft.WSL"
+            }
+        ]
+    },
+    "schemes": 
+    [
+        {
+            "background": "#000000",
+            "black": "#0C0C0C",
+            "blue": "#636DA6",
+            "brightBlack": "#767676",
+            "brightBlue": "#82AAFF",
+            "brightCyan": "#4FD6BE",
+            "brightGreen": "#C3E88D",
+            "brightPurple": "#FCA7EA",
+            "brightRed": "#E26A75",
+            "brightWhite": "#F2F2F2",
+            "brightYellow": "#FFC777",
+            "cursorColor": "#C8D3F5",
+            "cyan": "#65BCFF",
+            "foreground": "#F9F9F9",
+            "green": "#3BA08E",
+            "name": "Tokyonight Moon",
+            "purple": "#C099FF",
+            "red": "#C53B53",
+            "selectionBackground": "#2D3F76",
+            "white": "#CCCCCC",
+            "yellow": "#FF966C"
+        }
+    ],
+    "themes": [],
+    "useAcrylicInTabRow": true
+}
