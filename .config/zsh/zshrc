@@ -73,10 +73,13 @@ project_enter_print() {
     if (( $+commands[mise] )); then
       output=$(mise config get env 2>/dev/null || true)
       if [ -n "$output" ]; then
-        yellow=$(tput setaf 11)
-        reset=$(tput sgr0)
-        echo "[${yellow}env${reset}]"
-        echo "$output" | awk -F'=' '{print $1}' | sed '/^$/d'
+        filtered=$(echo "$output" | awk -F'=' '{print $1}' | sed '/^$/d' | grep -v '^_')
+        if [ -n "$filtered" ]; then
+          yellow=$(tput setaf 11)
+          reset=$(tput sgr0)
+          echo "[${yellow}env${reset}]"
+          echo "$filtered"
+        fi
       fi
     fi
     last_PR="$PR"
