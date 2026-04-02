@@ -12,6 +12,7 @@ local languages = {
 	"superhtml",
 	"tmux",
 	"tsv",
+	"vhs",
 	"xml",
 	"zsh",
 }

@@ -135,6 +135,8 @@ brew "transmission-cli"
 brew "undercutf1"
 # Tool for writing command-line pipes with instant live preview
 brew "up"
+# Your CLI home video recorder
+brew "vhs"
 # Modern watch command
 brew "viddy"
 # Terminal spreadsheet multitool for discovering and arranging data
