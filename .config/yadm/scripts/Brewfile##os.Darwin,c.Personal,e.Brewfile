@@ -180,8 +180,6 @@ cask "font-commit-mono-nerd-font"
 cask "gimp"
 # Trading software
 cask "ibkr"
-# Neovim Client
-cask "neovide-app"
 # App to write, plan, collaborate, and get organised
 cask "notion"
 # System-wide Vim mode for macOS
