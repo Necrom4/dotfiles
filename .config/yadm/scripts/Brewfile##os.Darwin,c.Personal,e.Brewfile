@@ -178,6 +178,8 @@ cask "eqmac"
 cask "font-commit-mono-nerd-font"
 # Free and open-source image editor
 cask "gimp"
+# Desktop automation application
+cask "hammerspoon"
 # Trading software
 cask "ibkr"
 # App to write, plan, collaborate, and get organised
