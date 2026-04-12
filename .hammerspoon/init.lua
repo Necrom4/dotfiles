@@ -30,6 +30,7 @@ hs.alert.show("Config reloaded", styleOk)
 -- Load modules
 local modules = {
 	"clipboard",
+	"wifi",
 }
 
 for _, name in ipairs(modules) do
