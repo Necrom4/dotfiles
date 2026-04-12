@@ -14,3 +14,6 @@ local watcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload
 watcher:start()
 
 hs.notify.new({ title = "Hammerspoon", informativeText = "Config loaded" }):send()
+
+-- Load modules
+require("modules.clipboard")
