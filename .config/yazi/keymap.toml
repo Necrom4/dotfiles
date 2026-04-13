@@ -29,6 +29,8 @@ prepend_keymap = [
   { on = [ "g", "l" ], run = "plugin lazygit", desc = "run lazygit" },
   # mount
   { on = "M", run = "plugin mount" },
+  # mux
+  { on = "P", run = "plugin mux next", desc = "Cycle through mux previewers" },
   # relative-motions
   { on = "1", run = "plugin relative-motions 1", desc = "Move in relative steps" },
   { on = "2", run = "plugin relative-motions 2", desc = "Move in relative steps" },

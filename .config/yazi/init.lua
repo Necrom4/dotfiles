@@ -24,6 +24,23 @@ th.git.updated_sign = "󰚰"
 th.git.updated = ui.Style():fg("#4FD6BE")
 require("git"):setup()
 
+require("mux"):setup({
+	aliases = {
+    eza_tree = {
+      previewer = "piper",
+      args = {
+        'cd "$1" && LS_COLORS="ex=32" eza --oneline --tree --level 3 --color=always --icons=always --group-directories-first --no-quotes .',
+      },
+    },
+		dust = {
+			previewer = "piper",
+			args = {
+        'dust -C -d 3 -P -r -w $w "$1"',
+			},
+		},
+	},
+})
+
 require("relative-motions"):setup({ show_numbers = "relative", show_motion = true, enter_mode = "first" })
 
 require("whoosh"):setup {

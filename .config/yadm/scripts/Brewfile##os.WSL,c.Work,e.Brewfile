@@ -19,6 +19,8 @@ brew "croc"
 brew "docker"
 # Embeddable SQL OLAP Database Management System
 brew "duckdb"
+# More intuitive version of du in rust
+brew "dust"
 # Perl lib for reading and writing EXIF metadata
 brew "exiftool"
 # Modern, maintained replacement for ls

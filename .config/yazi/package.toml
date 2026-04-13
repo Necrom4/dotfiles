@@ -94,14 +94,19 @@ rev = "3f8c863"
 hash = "87b9233a74325e95011670ed20bbd0d4"
 
 [[plugin.deps]]
-use = "yazi-rs/plugins:piper"
-rev = "babfd0f"
-hash = "384464b6df8cb807425c521f8cd790f3"
-
-[[plugin.deps]]
 use = "imsi32/yatline-githead"
 rev = "929e52c"
 hash = "8282baf02fcd6aac00ccad2276775358"
+
+[[plugin.deps]]
+use = "peterfication/mux"
+rev = "7f4f101"
+hash = "b1f73cd4b5f6d42351a025ad65075a43"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:piper"
+rev = "babfd0f"
+hash = "384464b6df8cb807425c521f8cd790f3"
 
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
