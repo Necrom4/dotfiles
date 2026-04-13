@@ -1,4 +1,5 @@
 tap "domcyrus/rustnet"
+tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
@@ -128,5 +129,7 @@ brew "yq"
 brew "zip"
 # High-performance, cross-platform network monitoring tool with TUI
 brew "domcyrus/rustnet/rustnet"
+# Fast file synchronization and network forwarding for remote development
+brew "mutagen-io/mutagen/mutagen"
 # Swiss SBB/CFF/FFS timetable app for the terminal
 brew "necrom4/tap/sbb-tui"
