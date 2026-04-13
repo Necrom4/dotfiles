@@ -2,7 +2,7 @@ tap "domcyrus/rustnet"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 # Improved shell history for zsh, bash, fish and nushell
-brew "atuin", restart_service: :changed
+brew "atuin"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Terminal EPUB Book Reader
