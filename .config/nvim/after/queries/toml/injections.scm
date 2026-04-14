@@ -1,7 +1,7 @@
 ; extends
 
 (pair
-  (bare_key) @key (#eq? @key "run")
+  (bare_key) @key (#any-of? @key "run" "script")
   (string) @injection.content @injection.language
 
   (#match? @injection.language "^['\"]{3}\n*#!(/\\w+)+/env\\s+\\w+") ; multiline shebang using env
@@ -10,7 +10,7 @@
 )
 
 (pair
-  (bare_key) @key (#eq? @key "run")
+  (bare_key) @key (#any-of? @key "run" "script")
   (string) @injection.content @injection.language
 
   (#match? @injection.language "^['\"]{3}\n*#!(/\\w+)+\s*\n") ; multiline shebang
@@ -19,7 +19,7 @@
 )
 
 (pair
-  (bare_key) @key (#eq? @key "run")
+  (bare_key) @key (#any-of? @key "run" "script")
   (string) @injection.content
 
   (#match? @injection.content "^['\"]{3}\n*.*") ; multiline
@@ -29,7 +29,7 @@
 )
 
 (pair
-  (bare_key) @key (#eq? @key "run")
+  (bare_key) @key (#any-of? @key "run" "script")
   (string) @injection.content
 
   (#not-match? @injection.content "^['\"]{3}") ; not multiline
