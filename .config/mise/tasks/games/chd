@@ -1,0 +1,40 @@
+#!/usr/bin/env zsh
+#MISE description="Convert .cue/.bin sets (from dirs or archives) to .chd"
+#MISE quiet=true
+#USAGE arg "<paths>" help="Source dirs or archives (.zip/.7z/.rar), optionally followed by destination" var=#true var_min=1
+#USAGE flag "-c --console <console>" help="Move .chd files to ~/Games/RetroArch/games/<console>"
+#USAGE complete "console" run="ls ~/Games/RetroArch/games 2>/dev/null"
+
+set -eu
+eval "paths=($usage_paths)"
+
+if [[ -n ${usage_console:-} ]]; then
+  dest=~/Games/RetroArch/games/$usage_console
+  sources=($paths)
+else
+  (( ${#paths} >= 2 )) || { echo "Need at least one source and a destination (or pass --console)" >&2; exit 1 }
+  dest=${paths[-1]}
+  sources=(${paths[1,-2]})
+fi
+mkdir -p -- $dest
+
+tmp=$(mktemp -d); trap "rm -rf -- $tmp" EXIT INT TERM
+expanded=()
+for src in $sources; do
+  if [[ -f $src ]]; then
+    ex=$tmp/${src:t:r}; mkdir -p -- $ex
+    case ${src:l} in
+      *.zip)      unzip -q -- ${src:A} -d $ex ;;
+      *.7z|*.rar) 7zz x -bd -y -o$ex -- ${src:A} >/dev/null ;;
+      *) echo "Unsupported archive: $src" >&2; exit 1 ;;
+    esac
+    expanded+=($ex)
+  else
+    expanded+=($src)
+  fi
+done
+
+for cue in ${(0)"$(find $expanded -type f -iname '*.cue' -print0)"}; do
+  ( cd -- ${cue:h} && chdman createcd -i ${cue:t} -o ${cue:t:r}.chd )
+  mv -- ${cue:h}/${cue:t:r}.chd $dest/
+done
