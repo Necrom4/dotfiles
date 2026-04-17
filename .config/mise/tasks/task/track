@@ -1,0 +1,43 @@
+#!/usr/bin/env zsh
+#MISE description="Create a timewarrior entry linked to a taskwarrior task"
+#MISE quiet=true
+#USAGE arg "<uuid>" help="Taskwarrior task UUID (short form OK)"
+#USAGE arg "[when]..." help="Optional: [date1] <start> [date2] [end]. date = yesterday|today|YYYY-MM-DD (default today). start/end = HH:MM" var=#true
+#USAGE complete "uuid" run="~/.config/mise/tasks/task/track --complete-uuids" descriptions=#true
+
+if [[ ${1-} == --complete-uuids ]]; then
+  task export 2>/dev/null | jq -r '.[] | "\(.uuid | split("-")[0]):\(.description)"'
+  exit
+fi
+
+set -eu
+eval "when=(${usage_when:-})"
+
+# Each HH:MM pairs with the most recent date keyword (default: today).
+times=() dates=() d=$(date +%Y-%m-%d)
+for w in $when; do
+  case $w in
+    today)      d=$(date +%Y-%m-%d) ;;
+    yesterday)  d=$(date -v-1d +%Y-%m-%d 2>/dev/null || date -d yesterday +%Y-%m-%d) ;;
+    [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) d=$w ;;
+    <->:<->)    times+=(${d}T${w}) ;;
+    *) echo "Unrecognized token: $w" >&2; exit 1 ;;
+  esac
+done
+
+uuid=${usage_uuid?}
+desc=$(task _get "$uuid.description")
+[[ -n $desc ]] || { echo "Error: Task '$uuid' not found." >&2; exit 1 }
+proj=$(task _get "$uuid.project")
+tags=$(task _get "$uuid.tags" | tr ',' ' ')
+
+tags_args=($desc)
+[[ -n $proj ]] && tags_args+=($proj)
+[[ -n $tags ]] && tags_args+=(${=tags})
+
+case ${#times} in
+  0) timew start $tags_args ;;
+  1) timew start $times[1] $tags_args ;;
+  2) timew track $times[1] - $times[2] $tags_args ;;
+  *) echo "Too many times (expected 0-2, got ${#times})" >&2; exit 1 ;;
+esac

@@ -315,41 +315,6 @@ alias watch="viddy -d -n 1 --shell zsh"
 
 (( $+commands[lynx] )) && alias lynx="lynx -cfg=$HOME/.config/lynx/lynx.cfg -lss=$HOME/.config/lynx/lynx.lss"
 
-if (( $+commands[task] )) && (( $+commands[timew] )); then
-  tsync() {
-    local uuid=$1
-
-    if [[ -z "$uuid" ]]; then
-      echo "Usage: sync_task <uuid> [start] [end]"
-      return 1
-    fi
-
-    local desc=$(task _get "$uuid.description")
-    local proj=$(task _get "$uuid.project")
-    local tags=$(task _get "$uuid.tags" | tr ',' ' ')
-
-    local start="${2:-$(task _get "$uuid.start")}"
-    local end="${3:-$(task _get "$uuid.end")}"
-
-    [[ -z "$desc" ]] && { echo "Error: Task '$uuid' not found."; return 1; }
-
-    local timew_args=("$desc")
-    [[ -n "$proj" ]] && timew_args+=("$proj")
-    [[ -n "$tags" ]] && timew_args+=(${=tags})
-
-    if [[ -n "$start" && -n "$end" ]]; then
-      echo "Tracking (DOM/Args): $start - $end"
-      timew track "$start" - "$end" "${timew_args[@]}"
-    elif [[ -n "$start" ]]; then
-      echo "Starting timer at: $start"
-      timew start "$start" "${timew_args[@]}"
-    else
-      echo "No dates found. Starting live timer now..."
-      timew start "${timew_args[@]}"
-    fi
-  }
-fi
-
 # Yazi with directory change on exit
 x() {
   local tmp cwd target
