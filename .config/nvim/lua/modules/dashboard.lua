@@ -268,7 +268,12 @@ end
 
 local function battery_status()
 	if ff_stats and ff_stats.battery_status then
-		return ff_stats.battery_status:match("Charging") or ff_stats.battery_status:match("AC Power") or false
+		for _, s in ipairs(ff_stats.battery_status) do
+			if s == "Charging" or s == "AC Connected" then
+				return true
+			end
+		end
+		return false
 	end
 	if system_type ~= "darwin" then
 		local status = utils.term_cmd([[
