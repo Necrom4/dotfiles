@@ -11,6 +11,7 @@ prepend_rules = [
 	{ url = "*.csv", use = [ "edit", "reveal", "visidata" ] },
 	{ url = "*.db", use = [ "edit", "reveal", "visidata" ] },
 	{ url = "*.epub", use = [ "bookokrat", "edit", "reveal" ] },
+	{ url = "*.html", use = [ "open", "edit", "reveal" ] },
 	{ url = "*.json", use = [ "edit", "reveal", "visidata" ] },
 	{ url = "*.pdf", use = [ "bookokrat", "edit", "reveal" ] },
 	{ url = "*.sql", use = [ "edit", "reveal", "visidata" ] },
