@@ -1,3 +1,19 @@
+local function searchcount()
+	if vim.v.hlsearch == 0 then
+		return ""
+	end
+	local ok, result = pcall(vim.fn.searchcount, { maxcount = 999, timeout = 500 })
+	if not ok or not result.total or result.total == 0 then
+		return ""
+	end
+	if result.incomplete == 1 then
+		return "?/?"
+	elseif result.incomplete == 2 then
+		return ("%d/>%d"):format(result.current, result.total)
+	end
+	return ("%d/%d"):format(result.current, result.total)
+end
+
 local function scrollbar()
 	local sbar = { "▔", "🭶", "🭷", "🭸", "🭹", "🭺", "🭻", "▁" }
 	local curr_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -197,6 +213,12 @@ return {
 					},
 				},
 				lualine_y = {
+					{
+						searchcount,
+						color = function()
+							return { fg = Snacks.util.color("Number") }
+						end,
+					},
 					{ "location" },
 					{ "progress", separator = "", padding = { left = 1, right = 1 } },
 					{
