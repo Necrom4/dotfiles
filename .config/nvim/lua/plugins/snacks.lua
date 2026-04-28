@@ -397,6 +397,11 @@ return {
 		},
 		dim = {
 			enabled = true,
+			scope = {
+				min_size = 5,
+				max_size = 20,
+				siblings = false,
+			},
 		},
 		indent = { enabled = true },
 		input = { enabled = true },
@@ -413,6 +418,7 @@ return {
 					win = {
 						list = {
 							keys = {
+								["Y"] = "yank_relative_path",
 								["L"] = "explorer_focus",
 								["H"] = "explorer_up",
 								["K"] = "preview_scroll_up",
@@ -427,6 +433,15 @@ return {
 						},
 					},
 					actions = {
+						yank_relative_path = function(_, item)
+							if not item then
+								return
+							end
+							local rel = vim.fn.fnamemodify(item.file, ":.")
+							vim.fn.setreg("+", rel)
+							vim.fn.setreg('"', rel)
+							Snacks.notify.info("Yanked relative path: " .. rel)
+						end,
 						git_add = {
 							action = function(picker)
 								vim.cmd({
