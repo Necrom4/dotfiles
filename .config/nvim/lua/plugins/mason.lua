@@ -13,7 +13,7 @@ local packages = {
 	"postgres-language-server",
 	"pyright",
 	"stylelint",
-	"stylelint-lsp",
+	"stylelint-language-server",
 	"superhtml",
 	"taplo",
 	"tree-sitter-cli",
