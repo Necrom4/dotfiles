@@ -1,4 +1,5 @@
 tap "domcyrus/rustnet"
+tap "janosmiko/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 # Improved shell history for zsh, bash, fish and nushell
@@ -49,8 +50,6 @@ brew "hyperfine"
 brew "jless"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
-# Kubernetes CLI To Manage Your Clusters In Style!
-brew "k9s"
 # Kubernetes command-line interface
 brew "kubernetes-cli"
 # Lazier way to manage everything docker
@@ -131,6 +130,8 @@ brew "yq"
 brew "zip"
 # High-performance, cross-platform network monitoring tool with TUI
 brew "domcyrus/rustnet/rustnet"
+# Lightning Fast Kubernetes navigator - keyboard-focused TUI for managing K8s clusters
+brew "janosmiko/tap/lfk"
 # Fast file synchronization and network forwarding for remote development
 brew "mutagen-io/mutagen/mutagen"
 # Swiss SBB/CFF/FFS timetable app for the terminal
