@@ -1,5 +1,6 @@
 tap "domcyrus/rustnet"
 tap "janosmiko/tap"
+tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 # Improved shell history for zsh, bash, fish and nushell
@@ -128,10 +129,10 @@ brew "youplot"
 brew "yq"
 # Compression and file packaging/archive utility
 brew "zip"
-# High-performance, cross-platform network monitoring tool with TUI
-brew "domcyrus/rustnet/rustnet"
 # Lightning Fast Kubernetes navigator - keyboard-focused TUI for managing K8s clusters
 brew "janosmiko/tap/lfk"
+# Real-time network diagnostics in your terminal — zero config, instant visibility
+brew "matthart1983/tap/netwatch"
 # Fast file synchronization and network forwarding for remote development
 brew "mutagen-io/mutagen/mutagen"
 # Swiss SBB/CFF/FFS timetable app for the terminal
