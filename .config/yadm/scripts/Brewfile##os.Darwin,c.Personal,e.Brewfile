@@ -1,5 +1,7 @@
 tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
+tap "janosmiko/tap"
+tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 tap "tonisives/tap"
@@ -65,8 +67,6 @@ brew "ipinfo-cli"
 brew "jless"
 # Enhanced version of john, a UNIX password cracker
 brew "john-jumbo"
-# Kubernetes CLI To Manage Your Clusters In Style!
-brew "k9s"
 # Lazier way to manage everything docker
 brew "lazydocker"
 # Simple terminal UI for git commands
@@ -161,8 +161,10 @@ brew "youplot"
 brew "yq"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
-# High-performance, cross-platform network monitoring tool with TUI
-brew "domcyrus/rustnet/rustnet"
+# Lightning Fast Kubernetes navigator - keyboard-focused TUI for managing K8s clusters
+brew "janosmiko/tap/lfk"
+# Real-time network diagnostics in your terminal — zero config, instant visibility
+brew "matthart1983/tap/netwatch"
 # Fast file synchronization and network forwarding for remote development
 brew "mutagen-io/mutagen/mutagen"
 # Swiss SBB/CFF/FFS timetable app for the terminal
