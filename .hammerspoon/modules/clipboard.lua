@@ -75,6 +75,44 @@ local function looksLikeFilePath(s)
 	return hs.fs.attributes(s) ~= nil
 end
 
+-- Subsequence-based fuzzy match. Returns a score (higher is better) or nil
+-- if the query characters don't all appear in haystack in order. Consecutive
+-- matches and matches at word boundaries score higher.
+local function fuzzyScore(haystack, needle)
+	if needle == "" then
+		return 0
+	end
+	haystack = haystack:lower()
+	needle = needle:lower()
+	local hi, ni = 1, 1
+	local hLen, nLen = #haystack, #needle
+	local score = 0
+	local prevMatched = false
+	while hi <= hLen and ni <= nLen do
+		local hc = haystack:sub(hi, hi)
+		local nc = needle:sub(ni, ni)
+		if hc == nc then
+			score = score + 1
+			if prevMatched then
+				score = score + 4
+			end
+			local prev = hi > 1 and haystack:sub(hi - 1, hi - 1) or " "
+			if prev:match("[%s%p]") then
+				score = score + 3
+			end
+			ni = ni + 1
+			prevMatched = true
+		else
+			prevMatched = false
+		end
+		hi = hi + 1
+	end
+	if ni <= nLen then
+		return nil
+	end
+	return score
+end
+
 ----------------------------------------------------------------------------
 -- Persistence
 ----------------------------------------------------------------------------
@@ -326,6 +364,7 @@ end
 
 -- One of nil, "text", "url", "file", "image", "pinned".
 local activeFilter = nil
+local activeQuery = ""
 
 local function entryMatchesFilter(entry)
 	if not activeFilter then
@@ -337,6 +376,23 @@ local function entryMatchesFilter(entry)
 	return entry.kind == activeFilter
 end
 
+-- Concatenated text used for searching: full content (or filename for
+-- images), source app, formatted date and the type tag.
+local function searchableText(entry)
+	local parts = {}
+	if entry.kind == "image" then
+		table.insert(parts, entry.path:match("[^/]+$") or "")
+	else
+		table.insert(parts, entry.text or "")
+	end
+	if entry.source and entry.source.name then
+		table.insert(parts, entry.source.name)
+	end
+	table.insert(parts, os.date("%Y-%m-%d %H:%M:%S", entry.time))
+	table.insert(parts, entry.kind)
+	return table.concat(parts, " ")
+end
+
 local function describeSize(entry)
 	if entry.kind == "image" then
 		return string.format("%d×%d · %s", entry.width, entry.height, humanBytes(entry.bytes))
@@ -345,44 +401,79 @@ local function describeSize(entry)
 end
 
 local function buildChoices()
-	local choices = {}
+	local matches = {}
 	for i, entry in ipairs(M.history) do
 		if entryMatchesFilter(entry) then
-			local title
-			if entry.kind == "image" then
-				title = string.format("%s Image (%d×%d)", typeIcon.image, entry.width, entry.height)
-			else
-				local emoji = typeIcon[entry.kind] or typeIcon.text
-				title = emoji .. " " .. shorten(entry.text, 120)
+			local score = 0
+			if activeQuery ~= "" then
+				score = fuzzyScore(searchableText(entry), activeQuery)
 			end
-
-			if entry.pinned then
-				title = "📌 " .. title
+			if score then
+				table.insert(matches, { entry = entry, index = i, score = score })
 			end
-
-			local parts = {}
-			if entry.source and entry.source.name then
-				table.insert(parts, "from " .. entry.source.name)
-			end
-			table.insert(parts, os.date("%Y-%m-%d %H:%M:%S", entry.time))
-			table.insert(parts, describeSize(entry))
-
-			-- Image entries show their own thumbnail; everything else falls
-			-- back to the source app's bundle icon.
-			local rowImage
-			if entry.kind == "image" then
-				rowImage = hs.image.imageFromPath(entry.path)
-			elseif entry.source and entry.source.bundleID then
-				rowImage = getAppIcon(entry.source.bundleID)
-			end
-
-			table.insert(choices, {
-				text = title,
-				subText = table.concat(parts, " · "),
-				image = rowImage,
-				index = i,
-			})
 		end
+	end
+
+	-- Stable sort by score when searching; otherwise preserve recency order.
+	if activeQuery ~= "" then
+		table.sort(matches, function(a, b)
+			if a.score ~= b.score then
+				return a.score > b.score
+			end
+			return a.index < b.index
+		end)
+	end
+
+	local choices = {}
+	for _, m in ipairs(matches) do
+		local entry = m.entry
+		local title
+		if entry.kind == "image" then
+			title = string.format("%s Image (%d×%d)", typeIcon.image, entry.width, entry.height)
+		else
+			local emoji = typeIcon[entry.kind] or typeIcon.text
+			title = emoji .. " " .. shorten(entry.text, 120)
+		end
+
+		if entry.pinned then
+			title = "📌 " .. title
+		end
+
+		local parts = {}
+		if entry.source and entry.source.name then
+			table.insert(parts, "from " .. entry.source.name)
+		end
+		table.insert(parts, os.date("%Y-%m-%d %H:%M:%S", entry.time))
+		table.insert(parts, describeSize(entry))
+
+		-- Image entries show their own thumbnail; everything else falls
+		-- back to the source app's bundle icon.
+		local rowImage
+		if entry.kind == "image" then
+			rowImage = hs.image.imageFromPath(entry.path)
+		elseif entry.source and entry.source.bundleID then
+			rowImage = getAppIcon(entry.source.bundleID)
+		end
+
+		-- The chooser's built-in matcher does case-insensitive substring
+		-- containment on `text` (and `subText` if enabled). Our own fuzzy
+		-- score has already filtered the rows, so we suffix the active
+		-- query as zero-size text on `text` to guarantee the built-in
+		-- matcher keeps every row we returned.
+		local renderedText
+		if activeQuery ~= "" then
+			renderedText = hs.styledtext.new(title)
+				.. hs.styledtext.new(" " .. activeQuery, { font = { size = 0.01 } })
+		else
+			renderedText = title
+		end
+
+		table.insert(choices, {
+			text = renderedText,
+			subText = table.concat(parts, " · "),
+			image = rowImage,
+			index = m.index,
+		})
 	end
 	return choices
 end
@@ -443,23 +534,30 @@ M.chooser = hs.chooser.new(function(choice)
 	performAction(entry, "paste")
 end)
 
-M.chooser:searchSubText(true)
 M.chooser:rows(10)
 M.chooser:width(45)
-M.chooser:placeholderText("Search clipboard… (try :image, :url, :file, :pinned)")
+M.chooser:placeholderText("Search content, app, date… or :image / :url / :file / :pinned")
+
+local validTags = {
+	text = true, url = true, file = true, image = true, pinned = true,
+}
 
 M.chooser:queryChangedCallback(function(query)
-	local prefix = query:match("^:(%a+)")
 	local newFilter = nil
-	if prefix then
-		prefix = prefix:lower()
-		if prefix == "text" or prefix == "url" or prefix == "file"
-				or prefix == "image" or prefix == "pinned" then
-			newFilter = prefix
-		end
+	local rest = query
+
+	-- Pull a leading ":tag " off the query if it matches a known filter.
+	local tag, after = query:match("^:(%a+)%s*(.*)$")
+	if tag and validTags[tag:lower()] then
+		newFilter = tag:lower()
+		rest = after or ""
 	end
-	if newFilter ~= activeFilter then
+
+	rest = rest:gsub("^%s+", ""):gsub("%s+$", "")
+
+	if newFilter ~= activeFilter or rest ~= activeQuery then
 		activeFilter = newFilter
+		activeQuery = rest
 		refreshChooser()
 	end
 end)
@@ -521,6 +619,7 @@ hs.hotkey.bind({ "cmd", "shift" }, "v", function()
 	-- Capture anything copied since the last poll so it shows up immediately.
 	checkPasteboard()
 	activeFilter = nil
+	activeQuery = ""
 	refreshChooser()
 	if #M.history == 0 then
 		hs.alert.show("Clipboard history is empty")
