@@ -10,6 +10,7 @@
 --   ⌘↵           – copy to clipboard without pasting
 --   ⌘.           – pin / unpin selected entry
 --   ⌘⌫           – delete selected entry
+--   ↑/↓, ⇥/⇧⇥, ⌃J/⌃K – move selection (focus stays on the search field)
 --
 -- Filters: prefix the query with `:text`, `:url`, `:file`, `:image`, or
 -- `:pinned` to narrow the list.
@@ -660,6 +661,35 @@ pickerKeys:bind({ "cmd" }, "delete", nil, function()
 		refreshChooser()
 	end
 end)
+
+-- Move the chooser selection without ever releasing focus from the search
+-- field. Wraps around at the ends so holding the key cycles through.
+local function moveSelection(delta)
+	local total = #buildChoices()
+	if total == 0 then
+		return
+	end
+	local current = M.chooser:selectedRow()
+	if current < 1 then
+		current = 1
+	end
+	local target = ((current - 1 + delta) % total + total) % total + 1
+	M.chooser:selectedRow(target)
+end
+
+local function bindNav(mods, key, delta)
+	pickerKeys:bind(mods, key, nil,
+		function() moveSelection(delta) end,
+		nil,
+		function() moveSelection(delta) end)
+end
+
+bindNav({}, "down", 1)
+bindNav({}, "up", -1)
+bindNav({}, "tab", 1)
+bindNav({ "shift" }, "tab", -1)
+bindNav({ "ctrl" }, "j", 1)
+bindNav({ "ctrl" }, "k", -1)
 
 M.chooser:showCallback(function() pickerKeys:enter() end)
 M.chooser:hideCallback(function() pickerKeys:exit() end)
