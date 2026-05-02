@@ -2,53 +2,67 @@
 -- Clipboard History Manager --
 -------------------------------
 
-local clipboardHistory = {}
+local M = {}
+
 local maxHistory = 5
-local lastContent = nil
+local pollInterval = 0.5
 
--- Watch for clipboard changes
-local clipboardWatcher = hs.pasteboard.watcher.new(function(content)
-	if content == nil or content == lastContent then
+M.history = {}
+M.lastChangeCount = hs.pasteboard.changeCount()
+
+local function addEntry(text)
+	if type(text) ~= "string" or text == "" then
 		return
 	end
-	if type(content) ~= "string" then
-		return
-	end
 
-	lastContent = content
-
-	-- Remove duplicate if already in history
-	for i, item in ipairs(clipboardHistory) do
-		if item.text == content then
-			table.remove(clipboardHistory, i)
+	-- Remove any existing duplicate
+	for i, item in ipairs(M.history) do
+		if item.text == text then
+			table.remove(M.history, i)
 			break
 		end
 	end
 
-	-- Prepend to history
-	table.insert(clipboardHistory, 1, {
-		text = content,
+	table.insert(M.history, 1, {
+		text = text,
 		time = os.time(),
 	})
 
-	-- Trim to max size
-	while #clipboardHistory > maxHistory do
-		table.remove(clipboardHistory)
+	while #M.history > maxHistory do
+		table.remove(M.history)
+	end
+end
+
+-- The pasteboard watcher's callback in Hammerspoon does NOT receive the new
+-- contents — you have to read them yourself. Use a polling timer based on
+-- changeCount(), which is the most reliable approach across content types.
+-- The timer is stored on the module table so it isn't garbage-collected.
+M.pollTimer = hs.timer.new(pollInterval, function()
+	local cc = hs.pasteboard.changeCount()
+	if cc == M.lastChangeCount then
+		return
+	end
+	M.lastChangeCount = cc
+
+	local content = hs.pasteboard.getContents()
+	if content and content ~= "" then
+		addEntry(content)
 	end
 end)
-
-clipboardWatcher:start()
+M.pollTimer:start()
 
 -- Build chooser rows from history
 local function buildChoices()
 	local choices = {}
-	for i, item in ipairs(clipboardHistory) do
-		local preview = item.text:gsub("^%s+", ""):gsub("%s+$", "") -- trim
-		preview = preview:gsub("\n", " ") -- flatten newlines
-		local subText = os.date("%H:%M:%S", item.time)
+	for i, item in ipairs(M.history) do
+		local preview = item.text:gsub("^%s+", ""):gsub("%s+$", "")
+		preview = preview:gsub("%s+", " ")
+		if #preview > 80 then
+			preview = preview:sub(1, 80) .. "…"
+		end
 		table.insert(choices, {
-			text = preview:sub(1, 80) .. (preview:len() > 80 and "…" or ""),
-			subText = subText,
+			text = preview,
+			subText = os.date("%H:%M:%S", item.time),
 			index = i,
 		})
 	end
@@ -56,31 +70,31 @@ local function buildChoices()
 end
 
 -- The chooser popup
-local chooser = hs.chooser.new(function(choice)
+M.chooser = hs.chooser.new(function(choice)
 	if not choice then
 		return
 	end
-	local item = clipboardHistory[choice.index]
+	local item = M.history[choice.index]
 	if not item then
 		return
 	end
 
-	-- Put selected item on clipboard and paste it
 	hs.pasteboard.setContents(item.text)
-	lastContent = item.text -- avoid re-adding to history
+	M.lastChangeCount = hs.pasteboard.changeCount()
 
-	-- Small delay so the clipboard is ready, then paste
 	hs.timer.doAfter(0.05, function()
 		hs.eventtap.keyStroke({ "cmd" }, "v")
 	end)
 end)
 
-chooser:searchSubText(false)
-chooser:rows(10)
-chooser:width(50)
+M.chooser:searchSubText(false)
+M.chooser:rows(10)
+M.chooser:width(50)
 
 -- Bind hotkey
 hs.hotkey.bind({ "cmd", "shift" }, "v", function()
-	chooser:choices(buildChoices())
-	chooser:show()
+	M.chooser:choices(buildChoices())
+	M.chooser:show()
 end)
+
+return M
