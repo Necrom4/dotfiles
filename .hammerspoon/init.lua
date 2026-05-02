@@ -40,3 +40,10 @@ for _, name in ipairs(modules) do
 		print("Error loading module: " .. name .. "\n" .. err)
 	end
 end
+
+-- Load spoons
+hs.loadSpoon("GridTile")
+
+hs.hotkey.bind({ "ctrl", "shift" }, "w", function()
+	spoon.GridTile:start()
+end)
