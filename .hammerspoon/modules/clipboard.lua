@@ -34,16 +34,8 @@ hs.fs.mkdir(imageDir)
 -- Helpers
 ----------------------------------------------------------------------------
 
-local function trim(s)
-	return (s:gsub("^%s+", ""):gsub("%s+$", ""))
-end
-
-local function flatten(s)
-	return (s:gsub("%s+", " "))
-end
-
 local function shorten(s, n)
-	s = flatten(trim(s))
+	s = s:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
 	if #s > n then
 		return s:sub(1, n) .. "…"
 	end
@@ -53,100 +45,79 @@ end
 local function humanBytes(n)
 	if n < 1024 then
 		return string.format("%d B", n)
-	elseif n < 1024 * 1024 then
-		return string.format("%.1f KB", n / 1024)
-	else
-		return string.format("%.1f MB", n / 1024 / 1024)
 	end
+	if n < 1024 * 1024 then
+		return string.format("%.1f KB", n / 1024)
+	end
+	return string.format("%.1f MB", n / 1024 / 1024)
 end
 
 local function looksLikeURL(s)
-	return s:match("^https?://[%w%-_%.]+") ~= nil
-		or s:match("^ftp://[%w%-_%.]+") ~= nil
-		or s:match("^file://") ~= nil
+	return s:match("^%a[%w+.-]*://") ~= nil
 end
 
 local function looksLikeFilePath(s)
-	if s:sub(1, 1) ~= "/" then
-		return false
-	end
-	if s:find("\n") then
-		return false
-	end
-	return hs.fs.attributes(s) ~= nil
+	return s:sub(1, 1) == "/" and not s:find("\n") and hs.fs.attributes(s) ~= nil
 end
 
 -- Subsequence-based fuzzy match. Returns a score (higher is better) or nil
--- if the query characters don't all appear in haystack in order. Consecutive
--- matches and matches at word boundaries score higher.
+-- if the needle's characters don't all appear in haystack in order.
+-- Consecutive matches and matches at word boundaries score higher. The
+-- caller must supply a non-empty needle.
 local function fuzzyScore(haystack, needle)
-	if needle == "" then
-		return 0
-	end
-	haystack = haystack:lower()
-	needle = needle:lower()
-	local hi, ni = 1, 1
-	local hLen, nLen = #haystack, #needle
-	local score = 0
-	local prevMatched = false
-	while hi <= hLen and ni <= nLen do
-		local hc = haystack:sub(hi, hi)
-		local nc = needle:sub(ni, ni)
-		if hc == nc then
+	haystack, needle = haystack:lower(), needle:lower()
+	local nLen = #needle
+	local ni, score, prevMatched = 1, 0, false
+	for hi = 1, #haystack do
+		if ni > nLen then break end
+		if haystack:sub(hi, hi) == needle:sub(ni, ni) then
 			score = score + 1
-			if prevMatched then
-				score = score + 4
-			end
+			if prevMatched then score = score + 4 end
 			local prev = hi > 1 and haystack:sub(hi - 1, hi - 1) or " "
-			if prev:match("[%s%p]") then
-				score = score + 3
-			end
-			ni = ni + 1
-			prevMatched = true
+			if prev:match("[%s%p]") then score = score + 3 end
+			ni, prevMatched = ni + 1, true
 		else
 			prevMatched = false
 		end
-		hi = hi + 1
 	end
-	if ni <= nLen then
-		return nil
-	end
-	return score
+	return ni > nLen and score or nil
 end
 
 ----------------------------------------------------------------------------
 -- Persistence
 ----------------------------------------------------------------------------
 
-local function loadHistory()
-	local f = io.open(historyFile, "r")
-	if not f then
-		return {}
-	end
+local function readFile(path)
+	local f = io.open(path, "r")
+	if not f then return nil end
 	local raw = f:read("*a")
 	f:close()
-	if not raw or raw == "" then
-		return {}
-	end
+	return raw
+end
+
+-- Write to a temp file then rename so a crash mid-write can't corrupt
+-- the destination.
+local function atomicWrite(path, contents)
+	local tmp = path .. ".tmp"
+	local f = io.open(tmp, "w")
+	if not f then return end
+	f:write(contents)
+	f:close()
+	os.rename(tmp, path)
+end
+
+local function loadHistory()
+	local raw = readFile(historyFile)
+	if not raw or raw == "" then return {} end
 	local ok, decoded = pcall(hs.json.decode, raw)
-	if not (ok and type(decoded) == "table") then
-		return {}
-	end
+	if not (ok and type(decoded) == "table") then return {} end
 
 	-- Backfill fields on entries written by earlier versions of the module.
 	for _, entry in ipairs(decoded) do
-		if not entry.kind then
-			if entry.path then
-				entry.kind = "image"
-			else
-				entry.kind = "text"
-			end
-		end
-		if not entry.time then
-			entry.time = 0
-		end
-		if entry.kind ~= "image" and not entry.bytes then
-			entry.bytes = entry.text and #entry.text or 0
+		entry.kind = entry.kind or (entry.path and "image" or "text")
+		entry.time = entry.time or 0
+		if entry.kind ~= "image" then
+			entry.bytes = entry.bytes or (entry.text and #entry.text or 0)
 		end
 	end
 	return decoded
@@ -154,19 +125,7 @@ end
 
 local function saveHistory()
 	local ok, encoded = pcall(hs.json.encode, M.history)
-	if not ok then
-		return
-	end
-	-- Write to a temp file then rename so a crash mid-write can't corrupt
-	-- the history file.
-	local tmp = historyFile .. ".tmp"
-	local f = io.open(tmp, "w")
-	if not f then
-		return
-	end
-	f:write(encoded)
-	f:close()
-	os.rename(tmp, historyFile)
+	if ok then atomicWrite(historyFile, encoded) end
 end
 
 ----------------------------------------------------------------------------
@@ -176,26 +135,17 @@ end
 local iconCache = {}
 
 local function getAppIcon(bundleID)
-	if not bundleID then
-		return nil
-	end
-	if iconCache[bundleID] ~= nil then
-		return iconCache[bundleID] or nil
-	end
+	if not bundleID then return nil end
+	local cached = iconCache[bundleID]
+	if cached ~= nil then return cached or nil end
 	local img = hs.image.imageFromAppBundle(bundleID)
-	iconCache[bundleID] = img or false
+	iconCache[bundleID] = img or false -- false = remembered miss
 	return img
 end
 
 local function getFrontmostInfo()
 	local app = hs.application.frontmostApplication()
-	if not app then
-		return nil
-	end
-	return {
-		name = app:name(),
-		bundleID = app:bundleID(),
-	}
+	return app and { name = app:name(), bundleID = app:bundleID() } or nil
 end
 
 ----------------------------------------------------------------------------
@@ -203,26 +153,17 @@ end
 ----------------------------------------------------------------------------
 
 local function classifyText(text)
-	if looksLikeURL(text) then
-		return "url"
-	end
-	if looksLikeFilePath(text) then
-		return "file"
-	end
+	if looksLikeURL(text) then return "url" end
+	if looksLikeFilePath(text) then return "file" end
 	return "text"
 end
 
 local function captureImage(source)
 	local img = hs.pasteboard.readImage()
-	if not img then
-		return nil
-	end
-	local size = img:size()
+	if not img then return nil end
 	local filename = string.format("%s/clip-%d-%d.png", imageDir, os.time(), math.random(100000, 999999))
-	local ok = img:saveToFile(filename, "png")
-	if not ok then
-		return nil
-	end
+	if not img:saveToFile(filename, "png") then return nil end
+	local size = img:size()
 	local attrs = hs.fs.attributes(filename) or {}
 	return {
 		kind = "image",
@@ -237,10 +178,7 @@ end
 
 local function captureText(source)
 	local text = hs.pasteboard.getContents()
-	if type(text) ~= "string" or text == "" then
-		return nil
-	end
-	if #text > maxTextLength then
+	if type(text) ~= "string" or text == "" or #text > maxTextLength then
 		return nil
 	end
 	return {
@@ -252,27 +190,30 @@ local function captureText(source)
 	}
 end
 
+-- Approximate equality: images by dimensions+size (no pixel hashing),
+-- text-like entries by content.
 local function entryEquals(a, b)
-	if a.kind ~= b.kind then
-		return false
-	end
+	if a.kind ~= b.kind then return false end
 	if a.kind == "image" then
-		-- Approximate image equality without hashing the pixels.
 		return a.bytes == b.bytes and a.width == b.width and a.height == b.height
 	end
 	return a.text == b.text
 end
 
-local function addEntry(entry)
-	if not entry then
-		return false
+local function deleteImageFile(entry)
+	if entry.kind == "image" and entry.path then
+		os.remove(entry.path)
 	end
+end
+
+local function addEntry(entry)
+	if not entry then return false end
 
 	-- A duplicate keeps the older entry's pinned flag and image file so a
 	-- re-copy doesn't silently unpin or leave an orphan PNG on disk.
 	for i, item in ipairs(M.history) do
 		if entryEquals(item, entry) then
-			entry.pinned = item.pinned or entry.pinned
+			entry.pinned = entry.pinned or item.pinned
 			if entry.kind == "image" and item.path ~= entry.path then
 				os.remove(entry.path)
 				entry.path = item.path
@@ -284,10 +225,8 @@ local function addEntry(entry)
 
 	table.insert(M.history, 1, entry)
 
-	-- Pinned entries are kept regardless of position; only non-pinned
-	-- entries count toward maxHistory.
-	local kept = {}
-	local nonPinned = 0
+	-- Pinned entries don't count toward maxHistory and are never evicted.
+	local kept, nonPinned = {}, 0
 	for _, item in ipairs(M.history) do
 		if item.pinned then
 			table.insert(kept, item)
@@ -295,13 +234,12 @@ local function addEntry(entry)
 			nonPinned = nonPinned + 1
 			if nonPinned <= maxHistory then
 				table.insert(kept, item)
-			elseif item.kind == "image" and item.path then
-				os.remove(item.path)
+			else
+				deleteImageFile(item)
 			end
 		end
 	end
 	M.history = kept
-
 	saveHistory()
 	return true
 end
@@ -315,9 +253,7 @@ M.lastChangeCount = hs.pasteboard.changeCount()
 
 local function checkPasteboard()
 	local cc = hs.pasteboard.changeCount()
-	if cc == M.lastChangeCount then
-		return
-	end
+	if cc == M.lastChangeCount then return end
 	M.lastChangeCount = cc
 
 	local source = getFrontmostInfo()
@@ -325,28 +261,13 @@ local function checkPasteboard()
 
 	-- Many apps publish both image and text representations of the same
 	-- copy. Prefer text when both exist so e.g. selecting code in a browser
-	-- isn't stored as a screenshot.
-	if types.image and not types.string then
-		local entry = captureImage(source)
-		if entry then
-			addEntry(entry)
-			return
-		end
+	-- isn't stored as a screenshot. Only fall back to image when no usable
+	-- text was found.
+	if (types.string or types.styledText) and addEntry(captureText(source)) then
+		return
 	end
-
-	if types.string or types.styledText then
-		local entry = captureText(source)
-		if entry then
-			addEntry(entry)
-			return
-		end
-	end
-
 	if types.image then
-		local entry = captureImage(source)
-		if entry then
-			addEntry(entry)
-		end
+		addEntry(captureImage(source))
 	end
 end
 
@@ -360,9 +281,7 @@ M.pollTimer:start()
 local function restoreEntry(entry)
 	if entry.kind == "image" then
 		local img = hs.image.imageFromPath(entry.path)
-		if img then
-			hs.pasteboard.writeObjects(img)
-		end
+		if img then hs.pasteboard.writeObjects(img) end
 	else
 		hs.pasteboard.setContents(entry.text)
 	end
@@ -378,30 +297,26 @@ local activeFilter = nil
 local activeQuery = ""
 
 local function entryMatchesFilter(entry)
-	if not activeFilter then
-		return true
-	end
-	if activeFilter == "pinned" then
-		return entry.pinned == true
-	end
+	if not activeFilter then return true end
+	if activeFilter == "pinned" then return entry.pinned == true end
 	return entry.kind == activeFilter
+end
+
+local function entryAppName(entry)
+	return entry.source and entry.source.name or nil
+end
+
+local function entryFormattedTime(entry)
+	return os.date("%Y-%m-%d %H:%M:%S", entry.time)
 end
 
 -- Concatenated text used for searching: full content (or filename for
 -- images), source app, formatted date and the type tag.
 local function searchableText(entry)
-	local parts = {}
-	if entry.kind == "image" then
-		table.insert(parts, entry.path:match("[^/]+$") or "")
-	else
-		table.insert(parts, entry.text or "")
-	end
-	if entry.source and entry.source.name then
-		table.insert(parts, entry.source.name)
-	end
-	table.insert(parts, os.date("%Y-%m-%d %H:%M:%S", entry.time))
-	table.insert(parts, entry.kind)
-	return table.concat(parts, " ")
+	local body = entry.kind == "image"
+		and (entry.path:match("[^/]+$") or "")
+		or (entry.text or "")
+	return table.concat({ body, entryAppName(entry) or "", entryFormattedTime(entry), entry.kind }, " ")
 end
 
 local function describeSize(entry)
@@ -416,82 +331,66 @@ end
 ----------------------------------------------------------------------------
 
 local function buildSubText(entry)
+	local app = entryAppName(entry)
 	local parts = { entry.kind }
-	if entry.source and entry.source.name then
-		table.insert(parts, "from " .. entry.source.name)
-	end
-	table.insert(parts, os.date("%Y-%m-%d %H:%M:%S", entry.time))
+	if app then table.insert(parts, "from " .. app) end
+	table.insert(parts, entryFormattedTime(entry))
 	table.insert(parts, describeSize(entry))
-	if entry.pinned then
-		table.insert(parts, "pinned")
-	end
+	if entry.pinned then table.insert(parts, "pinned") end
 	return table.concat(parts, " • ")
+end
+
+local function rowTitle(entry)
+	if entry.kind == "image" then
+		return string.format("Image (%d×%d)", entry.width, entry.height)
+	end
+	return shorten(entry.text, 120)
+end
+
+-- Image entries show their own thumbnail; everything else falls back to
+-- the source app's bundle icon.
+local function rowImage(entry)
+	if entry.kind == "image" then return hs.image.imageFromPath(entry.path) end
+	return getAppIcon(entry.source and entry.source.bundleID)
+end
+
+-- The chooser's built-in matcher does case-insensitive substring containment
+-- and runs after our fuzzy filter. Suffix the active query as zero-size
+-- styled text so every row our scorer kept survives that second pass.
+local function withHiddenQuery(text)
+	if activeQuery == "" then return text end
+	return hs.styledtext.new(text)
+		.. hs.styledtext.new(" " .. activeQuery, { font = { size = 0.01 } })
 end
 
 local function buildChoices()
 	local matches = {}
 	for i, entry in ipairs(M.history) do
 		if entryMatchesFilter(entry) then
-			local score = 0
-			if activeQuery ~= "" then
-				score = fuzzyScore(searchableText(entry), activeQuery)
-			end
+			local score = activeQuery == "" and 0 or fuzzyScore(searchableText(entry), activeQuery)
 			if score then
-				table.insert(matches, { entry = entry, index = i, score = score })
+				matches[#matches + 1] = { entry = entry, index = i, score = score }
 			end
 		end
 	end
 
-	-- Stable sort by score when searching; otherwise preserve recency order.
+	-- When searching, sort by score (descending), tie-break by recency.
 	if activeQuery ~= "" then
 		table.sort(matches, function(a, b)
-			if a.score ~= b.score then
-				return a.score > b.score
-			end
+			if a.score ~= b.score then return a.score > b.score end
 			return a.index < b.index
 		end)
 	end
 
 	local choices = {}
 	for _, m in ipairs(matches) do
-		local entry = m.entry
-		local title
-		if entry.kind == "image" then
-			title = string.format("Image (%d×%d)", entry.width, entry.height)
-		else
-			title = shorten(entry.text, 120)
-		end
-
-		-- Image entries show their own thumbnail; everything else falls
-		-- back to the source app's bundle icon.
-		local rowImage
-		if entry.kind == "image" then
-			rowImage = hs.image.imageFromPath(entry.path)
-		elseif entry.source and entry.source.bundleID then
-			rowImage = getAppIcon(entry.source.bundleID)
-		end
-
-		-- The chooser's built-in matcher does case-insensitive substring
-		-- containment on `text` (and `subText` if enabled). Our own fuzzy
-		-- score has already filtered the rows, so we hide the active query
-		-- inside the subtext as zero-size text to guarantee the built-in
-		-- matcher keeps every row we returned. The title stays a plain
-		-- string so the chooser styles it with its default text color.
-		local subTextStr = buildSubText(entry)
-		local subText = subTextStr
-		if activeQuery ~= "" then
-			subText = hs.styledtext.new(subTextStr)
-				.. hs.styledtext.new(" " .. activeQuery, { font = { size = 0.01 } })
-		end
-
-		table.insert(choices, {
-			text = title,
-			subText = subText,
-			image = rowImage,
+		choices[#choices + 1] = {
+			text = rowTitle(m.entry),
+			subText = withHiddenQuery(buildSubText(m.entry)),
+			image = rowImage(m.entry),
 			index = m.index,
-		})
+		}
 	end
-
 	return choices
 end
 
@@ -506,49 +405,48 @@ local function pasteAfterDismiss()
 	end)
 end
 
-local function performAction(entry, action)
-	if not entry then
-		return
-	end
-
-	if action == "copy" then
-		restoreEntry(entry)
-	elseif action == "paste" then
-		restoreEntry(entry)
-		-- Most-recently-used: bump the chosen entry to the top.
-		for i, item in ipairs(M.history) do
-			if item == entry then
-				table.remove(M.history, i)
-				table.insert(M.history, 1, entry)
-				break
-			end
-		end
-		saveHistory()
-		pasteAfterDismiss()
-	elseif action == "togglePin" then
-		entry.pinned = not entry.pinned
-		saveHistory()
-		hs.alert.show(entry.pinned and "Pinned" or "Unpinned")
-	elseif action == "delete" then
-		for i, item in ipairs(M.history) do
-			if item == entry then
-				if item.kind == "image" and item.path then
-					os.remove(item.path)
-				end
-				table.remove(M.history, i)
-				break
-			end
-		end
-		saveHistory()
+local function indexOf(entry)
+	for i, item in ipairs(M.history) do
+		if item == entry then return i end
 	end
 end
 
+local actions = {
+	copy = function(entry)
+		restoreEntry(entry)
+	end,
+	paste = function(entry)
+		restoreEntry(entry)
+		-- Most-recently-used: bump the chosen entry to the top.
+		local i = indexOf(entry)
+		if i then
+			table.remove(M.history, i)
+			table.insert(M.history, 1, entry)
+		end
+		saveHistory()
+		pasteAfterDismiss()
+	end,
+	togglePin = function(entry)
+		entry.pinned = not entry.pinned
+		saveHistory()
+		hs.alert.show(entry.pinned and "Pinned" or "Unpinned")
+	end,
+	delete = function(entry)
+		local i = indexOf(entry)
+		if i then
+			deleteImageFile(entry)
+			table.remove(M.history, i)
+		end
+		saveHistory()
+	end,
+}
+
+local function performAction(entry, action)
+	if entry and actions[action] then actions[action](entry) end
+end
+
 M.chooser = hs.chooser.new(function(choice)
-	if not choice then
-		return
-	end
-	local entry = M.history[choice.index]
-	performAction(entry, "paste")
+	if choice then performAction(M.history[choice.index], "paste") end
 end)
 
 M.chooser:rows(10)
@@ -584,50 +482,38 @@ M.chooser:queryChangedCallback(function(query)
 end)
 
 M.chooser:rightClickCallback(function(row)
-	if row == 0 then
-		return
-	end
-	local choiceList = buildChoices()
-	local choice = choiceList[row]
-	if not choice then
-		return
-	end
-	local entry = M.history[choice.index]
-	if not entry then
-		return
-	end
+	if row == 0 then return end
+	local choice = buildChoices()[row]
+	local entry = choice and M.history[choice.index]
+	if not entry then return end
 
-	local menu = hs.menubar.new(false)
+	local function hideThen(name) return function()
+		M.chooser:hide()
+		performAction(entry, name)
+	end end
+	local function refreshAfter(name) return function()
+		performAction(entry, name)
+		refreshChooser()
+	end end
+
 	local items = {
-		{ title = "Paste", fn = function()
-			M.chooser:hide()
-			performAction(entry, "paste")
-		end },
-		{ title = "Copy to Clipboard", fn = function()
-			M.chooser:hide()
-			performAction(entry, "copy")
-		end },
+		{ title = "Paste",                  fn = hideThen("paste") },
+		{ title = "Copy to Clipboard",      fn = hideThen("copy") },
 		{ title = "-" },
-		{ title = entry.pinned and "Unpin" or "Pin", fn = function()
-			performAction(entry, "togglePin")
-			refreshChooser()
-		end },
-		{ title = "Delete", fn = function()
-			performAction(entry, "delete")
-			refreshChooser()
-		end },
+		{ title = entry.pinned and "Unpin" or "Pin", fn = refreshAfter("togglePin") },
+		{ title = "Delete",                 fn = refreshAfter("delete") },
 	}
 	if entry.kind == "image" then
 		table.insert(items, { title = "-" })
-		table.insert(items, { title = "Reveal in Finder", fn = function()
-			hs.execute(string.format("open -R %q", entry.path))
-		end })
+		table.insert(items, { title = "Reveal in Finder",
+			fn = function() hs.execute(string.format("open -R %q", entry.path)) end })
 	elseif entry.kind == "url" then
 		table.insert(items, { title = "-" })
-		table.insert(items, { title = "Open URL", fn = function()
-			hs.urlevent.openURL(entry.text)
-		end })
+		table.insert(items, { title = "Open URL",
+			fn = function() hs.urlevent.openURL(entry.text) end })
 	end
+
+	local menu = hs.menubar.new(false)
 	menu:setMenu(items)
 	menu:popupMenu(hs.mouse.absolutePosition(), true)
 end)
@@ -639,23 +525,18 @@ end)
 hs.hotkey.bind({ "cmd", "shift" }, "v", function()
 	-- Capture anything copied since the last poll so it shows up immediately.
 	checkPasteboard()
-	activeFilter = nil
-	activeQuery = ""
-	refreshChooser()
 	if #M.history == 0 then
 		hs.alert.show("Clipboard history is empty")
 		return
 	end
+	activeFilter, activeQuery = nil, ""
 	M.chooser:query("")
+	refreshChooser()
 	M.chooser:show()
 end)
 
 hs.hotkey.bind({ "cmd", "shift", "alt" }, "v", function()
-	for _, item in ipairs(M.history) do
-		if item.kind == "image" and item.path then
-			os.remove(item.path)
-		end
-	end
+	for _, item in ipairs(M.history) do deleteImageFile(item) end
 	M.history = {}
 	saveHistory()
 	hs.alert.show("Clipboard history cleared")
@@ -664,61 +545,46 @@ end)
 -- A modal so these shortcuts only intercept keys while the chooser is open.
 local pickerKeys = hs.hotkey.modal.new()
 
-pickerKeys:bind({ "cmd" }, "return", nil, function()
-	local row = M.chooser:selectedRow()
-	local choice = buildChoices()[row]
-	if choice then
-		M.chooser:hide()
-		performAction(M.history[choice.index], "copy")
-	end
-end)
+local function selectedEntry()
+	local choice = buildChoices()[M.chooser:selectedRow()]
+	return choice and M.history[choice.index] or nil
+end
 
-pickerKeys:bind({ "cmd" }, ".", nil, function()
-	local row = M.chooser:selectedRow()
-	local choice = buildChoices()[row]
-	if choice then
-		performAction(M.history[choice.index], "togglePin")
-		refreshChooser()
-	end
-end)
+local function bindAction(mods, key, action, opts)
+	opts = opts or {}
+	pickerKeys:bind(mods, key, nil, function()
+		local entry = selectedEntry()
+		if not entry then return end
+		if opts.hide then M.chooser:hide() end
+		performAction(entry, action)
+		if opts.refresh then refreshChooser() end
+	end)
+end
 
-pickerKeys:bind({ "cmd" }, "delete", nil, function()
-	local row = M.chooser:selectedRow()
-	local choice = buildChoices()[row]
-	if choice then
-		performAction(M.history[choice.index], "delete")
-		refreshChooser()
-	end
-end)
+bindAction({ "cmd" }, "return", "copy",      { hide = true })
+bindAction({ "cmd" }, ".",      "togglePin", { refresh = true })
+bindAction({ "cmd" }, "delete", "delete",    { refresh = true })
 
 -- Move the chooser selection without ever releasing focus from the search
 -- field. Wraps around at the ends so holding the key cycles through.
 local function moveSelection(delta)
 	local total = #buildChoices()
-	if total == 0 then
-		return
-	end
-	local current = M.chooser:selectedRow()
-	if current < 1 then
-		current = 1
-	end
-	local target = ((current - 1 + delta) % total + total) % total + 1
-	M.chooser:selectedRow(target)
+	if total == 0 then return end
+	local current = math.max(1, M.chooser:selectedRow())
+	M.chooser:selectedRow((current - 1 + delta) % total + 1)
 end
 
 local function bindNav(mods, key, delta)
-	pickerKeys:bind(mods, key, nil,
-		function() moveSelection(delta) end,
-		nil,
-		function() moveSelection(delta) end)
+	local fn = function() moveSelection(delta) end
+	pickerKeys:bind(mods, key, nil, fn, nil, fn)
 end
 
-bindNav({}, "down", 1)
-bindNav({}, "up", -1)
-bindNav({}, "tab", 1)
+bindNav({},          "down", 1)
+bindNav({},          "up",  -1)
+bindNav({},          "tab",  1)
 bindNav({ "shift" }, "tab", -1)
-bindNav({ "ctrl" }, "j", 1)
-bindNav({ "ctrl" }, "k", -1)
+bindNav({ "ctrl" },  "j",    1)
+bindNav({ "ctrl" },  "k",   -1)
 
 M.chooser:showCallback(function() pickerKeys:enter() end)
 M.chooser:hideCallback(function() pickerKeys:exit() end)
@@ -735,11 +601,15 @@ function M.debug()
 	print("pollTimer running:", M.pollTimer and M.pollTimer:running())
 	print("active filter:", activeFilter or "(none)")
 	for i, item in ipairs(M.history) do
-		local desc = item.kind == "image"
-			and string.format("[image %dx%d]", item.width or 0, item.height or 0)
-			or string.format("[%s] %s", item.kind, (item.text or ""):sub(1, 60))
-		local src = item.source and item.source.name or "?"
-		print(i, item.pinned and "[pinned]" or "        ", os.date("%H:%M:%S", item.time), src, desc)
+		local desc
+		if item.kind == "image" then
+			desc = string.format("[image %dx%d]", item.width or 0, item.height or 0)
+		else
+			desc = string.format("[%s] %s", item.kind, (item.text or ""):sub(1, 60))
+		end
+		print(i, item.pinned and "[pinned]" or "        ",
+			os.date("%H:%M:%S", item.time),
+			entryAppName(item) or "?", desc)
 	end
 end
 
