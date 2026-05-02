@@ -1,15 +1,5 @@
 --------------------------------------------------------------------------
--- Clipboard History Manager (Raycast-style)
---
--- Features:
---   • Tracks text, URLs, file paths, and images
---   • Records source app (name + bundle ID + icon) for each entry
---   • Pin entries (kept at top, never auto-evicted)
---   • Type filters: prefix the query with `:text`, `:url`, `:image`,
---     `:file`, `:pinned` to filter the list
---   • MRU ordering: selecting an entry bumps it to the top
---   • Image thumbnails shown inline in the chooser
---   • Persistent across reloads (~/.hammerspoon/clipboard_history.json)
+-- Clipboard History Manager
 --
 -- Hotkeys:
 --   ⌘⇧V          – open clipboard history
@@ -18,9 +8,11 @@
 -- Inside the chooser:
 --   ↵            – paste selected entry into the previous app
 --   ⌘↵           – copy to clipboard without pasting
---   ⌥↵           – paste as plain text (strips formatting)
 --   ⌘.           – pin / unpin selected entry
 --   ⌘⌫           – delete selected entry
+--
+-- Filters: prefix the query with `:text`, `:url`, `:file`, `:image`, or
+-- `:pinned` to narrow the list.
 --------------------------------------------------------------------------
 
 local M = {}
@@ -29,14 +21,12 @@ local M = {}
 -- Configuration
 ----------------------------------------------------------------------------
 
-local maxHistory       = 100
-local maxTextLength    = 1024 * 1024 -- 1 MB; ignore absurd text payloads
-local pollInterval     = 0.4
-local imageDir         = os.getenv("HOME") .. "/.hammerspoon/clipboard_images"
-local historyFile      = os.getenv("HOME") .. "/.hammerspoon/clipboard_history.json"
-local thumbSize        = 48 -- chooser row image size
+local maxHistory    = 100
+local maxTextLength = 1024 * 1024 -- 1 MB
+local pollInterval  = 0.4
+local imageDir      = os.getenv("HOME") .. "/.hammerspoon/clipboard_images"
+local historyFile   = os.getenv("HOME") .. "/.hammerspoon/clipboard_history.json"
 
--- Make sure the image cache directory exists
 hs.fs.mkdir(imageDir)
 
 ----------------------------------------------------------------------------
@@ -76,7 +66,6 @@ local function looksLikeURL(s)
 end
 
 local function looksLikeFilePath(s)
-	-- Rough heuristic: starts with / and points at something that exists
 	if s:sub(1, 1) ~= "/" then
 		return false
 	end
@@ -112,7 +101,8 @@ local function saveHistory()
 	if not ok then
 		return
 	end
-	-- Atomic write
+	-- Write to a temp file then rename so a crash mid-write can't corrupt
+	-- the history file.
 	local tmp = historyFile .. ".tmp"
 	local f = io.open(tmp, "w")
 	if not f then
@@ -173,14 +163,12 @@ local function classifyText(text)
 	return "text"
 end
 
--- Try to grab an image from the pasteboard, save it to disk, return entry.
 local function captureImage(source)
 	local img = hs.pasteboard.readImage()
 	if not img then
 		return nil
 	end
 	local size = img:size()
-	-- Use timestamp + a short hash to name the file
 	local filename = string.format("%s/clip-%d-%d.png", imageDir, os.time(), math.random(100000, 999999))
 	local ok = img:saveToFile(filename, "png")
 	if not ok then
@@ -220,7 +208,7 @@ local function entryEquals(a, b)
 		return false
 	end
 	if a.kind == "image" then
-		-- Same byte count + dimensions == probably the same image
+		-- Approximate image equality without hashing the pixels.
 		return a.bytes == b.bytes and a.width == b.width and a.height == b.height
 	end
 	return a.text == b.text
@@ -231,11 +219,11 @@ local function addEntry(entry)
 		return false
 	end
 
-	-- Find and remove duplicate (but keep its `pinned` flag)
+	-- A duplicate keeps the older entry's pinned flag and image file so a
+	-- re-copy doesn't silently unpin or leave an orphan PNG on disk.
 	for i, item in ipairs(M.history) do
 		if entryEquals(item, entry) then
 			entry.pinned = item.pinned or entry.pinned
-			-- If we're keeping the older image, no need to keep the new file
 			if entry.kind == "image" and item.path ~= entry.path then
 				os.remove(entry.path)
 				entry.path = item.path
@@ -247,7 +235,8 @@ local function addEntry(entry)
 
 	table.insert(M.history, 1, entry)
 
-	-- Trim non-pinned entries beyond limit
+	-- Pinned entries are kept regardless of position; only non-pinned
+	-- entries count toward maxHistory.
 	local kept = {}
 	local nonPinned = 0
 	for _, item in ipairs(M.history) do
@@ -257,11 +246,8 @@ local function addEntry(entry)
 			nonPinned = nonPinned + 1
 			if nonPinned <= maxHistory then
 				table.insert(kept, item)
-			else
-				-- evicted
-				if item.kind == "image" and item.path then
-					os.remove(item.path)
-				end
+			elseif item.kind == "image" and item.path then
+				os.remove(item.path)
 			end
 		end
 	end
@@ -288,10 +274,9 @@ local function checkPasteboard()
 	local source = getFrontmostInfo()
 	local types = hs.pasteboard.typesAvailable()
 
-	-- Prefer image when available and there's no plain text the user actually
-	-- copied (lots of apps put both image + text representations on the
-	-- pasteboard; if both are present, store the text and skip the image so
-	-- code copies don't suddenly turn into pictures).
+	-- Many apps publish both image and text representations of the same
+	-- copy. Prefer text when both exist so e.g. selecting code in a browser
+	-- isn't stored as a screenshot.
 	if types.image and not types.string then
 		local entry = captureImage(source)
 		if entry then
@@ -308,7 +293,6 @@ local function checkPasteboard()
 		end
 	end
 
-	-- Pure image case (no string at all)
 	if types.image then
 		local entry = captureImage(source)
 		if entry then
@@ -324,19 +308,14 @@ M.pollTimer:start()
 -- Restore an entry to the system pasteboard
 ----------------------------------------------------------------------------
 
-local function restoreEntry(entry, asPlainText)
+local function restoreEntry(entry)
 	if entry.kind == "image" then
 		local img = hs.image.imageFromPath(entry.path)
 		if img then
 			hs.pasteboard.writeObjects(img)
 		end
 	else
-		-- For URL/file/text — always set as a plain string. Raycast's
-		-- "paste as plain text" vs "paste with formatting" only matters when
-		-- you have rich-text data; we don't preserve styled text in history.
-		if asPlainText or true then
-			hs.pasteboard.setContents(entry.text)
-		end
+		hs.pasteboard.setContents(entry.text)
 	end
 	M.lastChangeCount = hs.pasteboard.changeCount()
 end
@@ -345,7 +324,8 @@ end
 -- Chooser
 ----------------------------------------------------------------------------
 
-local activeFilter = nil -- nil | "text" | "url" | "file" | "image" | "pinned"
+-- One of nil, "text", "url", "file", "image", "pinned".
+local activeFilter = nil
 
 local function entryMatchesFilter(entry)
 	if not activeFilter then
@@ -380,7 +360,6 @@ local function buildChoices()
 				title = "📌 " .. title
 			end
 
-			-- subText: source app · time · size
 			local parts = {}
 			if entry.source and entry.source.name then
 				table.insert(parts, "from " .. entry.source.name)
@@ -388,7 +367,8 @@ local function buildChoices()
 			table.insert(parts, os.date("%Y-%m-%d %H:%M:%S", entry.time))
 			table.insert(parts, describeSize(entry))
 
-			-- Pick the row image: image thumbnail, app icon, or generic icon
+			-- Image entries show their own thumbnail; everything else falls
+			-- back to the source app's bundle icon.
 			local rowImage
 			if entry.kind == "image" then
 				rowImage = hs.image.imageFromPath(entry.path)
@@ -412,7 +392,7 @@ local function refreshChooser()
 end
 
 local function pasteAfterDismiss()
-	-- Small delay so the chooser is fully gone and focus is back on prev app
+	-- Wait until focus has returned to the previous app before pressing ⌘V.
 	hs.timer.doAfter(0.08, function()
 		hs.eventtap.keyStroke({ "cmd" }, "v")
 	end)
@@ -425,9 +405,9 @@ local function performAction(entry, action)
 
 	if action == "copy" then
 		restoreEntry(entry)
-	elseif action == "paste" or action == "paste-plain" then
-		restoreEntry(entry, action == "paste-plain")
-		-- Move to top (MRU)
+	elseif action == "paste" then
+		restoreEntry(entry)
+		-- Most-recently-used: bump the chosen entry to the top.
 		for i, item in ipairs(M.history) do
 			if item == entry then
 				table.remove(M.history, i)
@@ -456,7 +436,6 @@ local function performAction(entry, action)
 end
 
 M.chooser = hs.chooser.new(function(choice)
-	-- Default action when user presses ↵: paste with active app
 	if not choice then
 		return
 	end
@@ -469,7 +448,6 @@ M.chooser:rows(10)
 M.chooser:width(45)
 M.chooser:placeholderText("Search clipboard… (try :image, :url, :file, :pinned)")
 
--- Type-filter via query prefix
 M.chooser:queryChangedCallback(function(query)
 	local prefix = query:match("^:(%a+)")
 	local newFilter = nil
@@ -486,7 +464,6 @@ M.chooser:queryChangedCallback(function(query)
 	end
 end)
 
--- Right-click → context menu
 M.chooser:rightClickCallback(function(row)
 	if row == 0 then
 		return
@@ -541,7 +518,7 @@ end)
 ----------------------------------------------------------------------------
 
 hs.hotkey.bind({ "cmd", "shift" }, "v", function()
-	-- Catch any pending change before showing
+	-- Capture anything copied since the last poll so it shows up immediately.
 	checkPasteboard()
 	activeFilter = nil
 	refreshChooser()
@@ -554,7 +531,6 @@ hs.hotkey.bind({ "cmd", "shift" }, "v", function()
 end)
 
 hs.hotkey.bind({ "cmd", "shift", "alt" }, "v", function()
-	-- Wipe history and stored images
 	for _, item in ipairs(M.history) do
 		if item.kind == "image" and item.path then
 			os.remove(item.path)
@@ -565,8 +541,7 @@ hs.hotkey.bind({ "cmd", "shift", "alt" }, "v", function()
 	hs.alert.show("Clipboard history cleared")
 end)
 
--- In-chooser bindings via a modal triggered while chooser is visible.
--- We use hs.hotkey.modal so the keys only intercept while the picker is open.
+-- A modal so these shortcuts only intercept keys while the chooser is open.
 local pickerKeys = hs.hotkey.modal.new()
 
 pickerKeys:bind({ "cmd" }, "return", nil, function()
@@ -575,15 +550,6 @@ pickerKeys:bind({ "cmd" }, "return", nil, function()
 	if choice then
 		M.chooser:hide()
 		performAction(M.history[choice.index], "copy")
-	end
-end)
-
-pickerKeys:bind({ "alt" }, "return", nil, function()
-	local row = M.chooser:selectedRow()
-	local choice = buildChoices()[row]
-	if choice then
-		M.chooser:hide()
-		performAction(M.history[choice.index], "paste-plain")
 	end
 end)
 
