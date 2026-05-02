@@ -129,10 +129,27 @@ local function loadHistory()
 		return {}
 	end
 	local ok, decoded = pcall(hs.json.decode, raw)
-	if ok and type(decoded) == "table" then
-		return decoded
+	if not (ok and type(decoded) == "table") then
+		return {}
 	end
-	return {}
+
+	-- Backfill fields on entries written by earlier versions of the module.
+	for _, entry in ipairs(decoded) do
+		if not entry.kind then
+			if entry.path then
+				entry.kind = "image"
+			else
+				entry.kind = "text"
+			end
+		end
+		if not entry.time then
+			entry.time = 0
+		end
+		if entry.kind ~= "image" and not entry.bytes then
+			entry.bytes = entry.text and #entry.text or 0
+		end
+	end
+	return decoded
 end
 
 local function saveHistory()
@@ -394,6 +411,23 @@ local function describeSize(entry)
 	return humanBytes(entry.bytes or #(entry.text or ""))
 end
 
+----------------------------------------------------------------------------
+-- Row rendering
+----------------------------------------------------------------------------
+
+local function buildSubText(entry)
+	local parts = { entry.kind }
+	if entry.source and entry.source.name then
+		table.insert(parts, "from " .. entry.source.name)
+	end
+	table.insert(parts, os.date("%Y-%m-%d %H:%M:%S", entry.time))
+	table.insert(parts, describeSize(entry))
+	if entry.pinned then
+		table.insert(parts, "pinned")
+	end
+	return table.concat(parts, " • ")
+end
+
 local function buildChoices()
 	local matches = {}
 	for i, entry in ipairs(M.history) do
@@ -428,16 +462,6 @@ local function buildChoices()
 			title = shorten(entry.text, 120)
 		end
 
-		local parts = { entry.kind }
-		if entry.pinned then
-			table.insert(parts, "pinned")
-		end
-		if entry.source and entry.source.name then
-			table.insert(parts, "from " .. entry.source.name)
-		end
-		table.insert(parts, os.date("%Y-%m-%d %H:%M:%S", entry.time))
-		table.insert(parts, describeSize(entry))
-
 		-- Image entries show their own thumbnail; everything else falls
 		-- back to the source app's bundle icon.
 		local rowImage
@@ -449,24 +473,25 @@ local function buildChoices()
 
 		-- The chooser's built-in matcher does case-insensitive substring
 		-- containment on `text` (and `subText` if enabled). Our own fuzzy
-		-- score has already filtered the rows, so we suffix the active
-		-- query as zero-size text on `text` to guarantee the built-in
-		-- matcher keeps every row we returned.
-		local renderedText
+		-- score has already filtered the rows, so we hide the active query
+		-- inside the subtext as zero-size text to guarantee the built-in
+		-- matcher keeps every row we returned. The title stays a plain
+		-- string so the chooser styles it with its default text color.
+		local subTextStr = buildSubText(entry)
+		local subText = subTextStr
 		if activeQuery ~= "" then
-			renderedText = hs.styledtext.new(title)
+			subText = hs.styledtext.new(subTextStr)
 				.. hs.styledtext.new(" " .. activeQuery, { font = { size = 0.01 } })
-		else
-			renderedText = title
 		end
 
 		table.insert(choices, {
-			text = renderedText,
-			subText = table.concat(parts, " · "),
+			text = title,
+			subText = subText,
 			image = rowImage,
 			index = m.index,
 		})
 	end
+
 	return choices
 end
 
@@ -529,6 +554,10 @@ end)
 M.chooser:rows(10)
 M.chooser:width(45)
 M.chooser:placeholderText("Search content, app, date… or :image / :url / :file / :pinned")
+-- Required so our hidden-query suffix in subText reaches the chooser's
+-- built-in substring matcher; the visible subtext is human-readable
+-- enough that any incidental matches are fine.
+M.chooser:searchSubText(true)
 
 local validTags = {
 	text = true, url = true, file = true, image = true, pinned = true,
