@@ -184,13 +184,6 @@ end
 -- Capture
 ----------------------------------------------------------------------------
 
-local typeIcon = {
-	text  = "📝",
-	url   = "🔗",
-	file  = "📁",
-	image = "🖼️ ",
-}
-
 local function classifyText(text)
 	if looksLikeURL(text) then
 		return "url"
@@ -429,17 +422,15 @@ local function buildChoices()
 		local entry = m.entry
 		local title
 		if entry.kind == "image" then
-			title = string.format("%s Image (%d×%d)", typeIcon.image, entry.width, entry.height)
+			title = string.format("Image (%d×%d)", entry.width, entry.height)
 		else
-			local emoji = typeIcon[entry.kind] or typeIcon.text
-			title = emoji .. " " .. shorten(entry.text, 120)
+			title = shorten(entry.text, 120)
 		end
 
+		local parts = { entry.kind }
 		if entry.pinned then
-			title = "📌 " .. title
+			table.insert(parts, "pinned")
 		end
-
-		local parts = {}
 		if entry.source and entry.source.name then
 			table.insert(parts, "from " .. entry.source.name)
 		end
@@ -689,7 +680,7 @@ function M.debug()
 			and string.format("[image %dx%d]", item.width or 0, item.height or 0)
 			or string.format("[%s] %s", item.kind, (item.text or ""):sub(1, 60))
 		local src = item.source and item.source.name or "?"
-		print(i, item.pinned and "📌" or "  ", os.date("%H:%M:%S", item.time), src, desc)
+		print(i, item.pinned and "[pinned]" or "        ", os.date("%H:%M:%S", item.time), src, desc)
 	end
 end
 
