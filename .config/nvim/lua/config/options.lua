@@ -23,4 +23,4 @@ vim.filetype.add({
 	},
 })
 
-vim.treesitter.language.register("yaml", "yamljinja")
+vim.treesitter.language.register("jinja", "yamljinja")
