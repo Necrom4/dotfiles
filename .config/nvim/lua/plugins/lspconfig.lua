@@ -7,6 +7,18 @@ return {
 			},
 			yamlls = {
 				filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values", "yamljinja" },
+				-- Drop yamlls diagnostics on yamljinja buffers (it doesn't understand jinja).
+				handlers = {
+					["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+						if result and result.uri then
+							local bufnr = vim.uri_to_bufnr(result.uri)
+							if vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].filetype == "yamljinja" then
+								result.diagnostics = {}
+							end
+						end
+						return vim.lsp.handlers["textDocument/publishDiagnostics"](err, result, ctx, config)
+					end,
+				},
 			},
 			["*"] = {
 				keys = {
