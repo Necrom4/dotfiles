@@ -101,7 +101,9 @@ uv = "latest"
 "gem:rspec" = "latest"
 "gem:rubocop" = "latest"
 "go:github.com/hjr265/gittop" = "latest"
+rust = "latest"
 "pipx:ghgrab" = "latest"
+"cargo:Kohei-Wada/ttymap" = "latest"
 
 [settings]
 env_shell_expand = true
