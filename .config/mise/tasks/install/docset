@@ -2,7 +2,7 @@
 #MISE description="Download Zeal/Dash docsets into $HOME/.local/share/Zeal/Zeal/docsets"
 #MISE quiet=true
 #USAGE arg "<docsets>" help="Docset names from api.zealdocs.org" var=#true var_min=1
-#USAGE complete "docsets" run=#"f=${XDG_CACHE_HOME:-$HOME/.cache}/mise-docsets/index.json; mkdir -p "${f%/*}"; { [ -s "$f" ] && [ $(($(date +%s) - $(stat -f %m "$f" 2>/dev/null || stat -c %Y "$f"))) -lt 86400 ]; } || curl -fsSL https://api.zealdocs.org/v1/docsets -o "$f"; jq -r '.[] | "\(.name):\(.title)"' "$f""# descriptions=#true
+#USAGE complete "docsets" run=#"curl -fsSL https://api.zealdocs.org/v1/docsets | jq -r '.[] | "\(.name):\(.title)"'"# descriptions=#true
 
 source "${HOME}/.config/mise/tasks/utils/colors"
 
@@ -12,55 +12,19 @@ T_ERR="${RED}${BOLD}"
 T_NAME="${CYAN}${BOLD}"
 
 DOCSET_DIR="${HOME}/.local/share/Zeal/Zeal/docsets"
-CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/mise-docsets"
-INDEX_FILE="${CACHE_DIR}/index.json"
-INDEX_URL="https://api.zealdocs.org/v1/docsets"
-INDEX_TTL_SECONDS=$((24 * 60 * 60))   # 24h
 # Zeal's canonical redirect endpoint — handles official Dash docsets,
 # user-contributed docsets, and cheatsheets transparently by 302'ing to
 # the closest kapeli.com mirror.
 DOWNLOAD_URL_TEMPLATE="https://go.zealdocs.org/d/com.kapeli/%s/latest"
 
-mkdir -p -- "$CACHE_DIR" "$DOCSET_DIR"
+mkdir -p -- "$DOCSET_DIR"
 
-# ---------------------------------------------------------------------------
-# Index management
-# ---------------------------------------------------------------------------
-fetch_index() {
-  local now mtime age
-  if [[ -s $INDEX_FILE ]]; then
-    now=$(date +%s)
-    mtime=$(stat -f %m -- "$INDEX_FILE" 2>/dev/null || stat -c %Y -- "$INDEX_FILE" 2>/dev/null || echo 0)
-    age=$(( now - mtime ))
-    (( age < INDEX_TTL_SECONDS )) && return 0
-  fi
-  curl -fsSL "$INDEX_URL" -o "${INDEX_FILE}.tmp" \
-    && mv -- "${INDEX_FILE}.tmp" "$INDEX_FILE" \
-    || { [[ -s $INDEX_FILE ]] && return 0; return 1 }
-}
-
-# ---------------------------------------------------------------------------
-# Download / install logic
-# ---------------------------------------------------------------------------
 set -eu
 eval "docsets=($usage_docsets)"
-
-print -P "${BOLD}Refreshing docset index…${NC}"
-fetch_index || { print -P "${T_ERR}[!] Failed to fetch docset index${NC}" >&2; exit 1 }
-
-is_known_docset() {
-  jq -e --arg n "$1" 'any(.[]; .name == $n)' "$INDEX_FILE" >/dev/null
-}
 
 install_one() {
   local name=$1
   local url tmpdir tarball
-
-  if ! is_known_docset "$name"; then
-    printf "${T_ERR}[!] Unknown docset: ${T_NAME}%s${NC}\n" "$name" >&2
-    printf "    Try: ${BOLD}mise run install:docset${NC} <TAB> for completions\n" >&2
-    return 1
-  fi
 
   url=${DOWNLOAD_URL_TEMPLATE//\%s/$name}
   printf "${BOLD}↓ Downloading${NC} ${T_NAME}%s${NC}\n" "$name"
@@ -69,7 +33,7 @@ install_one() {
 
   {
     if ! curl -fsSL --connect-timeout 10 --retry 2 -o "$tarball" "$url"; then
-      printf "${T_ERR}[!] Download failed for ${T_NAME}%s${NC}\n" "$name" >&2
+      printf "${T_ERR}[!] Download failed for ${T_NAME}%s${NC} (unknown docset?)\n" "$name" >&2
       return 1
     fi
 
