@@ -220,7 +220,6 @@ zinit wait"0c" lucid for \
   OMZP::rake \
   OMZP::rsync \
   OMZP::ruby \
-  OMZP::ssh \
   OMZP::tailscale \
   OMZP::taskwarrior \
     atclone'curl -sLo tmux.extra.conf https://github.com/ohmyzsh/ohmyzsh/raw/master/plugins/tmux/tmux.extra.conf' \
