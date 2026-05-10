@@ -2,7 +2,7 @@
 #MISE description="Download Zeal/Dash docsets into $HOME/.local/share/Zeal/Zeal/docsets"
 #MISE quiet=true
 #USAGE arg "<docsets>" help="Docset names from api.zealdocs.org" var=#true var_min=1
-#USAGE complete "docsets" run=#"zsh $HOME/.config/mise/tasks/install/docset --__complete"# descriptions=#true
+#USAGE complete "docsets" run=#"f=${XDG_CACHE_HOME:-$HOME/.cache}/mise-docsets/index.json; mkdir -p "${f%/*}"; { [ -s "$f" ] && [ $(($(date +%s) - $(stat -f %m "$f" 2>/dev/null || stat -c %Y "$f"))) -lt 86400 ]; } || curl -fsSL https://api.zealdocs.org/v1/docsets -o "$f"; jq -r '.[] | "\(.name):\(.title)"' "$f""# descriptions=#true
 
 source "${HOME}/.config/mise/tasks/utils/colors"
 
@@ -38,15 +38,6 @@ fetch_index() {
     && mv -- "${INDEX_FILE}.tmp" "$INDEX_FILE" \
     || { [[ -s $INDEX_FILE ]] && return 0; return 1 }
 }
-
-# ---------------------------------------------------------------------------
-# Completion mode: print "name:title" lines and exit
-# ---------------------------------------------------------------------------
-if [[ ${1:-} == --__complete ]]; then
-  fetch_index >/dev/null 2>&1 || exit 0
-  jq -r '.[] | "\(.name):\(.title)"' "$INDEX_FILE" 2>/dev/null
-  exit 0
-fi
 
 # ---------------------------------------------------------------------------
 # Download / install logic
