@@ -108,6 +108,11 @@ use = "yazi-rs/plugins:piper"
 rev = "1db18bb"
 hash = "384464b6df8cb807425c521f8cd790f3"
 
+[[plugin.deps]]
+use = "WhoSowSee/whoosh"
+rev = "8e31145"
+hash = "376cb4847934906862a3b4df857146d7"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "8e6296f"
