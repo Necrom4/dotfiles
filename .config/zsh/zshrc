@@ -168,6 +168,10 @@ _setup_atuin_keybindings() {
   bindkey -M vicmd "^r" atuin-search-vicmd
 }
 
+_setup_jq-zsh-plugin_keybindings() {
+  bindkey -M vicmd "J" jq-complete
+}
+
 # LOAD PLUGINS
 zinit light-mode for \
   zdharma-continuum/zinit-annex-as-monitor \
@@ -260,6 +264,7 @@ zinit wait"1" lucid for \
   OMZP::jsontools \
   OMZP::rails \
   OMZP::web-search \
+    atload'_setup_jq-zsh-plugin_keybindings' \
   reegnz/jq-zsh-plugin
 
 # Override plugin aliases
