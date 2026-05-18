@@ -3,6 +3,7 @@ tap "janosmiko/tap"
 tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
+tap "tlipinski/tap"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
@@ -137,3 +138,5 @@ brew "matthart1983/tap/netwatch"
 brew "mutagen-io/mutagen/mutagen"
 # Swiss SBB/CFF/FFS timetable app for the terminal
 brew "necrom4/tap/sbb-tui"
+# Interactive TUI pipeline editor built for rapid iteration
+brew "tlipinski/tap/rura"
