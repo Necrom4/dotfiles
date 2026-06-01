@@ -5,6 +5,7 @@ local languages = {
 	"lua_patterns",
 	"make",
 	"passwd",
+	"pkl",
 	"scss",
 	"sql",
 	"ssh_config",

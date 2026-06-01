@@ -10,6 +10,7 @@ local packages = {
 	"lua-language-server",
 	"marksman",
 	"pgformatter",
+	"pkl-lsp",
 	"postgres-language-server",
 	"pyright",
 	"stylelint",
