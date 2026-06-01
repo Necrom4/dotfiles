@@ -88,3 +88,7 @@ node = "latest"
 [settings]
 env_shell_expand = true
 experimental = true
+idiomatic_version_file_enable_tools = ["ruby"]
+
+[settings.pipx]
+uvx = true
