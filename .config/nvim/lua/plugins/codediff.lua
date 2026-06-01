@@ -1,6 +1,14 @@
 return {
 	"esmuellert/codediff.nvim",
 	dependencies = { "MunifTanjim/nui.nvim" },
+	opts = {
+		explorer = {
+			view_mode = "tree",
+		},
+		history = {
+			view_mode = "tree",
+		},
+	},
 	cmd = "CodeDiff",
 	keys = {
 		{ "<leader>df", "<cmd>CodeDiff<cr>", mode = "n", desc = "Files", silent = true },
