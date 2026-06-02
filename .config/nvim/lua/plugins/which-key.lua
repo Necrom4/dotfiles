@@ -52,7 +52,7 @@ return {
 			},
 		},
 		plugins = {
-			registers = false,
+			registers = true,
 		},
 	},
 }
