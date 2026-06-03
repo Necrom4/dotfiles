@@ -2,18 +2,18 @@
 visidata = [
 	{ run = 'visidata %s', block = true, desc = "Visidata" },
 ]
-bookokrat = [
-	{ run = 'bookokrat %s', block = true, desc = "Bookokrat" },
+tdf = [
+	{ run = 'tdf %s', block = true, desc = "tdf" },
 ]
 
 [open]
 prepend_rules = [
 	{ url = "*.csv", use = [ "edit", "reveal", "visidata" ] },
 	{ url = "*.db", use = [ "edit", "reveal", "visidata" ] },
-	{ url = "*.epub", use = [ "bookokrat", "edit", "reveal" ] },
+	{ url = "*.epub", use = [ "tdf", "edit", "reveal" ] },
 	{ url = "*.html", use = [ "open", "edit", "reveal" ] },
 	{ url = "*.json", use = [ "edit", "reveal", "visidata" ] },
-	{ url = "*.pdf", use = [ "bookokrat", "edit", "reveal" ] },
+	{ url = "*.pdf", use = [ "tdf", "edit", "reveal" ] },
 	{ url = "*.sql", use = [ "edit", "reveal", "visidata" ] },
 	{ url = "*.sqlite", use = [ "edit", "reveal", "visidata" ] },
 	{ url = "*.tsv", use = [ "edit", "reveal", "visidata" ] },

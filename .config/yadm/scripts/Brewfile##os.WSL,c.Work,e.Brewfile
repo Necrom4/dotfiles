@@ -8,8 +8,6 @@ tap "tlipinski/tap"
 brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
-# Terminal EPUB Book Reader
-brew "bookokrat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
 # Console Matrix
@@ -98,6 +96,8 @@ brew "sevenzip"
 brew "speedtest-cli"
 # Feature-rich console based todo list manager
 brew "task"
+# TUI-based PDF viewer
+brew "tdf"
 # Programmatically correct mistyped console commands
 brew "thefuck"
 # Command-line time tracking application
