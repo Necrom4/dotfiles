@@ -16,6 +16,7 @@ return {
 		{ "<leader>gb", false },
 		{ "<leader>gd", false },
 		{ "<leader>gf", false },
+		{ "<leader>gg", false },
 		{ "<leader>gi", false },
 		{ "<leader>gl", false },
 		{ "<leader>gp", false },
