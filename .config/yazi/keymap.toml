@@ -22,7 +22,7 @@ prepend_keymap = [
   { on = [ "*" ], run = "plugin eza-preview toggle-hidden", desc = "Toggle hidden files" },
   # git
   { on = [ "g", "a" ], run = "shell --block -- git add $@", desc = "Add to Git Repo" },
-  { on = [ "g", "D" ], run = "shell --block -- git rm --cached $@", desc = "Remove from Git Repo" },
+  { on = [ "g", "d" ], run = "shell --block -- git rm --cached $@", desc = "Remove from Git Repo" },
   # vcs-files
   { on = [ "g", "c" ], run = "plugin vcs-files", desc = "Show Git file changes" },
   # lazygit
