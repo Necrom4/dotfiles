@@ -2,6 +2,9 @@ return {
 	"folke/snacks.nvim",
 	keys = {
 		-- Disable keymaps
+		{ "<leader>,", false },
+		{ "<leader>/", false },
+		{ "<leader>:", false },
 		{ "<leader>e", false },
 		{ "<leader>E", false },
 		{ "<leader>fT", false },
