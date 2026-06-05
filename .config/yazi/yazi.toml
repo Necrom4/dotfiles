@@ -37,6 +37,7 @@ prepend_previewers = [
   { url = "*.tsv", run = "duckdb" },
   { url = "*.txt", run = "duckdb" },
   { url = "*.xlsx", run = "duckdb" },
+  { url = "*.yaml.j2", run = 'piper -- bat -p --color=always "$1"' },
 ]
 prepend_preloaders = [
   { url = "*.csv", run = "duckdb", multi = false },
