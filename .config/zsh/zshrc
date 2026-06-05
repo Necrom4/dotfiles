@@ -51,6 +51,7 @@ else
   export EDITOR="vi"
 fi
 
+export HOMEBREW_NO_REQUIRE_TAP_TRUST=1
 export FZF_DEFAULT_OPTS_FILE=$HOME/.config/fzf/fzfrc
 export ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
 
