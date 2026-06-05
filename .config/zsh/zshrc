@@ -71,14 +71,36 @@ project_enter_print() {
       onefetch --no-title --no-color-palette --nerd-fonts --type prose programming markup data
     fi
     if (( $+commands[mise] )); then
-      output=$(mise config get env 2>/dev/null || true)
-      if [ -n "$output" ]; then
-        filtered=$(echo "$output" | awk -F'=' '{print $1}' | sed '/^$/d' | grep -v '^_')
-        if [ -n "$filtered" ]; then
-          yellow=$(tput setaf 11)
-          reset=$(tput sgr0)
-          echo "[${yellow}env${reset}]"
-          echo "$filtered"
+      local files
+      files=$(mise config ls --json 2>/dev/null | jq -r '.[].path' \
+              | grep -v "$HOME/.config/mise" | grep "^$PR")
+
+      _mk() {
+        mise config get env --file "$1" 2>/dev/null \
+          | sed '/^\[/q' | awk -F' *= *' 'NF==2 {print $1}' | grep -v '^_'
+      }
+
+      local proj_keys="" local_keys="" f
+      while IFS= read -r f; do
+        [[ -z "$f" ]] && continue
+        if [[ "$f" == *.local.toml ]]; then
+          local_keys+=$'\n'$(_mk "$f")
+        else
+          proj_keys+=$'\n'$(_mk "$f")
+        fi
+      done <<< "$files"
+
+      proj_keys=$(print -r -- "$proj_keys"  | sed '/^$/d' | sort -u)
+      local_keys=$(print -r -- "$local_keys" | sed '/^$/d' | sort -u)
+
+      if [[ -n "$proj_keys" || -n "$local_keys" ]]; then
+        local yellow gray reset
+        yellow=$(tput setaf 11); gray=$(tput setaf 8); reset=$(tput sgr0)
+        echo "[${yellow}env${reset}]"
+        [[ -n "$proj_keys" ]] && echo "$proj_keys"
+        if [[ -n "$local_keys" ]]; then
+          [[ -n "$proj_keys" ]] && echo "- ${gray}local${reset} -"
+          echo "$local_keys"
         fi
       fi
     fi
