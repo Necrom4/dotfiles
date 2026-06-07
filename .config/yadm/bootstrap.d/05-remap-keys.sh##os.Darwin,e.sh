@@ -1,25 +1,23 @@
-# Credit to Brad Howes
-FROM='"HIDKeyboardModifierMappingSrc"'
-TO='"HIDKeyboardModifierMappingDst"'
+PLIST="$HOME/Library/LaunchAgents/com.user.keyremap.plist"
 
-function Map { # FROM TO
-  CMD="${CMD:+${CMD},}{${FROM}: ${1}, ${TO}: ${2}}"
-}
+cat >"$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.keyremap</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>${HOME}/.config/yadm/scripts/keyremap.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+EOF
 
-# Referencing :
-# https://opensource.apple.com/source/IOHIDFamily/IOHIDFamily-1035.41.2/IOHIDFamily/IOHIDUsageTables.h.auto.html
-SECTION="0x700000064"
-ESCAPE="0x700000029"
-BACKQUOTE="0x700000035"
-CAPS_LOCK="0x700000039"
-#L_SHIFT="0x7000000E1"
-#R_COMMAND="0x7000000E7"
-#L_CONTROL="0x7000000E0"
-
-# Map "${CAPS_LOCK}" "${ESCAPE}"
-Map "${SECTION}" "${BACKQUOTE}"
-Map "${BACKQUOTE}" "${SECTION}"
-#Map ${R_COMMAND} ${SHIFT_LOCK}
-#Map ${BACKQUOTE} ${L_CONTROL}
-
-hidutil property --set "{\"UserKeyMapping\":[${CMD}]}" >/dev/null 2>&1
+launchctl unload "$PLIST" 2>/dev/null
+launchctl load "$PLIST"
+bash "$HOME/.config/yadm/scripts/keyremap.sh"
