@@ -80,6 +80,8 @@ brew "libqalculate"
 brew "libyaml"
 # Package manager for the Lua programming language
 brew "luarocks"
+# Swiss Army Knife for macOS
+brew "m-cli"
 # Mac App Store command-line interface
 brew "mas"
 # Like sed, awk, cut, join & sort for name-indexed data such as CSV
