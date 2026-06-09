@@ -103,6 +103,7 @@ uv = "latest"
 rust = "latest"
 "pipx:ghgrab" = "latest"
 "cargo:Kohei-Wada/ttymap" = "latest"
+"cargo:bttf" = "latest"
 
 [settings]
 env_shell_expand = true
