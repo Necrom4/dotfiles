@@ -4,6 +4,7 @@ tap "janosmiko/tap"
 tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
+tap "tlipinski/tap"
 tap "tonisives/tap"
 # Record and share terminal sessions
 brew "asciinema"
@@ -135,8 +136,6 @@ brew "translate-shell"
 brew "transmission-cli"
 # F1 Live Timing TUI for all F1 sessions with variable delay to sync to your TV
 brew "undercutf1"
-# Tool for writing command-line pipes with instant live preview
-brew "up"
 # Your CLI home video recorder
 brew "vhs"
 # Modern watch command
@@ -169,6 +168,8 @@ brew "matthart1983/tap/netwatch"
 brew "mutagen-io/mutagen/mutagen"
 # Swiss SBB/CFF/FFS timetable app for the terminal
 brew "necrom4/tap/sbb-tui"
+# Interactive TUI pipeline editor built for rapid iteration
+brew "tlipinski/tap/rura"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Photography workflow application and raw developer
