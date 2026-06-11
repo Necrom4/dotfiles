@@ -10,6 +10,8 @@ brew "atuin", restart_service: :changed
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
+# CLI tool for datetime arithmetic, parsing, formatting and more
+brew "bttf"
 # Console Matrix
 brew "cmatrix"
 # Container runtimes on MacOS (and Linux) with minimal setup

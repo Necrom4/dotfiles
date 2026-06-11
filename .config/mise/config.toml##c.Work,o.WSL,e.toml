@@ -84,7 +84,6 @@ node = "latest"
 "go:github.com/hjr265/gittop" = "latest"
 "pipx:ghgrab" = "latest"
 "go:github.com/mexirica/aptui" = "latest"
-"cargo:bttf" = "latest"
 
 [settings]
 env_shell_expand = true

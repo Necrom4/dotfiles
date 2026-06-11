@@ -16,6 +16,8 @@ brew "bat"
 brew "bookokrat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
+# CLI tool for datetime arithmetic, parsing, formatting and more
+brew "bttf"
 # Copy files from your terminal that actually paste into GUI apps
 brew "clippy"
 # Console Matrix
