@@ -3,7 +3,7 @@ BREWFILE = "$HOME/.config/yadm/scripts/Brewfile"
 
 [tasks."brew:dump"]
 description = "Dump installed packages to Brewfile"
-run = "brew bundle dump --file=$BREWFILE --describe --force"
+run = "brew bundle dump --file=$BREWFILE --force --no-go --no-winget"
 quiet = true
 
 [tasks."brew:remove unlisted"]
