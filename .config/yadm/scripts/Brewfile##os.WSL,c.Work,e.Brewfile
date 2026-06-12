@@ -1,4 +1,3 @@
-tap "domcyrus/rustnet"
 tap "janosmiko/tap"
 tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
