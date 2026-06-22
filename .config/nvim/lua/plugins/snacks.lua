@@ -218,7 +218,7 @@ return {
 			silent = true,
 		},
 		{
-			"<c-w>m",
+			"<c-w>z",
 			function()
 				Snacks.toggle.zoom():toggle()
 			end,
@@ -429,7 +429,7 @@ return {
 								["J"] = "preview_scroll_down",
 								["<Tab>"] = { { "select_and_next", "list_up" } },
 								["<S-Tab>"] = "select_and_next",
-								["<c-w>m"] = "toggle_maximize",
+								["<c-w>z"] = "toggle_maximize",
 								["<leader>ga"] = "git_add",
 								["<leader>gD"] = "git_rm",
 								["<leader>xf"] = "yazi_open",
