@@ -128,6 +128,11 @@ api.Hints.style(
   "font-family: sans-serif; font-size: 13px; border: solid 2px #373B41 !important; padding: 1px !important; color: #FF966C !important; background: #1D1F21 !important;",
   "text",
 );
+api.Hints.style(
+  "div{font-family: sans-serif; font-size: 13px; border: solid 2px #373b41; color: #4FD6BE; background: initial; background-color: #282A2E;} " +
+  "div.hint-scrollable{color: #4FD6BE !important; background-color: #282A2E !important;}"
+);
+
 api.Visual.style("cursor", "background-color: #FF966C;");
 
 settings.theme = `
