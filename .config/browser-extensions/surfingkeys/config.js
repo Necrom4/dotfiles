@@ -48,6 +48,8 @@ api.map("F", "gf");
 api.unmap("gf");
 api.map("gf", "L");
 api.unmap("L");
+api.map("gs", ";fs");
+api.unmap(";fs");
 
 // marks
 api.map("`", "m");
