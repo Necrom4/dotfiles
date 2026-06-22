@@ -1,6 +1,7 @@
 settings.defaultSearchEngine = "d";
 settings.enableEmojiInsertion = true;
 settings.hintAlign = "left";
+settings.clickableSelector = 'article a[href*="/comments/"]';
 
 api.unmap("<Ctrl-h>");
 
