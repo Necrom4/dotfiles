@@ -42,9 +42,6 @@ api.mapkey("st", "Find tabs", function () {
 api.mapkey("su", "Find subURLs", function () {
   api.Front.openOmnibar({ type: "TabURLs" });
 });
-api.mapkey("sw", "Find windows", function () {
-  api.Front.openOmnibar({ type: "Windows" });
-});
 
 // hints
 api.map("F", "gf");
@@ -85,6 +82,7 @@ api.unmap(";u");
 api.unmap("ob");
 api.map("sd", "od");
 api.unmap("od");
+api.unmap("oe");
 api.map("sg", "og");
 api.unmap("og");
 api.unmap("oh");
