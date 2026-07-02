@@ -3,7 +3,12 @@ local concealed_line = true
 
 return {
 	"zeybek/camouflage.nvim",
-	event = "VeryLazy",
+	ft = {
+		"env",
+		"json",
+		"toml",
+		"yaml",
+	},
 	opts = function()
 		Snacks.toggle({
 			id = "camouflage_toggle",
