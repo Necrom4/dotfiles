@@ -10,7 +10,7 @@ hash = "e4d7c06510b4fe5f64ae31fbb4e017d6"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "65559fd"
+rev = "8cd50c6"
 hash = "5b1c276b75cae91cbbdbe7863f39a540"
 
 [[plugin.deps]]
@@ -20,12 +20,12 @@ hash = "57056b9728006881d580ccabe8154a9c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "65559fd"
+rev = "8cd50c6"
 hash = "187cc58ba7ac3befd49c342129e6f1b6"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "65559fd"
+rev = "8cd50c6"
 hash = "7b625412411be411153886894d9acaf"
 
 [[plugin.deps]]
@@ -35,8 +35,8 @@ hash = "c238595c801caa4f28553b9af8cf8804"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "65559fd"
-hash = "c887903a63a2ff520081b6d90a4b3392"
+rev = "8cd50c6"
+hash = "d6f7351ea25a43c9b5f4315fa1e23935"
 
 [[plugin.deps]]
 use = "wekauwau/yatline-tokyo-night"
@@ -45,12 +45,12 @@ hash = "215729a555fe5286f1eb35520963d08"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "65559fd"
+rev = "8cd50c6"
 hash = "bc5da419b4337d0122ac531e705fa7b6"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "65559fd"
+rev = "8cd50c6"
 hash = "88e56a64b7ce7c4314427452343fef17"
 
 [[plugin.deps]]
@@ -70,17 +70,17 @@ hash = "fbaf0adc8efc59555b748d36aab62d40"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "65559fd"
+rev = "8cd50c6"
 hash = "e8e279463ee99c940e6945a14cf4aa9e"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "65559fd"
+rev = "8cd50c6"
 hash = "3f8d49413bc8691b4c652eb417a20178"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mount"
-rev = "65559fd"
+rev = "8cd50c6"
 hash = "e3260d0b1feded8c8e3ae3afa1169e30"
 
 [[plugin.deps]]
@@ -105,8 +105,8 @@ hash = "1fcbcce39229bd75e81be4dcb1d3e5a8"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "65559fd"
-hash = "12126fca34f9f1802bb57b88292f57af"
+rev = "8cd50c6"
+hash = "e0d59bd47866a6a574c74574097e5070"
 
 [[plugin.deps]]
 use = "WhoSowSee/whoosh"
