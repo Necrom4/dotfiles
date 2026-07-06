@@ -111,28 +111,10 @@ git:
   fetchAll: true
   autoStageResolvedConflicts: true
   branchLogCmd: >-
-    git log
-    --graph
-    --color=always
-    --all
-    --topo-order
-    --date=relative
-    --pretty=format:'
-    %C(#FFC777)%h%C(reset)
-    %C(#4FD6BE)%cd%C(reset) %C(magenta)·%C(reset)%C(auto)%d%C(reset) %C(#C8D3F5)%s%C(reset)
-    %C(#636DA6)· %cn%C(reset)'
+    git log --graph --color=always --all --topo-order --date=relative --pretty=format:' %C(#FFC777)%h%C(reset) %C(#4FD6BE)%cd%C(reset) %C(magenta)·%C(reset)%C(auto)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#636DA6)· %cn%C(reset)'
   allBranchesLogCmds:
     - >-
-      git log
-      --graph
-      --color=always
-      --all
-      --topo-order
-      --date=relative
-      --pretty=format:'
-      %C(#FFC777)%h%C(reset)
-      %C(#4FD6BE)%cd%C(reset) %C(magenta)·%C(reset)%C(auto)%d%C(reset) %C(#C8D3F5)%s%C(reset)
-      %C(#636DA6)· %cn%C(reset)'
+      git log --graph --color=always --all --topo-order --date=relative --pretty=format:' %C(#FFC777)%h%C(reset) %C(#4FD6BE)%cd%C(reset) %C(magenta)·%C(reset)%C(auto)%d%C(reset) %C(#C8D3F5)%s%C(reset) %C(#636DA6)· %cn%C(reset)'
   ignoreWhitespaceInDiffView: false
   diffContextSize: 3
   renameSimilarityThreshold: 50
@@ -286,11 +268,7 @@ customCommands:
             title: "{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}"
             body: "Are you sure you want to commit?"
         command: >-
-          message=$'{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}';
-          description=$'{{.Form.Description}}';
-          echo $message > {{ .SelectedWorktree.GitDir }}/LAZYGIT_PENDING_COMMIT;
-          echo $description >> {{ .SelectedWorktree.GitDir }}/LAZYGIT_PENDING_COMMIT;
-          git commit --message $message {{ if .Form.Description }} --message $description {{ end }} && echo -n > {{ .SelectedWorktree.GitDir }}/LAZYGIT_PENDING_COMMIT
+          message=$'{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}'; description=$'{{.Form.Description}}'; echo $message > {{ .SelectedWorktree.GitDir }}/LAZYGIT_PENDING_COMMIT; echo $description >> {{ .SelectedWorktree.GitDir }}/LAZYGIT_PENDING_COMMIT; git commit --message $message {{ if .Form.Description }} --message $description {{ end }} && echo -n > {{ .SelectedWorktree.GitDir }}/LAZYGIT_PENDING_COMMIT
         loadingText: "Creating commit..."
       - key: "b"
         context: "global"
@@ -427,6 +405,7 @@ keybinding:
     increaseRenameSimilarityThreshold: )
     decreaseRenameSimilarityThreshold: (
     openDiffTool: <c-t>
+    newWorktree: w
   status:
     checkForUpdate: u
     recentRepos: <enter>
@@ -470,8 +449,6 @@ keybinding:
     fetchRemote: f
     addForkRemote: F
     sortOrder: s
-  worktrees:
-    viewWorktreeOptions: w
   commits:
     squashDown: s
     renameCommit: r
