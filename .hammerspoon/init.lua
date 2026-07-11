@@ -1,3 +1,9 @@
+-- Command-line interface (`hs`): loads the IPC module so the `hs` terminal
+-- tool can talk to this running Hammerspoon instance. Useful for scripting
+-- Hammerspoon from the shell, quick REPL-style debugging (`hs -c "..."`),
+-- and tooling such as generating Spoon docs.json via hs.doc.builder.
+require("hs.ipc")
+
 -- Alerts
 local function alertStyle(color)
 	return {
