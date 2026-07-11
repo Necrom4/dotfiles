@@ -1,0 +1,3 @@
+# Hammerspoon Spoons are managed by the update:spoons mise task and the yadm
+# bootstrap script (cloned/pulled from their own repos), not tracked here.
+.hammerspoon/Spoons/

@@ -29,7 +29,6 @@ hs.alert.show("Config reloaded", styleOk)
 
 -- Load modules
 local modules = {
-	"clipboard",
 	"wifi",
 }
 
@@ -47,3 +46,10 @@ hs.loadSpoon("GridTile")
 hs.hotkey.bind({ "ctrl", "shift" }, "w", function()
 	spoon.GridTile:start()
 end)
+
+hs.loadSpoon("ClipboardHistory")
+spoon.ClipboardHistory:bindHotkeys({
+	show = { { "cmd", "shift" }, "v" },
+	clear = { { "cmd", "shift", "alt" }, "v" },
+})
+spoon.ClipboardHistory:start()

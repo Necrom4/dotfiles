@@ -29,3 +29,8 @@ if brew list | grep tmux >/dev/null 2>&1 && [ ! -d "$HOME/.config/tmux/plugins/t
   echo "Installing TMUX Plugin Manager..."
   git clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm"
 fi
+
+# Hammerspoon Spoons: clone into ~/.hammerspoon/Spoons/ (clone-only mode, so
+# existing repos aren't touched). Kept in sync afterwards via the
+# `mise run update:spoons` task.
+"$HOME/.config/yadm/scripts/install-spoons.sh" --clone

@@ -56,6 +56,11 @@ quiet = true
 run = ["mise plugins update", "mise upgrade"]
 quiet = true
 
+[tasks."update:spoons"]
+description = "Hammerspoon Spoons"
+run = "$HOME/.config/yadm/scripts/install-spoons.sh"
+quiet = true
+
 [tasks."update:tldr"]
 run = "tldr --update"
 quiet = true
