@@ -10,6 +10,7 @@ TMUX_WINDOW="mise-updates"
 
 check_exists() {
   case "$1" in
+    spoons) [[ -d "$HOME/.hammerspoon" ]] ;;
     tmux-tmp) [[ -d "$HOME/.config/tmux/plugins/tpm" ]] ;;
     yazi-plugins) (( $+commands[ya] )) ;;
     zinit | zsh-plugins) [[ -d "$HOME/.local/share/zinit/zinit.git" ]] ;;
