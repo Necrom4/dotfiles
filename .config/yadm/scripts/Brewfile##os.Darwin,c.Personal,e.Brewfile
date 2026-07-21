@@ -1,7 +1,6 @@
 tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
 tap "janosmiko/tap"
-tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 tap "tlipinski/tap"
@@ -28,6 +27,8 @@ brew "colima", restart_service: :changed
 brew "container"
 # Securely send things from one computer to another
 brew "croc"
+# Cross-platform disk diagnostics TUI
+brew "diskwatch"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Docker CLI plugin for extended build capabilities with BuildKit
@@ -96,6 +97,8 @@ brew "mise"
 brew "mole"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Cross-platform realtime network diagnostics TUI
+brew "netwatch"
 # Port scanning utility for large networks
 brew "nmap"
 # Command-line Git information tool
@@ -120,6 +123,8 @@ brew "scc"
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
+# Cross-platform system diagnostics TUI
+brew "syswatch"
 # Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale", restart_service: :changed
 # Feature-rich console based todo list manager
@@ -166,8 +171,6 @@ brew "yq"
 brew "yt-dlp"
 # Lightning Fast Kubernetes navigator - keyboard-focused TUI for managing K8s clusters
 brew "janosmiko/tap/lfk"
-# Real-time network diagnostics in your terminal — zero config, instant visibility
-brew "matthart1983/tap/netwatch"
 # Fast file synchronization and network forwarding for remote development
 brew "mutagen-io/mutagen/mutagen"
 # Swiss SBB/CFF/FFS timetable app for the terminal
