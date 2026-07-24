@@ -111,10 +111,14 @@ brew "poppler"
 brew "postgresql@18", restart_service: :changed
 # Multi-purpose desktop calculator
 brew "qalculate-qt"
+# Tools for and transforming and inspecting PDF files
+brew "qpdf"
 # SVG rendering tool and library
 brew "resvg"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Wrapper around ripgrep that adds multiple rich file types
+brew "ripgrep-all"
 # Tools for Multiple Arcade Machine Emulator
 brew "rom-tools"
 # Fast and accurate code counter with complexity and COCOMO estimates
@@ -129,6 +133,8 @@ brew "syswatch"
 brew "tailscale", restart_service: :changed
 # Feature-rich console based todo list manager
 brew "task"
+# TUI-based PDF viewer
+brew "tdf"
 # User interface to the TELNET protocol
 brew "telnet"
 # Programmatically correct mistyped console commands
