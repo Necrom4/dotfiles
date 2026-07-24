@@ -35,6 +35,7 @@ local ftMap = {
 	fff_input = "",
 	help = "indent",
 	text = "indent",
+	bigfile = "",
 }
 
 return {

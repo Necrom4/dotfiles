@@ -29,7 +29,7 @@ return {
 		},
 		opts = {
 			enabled = function()
-				return not vim.tbl_contains({ "typr" }, vim.bo.filetype)
+				return vim.b.completion ~= false and not vim.tbl_contains({ "typr" }, vim.bo.filetype)
 			end,
 			keymap = {
 				preset = "none",

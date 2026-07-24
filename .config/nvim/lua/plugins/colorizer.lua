@@ -18,6 +18,7 @@ return {
 
 		return {
 			lazy_load = true,
+			filetypes = { "*", "!bigfile" },
 			options = {
 				parsers = {
 					css = true,

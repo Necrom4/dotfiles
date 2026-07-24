@@ -3,6 +3,7 @@ return {
 	event = "VeryLazy",
 	priority = 10,
 	opts = {
+		hijack_ft_disabled = { "bigfile" },
 		overwrite = {
 			paste = {
 				enabled = true,
