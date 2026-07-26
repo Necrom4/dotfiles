@@ -53,3 +53,6 @@ spoon.ClipboardHistory:bindHotkeys({
 	clear = { { "cmd", "shift", "alt" }, "v" },
 })
 spoon.ClipboardHistory:start()
+
+hs.loadSpoon("Coffee")
+spoon.Coffee:start()

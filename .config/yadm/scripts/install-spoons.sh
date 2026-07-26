@@ -28,10 +28,12 @@ find_spoon_dir() {
   local repo="$1" name="$2"
 
   if [ -f "$repo/init.lua" ]; then
-    echo "$repo"; return 0
+    echo "$repo"
+    return 0
   fi
   if [ -f "$repo/$name.spoon/init.lua" ]; then
-    echo "$repo/$name.spoon"; return 0
+    echo "$repo/$name.spoon"
+    return 0
   fi
 
   local init_path
@@ -78,3 +80,4 @@ sync() {
 
 sync GridTile https://github.com/ujwalnk/GridTile
 sync ClipboardHistory https://github.com/necrom4/ClipboardHistory.spoon
+sync Coffee https://github.com/necrom4/Coffee.spoon
