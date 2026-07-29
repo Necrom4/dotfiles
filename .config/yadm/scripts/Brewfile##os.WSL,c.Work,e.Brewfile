@@ -3,6 +3,7 @@ tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 tap "tlipinski/tap"
+tap "zingzy/tap", "https://github.com/Zingzy/homebrew-tap"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
@@ -141,3 +142,5 @@ brew "mutagen-io/mutagen/mutagen"
 brew "necrom4/tap/sbb-tui"
 # Interactive TUI pipeline editor built for rapid iteration
 brew "tlipinski/tap/rura"
+# See what's eating your disk — a pastel treemap TUI
+brew "zingzy/tap/diskbloom", trusted: true
