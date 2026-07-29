@@ -38,6 +38,8 @@ brew "felinks"
 brew "fzf"
 # GitHub command-line tool
 brew "gh"
+# Automatic git commit --fixup
+brew "git-absorb"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
 # Better way to clone, organize and manage multiple git repositories
