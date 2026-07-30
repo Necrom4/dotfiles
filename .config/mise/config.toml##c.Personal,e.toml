@@ -49,7 +49,7 @@ run = ["sudo apt update", "sudo apt upgrade -y"]
 quiet = true
 
 [tasks."update:brew"]
-run = ["brew update", "brew upgrade"]
+run = ["brew update", "brew upgrade --yes"]
 quiet = true
 
 [tasks."update:mise"]
