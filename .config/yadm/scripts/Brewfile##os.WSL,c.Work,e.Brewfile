@@ -98,6 +98,8 @@ brew "scc"
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
+# Interactive TUI for Homebrew
+brew "taproom"
 # Feature-rich console based todo list manager
 brew "task"
 # TUI-based PDF viewer
