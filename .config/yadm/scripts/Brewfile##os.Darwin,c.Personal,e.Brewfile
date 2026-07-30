@@ -204,7 +204,7 @@ cask "hammerspoon"
 cask "ibkr"
 # App to write, plan, collaborate, and get organised
 cask "notion"
-# System-wide Vim mode for macOS
+# System-wide Vim mode
 cask "tonisives/tap/ovim"
 # Home media player
 cask "plex"
