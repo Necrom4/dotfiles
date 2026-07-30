@@ -220,7 +220,6 @@ cask "spotify"
 cask "tor-browser"
 # Multimedia player
 cask "vlc"
-mas "Amphetamine", id: 937984704
 mas "Bible Study", id: 472790630
 mas "Calc84", id: 1509489130
 mas "Canva", id: 897446215
