@@ -90,9 +90,9 @@ gui:
   switchToFilesAfterStashApply: true
   switchTabsWithPanelJumpKeys: false
 git:
-  pagers:
+  diffRenderers:
     - colorArg: always
-      pager: "delta --paging=never --features='-side-by-side'"
+      command: "delta --paging=never --features='-side-by-side'"
   commit:
     signOff: false
     autoWrapCommitMessage: true
@@ -388,7 +388,7 @@ keybinding:
     prevTab: "["
     nextScreenMode: +
     prevScreenMode: _
-    cyclePagers: "|"
+    cycleDiffRenderers: "|"
     undo: z
     redo: Z
     filteringMenu: <c-s>
