@@ -5,6 +5,7 @@ tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 tap "tlipinski/tap"
 tap "tonisives/tap"
+tap "tripstack-corp/tap", "https://github.com/Tripstack-Corp/homebrew-tap"
 # Record and share terminal sessions
 brew "asciinema"
 # Improved shell history for zsh, bash, fish and nushell
@@ -185,6 +186,8 @@ brew "mutagen-io/mutagen/mutagen"
 brew "necrom4/tap/sbb-tui"
 # Interactive TUI pipeline editor built for rapid iteration
 brew "tlipinski/tap/rura"
+# Digital rain for modern terminals
+brew "tripstack-corp/tap/rmatrix", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Photography workflow application and raw developer

@@ -3,6 +3,7 @@ tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 tap "tlipinski/tap"
+tap "tripstack-corp/tap", "https://github.com/Tripstack-Corp/homebrew-tap"
 tap "zingzy/tap", "https://github.com/Zingzy/homebrew-tap"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
@@ -12,8 +13,6 @@ brew "bat"
 brew "btop"
 # CLI tool for datetime arithmetic, parsing, formatting and more
 brew "bttf"
-# Console Matrix
-brew "cmatrix"
 # Securely send things from one computer to another
 brew "croc"
 # Pack, ship and run any application as a lightweight container
@@ -144,5 +143,7 @@ brew "mutagen-io/mutagen/mutagen"
 brew "necrom4/tap/sbb-tui"
 # Interactive TUI pipeline editor built for rapid iteration
 brew "tlipinski/tap/rura"
+# Digital rain for modern terminals
+brew "tripstack-corp/tap/rmatrix", trusted: true
 # See what's eating your disk — a pastel treemap TUI
 brew "zingzy/tap/diskbloom", trusted: true

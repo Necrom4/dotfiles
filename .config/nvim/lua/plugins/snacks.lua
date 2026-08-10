@@ -394,7 +394,7 @@ return {
 					enabled = function()
 						return Snacks.git.get_root() == nil
 					end,
-					cmd = "cmatrix -br",
+					cmd = "rmatrix -C red -b",
 					height = 6,
 					indent = 2,
 					padding = 1,
