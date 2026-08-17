@@ -54,7 +54,6 @@ local plugin_specs = {
 	{ import = "lazyvim.plugins.extras.ui.smear-cursor" },
 	{ import = "lazyvim.plugins.extras.ui.treesitter-context" },
 	{ import = "lazyvim.plugins.extras.util.dot" },
-	{ import = "lazyvim.plugins.extras.util.octo" },
 	{ import = "lazyvim.plugins.extras.util.startuptime" },
 	{ import = "lazyvim.plugins.extras.test.core" },
 }
