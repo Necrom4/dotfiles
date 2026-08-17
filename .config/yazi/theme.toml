@@ -48,6 +48,10 @@ prepend_dirs = [
 	{ name = "vscode", text = "" },
 ]
 
+prepend_files = [
+  { name = ".gitkeep", text = "󱪨" },
+]
+
 prepend_exts = [
 	{ name = "j2", text = "", fg = "#b51010" },
 	{ name = "jar", text = "" },
