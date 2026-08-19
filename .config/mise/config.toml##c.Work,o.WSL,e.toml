@@ -86,6 +86,7 @@ node = "latest"
 "go:github.com/mexirica/aptui" = "latest"
 rust = "latest"
 "cargo:mangofetch-cli" = "latest"
+"go:github.com/swadhinbiswas/veet" = "latest"
 
 [settings]
 env_shell_expand = true
