@@ -82,3 +82,4 @@ sync() {
 
 sync ClipboardHistory https://github.com/necrom4/ClipboardHistory.spoon
 sync Coffee https://github.com/necrom4/Coffee.spoon
+sync MiroWindowsManager https://github.com/miromannino/miro-windows-manager

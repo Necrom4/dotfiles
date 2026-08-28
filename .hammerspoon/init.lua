@@ -41,6 +41,15 @@ for _, name in ipairs(modules) do
 end
 
 -- Load spoons
+hs.loadSpoon("MiroWindowsManager")
+spoon.MiroWindowsManager:bindHotkeys({
+	up = { { "ctrl", "shift" }, "k" },
+	right = { { "ctrl", "shift" }, "l" },
+	down = { { "ctrl", "shift" }, "j" },
+	left = { { "ctrl", "shift" }, "h" },
+	fullscreen = { { "ctrl", "shift" }, "f" },
+	nextscreen = { { "ctrl", "shift" }, "n" },
+})
 
 hs.loadSpoon("ClipboardHistory")
 spoon.ClipboardHistory:bindHotkeys({
