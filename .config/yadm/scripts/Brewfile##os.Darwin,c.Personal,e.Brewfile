@@ -196,8 +196,6 @@ brew "tlipinski/tap/rura"
 brew "tripstack-corp/tap/rmatrix", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
-# Photography workflow application and raw developer
-cask "darktable"
 # API documentation browser and code snippet manager
 cask "dash"
 # Voice and text chat software
@@ -221,8 +219,6 @@ cask "plex"
 cask "protonvpn"
 # Control your tools with a few keystrokes
 cask "raycast"
-# Digital audio production application
-cask "reaper"
 # Music streaming service
 cask "spotify"
 # Web browser focusing on security
