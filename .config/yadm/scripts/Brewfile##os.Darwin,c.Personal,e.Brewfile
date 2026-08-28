@@ -113,7 +113,7 @@ brew "pandoc"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Object-relational database system
-brew "postgresql@18", restart_service: :changed
+brew "postgresql@18", restart_service: :changed, link: true
 # Multi-purpose desktop calculator
 brew "qalculate-qt"
 # Tools for and transforming and inspecting PDF files
