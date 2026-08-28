@@ -7,9 +7,8 @@
 # one containing init.lua) is located, and its contents are copied into
 # ~/.hammerspoon/Spoons/<name>.spoon. This handles repos that keep init.lua at
 # the root (e.g. ClipboardHistory) as well as those that nest it in a
-# subdirectory (e.g. GridTile has GridTile.spoon/init.lua). The destination is
-# replaced on every run, so it works whether the Spoon is missing, present and
-# up to date, or outdated.
+# subdirectory. The destination is replaced on every run, so it works whether
+# the Spoon is missing, present and up to date, or outdated.
 #
 # Usage:
 #   install-spoons.sh          # install missing Spoons and update existing ones
@@ -39,7 +38,10 @@ find_spoon_dir() {
   local init_path
   init_path=$(find "$repo" -name init.lua -not -path '*/.git/*' \
     -not -path '*/demo/*' -not -path '*/example*/*' -print -quit 2>/dev/null || true)
-  [ -n "$init_path" ] && dirname "$init_path"
+  if [ -n "$init_path" ]; then
+    dirname "$init_path"
+  fi
+  return 0
 }
 
 # sync <name> <git-url>
@@ -78,6 +80,5 @@ sync() {
   (cd "$spoon_dir" && tar --exclude='.git' -cf - .) | (cd "$dest" && tar -xf -)
 }
 
-sync GridTile https://github.com/ujwalnk/GridTile
 sync ClipboardHistory https://github.com/necrom4/ClipboardHistory.spoon
 sync Coffee https://github.com/necrom4/Coffee.spoon

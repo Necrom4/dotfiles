@@ -41,11 +41,6 @@ for _, name in ipairs(modules) do
 end
 
 -- Load spoons
-hs.loadSpoon("GridTile")
-
-hs.hotkey.bind({ "ctrl", "shift" }, "w", function()
-	spoon.GridTile:start()
-end)
 
 hs.loadSpoon("ClipboardHistory")
 spoon.ClipboardHistory:bindHotkeys({
