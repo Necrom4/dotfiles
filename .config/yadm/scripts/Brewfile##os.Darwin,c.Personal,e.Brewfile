@@ -1,3 +1,4 @@
+tap "anomalyco/tap"
 tap "bjarneo/cliamp"
 tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
@@ -179,6 +180,8 @@ brew "youplot"
 brew "yq"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
+# The AI coding agent built for the terminal.
+brew "anomalyco/tap/opencode"
 # A retro terminal music player inspired by Winamp 2.x
 brew "bjarneo/cliamp/cliamp", trusted: true
 # Lightning Fast Kubernetes navigator - keyboard-focused TUI for managing K8s clusters
