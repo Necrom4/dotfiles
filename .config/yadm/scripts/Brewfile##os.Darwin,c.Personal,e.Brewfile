@@ -136,6 +136,8 @@ brew "speedtest-cli"
 brew "syswatch"
 # Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale", restart_service: :changed
+# Interactive TUI for Homebrew
+brew "taproom"
 # Feature-rich console based todo list manager
 brew "task"
 # TUI-based PDF viewer
