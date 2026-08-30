@@ -8,6 +8,7 @@ tap "necrom4/tap"
 tap "tlipinski/tap"
 tap "tonisives/tap"
 tap "tripstack-corp/tap", "https://github.com/Tripstack-Corp/homebrew-tap"
+tap "zingzy/tap", "https://github.com/Zingzy/homebrew-tap"
 # Record and share terminal sessions
 brew "asciinema"
 # Improved shell history for zsh, bash, fish and nushell
@@ -196,6 +197,8 @@ brew "necrom4/tap/sbb-tui"
 brew "tlipinski/tap/rura"
 # Digital rain for modern terminals
 brew "tripstack-corp/tap/rmatrix", trusted: true
+# See what's eating your disk — a pastel treemap TUI
+brew "zingzy/tap/diskbloom", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # API documentation browser and code snippet manager
