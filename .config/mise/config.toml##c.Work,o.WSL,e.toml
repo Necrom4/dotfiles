@@ -87,6 +87,7 @@ node = "latest"
 rust = "latest"
 "cargo:mangofetch-cli" = "latest"
 "go:github.com/swadhinbiswas/veet" = "latest"
+"cargo:Kohei-Wada/ttymap" = "latest"
 
 [settings]
 env_shell_expand = true
