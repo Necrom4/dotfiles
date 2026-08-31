@@ -78,6 +78,8 @@ brew "neovim"
 brew "nmap"
 # Command-line Git information tool
 brew "onefetch"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
 # Swiss-army knife of markup format conversion
 brew "pandoc"
 # Package compiler and linker metadata toolkit
@@ -86,8 +88,6 @@ brew "pkgconf"
 brew "poppler"
 # SVG rendering tool and library
 brew "resvg"
-# Search tool like grep and The Silver Searcher
-brew "ripgrep"
 # Wrapper around ripgrep that adds multiple rich file types
 brew "ripgrep-all"
 # Fast and accurate code counter with complexity and COCOMO estimates
