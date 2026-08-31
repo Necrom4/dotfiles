@@ -1,3 +1,4 @@
+tap "bjarneo/cliamp"
 tap "janosmiko/tap"
 tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
@@ -133,6 +134,8 @@ brew "youplot"
 brew "yq"
 # Compression and file packaging/archive utility
 brew "zip"
+# A retro terminal music player inspired by Winamp 2.x
+brew "bjarneo/cliamp/cliamp"
 # Lightning Fast Kubernetes navigator - keyboard-focused TUI for managing K8s clusters
 brew "janosmiko/tap/lfk"
 # Real-time network diagnostics in your terminal — zero config, instant visibility
