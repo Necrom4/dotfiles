@@ -160,14 +160,14 @@ bindkey '^x' clear-screen
 bindkey '^h' vi-backward-char
 bindkey '^l' vi-forward-char
 
-insert-linebreak () {
-  zle vi-end-of-line
-  LBUFFER+=\ \\$'\n'
+insert-newline() {
+  LBUFFER+="${RBUFFER[1]}"$'\n'
+  RBUFFER="${RBUFFER[2,-1]}"
 }
-zle -N insert-linebreak
+zle -N insert-newline
 
 _setup_vicmd() {
-  bindkey -M vicmd "^M" insert-linebreak
+  bindkey -M vicmd "^N" insert-newline
 }
 zvm_after_lazy_keybindings_commands+=(_setup_vicmd)
 
