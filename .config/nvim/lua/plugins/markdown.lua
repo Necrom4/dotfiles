@@ -2,46 +2,50 @@ return {
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
 		opts = {
+			bullet = {
+				left_pad = 4,
+			},
 			checkbox = {
 				enabled = true,
+				left_pad = 4,
 				right_pad = 1,
 				unchecked = {
-					icon = "    󰄱",
+					icon = "󰄱",
 					highlight = "RenderMarkdownUnchecked",
 					scope_highlight = nil,
 				},
 				checked = {
-					icon = "    󰡖",
+					icon = "󰡖",
 					highlight = "RenderMarkdownChecked",
 					scope_highlight = nil,
 				},
 				custom = {
 					todo = {
-						rendered = "    󰥔",
+						rendered = "󰥔",
 					},
 					important = {
 						raw = "[!]",
-						rendered = "    ",
+						rendered = "",
 						highlight = "Error",
 					},
 					delete = {
 						raw = "[_]",
-						rendered = "    ",
+						rendered = "",
 						highlight = "NonText",
 					},
 					pause = {
 						raw = "[=]",
-						rendered = "    ",
+						rendered = "",
 						highlight = "String",
 					},
 					redo = {
 						raw = "[+]",
-						rendered = "    ",
+						rendered = "",
 						highlight = "@keyword",
 					},
 					unsure = {
 						raw = "[?]",
-						rendered = "    ",
+						rendered = "",
 						highlight = "@boolean",
 					},
 				},
