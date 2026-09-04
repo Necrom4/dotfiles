@@ -31,4 +31,8 @@ return {
 			},
 		},
 	},
+	cmd = { "Obsidian" },
+	keys = {
+		{ "<leader>fo", "<cmd>Obsidian<cr>", desc = "Obsidian" },
+	},
 }
