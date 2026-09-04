@@ -1,19 +1,16 @@
 return {
-	"bullets-vim/bullets.vim",
+	"bullets-vim/bullets.nvim",
 	ft = { "markdown", "text", "gitcommit", "scratch" },
+	opts = {
+		enabled_file_types = { "markdown", "text", "gitcommit", "scratch" },
+		checkbox_markers = " .oOx",
+	},
 	keys = {
 		{
 			"<a-x>",
-			"<Plug>(bullets-toggle-checkbox)",
+			"<cmd>ToggleCheckbox<cr>",
 			ft = "markdown",
 			silent = true,
 		},
 	},
-	config = function()
-		-- Disable deleting the last empty bullet when pressing <cr> or 'o'
-		-- default = 1
-		vim.g.bullets_delete_last_bullet_if_empty = 1
-		vim.g.bullets_pad_right = 2
-		vim.g.bullets_nested_checkboxes = 0
-	end,
 }
