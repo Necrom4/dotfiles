@@ -4,6 +4,7 @@ return {
 		"MeanderingProgrammer/render-markdown.nvim",
 		"esmuellert/codediff.nvim",
 	},
+	cmd = { "Atlas", "AtlasDiff" },
 	opts = {
 		providers = {
 			gitlab = {
