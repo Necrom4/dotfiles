@@ -6,6 +6,20 @@ function M.term_cmd(cmd)
 	return vim.fn.system(wrapped_cmd):gsub("%s+$", "")
 end
 
+function M.yadm_config(key)
+	local home = vim.fn.expand("$HOME")
+	local git_dir = home .. "/.local/share/yadm/repo.git"
+
+	return M.term_cmd(
+		string.format(
+			"GIT_DIR=%s GIT_WORK_TREE=%s git config %s",
+			vim.fn.shellescape(git_dir),
+			vim.fn.shellescape(home),
+			vim.fn.shellescape(key)
+		)
+	)
+end
+
 -- GET OS (memoized -- OS does not change during a session)
 local _system_type_cache = nil
 

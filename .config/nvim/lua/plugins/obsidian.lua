@@ -1,8 +1,6 @@
 local utils = require("utils.general")
 
-local class = utils.in_yadm_env(function()
-	return utils.term_cmd("git config local.class")
-end)
+local class = utils.yadm_config("local.class")
 
 class = vim.trim(string.lower(class))
 assert(class ~= "", "yadm config local.class is not set")

@@ -212,9 +212,7 @@ local function disk()
 	if uname ~= "darwin" then
 		flag = "-h"
 	end
-	local mount_path = utils.in_yadm_env(function()
-		return utils.term_cmd("git config local.class")
-	end) == "42" and "~" or "/"
+	local mount_path = utils.yadm_config("local.class") == "42" and "~" or "/"
 	if uname == "wsl" then
 		mount_path = "/mnt/c"
 	elseif uname == "darwin" then
@@ -395,9 +393,7 @@ local system_info = {
 		"│  │ %-15s %8s %21s │",
 		utils.term_cmd("users | tr ' ' '\\n' | sort -u | wc -l | tr -d ' '")
 			.. "  "
-			.. utils.in_yadm_env(function()
-				return utils.term_cmd("git config local.class")
-			end),
+			.. utils.yadm_config("local.class"),
 		" " .. processes(),
 		"󰩠 " .. local_ip_address()
 	),
