@@ -15,12 +15,10 @@ return {
 				lazy = true,
 			},
 			"hrsh7th/cmp-calc",
-			"moyiz/blink-emoji.nvim",
 			"bydlw98/blink-cmp-env",
 			"newtoallofthis123/blink-cmp-fuzzy-path",
 			"Kaiser-Yang/blink-cmp-git",
 			"folke/lazydev.nvim",
-			"MahanRahmati/blink-nerdfont.nvim",
 			"mikavilpas/blink-ripgrep.nvim",
 			"rafamadriz/friendly-snippets",
 			"ribru17/blink-cmp-spell",
@@ -95,13 +93,11 @@ return {
 					local base = {
 						"buffer",
 						"calc",
-						"emoji",
 						"env",
 						"fuzzy-path",
 						"git",
 						"lazydev",
 						"lsp",
-						"nerdfont",
 						"path",
 						"snippets",
 						"spell",
@@ -143,19 +139,6 @@ return {
 							return items
 						end,
 					},
-					emoji = {
-						name = "Emoji",
-						module = "blink-emoji",
-						score_offset = 1000,
-						opts = { insert = true },
-						transform_items = function(ctx, items)
-							for _, item in ipairs(items) do
-								item.kind_icon = "󰱨"
-								item.kind_hl = "WarningMsg"
-							end
-							return items
-						end,
-					},
 					env = {
 						name = "Env",
 						module = "blink-cmp-env",
@@ -189,19 +172,6 @@ return {
 						score_offset = 1000,
 					},
 					lsp = { score_offset = 900 },
-					nerdfont = {
-						name = "Nerd Fonts",
-						module = "blink-nerdfont",
-						score_offset = 1000,
-						opts = { insert = true },
-						transform_items = function(ctx, items)
-							for _, item in ipairs(items) do
-								item.kind_icon = ""
-								item.kind_hl = "WarningMsg"
-							end
-							return items
-						end,
-					},
 					path = { score_offset = 1000 },
 					ripgrep = {
 						name = "Ripgrep",
