@@ -6,9 +6,14 @@ return {
 		"folke/snacks.nvim",
 	},
 	opts = {
-		treesitter_diff_highlight = true,
 		graph_style = "unicode",
 		process_spinner = true,
+		signs = {
+			hunk = { "", "" },
+			item = { "", "" },
+			section = { "", "" },
+		},
+		treesitter_diff_highlight = true,
 	},
 	cmd = "Neogit",
 	keys = {
