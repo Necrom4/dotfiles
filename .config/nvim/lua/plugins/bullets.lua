@@ -3,7 +3,7 @@ return {
 	ft = { "markdown", "text", "gitcommit", "scratch" },
 	opts = {
 		enabled_file_types = { "markdown", "text", "gitcommit", "scratch" },
-		checkbox_markers = " .oOx",
+		checkbox_markers = " 󰪞󰪟󰪠󰪡󰪢󰪣󰪤x",
 	},
 	keys = {
 		{
