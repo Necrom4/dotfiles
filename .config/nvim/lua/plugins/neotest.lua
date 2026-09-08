@@ -1,12 +1,22 @@
+-- manifests.test_adapters returns a list of { repo, adapter } pairs.
+local adapter_specs = {}
+local ok, profile = pcall(require, "manifests.test_adapters")
+if ok and type(profile) == "table" then
+	adapter_specs = profile
+end
+
+local dependencies = {}
+local adapters = {}
+for _, spec in ipairs(adapter_specs) do
+	table.insert(dependencies, spec.repo)
+	adapters[spec.adapter] = spec.opts or {}
+end
+
 return {
 	"nvim-neotest/neotest",
-	dependencies = {
-		"zidhuss/neotest-minitest",
-	},
+	dependencies = dependencies,
 	opts = {
-		adapters = {
-			["neotest-minitest"] = {},
-		},
+		adapters = adapters,
 		icons = {
 			child_indent = "│",
 			child_prefix = "├",
