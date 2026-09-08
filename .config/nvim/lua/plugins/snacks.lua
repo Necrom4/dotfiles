@@ -380,20 +380,26 @@ return {
 					padding = 1,
 				},
 				{ pane = 2, icon = "󰙅 ", title = "PROJECTS", section = "projects", indent = 2, padding = 1 },
-				{
-					pane = 2,
-					icon = " ",
-					title = "GIT STATUS [" .. vim.fn.trim(vim.fn.system("git branch --show-current")) .. "]",
-					section = "terminal",
-					enabled = function()
-						return Snacks.git.get_root() ~= nil
-					end,
-					cmd = "git --no-pager diff --stat -B -M -C && git status --short --renames",
-					height = 5,
-					padding = 1,
-					ttl = 5 * 60,
-					indent = 2,
-				},
+				function()
+					local root = Snacks.git.get_root()
+					if not root then
+						return nil
+					end
+
+					local branch = vim.fn.trim(vim.fn.system({ "git", "-C", root, "branch", "--show-current" }))
+
+					return {
+						pane = 2,
+						icon = " ",
+						title = "GIT STATUS" .. (branch ~= "" and (" [" .. branch .. "]") or ""),
+						section = "terminal",
+						cmd = "git --no-pager diff --stat -B -M -C && git status --short --renames",
+						height = 5,
+						padding = 1,
+						ttl = 5 * 60,
+						indent = 2,
+					}
+				end,
 				{
 					pane = 2,
 					section = "terminal",
