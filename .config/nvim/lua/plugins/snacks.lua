@@ -194,11 +194,17 @@ return {
 			"<leader>ua",
 			function()
 				Snacks.toggle.animate():toggle()
+				-- Neovide draws its own cursor trail and does not load either plugin.
 				if not vim.g.neovide then
 					vim.b.minianimate_disable = not vim.b.minianimate_disable
-					require("smear_cursor").toggle()
+					-- smear-cursor is lazy, so only toggle it once it exists --
+					-- but never let that gate the mini.animate toggle above.
+					if package.loaded["smear_cursor"] then
+						require("smear_cursor").toggle()
+					end
 				end
 			end,
+			desc = "Toggle Animations",
 			silent = true,
 		},
 		{
