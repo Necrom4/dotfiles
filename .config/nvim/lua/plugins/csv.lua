@@ -1,35 +1,39 @@
 return {
 	"hat0uma/csvview.nvim",
+	init = function()
+		require("utils.general").on_very_lazy(function()
+			Snacks.toggle
+				.new({
+					id = "csv",
+					name = "CsvView",
+					get = function()
+						return package.loaded["csvview"] ~= nil and require("csvview").is_enabled()
+					end,
+					set = function(state)
+						local delimiter = vim.fn.getline("."):sub(vim.fn.col("."), vim.fn.col("."))
+						if delimiter and delimiter ~= "" then
+							vim.cmd(
+								string.format("CsvViewToggle display_mode=border header_lnum=1 delimiter=%s", delimiter)
+							)
+						end
+					end,
+					icon = {
+						enabled = " ",
+						disabled = " ",
+					},
+					color = {
+						enabled = "green",
+						disabled = "yellow",
+					},
+					wk_desc = {
+						enabled = "Disable ",
+						disabled = "Enable ",
+					},
+				})
+				:map("<leader>ux")
+		end)
+	end,
 	opts = function()
-		Snacks.toggle
-			.new({
-				id = "csv",
-				name = "CsvView",
-				get = function()
-					return require("csvview").is_enabled()
-				end,
-				set = function(state)
-					local delimiter = vim.fn.getline("."):sub(vim.fn.col("."), vim.fn.col("."))
-					if delimiter and delimiter ~= "" then
-						vim.cmd(
-							string.format("CsvViewToggle display_mode=border header_lnum=1 delimiter=%s", delimiter)
-						)
-					end
-				end,
-				icon = {
-					enabled = " ",
-					disabled = " ",
-				},
-				color = {
-					enabled = "green",
-					disabled = "yellow",
-				},
-				wk_desc = {
-					enabled = "Disable ",
-					disabled = "Enable ",
-				},
-			})
-			:map("<leader>ux")
 		return {
 			parser = { comments = { "#", "//" } },
 			keymaps = {

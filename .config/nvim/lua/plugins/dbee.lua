@@ -63,33 +63,31 @@ return {
 			},
 		})
 	end,
-	opts = function(_, opts)
-		local dbee = require("dbee")
-
-		Snacks.toggle({
-			id = "dbee",
-			name = "DBee",
-			get = function()
-				return dbee.is_open()
-			end,
-			set = function()
-				dbee.toggle()
-			end,
-			icon = {
-				enabled = "󰆼",
-				disabled = "󰆼 ",
-			},
-			color = {
-				enabled = "green",
-				disabled = "yellow",
-			},
-			wk_desc = {
-				enabled = "Close ",
-				disabled = "Open ",
-			},
-		}):map("<leader>D")
-
-		return opts
+	init = function()
+		require("utils.general").on_very_lazy(function()
+			Snacks.toggle({
+				id = "dbee",
+				name = "DBee",
+				get = function()
+					return package.loaded["dbee"] ~= nil and require("dbee").is_open()
+				end,
+				set = function()
+					require("dbee").toggle()
+				end,
+				icon = {
+					enabled = "󰆼",
+					disabled = "󰆼 ",
+				},
+				color = {
+					enabled = "green",
+					disabled = "yellow",
+				},
+				wk_desc = {
+					enabled = "Close ",
+					disabled = "Open ",
+				},
+			}):map("<leader>D")
+		end)
 	end,
 	cmd = "Dbee",
 }

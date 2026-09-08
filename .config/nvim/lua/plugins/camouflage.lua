@@ -9,62 +9,63 @@ return {
 		"toml",
 		"yaml",
 	},
-	opts = function()
-		Snacks.toggle({
-			id = "camouflage_toggle",
-			name = "values",
-			get = function()
-				return concealed
-			end,
-			set = function()
-				concealed = not concealed
-				vim.cmd("CamouflageToggle")
-			end,
-			icon = {
-				enabled = " ",
-				disabled = " ",
-			},
-			color = {
-				enabled = "red",
-				disabled = "azure",
-			},
-			wk_desc = {
-				enabled = "Show ",
-				disabled = "Conceal ",
-			},
-		}):map("<leader>ucC")
+	init = function()
+		require("utils.general").on_very_lazy(function()
+			Snacks.toggle({
+				id = "camouflage_toggle",
+				name = "values",
+				get = function()
+					return concealed
+				end,
+				set = function()
+					concealed = not concealed
+					vim.cmd("CamouflageToggle")
+				end,
+				icon = {
+					enabled = " ",
+					disabled = " ",
+				},
+				color = {
+					enabled = "red",
+					disabled = "azure",
+				},
+				wk_desc = {
+					enabled = "Show ",
+					disabled = "Conceal ",
+				},
+			}):map("<leader>ucC")
 
-		Snacks.toggle({
-			id = "camouflage_follow_cursor",
-			name = "cursor line",
-			get = function()
-				return concealed_line
-			end,
-			set = function()
-				concealed_line = not concealed_line
-				vim.cmd("CamouflageFollowCursor")
-			end,
-			icon = {
-				enabled = " ",
-				disabled = " ",
-			},
-			color = {
-				enabled = "red",
-				disabled = "azure",
-			},
-			wk_desc = {
-				enabled = "Show ",
-				disabled = "Conceal ",
-			},
-		}):map("<leader>ucc")
-
-		return {
-			pwned = {
-				enabled = false,
-				sign_text = "",
-			},
-		}
+			Snacks.toggle({
+				id = "camouflage_follow_cursor",
+				name = "cursor line",
+				get = function()
+					return concealed_line
+				end,
+				set = function()
+					concealed_line = not concealed_line
+					vim.cmd("CamouflageFollowCursor")
+				end,
+				icon = {
+					enabled = " ",
+					disabled = " ",
+				},
+				color = {
+					enabled = "red",
+					disabled = "azure",
+				},
+				wk_desc = {
+					enabled = "Show ",
+					disabled = "Conceal ",
+				},
+			}):map("<leader>ucc")
+		end)
 	end,
+	opts = {
+		pwned = {
+			enabled = false,
+			sign_text = "",
+		},
+	},
 	keys = {
 		{
 			"<leader>cP",
