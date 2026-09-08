@@ -58,9 +58,18 @@ vim.keymap.set({ "n", "v" }, "<c-s-l>", "zl", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<c-s-h>", "zh", { noremap = true, silent = true })
 -- define mark
 vim.keymap.set({ "n", "v", "o" }, "`", "m", { noremap = true, silent = true })
--- center on next search
-vim.keymap.set("n", "n", "nzz", { noremap = true, silent = true })
-vim.keymap.set("n", "N", "Nzz", { noremap = true, silent = true })
+-- ...which left no way to jump BACK to a mark's exact position (only linewise
+-- via 'a). Put that on g` .
+vim.keymap.set({ "n", "v", "o" }, "g`", "`", { noremap = true, silent = true })
+
+-- Centre on search results. Keeps LazyVim's expr form rather than a plain
+-- "nzz": `'Nn'[v:searchforward]` makes n always go forward even after ?, and
+-- the `zv` is what opens a closed fold around the match -- without it, searching
+-- into a folded region silently leaves the cursor on an invisible line.
+vim.keymap.set("n", "n", "'Nn'[v:searchforward].'zvzz'", { expr = true, desc = "Next Search Result", silent = true })
+vim.keymap.set("n", "N", "'nN'[v:searchforward].'zvzz'", { expr = true, desc = "Prev Search Result", silent = true })
+vim.keymap.set({ "x", "o" }, "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next Search Result" })
+vim.keymap.set({ "x", "o" }, "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
 -- move cursor in insert/cmdline modes
 vim.keymap.set("i", "<c-j>", "<down>", { noremap = true, silent = true })
 vim.keymap.set("i", "<c-k>", "<up>", { noremap = true, silent = true })
@@ -96,19 +105,37 @@ vim.keymap.set("n", "g<", "<", { noremap = true, desc = "Indent Left" })
 vim.keymap.set("n", "g>", ">", { noremap = true, desc = "Indent Right" })
 
 -- single click indent
-vim.keymap.set("n", "<", "<<", { noremap = true, desc = "Indent Left" })
-vim.keymap.set("n", ">", ">>", { noremap = true, desc = "Indent Right" })
+--
+-- Skipped in filetypes that bind << / >> themselves (neorg's promote/demote).
+-- These are `noremap`, so `>` -> `>>` would run the raw indent and neorg's
+-- <Plug> mapping would never fire.
+local INDENT_MAP_SKIP_FT = { norg = true }
+
+vim.api.nvim_create_autocmd("BufEnter", {
+	group = vim.api.nvim_create_augroup("vimrc_single_click_indent", { clear = true }),
+	callback = function(ev)
+		if INDENT_MAP_SKIP_FT[vim.bo[ev.buf].filetype] then
+			pcall(vim.keymap.del, "n", "<", { buffer = ev.buf })
+			pcall(vim.keymap.del, "n", ">", { buffer = ev.buf })
+			return
+		end
+		vim.keymap.set("n", "<", "<<", { buffer = ev.buf, noremap = true, desc = "Indent Left" })
+		vim.keymap.set("n", ">", ">>", { buffer = ev.buf, noremap = true, desc = "Indent Right" })
+	end,
+})
 
 vim.keymap.set("n", "gJ", "J")
 
 -- default LazyVim disabled keymaps
-vim.keymap.del("n", "<leader>K")
-vim.keymap.del("n", "<leader>L")
-vim.keymap.del("n", "<leader>xl")
-vim.keymap.del("n", "<leader>xq")
-
---keywordprg
-vim.keymap.set("v", "<leader>sM", "<cmd>norm! K<cr>", { desc = "Man Pages" })
+--
+-- These MUST be guarded. vim.keymap.del() raises E31 when the mapping is not
+-- there, and an unguarded raise here aborts the rest of this file -- silently
+-- dropping every keymap defined below it. That happens whenever LazyVim renames
+-- one of these, or when a lazy.nvim `keys` handler claims the key first (which
+-- makes safe_keymap_set skip LazyVim's own definition).
+for _, lhs in ipairs({ "<leader>K", "<leader>L", "<leader>xl", "<leader>xq" }) do
+	pcall(vim.keymap.del, "n", lhs)
+end
 
 -- location list
 vim.keymap.set("n", "<leader>Ql", function()
