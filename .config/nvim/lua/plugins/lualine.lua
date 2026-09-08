@@ -22,237 +22,126 @@ local function scrollbar()
 	return string.rep(sbar[i], 2)
 end
 
+-- Shorten long branch names so the statusline does not get pushed around.
+local function short_branch(str)
+	local max_len = 23
+
+	str = str:gsub("^feature/", "feat/")
+	str = str:gsub("^bugfix/", "fix/")
+	str = str:gsub("^hotfix/", "hfx/")
+	str = str:gsub("^release/", "rls/")
+	str = str:gsub("^refactor/", "rfct/")
+
+	if #str > max_len then
+		str = str:gsub("^feat/", "ft/")
+		str = str:gsub("^fix/", "fx/")
+		str = str:gsub("^rls/", "rl/")
+		str = str:gsub("^rfct/", "rf/")
+
+		-- Strip a leading ticket ID (ABC-123- or 123-)
+		if #str > max_len then
+			str = str:gsub("^(.-/)[A-Za-z]+-[0-9]+[-_]", "%1")
+			str = str:gsub("^(.-/)[0-9]+[-_]", "%1")
+		end
+
+		if #str > max_len then
+			str = ("%s"):format(str:sub(1, max_len - 1))
+		end
+	end
+
+	return str
+end
+
+-- Several components are only worth the horizontal space on a wide window.
+local function wide()
+	return vim.o.columns > 80
+end
+
 return {
 	"nvim-lualine/lualine.nvim",
-	event = "VeryLazy",
-	init = function()
-		vim.g.lualine_laststatus = vim.o.laststatus
-		if vim.fn.argc(-1) > 0 then
-			-- set an empty statusline till lualine loads
-			vim.o.statusline = " "
-		else
-			-- hide the statusline on the starter page
-			vim.o.laststatus = 0
-		end
-	end,
-	opts = function()
-		-- PERF: we don't need this lualine require madness 🤷
-		local lualine_require = require("lualine_require")
-		lualine_require.require = require
-
-		local icons = LazyVim.config.icons
-
-		vim.o.laststatus = vim.g.lualine_laststatus
-
-		local opts = {
-			options = {
-				theme = "auto",
-				globalstatus = vim.o.laststatus == 3,
-				disabled_filetypes = {
-					statusline = { "alpha", "dashboard", "ministarter", "snacks_dashboard" },
-					winbar = {
-						"aerial",
-						"alpha",
-						"dashboard",
-						"help",
-						"lir",
-						"neogitstatus",
-						"NvimTree",
-						"Outline",
-						"packer",
-						"snacks_dashboard",
-						"spectre_panel",
-						"startify",
-						"toggleterm",
-						"Trouble",
-						"undotree",
-					},
-				},
+	opts = function(_, opts)
+		-- Mode: single letter when narrow.
+		opts.sections.lualine_a = {
+			{
+				"mode",
+				fmt = function(str)
+					return vim.o.columns < 100 and str:sub(1, 1) or str
+				end,
 			},
-			sections = {
-				lualine_a = {
-					{
-						"mode",
-						fmt = function(str)
-							if vim.o.columns < 100 then
-								return str:sub(1, 1)
-							end
-							return str
-						end,
-					},
-				},
-				lualine_b = {
-					{
-						"branch",
-						fmt = function(str)
-							local max_len = 23
-
-							-- 1. Standard prefix shortening
-							str = str:gsub("^feature/", "feat/")
-							str = str:gsub("^bugfix/", "fix/")
-							str = str:gsub("^hotfix/", "hfx/")
-							str = str:gsub("^release/", "rls/")
-							str = str:gsub("^refactor/", "rfct/")
-
-							if #str > max_len then
-								-- 2. Shortest prefixes
-								str = str:gsub("^feat/", "ft/")
-								str = str:gsub("^fix/", "fx/")
-								str = str:gsub("^rls/", "rl/")
-								str = str:gsub("^rfct/", "rf/")
-
-								-- 3. Strip ticket ID
-								if #str > max_len then
-									str = str:gsub("^(.-/)[A-Za-z]+-[0-9]+[-_]", "%1")
-									str = str:gsub("^(.-/)[0-9]+[-_]", "%1")
-								end
-
-								-- 4. Hard truncate & add icon
-								if #str > max_len then
-									str = ("%s"):format(str:sub(1, max_len - 1))
-								end
-							end
-
-							return str
-						end,
-						icon = icons.git.branch or "", -- Use a custom icon if LazyVim.config.icons.git.branch is not set
-					},
-				},
-
-				lualine_c = {
-					(function()
-						local c = LazyVim.lualine.root_dir()
-						local orig = c.cond
-						c.cond = function()
-							return vim.o.columns > 80 and (not orig or orig())
-						end
-						return c
-					end)(),
-					{
-						LazyVim.lualine.pretty_path(),
-						separator = "",
-						padding = { left = 1, right = 0 },
-					},
-					{
-						"filetype",
-						icon_only = true,
-						padding = { left = 1, right = 0 },
-					},
-					{
-						"navic",
-						cond = function()
-							return vim.o.columns > 80
-						end,
-					},
-				},
-				lualine_x = {
-					Snacks.profiler.status(),
-          -- stylua: ignore
-          {
-            function() return require("noice").api.status.command.get() end,
-            cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-            color = function() return { fg = Snacks.util.color("Statement") } end,
-          },
-          -- stylua: ignore
-          {
-            function() return require("noice").api.status.mode.get() end,
-            cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-            color = function() return { fg = Snacks.util.color("Constant") } end,
-          },
-          -- stylua: ignore
-          {
-            function() return "  " .. require("dap").status() end,
-            cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-            color = function() return { fg = Snacks.util.color("Debug") } end,
-          },
-          -- stylua: ignore
-          {
-            require("lazy.status").updates,
-            cond = require("lazy.status").has_updates,
-            color = function() return { fg = Snacks.util.color("Special") } end,
-          },
-					{
-						"diff",
-						symbols = {
-							added = icons.git.added,
-							modified = icons.git.modified,
-							removed = icons.git.removed,
-						},
-						source = function()
-							local gitsigns = vim.b.gitsigns_status_dict
-							if gitsigns then
-								return {
-									added = gitsigns.added,
-									modified = gitsigns.changed,
-									removed = gitsigns.removed,
-								}
-							end
-						end,
-						cond = function()
-							return vim.o.columns > 80
-						end,
-					},
-					{
-						"diagnostics",
-						symbols = {
-							error = icons.diagnostics.Error,
-							warn = icons.diagnostics.Warn,
-							info = icons.diagnostics.Info,
-							hint = icons.diagnostics.Hint,
-						},
-						cond = function()
-							return vim.o.columns > 80
-						end,
-					},
-					{ "overseer" },
-					{
-						"encoding",
-						cond = function()
-							return vim.o.columns > 80
-						end,
-					},
-				},
-				lualine_y = {
-					{
-						searchcount,
-						color = function()
-							return { fg = Snacks.util.color("Number") }
-						end,
-					},
-					{ "location" },
-					{ "progress", separator = "", padding = { left = 1, right = 1 } },
-					{
-						scrollbar,
-						padding = { left = 0, right = 0 },
-						cond = function()
-							return vim.o.columns > 80
-						end,
-					},
-				},
-				lualine_z = {},
-			},
-			winbar = {
-				lualine_b = {
-					{
-						"windows",
-						show_filename_only = true,
-						show_modified_status = true,
-						mode = 0,
-					},
-				},
-			},
-			inactive_winbar = {
-				lualine_b = {
-					{
-						"windows",
-						show_filename_only = true,
-						show_modified_status = true,
-						mode = 0,
-					},
-				},
-			},
-			extensions = { "neo-tree", "lazy", "fzf" },
 		}
+
+		-- Branch: shortened.
+		opts.sections.lualine_b = {
+			{ "branch", fmt = short_branch, icon = LazyVim.config.icons.git.branch or "" },
+		}
+
+		-- Only the root dir and the diagnostics counts are gated on width; the
+		-- filename and filetype icon must always be visible.
+		local function gate_on_width(section, matches)
+			for _, component in ipairs(section) do
+				if type(component) == "table" and matches(component) then
+					local orig = component.cond
+					component.cond = function()
+						return wide() and (not orig or orig())
+					end
+				end
+			end
+		end
+
+		-- root_dir is the first entry upstream, and is the one component here
+		-- without a string name to match on.
+		gate_on_width(opts.sections.lualine_c, function(component)
+			return component == opts.sections.lualine_c[1] or component[1] == "diagnostics"
+		end)
+
+		-- navic breadcrumbs after the path.
+		table.insert(opts.sections.lualine_c, { "navic", cond = wide })
+
+		gate_on_width(opts.sections.lualine_x, function(component)
+			return component[1] == "diff"
+		end)
+		vim.list_extend(opts.sections.lualine_x, {
+			{ "overseer" },
+			{ "encoding", cond = wide },
+		})
+
+		-- Search count + a two-cell scroll indicator; drop upstream's clock.
+		opts.sections.lualine_y = {
+			{
+				searchcount,
+				color = function()
+					return { fg = Snacks.util.color("Number") }
+				end,
+			},
+			{ "location" },
+			{ "progress", separator = "", padding = { left = 1, right = 1 } },
+			{ scrollbar, padding = { left = 0, right = 0 }, cond = wide },
+		}
+		opts.sections.lualine_z = {}
+
+		-- Per-window filename list in the winbar.
+		local windows = {
+			lualine_b = {
+				{ "windows", show_filename_only = true, show_modified_status = true, mode = 0 },
+			},
+		}
+		opts.winbar = windows
+		opts.inactive_winbar = vim.deepcopy(windows)
+
+		opts.options.disabled_filetypes = opts.options.disabled_filetypes or {}
+		opts.options.disabled_filetypes.winbar = {
+			"aerial",
+			"dashboard",
+			"help",
+			"neogitstatus",
+			"Outline",
+			"snacks_dashboard",
+			"toggleterm",
+			"Trouble",
+			"undotree",
+		}
+
+		opts.extensions = { "lazy", "aerial", "overseer", "quickfix", "man", "trouble" }
 
 		return opts
 	end,
