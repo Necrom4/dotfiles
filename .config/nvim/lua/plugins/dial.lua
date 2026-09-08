@@ -1,13 +1,28 @@
+-- Selects the augend group for the current filetype, falling back to "default".
+-- Without this, dial.map.manipulate() always used the "default" group, so every
+-- per-filetype group configured below (markdown checkboxes, css/vue hexcolors,
+-- typescript let/const, json semver, ...) was dead config.
+---@param increment boolean
+---@param g? boolean
+local function dial(increment, g)
+	local mode = vim.fn.mode(true)
+	-- Visual 'v', Visual Line 'V' and Visual Block '\22' all use the visual maps.
+	local is_visual = mode == "v" or mode == "V" or mode == "\22"
+	local func = (increment and "inc" or "dec") .. (g and "_g" or "_") .. (is_visual and "visual" or "normal")
+	local group = vim.g.dials_by_ft[vim.bo.filetype] or "default"
+	return require("dial.map")[func](group)
+end
+
 return {
 	"monaqa/dial.nvim",
 	recommended = true,
 	desc = "Increment and decrement numbers, dates, and more",
   -- stylua: ignore
   keys = {
-    { "<C-a>", function() require("dial.map").manipulate("increment", "normal") end, desc = "Increment", mode = {"n"} },
-    { "<C-x>", function() require("dial.map").manipulate("decrement", "normal") end, desc = "Decrement", mode = {"n"} },
-    { "<C-a>", function() require("dial.map").manipulate("increment", "visual") end, desc = "Increment", mode = {"v"} },
-    { "<C-x>", function() require("dial.map").manipulate("decrement", "visual") end, desc = "Decrement", mode = {"v"} },
+    { "<C-a>",  function() return dial(true)        end, expr = true, desc = "Increment",         mode = { "n", "v" } },
+    { "<C-x>",  function() return dial(false)       end, expr = true, desc = "Decrement",         mode = { "n", "v" } },
+    { "g<C-a>", function() return dial(true, true)  end, expr = true, desc = "Increment (group)", mode = { "n", "v" } },
+    { "g<C-x>", function() return dial(false, true) end, expr = true, desc = "Decrement (group)", mode = { "n", "v" } },
   },
 	opts = function()
 		local augend = require("dial.augend")
