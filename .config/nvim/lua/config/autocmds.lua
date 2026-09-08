@@ -1,5 +1,3 @@
-local utils = require("utils.general")
-
 -- Persistent undo
 vim.opt.undofile = true
 local vimrc_undofile_augroup = vim.api.nvim_create_augroup("vimrc_undofile", { clear = true })
