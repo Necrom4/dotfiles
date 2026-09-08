@@ -32,7 +32,7 @@ return {
 		},
 		current_line_blame = true,
 		current_line_blame_opts = {
-			delay = 200,
+			delay = 500,
 		},
 		_on_attach_pre = function(bufnr, callback)
 			require("gitsigns-yadm").yadm_signs(callback, { bufnr = bufnr })
