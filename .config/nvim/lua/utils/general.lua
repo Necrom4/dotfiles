@@ -1,5 +1,13 @@
 local M = {}
 
+function M.on_very_lazy(fn)
+	vim.api.nvim_create_autocmd("User", {
+		pattern = "VeryLazy",
+		once = true,
+		callback = fn,
+	})
+end
+
 -- EXECUTE TERM CMD
 function M.term_cmd(cmd)
 	local wrapped_cmd = { "sh", "-c", cmd }
