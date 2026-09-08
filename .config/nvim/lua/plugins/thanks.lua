@@ -1,6 +1,11 @@
 return {
 	"jsongerber/thanks.nvim",
-	event = "VeryLazy",
+	cmd = {
+		"ThanksAll",
+		"ThanksGithubToken",
+		"ThanksClearCache",
+		"ThanksCheck",
+	},
 	opts = {
 		unstar_on_uninstall = true,
 		ask_before_unstarring = true,
