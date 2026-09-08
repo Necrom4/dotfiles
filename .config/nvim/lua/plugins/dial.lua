@@ -87,8 +87,6 @@ return {
 					make_const({ "True", "False" }),
 					make_const({ "true", "false" }),
 					make_const({ "enable", "disable" }),
-					make_const({ "enabled", "disabled" }),
-					make_const({ "Enabled", "Disabled" }),
 					make_const({ "on", "off" }),
 					make_const({ "yes", "no" }),
 					make_const({ "Yes", "No" }),
