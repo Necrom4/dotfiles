@@ -3,7 +3,7 @@ return {
 	opts = {
 		formatters_by_ft = {
 			pkl = { "pkl" },
-			ruby = { "standardrb", "rubocop", stop_after_first = false },
+			ruby = { "standardrb", "rubocop", stop_after_first = true },
 			sql = { "pg_format", "sqruff", stop_after_first = true },
 		},
 	},
