@@ -112,12 +112,26 @@ return {
 				per_filetype = {
 					sql = { "dbee", "buffer" },
 				},
+				-- score_offset ladder. Ghost text always previews items[1], so anything
+				-- ranked above `snippets` suppresses snippet previews. Utility sources
+				-- are gated behind their own trigger characters and therefore do not
+				-- need a high offset to be reachable.
+				--
+				--   1000  snippets, lazydev, dbee   (want to win outright)
+				--    950  lsp
+				--    900  path
+				--    850  calc, env, git, fuzzy-path
+				--    700  yank
+				--    500  buffer
+				--    400  ripgrep
+				--    300  spell
+				--    200  thesaurus
 				providers = {
-					buffer = { score_offset = 800 },
+					buffer = { score_offset = 500 },
 					calc = {
 						name = "calc",
 						module = "blink.compat.source",
-						score_offset = 1000,
+						score_offset = 850,
 						transform_items = function(ctx, items)
 							for _, item in ipairs(items) do
 								item.kind_icon = "󰃬"
@@ -147,12 +161,12 @@ return {
 							show_braces = false,
 							show_documentation_window = true,
 						},
-						score_offset = 1000,
+						score_offset = 850,
 					},
 					["fuzzy-path"] = {
 						name = "Fuzzy Path",
 						module = "blink-cmp-fuzzy-path",
-						score_offset = 1000,
+						score_offset = 850,
 						opts = {
 							filetypes = { "ruby", "*rb" },
 							trigger_char = "/",
@@ -163,7 +177,7 @@ return {
 					git = {
 						module = "blink-cmp-git",
 						name = "Git",
-						score_offset = 1000,
+						score_offset = 850,
 						opts = {},
 					},
 					lazydev = {
@@ -171,15 +185,22 @@ return {
 						module = "lazydev.integrations.blink",
 						score_offset = 1000,
 					},
-					lsp = { score_offset = 900 },
-					path = { score_offset = 1000 },
+					lsp = { score_offset = 950 },
+					path = { score_offset = 900 },
 					ripgrep = {
 						name = "Ripgrep",
 						module = "blink-ripgrep",
 						opts = {},
-						score_offset = 800,
+						score_offset = 400,
 					},
-					snippets = { score_offset = 900 },
+					snippets = {
+						score_offset = 1000,
+						-- Ghost text previews the expanded snippet body rather than just the
+						-- trigger. See lua/utils/snippet_preview.lua for the full rationale.
+						transform_items = function(ctx, items)
+							return require("utils.snippet_preview").transform_items(ctx, items)
+						end,
+					},
 					spell = {
 						name = "Spell",
 						module = "blink-cmp-spell",
@@ -198,7 +219,7 @@ return {
 								return in_spell_capture
 							end,
 						},
-						score_offset = 400,
+						score_offset = 300,
 					},
 					thesaurus = {
 						name = "blink-cmp-words",
@@ -208,7 +229,7 @@ return {
 							similarity_pointers = { "&", "^" },
 							similarity_depth = 2,
 						},
-						score_offset = 300,
+						score_offset = 200,
 					},
 					yank = {
 						name = "yank",
