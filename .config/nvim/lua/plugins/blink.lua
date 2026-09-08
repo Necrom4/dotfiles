@@ -88,6 +88,8 @@ return {
 			},
 			signature = { enabled = true },
 			sources = {
+				-- Spell sources are available in every filetype, but their providers
+				-- remain disabled until spelling is toggled on with <leader>us.
 				default = function()
 					local utils = require("utils.general")
 					local base = {
@@ -204,6 +206,9 @@ return {
 					spell = {
 						name = "Spell",
 						module = "blink-cmp-spell",
+						enabled = function()
+							return vim.wo.spell
+						end,
 						opts = {
 							enable_in_context = function()
 								local curpos = vim.api.nvim_win_get_cursor(0)
@@ -224,6 +229,9 @@ return {
 					thesaurus = {
 						name = "blink-cmp-words",
 						module = "blink-cmp-words.thesaurus",
+						enabled = function()
+							return vim.wo.spell
+						end,
 						opts = {
 							definition_pointers = { "!", "&", "^" },
 							similarity_pointers = { "&", "^" },
