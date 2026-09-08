@@ -11,7 +11,7 @@ return {
 		signs = {
 			hunk = { "", "" },
 			item = { "", "" },
-			section = { "", "" },
+			section = { "", "" },
 		},
 		treesitter_diff_highlight = true,
 	},
