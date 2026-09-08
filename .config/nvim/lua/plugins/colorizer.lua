@@ -35,7 +35,7 @@ return {
 					},
 					xterm = { enable = true },
 				},
-				always_update = true,
+				always_update = false,
 			},
 		}
 	end,
