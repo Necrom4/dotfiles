@@ -1,10 +1,12 @@
 return {
 	"gbprod/yanky.nvim",
-	opts = {
-		ring = {
-			permanent_wrapper = require("yanky.wrappers").remove_carriage_return,
-		},
-	},
+	opts = function()
+		return {
+			ring = {
+				permanent_wrapper = require("yanky.wrappers").remove_carriage_return,
+			},
+		}
+	end,
 	keys = {
 		{ "<leader>p", mode = { "n", "x" }, false },
 		{ ">p", false },
