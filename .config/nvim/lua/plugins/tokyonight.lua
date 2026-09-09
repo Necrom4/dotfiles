@@ -27,6 +27,39 @@ return {
 				bg = "#383148",
 				italic = true,
 			}
+			hl.TodoBgNOTE = {
+				bg = "#C099FF",
+				bold = true,
+				fg = "#000000",
+			}
+			hl.TodoBgPERF = {
+				bg = "#4FD6BE",
+				bold = true,
+				fg = "#000000",
+			}
+			hl.TodoBgTEST = {
+				bg = "#4FD6BE",
+				bold = true,
+				fg = "#000000",
+			}
+			hl.TodoFgNOTE = {
+				fg = "#C099FF",
+			}
+			hl.TodoFgPERF = {
+				fg = "#4FD6BE",
+			}
+			hl.TodoFgTEST = {
+				fg = "#4FD6BE",
+			}
+			hl.TodoSignNOTE = {
+				fg = "#C099FF",
+			}
+			hl.TodoSignPERF = {
+				fg = "#4FD6BE",
+			}
+			hl.TodoSignTEST = {
+				fg = "#4FD6BE",
+			}
 			hl.TreesitterContext = {
 				bg = "none",
 			}
