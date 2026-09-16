@@ -13,7 +13,7 @@ prepend_rules = [
 	{ url = "*.epub", use = [ "tdf", "edit", "reveal" ] },
 	{ url = "*.html", use = [ "open", "edit", "reveal" ] },
 	{ url = "*.json", use = [ "edit", "reveal", "visidata" ] },
-	{ url = "*.pdf", use = [ "tdf", "edit", "reveal" ] },
+	{ url = "*.pdf", use = [ "tdf", "open", "reveal" ] },
 	{ url = "*.sql", use = [ "edit", "reveal", "visidata" ] },
 	{ url = "*.sqlite", use = [ "edit", "reveal", "visidata" ] },
 	{ url = "*.tsv", use = [ "edit", "reveal", "visidata" ] },
