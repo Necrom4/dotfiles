@@ -15,6 +15,8 @@ brew "btop"
 brew "bttf"
 # Securely send things from one computer to another
 brew "croc"
+# Cross-platform disk diagnostics TUI
+brew "diskwatch"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Embeddable SQL OLAP Database Management System
@@ -97,6 +99,8 @@ brew "scc"
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
+# Cross-platform system diagnostics TUI
+brew "syswatch"
 # Interactive TUI for Homebrew
 brew "taproom"
 # Feature-rich console based todo list manager
