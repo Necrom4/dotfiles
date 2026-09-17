@@ -144,15 +144,15 @@ brew "yq"
 # Compression and file packaging/archive utility
 brew "zip"
 # A retro terminal music player inspired by Winamp 2.x
-brew "bjarneo/cliamp/cliamp"
+brew "bjarneo/cliamp/cliamp", trusted: true
 # Lightning Fast Kubernetes navigator - keyboard-focused TUI for managing K8s clusters
-brew "janosmiko/tap/lfk"
+brew "janosmiko/tap/lfk", trusted: true
 # Fast file synchronization and network forwarding for remote development
-brew "mutagen-io/mutagen/mutagen"
+brew "mutagen-io/mutagen/mutagen", trusted: true
 # Swiss SBB/CFF/FFS timetable app for the terminal
-brew "necrom4/tap/sbb-tui"
+brew "necrom4/tap/sbb-tui", trusted: true
 # Interactive TUI pipeline editor built for rapid iteration
-brew "tlipinski/tap/rura"
+brew "tlipinski/tap/rura", trusted: true
 # Digital rain for modern terminals
 brew "tripstack-corp/tap/rmatrix", trusted: true
 # See what's eating your disk — a pastel treemap TUI
