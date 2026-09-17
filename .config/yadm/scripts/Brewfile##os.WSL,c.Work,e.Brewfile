@@ -45,6 +45,8 @@ brew "git-delta"
 brew "git-filter-repo"
 # Better way to clone, organize and manage multiple git repositories
 brew "git-get"
+# Open-source GitLab command-line tool
+brew "glab"
 # Deliver Go binaries as fast and easily as possible
 brew "goreleaser"
 # Colorize logfiles and command output
