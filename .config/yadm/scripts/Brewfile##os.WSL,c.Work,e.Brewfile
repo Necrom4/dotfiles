@@ -1,6 +1,5 @@
 tap "bjarneo/cliamp"
 tap "janosmiko/tap"
-tap "matthart1983/tap"
 tap "mutagen-io/mutagen"
 tap "necrom4/tap"
 tap "tlipinski/tap"
@@ -74,6 +73,8 @@ brew "minikube"
 brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Cross-platform realtime network diagnostics TUI
+brew "netwatch"
 # Port scanning utility for large networks
 brew "nmap"
 # Command-line Git information tool
@@ -138,8 +139,6 @@ brew "zip"
 brew "bjarneo/cliamp/cliamp"
 # Lightning Fast Kubernetes navigator - keyboard-focused TUI for managing K8s clusters
 brew "janosmiko/tap/lfk"
-# Real-time network diagnostics in your terminal — zero config, instant visibility
-brew "matthart1983/tap/netwatch"
 # Fast file synchronization and network forwarding for remote development
 brew "mutagen-io/mutagen/mutagen"
 # Swiss SBB/CFF/FFS timetable app for the terminal
