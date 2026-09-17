@@ -41,6 +41,8 @@ brew "gh"
 brew "git-absorb"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
+# Quickly rewrite git repository history
+brew "git-filter-repo"
 # Better way to clone, organize and manage multiple git repositories
 brew "git-get"
 # Deliver Go binaries as fast and easily as possible
