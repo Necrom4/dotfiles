@@ -7,7 +7,7 @@ tap "tlipinski/tap"
 tap "tripstack-corp/tap", "https://github.com/Tripstack-Corp/homebrew-tap"
 tap "zingzy/tap", "https://github.com/Zingzy/homebrew-tap"
 # Improved shell history for zsh, bash, fish and nushell
-brew "atuin"
+brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
