@@ -200,3 +200,23 @@ Snacks.toggle
 		},
 	})
 	:map("<leader>dd")
+
+-- Neovide copy/paste
+if vim.g.neovide then
+	local is_mac = vim.fn.has("mac") == 1
+	local c_c = is_mac and "<D-c>" or "<C-c>"
+	local c_v = is_mac and "<D-v>" or "<C-v>"
+
+	local function paste_in_prompt()
+		local keys = vim.fn.getreg("+")
+		keys = vim.fn.escape(keys, [["\]])
+		local termcodes = vim.api.nvim_replace_termcodes(keys, true, true, true)
+		vim.api.nvim_feedkeys(termcodes, "c", false)
+	end
+
+	vim.keymap.set("n", c_v, '"+p', { noremap = true, silent = true })
+	vim.keymap.set("i", c_v, '<ESC>"+pli', { noremap = true, silent = true })
+	vim.keymap.set("c", c_v, paste_in_prompt, { noremap = true, silent = true })
+	vim.keymap.set("t", c_v, paste_in_prompt, { noremap = true, silent = true })
+	vim.keymap.set("v", c_c, '"+y', { noremap = true, silent = true })
+end
