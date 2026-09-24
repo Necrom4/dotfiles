@@ -1,19 +1,3 @@
-local function searchcount()
-	if vim.v.hlsearch == 0 then
-		return ""
-	end
-	local ok, result = pcall(vim.fn.searchcount, { maxcount = 999, timeout = 500 })
-	if not ok or not result.total or result.total == 0 then
-		return ""
-	end
-	if result.incomplete == 1 then
-		return "?/?"
-	elseif result.incomplete == 2 then
-		return ("%d/>%d"):format(result.current, result.total)
-	end
-	return ("%d/%d"):format(result.current, result.total)
-end
-
 local function scrollbar()
 	local sbar = { "▔", "🭶", "🭷", "🭸", "🭹", "🭺", "🭻", "▁" }
 	local curr_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -108,7 +92,12 @@ return {
 		-- Search count + a two-cell scroll indicator; drop upstream's clock.
 		opts.sections.lualine_y = {
 			{
-				searchcount,
+				"searchcount",
+				-- "[3/12]" -> "3/12", and nothing when there are no matches.
+				fmt = function(str)
+					local count = str:match("^%[(.*)%]$")
+					return (count and not count:match("/0$")) and count or ""
+				end,
 				color = function()
 					return { fg = Snacks.util.color("Number") }
 				end,
