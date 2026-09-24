@@ -9,10 +9,11 @@
 #USAGE flag "--hours <range>" help="Only place commits within these daily hours, e.g. 08:30-18:00"
 #USAGE flag "--no-weekends" help="With or without --hours, skip Saturdays and Sundays"
 #USAGE flag "--seed <n>" help="Random seed, to reproduce a plan"
-#USAGE complete "from" run=#"git log -n 300 --format='%h%x00%s' 2>/dev/null | sed 's/:/\\:/g; s/\x0/:/'"# descriptions=#true
-#USAGE complete "to" run=#"git log -n 300 --format='%h%x00%s' 2>/dev/null | sed 's/:/\\:/g; s/\x0/:/'"# descriptions=#true
-#USAGE complete "start" run=#"git log -n 300 --date=format:'%Y-%m-%dT%H\:%M' --format='%ad:%h %s' 2>/dev/null"# descriptions=#true
-#USAGE complete "end" run=#"git log -n 300 --date=format:'%Y-%m-%dT%H\:%M' --format='%ad:%h %s' 2>/dev/null"# descriptions=#true
+#USAGE complete "from" run=#"git log -n 300 --format='%H%x1f%h%x1f%s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
+#USAGE complete "to" run=#"git log -n 300 --format='%H%x1f%h%x1f%s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
+#USAGE complete "start" run=#"git log -n 300 --date=format:'%Y-%m-%dT%H:%M' --format='%H%x1f%ad%x1f%h %s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
+#USAGE complete "end" run=#"git log -n 300 --date=format:'%Y-%m-%dT%H:%M' --format='%H%x1f%ad%x1f%h %s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
+# Completions list newest first; ↑ marks commits not on any remote yet.
 
 """Plan new dates for <from>..<to>, print them, then hand off to git:redate-apply.
 
