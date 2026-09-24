@@ -1,11 +1,11 @@
-tap "anomalyco/tap"
+tap "anomalyco/tap", trusted: true
 tap "bjarneo/cliamp"
 tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
-tap "janosmiko/tap"
-tap "mutagen-io/mutagen"
-tap "necrom4/tap"
-tap "tlipinski/tap"
+tap "janosmiko/tap", trusted: true
+tap "mutagen-io/mutagen", trusted: true
+tap "necrom4/tap", trusted: true
+tap "tlipinski/tap", trusted: true
 tap "tonisives/tap"
 tap "tripstack-corp/tap", "https://github.com/Tripstack-Corp/homebrew-tap"
 tap "zingzy/tap", "https://github.com/Zingzy/homebrew-tap"
