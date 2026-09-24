@@ -6,7 +6,6 @@ vim.opt.wrap = false -- Disable line wrap
 
 vim.opt.shortmess:append("S")
 vim.opt.spelllang = { "en", "fr", "pt" }
-vim.diagnostic.config({ signs = false })
 
 vim.filetype.add({
 	pattern = {

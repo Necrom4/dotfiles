@@ -1,5 +1,3 @@
--- Persistent undo
-vim.opt.undofile = true
 local vimrc_undofile_augroup = vim.api.nvim_create_augroup("vimrc_undofile", { clear = true })
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "/tmp/*",
