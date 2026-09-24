@@ -1,0 +1,227 @@
+#!/usr/bin/env python3
+#MISE description="Re-space author/committer dates of a commit range by commit complexity"
+#MISE quiet=true
+#MISE dir="{{cwd}}"
+#USAGE arg "<from>" help="Oldest commit of the range (included)"
+#USAGE arg "<to>" help="Newest commit of the range (included), must descend from <from>"
+#USAGE arg "<start>" help="When <from> was committed (anything `date -d` accepts)"
+#USAGE arg "<end>" help="When <to> was committed (anything `date -d` accepts)"
+#USAGE flag "--hours <range>" help="Only place commits within these daily hours, e.g. 08:30-18:00"
+#USAGE flag "--no-weekends" help="With or without --hours, skip Saturdays and Sundays"
+#USAGE flag "--seed <n>" help="Random seed, to reproduce a plan"
+#USAGE complete "from" run=#"git log -n 300 --format='%h%x00%s' 2>/dev/null | sed 's/:/\\:/g; s/\x0/:/'"# descriptions=#true
+#USAGE complete "to" run=#"git log -n 300 --format='%h%x00%s' 2>/dev/null | sed 's/:/\\:/g; s/\x0/:/'"# descriptions=#true
+#USAGE complete "start" run=#"git log -n 300 --date=format:'%Y-%m-%dT%H\:%M' --format='%ad:%h %s' 2>/dev/null"# descriptions=#true
+#USAGE complete "end" run=#"git log -n 300 --date=format:'%Y-%m-%dT%H\:%M' --format='%ad:%h %s' 2>/dev/null"# descriptions=#true
+
+"""Plan new dates for <from>..<to>, print them, then hand off to git:redate-apply.
+
+Complexity score of a commit (= how long it plausibly took to write):
+  - lines rewritten in place (min(adds, dels)) weigh the most, pure additions
+    less (could be a paste), pure deletions very little;
+  - lock files / generated / vendored paths barely count;
+  - sqrt() on size, so a 2000-line commit is not 100x a 20-line one;
+  - touching many files adds context-switching cost;
+  - a long commit message body means there was something to explain.
+Each gap before a commit is proportional to that commit's score, with some
+random jitter, then everything is scaled to fit between <start> and <end>.
+"""
+
+import datetime as dt
+import json
+import math
+import os
+import random
+import re
+import subprocess
+import sys
+
+# ── Tunables ──────────────────────────────────────────────────────────────────
+BASE = 2.0            # fixed cost of any commit (stage, write message, …)
+W_REWRITTEN = 2.0     # per line changed in place (a del paired with an add)
+W_ADDED = 1.0         # per extra added line
+W_DELETED = 0.3       # per extra deleted line
+W_FILES = 1.5         # × sqrt(files touched)
+W_MESSAGE = 1.0       # × log2(1 + words in message body)
+W_GENERATED = 0.05    # multiplier for lines in generated-looking files
+JITTER = 0.25         # each gap is scaled by a random factor in 1 ± JITTER
+GENERATED = re.compile(
+    r"(^|/)(vendor|dist|node_modules|__snapshots__)/"
+    r"|(\.lock|-lock\.json|\.sum|\.min\.(js|css)|\.snap|\.svg)$"
+)
+
+BOLD, DIM, CYAN, YELLOW, RED, NC = "\033[1m", "\033[2m", "\033[36m", "\033[33m", "\033[31m", "\033[0m"
+
+
+def die(msg):
+    print(f"{RED}{BOLD}{msg}{NC}", file=sys.stderr)
+    sys.exit(1)
+
+
+def git(*args):
+    r = subprocess.run(["git", *args], capture_output=True, text=True)
+    if r.returncode:
+        die(f"git {' '.join(args)}: {r.stderr.strip()}")
+    return r.stdout.strip()
+
+
+def to_epoch(text):
+    r = subprocess.run(["date", "-d", text, "+%s"], capture_output=True, text=True)
+    if r.returncode:
+        die(f"Cannot parse time: {text!r}")
+    return int(r.stdout)
+
+
+def score(sha):
+    parents = git("rev-list", "--parents", "-n1", sha).split()[1:]
+    words = len(git("log", "-n1", "--format=%b", sha).split())
+    msg = W_MESSAGE * math.log2(1 + words)
+    if len(parents) > 1:  # merges are mostly a click
+        return BASE + msg, "merge"
+
+    effort, files = 0.0, 0
+    for line in git("diff-tree", "--root", "--no-commit-id", "-r", "-M", "--numstat", sha).splitlines():
+        adds, dels, path = line.split("\t", 2)
+        files += 1
+        if adds == "-":  # binary
+            continue
+        adds, dels = int(adds), int(dels)
+        rewritten = min(adds, dels)
+        e = W_REWRITTEN * rewritten + W_ADDED * (adds - rewritten) + W_DELETED * (dels - rewritten)
+        effort += e * (W_GENERATED if GENERATED.search(path) else 1)
+
+    s = BASE + math.sqrt(effort) + W_FILES * math.sqrt(files) + msg
+    return s, f"{files} files, {effort:.0f} eff. lines, {words} words"
+
+
+def work_intervals(start, end, hours, no_weekends):
+    """Wall-clock [a, b) intervals (epoch) inside [start, end] that count as working time."""
+    if not hours and not no_weekends:
+        return [(start, end)]
+    if hours:
+        m = re.fullmatch(r"(\d{1,2}):?(\d{2})-(\d{1,2}):?(\d{2})", hours)
+        if not m:
+            die(f"--hours must look like 08:30-18:00, got {hours!r}")
+        h0, m0, h1, m1 = map(int, m.groups())
+    else:
+        h0, m0, h1, m1 = 0, 0, 24, 0
+    out = []
+    day = dt.datetime.fromtimestamp(start).date()
+    while True:
+        midnight = dt.datetime.combine(day, dt.time())
+        a = int(midnight.replace(hour=h0, minute=m0).timestamp())
+        b = int((midnight + dt.timedelta(hours=h1, minutes=m1)).timestamp())
+        if a > end:
+            break
+        if not (no_weekends and day.weekday() >= 5):
+            lo, hi = max(a, start), min(b, end)
+            if lo < hi:
+                out.append((lo, hi))
+        day += dt.timedelta(days=1)
+    if not out:
+        die("No working time between <start> and <end> with the given --hours/--no-weekends.")
+    return out
+
+
+def to_wall(offset, intervals):
+    """Map seconds of working time since the first interval to a wall-clock epoch."""
+    for a, b in intervals:
+        if offset <= b - a:
+            return a + offset
+        offset -= b - a
+    return intervals[-1][1]
+
+
+def humanize(t, lo, hi):
+    """Nudge away from round-looking seconds, staying inside [lo, hi]."""
+    t = int(t)
+    while t % 60 in (0, 30) or t % 10 == 0:
+        t += random.choice((-1, 1)) * random.randint(1, 9)
+    return max(lo, min(hi, t))
+
+
+def main():
+    env = os.environ.get
+    if env("usage_seed"):
+        random.seed(int(env("usage_seed")))
+
+    git("rev-parse", "--is-inside-work-tree")
+    frm = git("rev-parse", "--verify", f"{env('usage_from')}^{{commit}}")
+    to = git("rev-parse", "--verify", f"{env('usage_to')}^{{commit}}")
+    head = git("rev-parse", "HEAD")
+    ref = subprocess.run(["git", "symbolic-ref", "-q", "HEAD"], capture_output=True, text=True).stdout.strip() or "HEAD"
+
+    for anc, desc, what in ((frm, to, "<from> is not an ancestor of <to>"), (to, head, "<to> is not in the current branch")):
+        if subprocess.run(["git", "merge-base", "--is-ancestor", anc, desc]).returncode:
+            die(what)
+
+    start, end = to_epoch(env("usage_start")), to_epoch(env("usage_end"))
+    if end <= start:
+        die("<end> must be after <start>")
+
+    commits = [frm] + git("rev-list", "--reverse", "--topo-order", "--ancestry-path", f"{frm}..{to}").split()
+    commits = list(dict.fromkeys(c for c in commits if c))
+    scored = [score(c) for c in commits]
+
+    intervals = work_intervals(start, end, env("usage_hours"), env("usage_no_weekends") == "true")
+    total = sum(b - a for a, b in intervals)
+    # Don't land exactly on the given bounds: start a bit late, finish a bit early.
+    margin = min(300, total // (10 * len(commits) + 10))
+    t0 = random.uniform(margin * 0.2, margin)
+    t1 = total - random.uniform(margin * 0.2, margin)
+
+    gaps = [s * random.uniform(1 - JITTER, 1 + JITTER) for s, _ in scored[1:]]
+    scale = (t1 - t0) / sum(gaps) if gaps else 0
+    offsets = [t0]
+    for g in gaps:
+        offsets.append(offsets[-1] + g * scale)
+
+    times, prev = [], start - 1
+    for o in offsets:
+        t = humanize(to_wall(o, intervals), max(prev + 1, start), end)
+        times.append(t)
+        prev = t
+
+    # ── Show the plan ─────────────────────────────────────────────────────────
+    print(f"\n{BOLD}{len(commits)} commits on {ref.removeprefix('refs/heads/')}{NC}\n")
+    fmt = "%a %Y-%m-%d %H:%M:%S %z"
+    for i, (c, t, (s, why)) in enumerate(zip(commits, times, scored)):
+        old = int(git("log", "-n1", "--format=%at", c))
+        subject = git("log", "-n1", "--format=%s", c)
+        new_s = dt.datetime.fromtimestamp(t).astimezone().strftime(fmt)
+        old_s = dt.datetime.fromtimestamp(old).astimezone().strftime("%Y-%m-%d %H:%M")
+        mins = (t - times[i - 1]) // 60 if i else 0
+        span = f"+{mins // 60}h{mins % 60:02d}m" if mins >= 60 else f"+{mins}m" if i else ""
+        print(f"  {CYAN}{c[:9]}{NC} {BOLD}{new_s}{NC} {DIM}{span:>7}  was {old_s}{NC}  {subject[:60]}")
+        print(f"  {DIM}{'':9} score {s:5.1f}  ({why}){NC}")
+
+    after = git("rev-list", "--count", f"{to}..{head}")
+    if after != "0":
+        first_after = git("rev-list", "--reverse", f"{to}..{head}").split()[0]
+        if int(git("log", "-n1", "--format=%ct", first_after)) < times[-1]:
+            print(f"\n  {YELLOW}warning: {after} later commit(s) keep dates older than the new <to> date{NC}")
+        else:
+            print(f"\n  {DIM}{after} later commit(s) will be rewritten with their dates unchanged{NC}")
+    parent = git("rev-list", "--parents", "-n1", frm).split()[1:]
+    if parent and int(git("log", "-n1", "--format=%ct", parent[0])) > times[0]:
+        print(f"  {YELLOW}warning: the parent of <from> is dated after the new <from> date{NC}")
+    tags = git("tag", "--contains", frm)
+    if tags:
+        print(f"  {YELLOW}warning: tags will keep pointing to the old commits: {' '.join(tags.split())}{NC}")
+    print()
+
+    plan = {
+        "ref": ref,
+        "head": head,
+        "base": parent,
+        "dates": {c: t for c, t in zip(commits, times)},
+    }
+    path = os.path.join(git("rev-parse", "--absolute-git-dir"), "redate-plan.json")
+    with open(path, "w") as f:
+        json.dump(plan, f)
+
+    sys.stdout.flush()
+    os.execvp("mise", ["mise", "run", "git:redate-apply", path])
+
+
+main()
