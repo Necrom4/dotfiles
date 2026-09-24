@@ -9,11 +9,13 @@
 #USAGE flag "--hours <range>" help="Only place commits within these daily hours, e.g. 08:30-18:00"
 #USAGE flag "--no-weekends" help="With or without --hours, skip Saturdays and Sundays"
 #USAGE flag "--seed <n>" help="Random seed, to reproduce a plan"
-#USAGE complete "from" run=#"git log -n 300 --format='%H%x1f%h%x1f%s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
-#USAGE complete "to" run=#"git log -n 300 --format='%H%x1f%h%x1f%s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
-#USAGE complete "start" run=#"git log -n 300 --date=format:'%Y-%m-%dT%H:%M' --format='%H%x1f%ad%x1f%h %s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
-#USAGE complete "end" run=#"git log -n 300 --date=format:'%Y-%m-%dT%H:%M' --format='%H%x1f%ad%x1f%h %s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
+#USAGE flag "--yadm" help="Work on the yadm dotfiles repo instead of the current one (put it before the commits to complete them)"
+#USAGE complete "from" run=#"{% if "--yadm" in words %}export GIT_DIR="$(yadm introspect repo)" GIT_WORK_TREE="$HOME"; {% endif %}git log -n 300 --format='%H%x1f%h%x1f%s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
+#USAGE complete "to" run=#"{% if "--yadm" in words %}export GIT_DIR="$(yadm introspect repo)" GIT_WORK_TREE="$HOME"; {% endif %}git log -n 300 --format='%H%x1f%h%x1f%s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
+#USAGE complete "start" run=#"{% if "--yadm" in words %}export GIT_DIR="$(yadm introspect repo)" GIT_WORK_TREE="$HOME"; {% endif %}git log -n 300 --date=format:'%Y-%m-%dT%H:%M' --format='%H%x1f%ad%x1f%h %s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
+#USAGE complete "end" run=#"{% if "--yadm" in words %}export GIT_DIR="$(yadm introspect repo)" GIT_WORK_TREE="$HOME"; {% endif %}git log -n 300 --date=format:'%Y-%m-%dT%H:%M' --format='%H%x1f%ad%x1f%h %s' 2>/dev/null | awk -F'\037' -v u="$(git rev-list HEAD --not --remotes 2>/dev/null)" 'BEGIN { n = split(u, a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
 # Completions list newest first; ↑ marks commits not on any remote yet.
+# With --yadm typed earlier on the line, completions read the yadm repo instead.
 
 """Plan new dates for <from>..<to>, print them, then hand off to git:redate-apply.
 
@@ -143,6 +145,14 @@ def humanize(t, lo, hi):
 
 def main():
     env = os.environ.get
+    if env("usage_yadm") == "true":
+        # Point every git call (and git:redate-apply, which inherits the env) at the yadm repo.
+        r = subprocess.run(["yadm", "introspect", "repo"], capture_output=True, text=True)
+        if r.returncode or not r.stdout.strip():
+            die("Cannot locate the yadm repo (yadm introspect repo).")
+        os.environ["GIT_DIR"] = r.stdout.strip()
+        os.environ["GIT_WORK_TREE"] = os.path.expanduser("~")
+        os.chdir(os.environ["GIT_WORK_TREE"])
     if env("usage_seed"):
         random.seed(int(env("usage_seed")))
 
