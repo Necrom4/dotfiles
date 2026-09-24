@@ -231,7 +231,6 @@ cask "tor-browser"
 cask "vlc"
 mas "Bible Study", id: 472790630
 mas "Calc84", id: 1509489130
-mas "Canva", id: 897446215
 mas "Vpnify", id: 1503251395
 mas "WhatsApp", id: 310633997
 go "cmd/go"
