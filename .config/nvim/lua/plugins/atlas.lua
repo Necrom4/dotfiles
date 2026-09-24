@@ -13,6 +13,10 @@ return {
 			},
 		},
 		pulls = {
+			-- diff = {
+			-- 	open_cmd = "CodeDiff",
+			-- 	show_review_panel = true,
+			-- },
 			gitlab = {
 				views = {
 					{
@@ -33,5 +37,8 @@ return {
 				},
 			},
 		},
+	},
+	keys = {
+		{ "<leader>fa", "<cmd>Atlas<cr>", desc = "Atlas" },
 	},
 }
