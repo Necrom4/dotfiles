@@ -1,11 +1,9 @@
 return {
 	"gbprod/yanky.nvim",
-	opts = function()
-		return {
-			ring = {
-				permanent_wrapper = require("yanky.wrappers").remove_carriage_return,
-			},
-		}
+	opts = function(_, opts)
+		opts.ring = vim.tbl_deep_extend("force", opts.ring or {}, {
+			permanent_wrapper = require("yanky.wrappers").remove_carriage_return,
+		})
 	end,
 	keys = {
 		{ "<leader>p", mode = { "n", "x" }, false },
