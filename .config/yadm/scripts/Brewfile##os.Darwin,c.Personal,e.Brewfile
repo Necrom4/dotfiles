@@ -216,8 +216,7 @@ cask "hammerspoon"
 cask "ibkr"
 # App to write, plan, collaborate, and get organised
 cask "notion"
-# System-wide Vim mode
-cask "tonisives/tap/ovim"
+cask "ovim"
 # Home media player
 cask "plex"
 # VPN client focusing on security
