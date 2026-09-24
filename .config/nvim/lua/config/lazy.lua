@@ -14,7 +14,11 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("config.async_shim")
+-- Neovim < 0.13 has no `vim.async`, so refactoring.nvim falls back to a bare
+-- `require("async")` that collides with nvim-ufo's promise-async.
+if vim.fn.has("nvim-0.13") == 0 then
+	require("config.async_shim")
+end
 
 local spec = {
 	-- add LazyVim and import its plugins

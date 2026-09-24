@@ -10,10 +10,10 @@
 --   and breaks. There is no namespacing in Lua module resolution to fix this
 --   cleanly, so we intercept `require("async")` and dispatch on the CALLER.
 --
---   This is a workaround. The correct fix is upstream: one of the two plugins
---   renaming its bare `async` module to a namespaced one. Track:
---     https://github.com/LazyVim/LazyVim/issues/7130
---   Remove this file once that lands.
+--   This is a workaround. Since refactoring.nvim abdcad8 (2026-09-23) it uses
+--   `vim.async or require("async")`, and `vim.async` ships with Neovim 0.13.
+--   config/lazy.lua only loads this file on Neovim < 0.13; delete it (and the
+--   async.nvim override in plugins/core.lua) once you are on 0.13+.
 --
 -- HOW IT WORKS:
 --   We wrap the global `require`. For every module name OTHER than "async" we
