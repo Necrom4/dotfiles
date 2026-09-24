@@ -1,11 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --quiet --script
 #MISE description="Re-space author/committer dates of a commit range by commit complexity"
 #MISE quiet=true
 #MISE dir="{{cwd}}"
+#MISE tools={uv="latest"}
 #USAGE arg "<from>" help="Oldest commit of the range (included)"
 #USAGE arg "<to>" help="Newest commit of the range (included), must descend from <from>"
-#USAGE arg "<start>" help="When <from> was committed (anything `date -d` accepts)"
-#USAGE arg "<end>" help="When <to> was committed (anything `date -d` accepts)"
+#USAGE arg "<start>" help="When <from> was committed (ISO date/time, or relative like `2 days ago`)"
+#USAGE arg "<end>" help="When <to> was committed (ISO date/time, or relative like `2 days ago`)"
 #USAGE flag "--hours <range>" help="Only place commits within these daily hours, e.g. 08:30-18:00"
 #USAGE flag "--no-weekends" help="With or without --hours, skip Saturdays and Sundays"
 #USAGE flag "--seed <n>" help="Random seed, to reproduce a plan"
@@ -16,6 +17,11 @@
 #USAGE complete "end" run=#"{% if "--yadm" in words %}export GIT_DIR="$(yadm introspect repo)" GIT_WORK_TREE="$HOME"; {% endif %}git log -n 300 --date=format:'%Y-%m-%dT%H:%M' --format='%H%x1f%ad%x1f%h %s' 2>/dev/null | U="$(git rev-list HEAD --not --remotes 2>/dev/null)" awk -F'\037' 'BEGIN { n = split(ENVIRON["U"], a, "\n"); for (i = 1; i <= n; i++) p[a[i]] } { gsub(/:/, "\\:"); print $2 ":" ($1 in p ? "↑ " : "  ") $3 }'"# descriptions=#true
 # Completions list newest first; ↑ marks commits not on any remote yet.
 # With --yadm typed earlier on the line, completions read the yadm repo instead.
+
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["dateparser"]
+# ///
 
 """Plan new dates for <from>..<to>, print them, then hand off to git:redate-apply.
 
@@ -69,10 +75,18 @@ def git(*args):
 
 
 def to_epoch(text):
-    r = subprocess.run(["date", "-d", text, "+%s"], capture_output=True, text=True)
-    if r.returncode:
-        die(f"Cannot parse time: {text!r}")
-    return int(r.stdout)
+    # ISO dates/times (what the completions offer) need no extra parsing.
+    try:
+        return int(dt.datetime.fromisoformat(text).timestamp())
+    except ValueError:
+        pass
+    # Relative phrases ("2 days ago", "yesterday 10:00", ...), identical on every OS.
+    import dateparser  # slow to import, so only when needed
+
+    parsed = dateparser.parse(text, settings={"PREFER_DATES_FROM": "past", "RETURN_AS_TIMEZONE_AWARE": False})
+    if parsed is None:
+        die(f"Cannot parse time: {text!r} (use e.g. 2026-09-20T10:00, '2 days ago' or 'yesterday 10:00')")
+    return int(parsed.timestamp())
 
 
 def score(sha):
