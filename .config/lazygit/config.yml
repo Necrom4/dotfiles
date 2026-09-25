@@ -278,6 +278,9 @@ customCommands:
             title: "New branch type (branch is off of '{{.SelectedLocalBranch.Name}}')"
             key: "BranchType"
             options:
+              - name: "backup"
+                description: "To created a fixed state of another branch"
+                value: "backup"
               - name: "chore"
                 description: "Routine maintenance tasks or dependency updates"
                 value: "chore"
