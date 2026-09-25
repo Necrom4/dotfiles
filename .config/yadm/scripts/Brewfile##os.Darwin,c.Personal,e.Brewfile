@@ -201,6 +201,8 @@ brew "tripstack-corp/tap/rmatrix", trusted: true
 brew "zingzy/tap/diskbloom", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
+# Memory training application
+cask "anki"
 # API documentation browser and code snippet manager
 cask "dash"
 # Voice and text chat software
