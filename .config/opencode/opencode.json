@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-anthropic-oauth"],
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": false
+    },
+    "mise": {
+      "type": "local",
+      "command": ["/opt/homebrew/bin/mise", "mcp"],
+      "environment": {
+        "MISE_EXPERIMENTAL": "1"
+      },
+      "enabled": false
+    },
+    "anki": {
+      "type": "local",
+      "command": ["npx", "-y", "@ankimcp/anki-mcp-server", "--stdio"],
+      "environment": {
+        "ANKI_CONNECT_URL": "http://localhost:8765"
+      },
+      "enabled": false
+    }
+  }
+}
