@@ -57,7 +57,7 @@ return {
 			editor = {
 				mappings = {
 					{ key = "<cr>", mode = "v", action = "run_selection" },
-					{ key = "<cr>", mode = "n", action = "run_file" },
+					{ key = "BB", mode = "n", action = "run_file" },
 					{ key = "<cr>", mode = "n", action = "run_under_cursor" },
 				},
 			},
