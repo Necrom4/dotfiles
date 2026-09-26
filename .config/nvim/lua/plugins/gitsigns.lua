@@ -1,3 +1,5 @@
+local detach_hook_registered = false
+
 return {
 	"lewis6991/gitsigns.nvim",
 	event = "LazyFile",
@@ -7,8 +9,14 @@ return {
 			opts = {
 				disable_inside_gitdir = false,
 				on_yadm_attach = function(event)
+					if vim.b[event.bufnr].minidiff_untracked then
+						return
+					end
 					vim.b[event.bufnr].yadm_tracked = true
 					vim.b[event.bufnr].minidiff_disable = true
+					if package.loaded["mini.diff"] then
+						require("mini.diff").disable(event.bufnr)
+					end
 				end,
 			},
 		},
@@ -37,7 +45,23 @@ return {
 			require("gitsigns-yadm").yadm_signs(callback, { bufnr = bufnr })
 		end,
 		on_attach = function(buffer)
+			-- An old asynchronous attach can finish after a tracking-status refresh.
+			if vim.b[buffer].minidiff_untracked then
+				return false
+			end
+			if not detach_hook_registered then
+				detach_hook_registered = true
+				require("gitsigns.manager").on_detach(function(buf)
+					if vim.api.nvim_buf_is_valid(buf) then
+						vim.b[buf].minidiff_gitsigns_attached = false
+					end
+				end)
+			end
+			vim.b[buffer].minidiff_gitsigns_attached = true
 			vim.b[buffer].minidiff_disable = true
+			if package.loaded["mini.diff"] then
+				require("mini.diff").disable(buffer)
+			end
 			local gs = package.loaded.gitsigns
 
 			local function map(mode, l, r, desc)
