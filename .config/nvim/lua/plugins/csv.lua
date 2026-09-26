@@ -9,13 +9,14 @@ return {
 					get = function()
 						return package.loaded["csvview"] ~= nil and require("csvview").is_enabled()
 					end,
-					set = function(state)
-						local delimiter = vim.fn.getline("."):sub(vim.fn.col("."), vim.fn.col("."))
-						if delimiter and delimiter ~= "" then
-							vim.cmd(
-								string.format("CsvViewToggle display_mode=border header_lnum=1 delimiter=%s", delimiter)
-							)
+					set = function()
+						-- Put the cursor on a delimiter to force it; otherwise csvview auto-detects.
+						local char = vim.fn.getline("."):sub(vim.fn.col("."), vim.fn.col("."))
+						local cmd = "CsvViewToggle display_mode=border header_lnum=1"
+						if char:match("^[%p ]$") then
+							cmd = cmd .. " delimiter=" .. (char == " " and "\\ " or char)
 						end
+						vim.cmd(cmd)
 					end,
 					icon = {
 						enabled = " ",
@@ -30,7 +31,7 @@ return {
 						disabled = "Enable ",
 					},
 				})
-				:map("<leader>ux")
+				:map("<leader>uv")
 		end)
 	end,
 	opts = function()
