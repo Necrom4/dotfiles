@@ -51,7 +51,6 @@ return {
 				},
 			},
 			appearance = {
-				use_nvim_cmp_as_default = true,
 				nerd_font_variant = "mono",
 			},
 			cmdline = {
@@ -158,11 +157,6 @@ return {
 					env = {
 						name = "Env",
 						module = "blink-cmp-env",
-						opts = {
-							item_kind = vim.lsp.protocol.CompletionItemKind.Variable,
-							show_braces = false,
-							show_documentation_window = true,
-						},
 						score_offset = 850,
 					},
 					["fuzzy-path"] = {
@@ -170,7 +164,7 @@ return {
 						module = "blink-cmp-fuzzy-path",
 						score_offset = 850,
 						opts = {
-							filetypes = { "ruby", "*rb" },
+							filetypes = { "ruby", "eruby" },
 							trigger_char = "/",
 							max_results = 3,
 							search_tool = "fd",
@@ -212,7 +206,8 @@ return {
 						opts = {
 							enable_in_context = function()
 								local curpos = vim.api.nvim_win_get_cursor(0)
-								local captures = vim.treesitter.get_captures_at_pos(0, curpos[1] - 1, curpos[2] - 1)
+								local captures =
+									vim.treesitter.get_captures_at_pos(0, curpos[1] - 1, math.max(curpos[2] - 1, 0))
 								local in_spell_capture = false
 								for _, cap in ipairs(captures) do
 									if cap.capture == "spell" then
