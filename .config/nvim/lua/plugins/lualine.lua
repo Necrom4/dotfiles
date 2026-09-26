@@ -29,7 +29,7 @@ local function short_branch(str)
 		end
 
 		if #str > max_len then
-			str = ("%s"):format(str:sub(1, max_len - 1))
+			str = str:sub(1, max_len - 1) .. "…"
 		end
 	end
 
@@ -56,7 +56,7 @@ return {
 
 		-- Branch: shortened.
 		opts.sections.lualine_b = {
-			{ "branch", fmt = short_branch, icon = LazyVim.config.icons.git.branch or "" },
+			{ "branch", fmt = short_branch, icon = "" },
 		}
 
 		-- Only the root dir and the diagnostics counts are gated on width; the
@@ -77,9 +77,6 @@ return {
 		gate_on_width(opts.sections.lualine_c, function(component)
 			return component == opts.sections.lualine_c[1] or component[1] == "diagnostics"
 		end)
-
-		-- navic breadcrumbs after the path.
-		table.insert(opts.sections.lualine_c, { "navic", cond = wide })
 
 		gate_on_width(opts.sections.lualine_x, function(component)
 			return component[1] == "diff"
