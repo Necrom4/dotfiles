@@ -14,11 +14,7 @@ return {
 		{
 			"<leader>hy",
 			function()
-				if LazyVim.pick.picker.name == "telescope" then
-					require("telescope").extensions.yank_history.yank_history({})
-				else
-					vim.cmd([[YankyRingHistory]])
-				end
+				Snacks.picker.yanky()
 			end,
 			mode = { "n", "x" },
 			desc = "Yank History",

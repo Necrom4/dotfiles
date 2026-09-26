@@ -1,3 +1,15 @@
+local function git(args)
+	if not args[#args] or args[#args] == "" then
+		return
+	end
+	local out = vim.system(vim.list_extend({ "git" }, args), { text = true }):wait()
+	if out.code ~= 0 then
+		Snacks.notify.error(vim.trim(out.stderr or ""), { title = "git " .. args[1] })
+	elseif vim.trim(out.stdout or "") ~= "" then
+		Snacks.notify.info(vim.trim(out.stdout), { title = "git " .. args[1] })
+	end
+end
+
 return {
 	"folke/snacks.nvim",
 	keys = {
@@ -22,6 +34,7 @@ return {
 		{ "<leader>sw", mode = { "n", "x" }, false },
 		{ "<leader>sW", mode = { "n", "x" }, false },
 		{ "<leader>uC", false },
+		{ "<leader>un", false },
 		{ "<leader>.", false },
 		{
 			"<leader><leader>",
@@ -58,9 +71,7 @@ return {
 		{
 			"<leader>fc",
 			function()
-				require("utils.general").in_yadm_env(function(yadm_repo)
-					Snacks.dashboard.pick("git_files", { cwd = yadm_repo })
-				end)
+				require("utils.general").pick_yadm_files()
 			end,
 			desc = "Find Config File",
 			silent = true,
@@ -68,6 +79,8 @@ return {
 		{
 			"<leader>fy",
 			function()
+				-- yanky registers the snacks source in its setup
+				require("lazy").load({ plugins = { "yanky.nvim" } })
 				Snacks.picker.yanky()
 			end,
 			desc = "Yanky Picker",
@@ -76,7 +89,7 @@ return {
 		{
 			"<leader>ga",
 			function()
-				vim.cmd("!git add " .. vim.fn.fnameescape(vim.fn.expand("%:p")))
+				git({ "add", "--", vim.api.nvim_buf_get_name(0) })
 			end,
 			desc = "Add file",
 			silent = true,
@@ -327,9 +340,7 @@ return {
 						key = "c",
 						desc = "Config",
 						action = function()
-							require("utils.general").in_yadm_env(function(yadm_repo)
-								Snacks.dashboard.pick("git_files", { cwd = yadm_repo })
-							end)
+							require("utils.general").pick_yadm_files()
 						end,
 					},
 					{
@@ -451,23 +462,26 @@ return {
 						end,
 						git_add = {
 							action = function(picker)
-								vim.cmd({
-									cmd = "!",
-									args = { "git", "add", vim.fn.escape(picker:current().file, "#") },
-								})
+								local path = Snacks.picker.util.path(picker:current())
+								if path then
+									git({ "add", "--", path })
+								end
 							end,
 						},
 						git_rm = {
 							action = function(picker)
-								vim.cmd({
-									cmd = "!",
-									args = { "git", "rm", "--cached", vim.fn.escape(picker:current().file, "#") },
-								})
+								local path = Snacks.picker.util.path(picker:current())
+								if path then
+									git({ "rm", "--cached", "--", path })
+								end
 							end,
 						},
 						yazi_open = {
 							action = function(picker)
-								require("yazi").yazi({}, vim.fn.escape(picker:current().file, "#"))
+								local path = Snacks.picker.util.path(picker:current())
+								if path then
+									require("yazi").yazi({}, path)
+								end
 							end,
 						},
 					},
@@ -485,7 +499,6 @@ return {
 						["<c-q>"] = { "close", mode = { "n", "i" } },
 						["<F1>"] = { "toggle_help", mode = { "n", "i" } },
 						["<c-/>"] = { "toggle_help", mode = { "i" } },
-						["<a-r>"] = { "toggle_regex", mode = { "i", "n" } },
 						["<a-q>"] = { "qflist", mode = { "i", "n" } },
 						["<s-k>"] = { "preview_scroll_up", mode = { "n" } },
 						["<s-j>"] = { "preview_scroll_down", mode = { "n" } },
@@ -496,9 +509,6 @@ return {
 					},
 				},
 			},
-			on_show = function()
-				require("nvim-treesitter")
-			end,
 		},
 		quickfile = { enabled = true },
 		scroll = { enabled = not vim.g.neovide },

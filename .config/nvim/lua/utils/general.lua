@@ -39,7 +39,7 @@ function M.system_type()
 	if vim.fn.has("wsl") == 1 then
 		_system_type_cache = "wsl"
 	else
-		local sysname = (vim.uv or vim.loop).os_uname().sysname:lower()
+		local sysname = vim.uv.os_uname().sysname:lower()
 
 		if sysname:find("darwin") then
 			_system_type_cache = "darwin"
@@ -62,15 +62,7 @@ function M.is_yadm_repo(path)
 
 	path = path or vim.fn.getcwd()
 
-	if path == home or path:sub(1, #config) == config then
-		return true
-	end
-
-	return false
-end
-
-function M.is_yadm(path)
-	if M.is_yadm_repo(path) or vim.b.yadm_tracked then
+	if path == home or path == config or vim.startswith(path, config .. "/") then
 		return true
 	end
 
@@ -93,22 +85,31 @@ function M.switch_git_dir()
 	end
 end
 
-function M.in_yadm_env(fn)
-	local original_git_dir = vim.env.GIT_DIR
-	local original_git_work_tree = vim.env.GIT_WORK_TREE
+function M.pick_yadm_files()
 	local home = vim.fn.expand("$HOME")
 
-	vim.env.GIT_DIR = home .. "/.local/share/yadm/repo.git"
-	vim.env.GIT_WORK_TREE = home
+	Snacks.dashboard.pick("git_files", {
+		cwd = home,
+		args = { "--git-dir=" .. home .. "/.local/share/yadm/repo.git", "--work-tree=" .. home },
+	})
+end
 
-	local result = fn(home)
+-- MANIFESTS
+-- A missing manifest is fine (not every class has one), but errors inside one must surface.
+function M.manifest(name)
+	local module = "manifests." .. name
+	local ok, result = pcall(require, module)
 
-	vim.schedule(function()
-		vim.env.GIT_DIR = original_git_dir
-		vim.env.GIT_WORK_TREE = original_git_work_tree
-	end)
+	if ok then
+		assert(type(result) == "table", module .. " must return a table")
+		return result
+	end
 
-	return result
+	if type(result) == "string" and vim.startswith(result, "module '" .. module .. "' not found:") then
+		return {}
+	end
+
+	error(result, 0)
 end
 
 return M
