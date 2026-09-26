@@ -1,14 +1,14 @@
 return {
 	"lewis6991/gitsigns.nvim",
-	lazy = false,
+	event = "LazyFile",
 	dependencies = {
 		{
 			"purarue/gitsigns-yadm.nvim",
 			opts = {
 				disable_inside_gitdir = false,
-				on_yadm_attach = function()
-					vim.b.yadm_tracked = true
-					vim.b.minidiff_disable = true
+				on_yadm_attach = function(event)
+					vim.b[event.bufnr].yadm_tracked = true
+					vim.b[event.bufnr].minidiff_disable = true
 				end,
 			},
 		},
@@ -28,7 +28,6 @@ return {
 			delete = { text = "_" },
 			topdelete = { text = "‾" },
 			changedelete = { text = "~" },
-			untracked = { text = "┆" },
 		},
 		current_line_blame = true,
 		current_line_blame_opts = {
@@ -38,7 +37,7 @@ return {
 			require("gitsigns-yadm").yadm_signs(callback, { bufnr = bufnr })
 		end,
 		on_attach = function(buffer)
-			vim.b.minidiff_disable = true
+			vim.b[buffer].minidiff_disable = true
 			local gs = package.loaded.gitsigns
 
 			local function map(mode, l, r, desc)
@@ -68,7 +67,7 @@ return {
 			map({ "n", "x" }, "<leader>gs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
 			map({ "n", "x" }, "<leader>gr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
 			map("n", "<leader>gS", gs.stage_buffer, "Stage Buffer")
-			map("n", "<leader>gu", gs.undo_stage_hunk, "Undo Stage Hunk")
+			map("n", "<leader>gu", gs.stage_hunk, "Toggle Stage Hunk")
 			map("n", "<leader>gR", gs.reset_buffer, "Reset Buffer")
 			map("n", "<leader>gp", gs.preview_hunk_inline, "Preview Hunk Inline")
 			map("n", "<leader>gb", function()
