@@ -1,9 +1,6 @@
 return {
 	"MagicDuck/grug-far.nvim",
 	opts = {},
-	cmd = {
-		"GrugFarWithin",
-	},
 	keys = {
 		{
 			"<leader>sr",
@@ -22,7 +19,7 @@ return {
 					},
 				})
 			end,
-			mode = { "n", "v" },
+			mode = { "n", "x" },
 			desc = "Search and Replace",
 			silent = true,
 		},
@@ -39,7 +36,7 @@ return {
 					visualSelectionUsage = "operate-within-range",
 				})
 			end,
-			mode = { "v" },
+			mode = { "x" },
 			desc = "Search and Replace (within)",
 			silent = true,
 		},
