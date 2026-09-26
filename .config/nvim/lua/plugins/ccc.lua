@@ -3,7 +3,7 @@ return {
 	opts = {
 		highlighter = {
 			auto_enable = false,
-			lsp = true,
+			lsp = false,
 		},
 	},
 	cmd = {

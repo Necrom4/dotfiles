@@ -29,7 +29,7 @@ return {
 					},
 					tailwind = {
 						enable = true,
-						lsp = true,
+						lsp = false,
 					},
 					sass = {
 						enable = true,
