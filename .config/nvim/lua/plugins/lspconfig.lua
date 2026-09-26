@@ -11,8 +11,9 @@ return {
 				handlers = {
 					["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
 						if result and result.uri then
-							local bufnr = vim.uri_to_bufnr(result.uri)
-							if vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].filetype == "yamljinja" then
+							-- uri_to_bufnr() creates a buffer for unknown URIs, so only resolve names that already exist
+							local bufnr = vim.fn.bufexists(vim.uri_to_fname(result.uri)) == 1 and vim.uri_to_bufnr(result.uri)
+							if bufnr and vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].filetype == "yamljinja" then
 								result.diagnostics = {}
 							end
 						end
