@@ -39,12 +39,14 @@ return {
 
 			local root = vim.fn.fnamemodify(filepath, ":h")
 			for _, t in ipairs(tpl.builder and { tpl } or tpl) do
-				t.condition = vim.tbl_extend("keep", t.condition or {}, { dir = root })
-				local orig = t.builder
-				t.builder = function(p)
-					return vim.tbl_extend("keep", orig(p), { cwd = root })
+				if type(t) == "table" and type(t.builder) == "function" then
+					t.condition = vim.tbl_extend("keep", t.condition or {}, { dir = root })
+					local orig = t.builder
+					t.builder = function(p)
+						return vim.tbl_extend("keep", orig(p), { cwd = root })
+					end
+					overseer.register_template(t)
 				end
-				overseer.register_template(t)
 			end
 		end
 
@@ -54,8 +56,8 @@ return {
 		-- up for every unrelated project.
 		vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
 			callback = function()
-				local cwd = vim.fn.getcwd()
-				local stop = LazyVim.root.git() or vim.uv.os_homedir()
+				local cwd = vim.v.event.cwd or vim.fn.getcwd()
+				local stop = vim.fs.root(cwd, ".git") or cwd
 
 				for _, file in
 					ipairs(vim.fs.find(".overseer.lua", {
