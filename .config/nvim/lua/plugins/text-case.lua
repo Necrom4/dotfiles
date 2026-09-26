@@ -2,11 +2,15 @@ return {
 	"johmsalas/text-case.nvim",
 	opts = {},
 	keys = {
-		"ga",
+		{ "ga", mode = { "n", "x" } },
 		{
 			"ga.",
 			function()
 				local tc = require("textcase")
+				local visual = vim.fn.mode():find("[vV\22]") ~= nil
+				if visual then
+					vim.api.nvim_feedkeys(vim.keycode("<esc>"), "nx", false)
+				end
 				local methods = {
 					{ "snake_case", "to_snake_case" },
 					{ "camelCase", "to_camel_case" },
@@ -24,7 +28,12 @@ return {
 						return item[1]
 					end,
 				}, function(choice)
-					if choice then
+					if not choice then
+						return
+					elseif visual then
+						vim.cmd("normal! gv")
+						tc.visual(choice[2])
+					else
 						tc.current_word(choice[2])
 					end
 				end)
