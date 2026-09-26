@@ -246,35 +246,35 @@ return {
 			function()
 				Snacks.picker.lsp_definitions()
 			end,
-			desc = "vim.lsp.buf.lsp_definitions()",
+			desc = "Goto Definition",
 		},
 		{
 			"grD",
 			function()
 				Snacks.picker.lsp_declarations()
 			end,
-			desc = "vim.lsp.buf.lsp_declarations()",
+			desc = "Goto Declaration",
 		},
 		{
 			"gri",
 			function()
 				Snacks.picker.lsp_implementations()
 			end,
-			desc = "vim.lsp.buf.lsp_implementations()",
+			desc = "Goto Implementation",
 		},
 		{
 			"grr",
 			function()
 				Snacks.picker.lsp_references()
 			end,
-			desc = "vim.lsp.buf.references()",
+			desc = "References",
 		},
 		{
 			"grt",
 			function()
 				Snacks.picker.lsp_type_definitions()
 			end,
-			desc = "vim.lsp.buf.lsp_type_definitions()",
+			desc = "Goto Type Definition",
 		},
 	},
 	opts = {
