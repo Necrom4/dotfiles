@@ -3,34 +3,21 @@ local packages = {
 	"bash-language-server",
 	"checkmake",
 	"clang-format",
-	"clangd",
 	"debugpy",
 	"html-lsp",
 	"kube-linter",
-	"lua-language-server",
-	"marksman",
 	"pgformatter",
 	"pkl-lsp",
 	"postgres-language-server",
-	"pyright",
-	"stylelint",
 	"stylelint-language-server",
 	"superhtml",
-	"taplo",
-	"tree-sitter-cli",
 	"vim-language-server",
 	"vint",
-	"yaml-language-server",
 	"yamlfmt",
 	"yamllint",
 }
 
-local status, class_extras = pcall(require, "manifests.packages")
-if status and type(class_extras) == "table" then
-	for _, extra_path in ipairs(class_extras) do
-		table.insert(packages, extra_path)
-	end
-end
+vim.list_extend(packages, require("utils.general").manifest("packages"))
 
 return {
 	"mason-org/mason.nvim",

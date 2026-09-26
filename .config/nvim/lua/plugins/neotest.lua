@@ -1,9 +1,5 @@
 -- manifests.test_adapters returns a list of { repo, adapter } pairs.
-local adapter_specs = {}
-local ok, profile = pcall(require, "manifests.test_adapters")
-if ok and type(profile) == "table" then
-	adapter_specs = profile
-end
+local adapter_specs = require("utils.general").manifest("test_adapters")
 
 local dependencies = {}
 local adapters = {}
