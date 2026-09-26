@@ -1,5 +1,3 @@
-local Fold = require("modules.ufo")
-
 local ftMap = {
 	vim = "indent",
 	python = { "treesitter", "indent" },
@@ -30,9 +28,6 @@ local ftMap = {
 	fish = { "treesitter", "indent" },
 	git = "",
 	gitcommit = "",
-	fff_list = "",
-	fff_preview = "",
-	fff_input = "",
 	help = "indent",
 	text = "indent",
 	bigfile = "",
@@ -85,31 +80,29 @@ return {
 				mode = { "n", "v" },
 			},
 		},
-		opts = {
-			open_fold_hl_timeout = 150,
-			enable_get_fold_virt_text = true,
-			fold_virt_text_handler = Fold.ufo_virt_text_handler_enhanced,
-			close_fold_kinds_for_ft = {
-				default = { "imports", "comment" },
-				json = { "array" },
-				jsonc = { "array" },
-				c = { "comment", "region" },
-				cpp = { "comment", "region" },
-				java = { "comment", "imports" },
-				javascript = { "comment", "imports" },
-				typescript = { "comment", "imports" },
-				vue = { "imports" },
-				python = { "comment", "imports" },
-				go = { "comment", "imports" },
-				rust = { "comment", "imports" },
-				php = { "imports" },
-			},
-			provider_selector = function(bufnr, filetype, buftype)
-				if buftype ~= "" then
-					return nil
-				end
-				return ftMap[filetype] or Fold.ufo_provider_selector
-			end,
-		},
+		opts = function()
+			local Fold = require("modules.ufo")
+			return {
+				open_fold_hl_timeout = 150,
+				enable_get_fold_virt_text = true,
+				fold_virt_text_handler = Fold.ufo_virt_text_handler_enhanced,
+				close_fold_kinds_for_ft = {
+					-- Applies to LSP folding ranges; tree-sitter/indent providers ignore it.
+					default = { "imports", "comment" },
+					c = { "comment", "region" },
+					cpp = { "comment", "region" },
+					java = { "comment", "imports" },
+					go = { "comment", "imports" },
+					rust = { "comment", "imports" },
+					php = { "imports" },
+				},
+				provider_selector = function(bufnr, filetype, buftype)
+					if buftype ~= "" then
+						return nil
+					end
+					return ftMap[filetype] or Fold.ufo_provider_selector
+				end,
+			}
+		end,
 	},
 }

@@ -26,9 +26,9 @@ function M.ufo_provider_selector(bufnr)
 		return require("promise").resolve({})
 	end
 
-	-- Use syntax for older files without treesitter support
-	local syntax_only_fts = { "vim", "help", "conf", "text" }
-	if vim.tbl_contains(syntax_only_fts, filetype) then
+	-- Use indent for older files without treesitter support
+	local indent_only_fts = { "vim", "help", "conf", "text" }
+	if vim.tbl_contains(indent_only_fts, filetype) then
 		return require("ufo").getFolds(bufnr, "indent")
 	end
 
@@ -51,14 +51,12 @@ local function is_block_comment(firstText, endText)
 	local patterns = {
 		-- C-style block comments: /* */ and /** */
 		{ start = "/%*", finish = "%*/" },
-		-- HTML comments: <!-- -->
+		-- HTML/XML comments: <!-- -->
 		{ start = "<!%-%-", finish = "%-%->" },
 		-- Shell/Perl block markers: # BEGIN / # END
 		{ start = "#%s*BEGIN", finish = "#%s*END" },
 		-- Pod documentation: = begin / = end
 		{ start = "=%s*begin", finish = "=%s*end" },
-		-- XML comments: <!-- -->
-		{ start = "<!--", finish = "-->" },
 	}
 
 	for _, pattern in ipairs(patterns) do
@@ -71,7 +69,7 @@ end
 
 -- HTML/XML tag patterns
 local function is_html_xml_tag(firstText, endText)
-	return firstText:match("<%s*%w+") and endText:match("</%s*%w+>")
+	return firstText:match("<%s*[%w:_%.%-]+") and endText:match("</%s*[%w:_%.%-]+%s*>")
 end
 
 -- Simple bracket/brace patterns
@@ -261,6 +259,10 @@ local function should_show_end_line(firstText, secondText, endText, foldKind)
 	if is_block_comment(firstText, endText) then
 		return true
 	end
+	-- Non-block comments have no closing delimiter to show.
+	if foldKind == "comment" then
+		return false
+	end
 
 	-- Fold kind-based detection
 	if foldKind == "object" or foldKind == "array" or foldKind == "block" then
@@ -310,31 +312,40 @@ end
 -- VIRTUAL TEXT HANDLERS
 -- =============================================================================
 
+-- Appends chunks while they fit in maxWidth, truncating the one that overflows.
+---@return number curWidth, boolean full
+local function append_chunks(dst, chunks, curWidth, maxWidth, truncate, trim_start)
+	for i, chunk in ipairs(chunks) do
+		local chunkText = chunk[1]
+		if trim_start and i == 1 then
+			chunkText = (chunkText:gsub("^%s+", ""))
+		end
+		local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+		if curWidth + chunkWidth > maxWidth then
+			if maxWidth > curWidth then
+				chunkText = truncate(chunkText, maxWidth - curWidth)
+				table.insert(dst, { chunkText, chunk[2] })
+				curWidth = curWidth + vim.fn.strdisplaywidth(chunkText)
+			end
+			return curWidth, true
+		end
+		table.insert(dst, { chunkText, chunk[2] })
+		curWidth = curWidth + chunkWidth
+	end
+	return curWidth, false
+end
+
 function M.ufo_virt_text_handler_enhanced(virtText, lnum, endLnum, width, truncate, ctx)
 	local newVirtText = {}
 	local filling = (" 󱞡%d "):format(endLnum - lnum)
-	local suffix = ""
-	local sufWidth = vim.fn.strdisplaywidth(suffix)
-	local targetWidth = width - sufWidth
-	local curWidth = 0
+	-- The filling is always shown, so reserve its width up front.
+	local targetWidth = width - vim.fn.strdisplaywidth(filling)
 
 	-- Add the first line content
-	for _, chunk in ipairs(virtText) do
-		local chunkText = chunk[1]
-		local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-		if targetWidth > curWidth + chunkWidth then
-			table.insert(newVirtText, chunk)
-		else
-			chunkText = truncate(chunkText, targetWidth - curWidth)
-			local hlGroup = chunk[2]
-			table.insert(newVirtText, { chunkText, hlGroup })
-			chunkWidth = vim.fn.strdisplaywidth(chunkText)
-			if curWidth + chunkWidth < targetWidth then
-				suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
-			end
-			break
-		end
-		curWidth = curWidth + chunkWidth
+	local curWidth, full = append_chunks(newVirtText, virtText, 0, targetWidth, truncate)
+	if full then
+		table.insert(newVirtText, { filling, "UfoFoldedEllipsis" })
+		return newVirtText
 	end
 
 	-- Extract text for analysis
@@ -364,100 +375,27 @@ function M.ufo_virt_text_handler_enhanced(virtText, lnum, endLnum, width, trunca
 	local foldKind = ctx.get_fold_kind and ctx.get_fold_kind() or ""
 	local showEndLine, usedSecondLine = should_show_end_line(firstLineText, secondLineText, endLineText, foldKind)
 
-	if showEndLine then
-		if usedSecondLine then
-			table.insert(newVirtText, { secondLineText, secondLineHlGroup })
-		end
+	if not showEndLine then
 		table.insert(newVirtText, { filling, "UfoFoldedEllipsis" })
-
-		-- Add the last line content
-		for i, chunk in ipairs(endVirtText) do
-			local chunkText = chunk[1]
-			local hlGroup = chunk[2]
-			if i == 1 then
-				chunkText = chunkText:gsub("^%s+", "")
-			end
-			local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-			if targetWidth > curWidth + chunkWidth then
-				table.insert(newVirtText, { chunkText, hlGroup })
-			else
-				chunkText = truncate(chunkText, targetWidth - curWidth)
-				table.insert(newVirtText, { chunkText, hlGroup })
-				break
-			end
-			curWidth = curWidth + chunkWidth
-		end
-	else
-		table.insert(newVirtText, { filling, "UfoFoldedEllipsis" })
+		return newVirtText
 	end
 
-	return newVirtText
-end
-
--- =============================================================================
--- ALTERNATIVE HANDLERS
--- =============================================================================
-
-function M.ufo_virt_text_handler_one_line(virtText, lnum, endLnum, width, truncate, ctx)
-	-- include the bottom line in folded text for additional context
-	local filling = " ⋯ "
-	local suffix = ""
-	local sufWidth = vim.fn.strdisplaywidth(suffix)
-	local targetWidth = width - sufWidth
-	local curWidth = 0
-	table.insert(virtText, { filling, "Folded" })
-	local endVirtText = ctx.get_fold_virt_text(endLnum)
-	for i, chunk in ipairs(endVirtText) do
-		local chunkText = chunk[1]
-		local hlGroup = chunk[2]
-		if i == 1 then
-			chunkText = chunkText:gsub("^%s+", "")
-		end
-		local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-		if targetWidth > curWidth + chunkWidth then
-			table.insert(virtText, { chunkText, hlGroup })
-		else
-			chunkText = truncate(chunkText, targetWidth - curWidth)
-			table.insert(virtText, { chunkText, hlGroup })
-			chunkWidth = vim.fn.strdisplaywidth(chunkText)
-			-- str width returned from truncate() may less than 2nd argument, need padding
-			if curWidth + chunkWidth < targetWidth then
-				suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
-			end
-			break
-		end
-		curWidth = curWidth + chunkWidth
+	if usedSecondLine then
+		curWidth, full = append_chunks(
+			newVirtText,
+			{ { secondLineText, secondLineHlGroup } },
+			curWidth,
+			targetWidth,
+			truncate
+		)
 	end
-	return virtText
-end
+	table.insert(newVirtText, { filling, "UfoFoldedEllipsis" })
 
--- Simple fold text that just shows line count
-function M.ufo_virt_text_handler_simple(virtText, lnum, endLnum, width, truncate, ctx)
-	local newVirtText = {}
-	local suffix = (" ⋯ %d lines"):format(endLnum - lnum)
-	local sufWidth = vim.fn.strdisplaywidth(suffix)
-	local targetWidth = width - sufWidth
-	local curWidth = 0
-
-	for _, chunk in ipairs(virtText) do
-		local chunkText = chunk[1]
-		local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-		if targetWidth > curWidth + chunkWidth then
-			table.insert(newVirtText, chunk)
-		else
-			chunkText = truncate(chunkText, targetWidth - curWidth)
-			local hlGroup = chunk[2]
-			table.insert(newVirtText, { chunkText, hlGroup })
-			chunkWidth = vim.fn.strdisplaywidth(chunkText)
-			if curWidth + chunkWidth < targetWidth then
-				suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
-			end
-			break
-		end
-		curWidth = curWidth + chunkWidth
+	-- The suffix sits before the last line; count it when fitting that line.
+	if not full then
+		append_chunks(newVirtText, endVirtText, curWidth + vim.fn.strdisplaywidth(filling), width, truncate, true)
 	end
 
-	table.insert(newVirtText, { suffix, "Folded" })
 	return newVirtText
 end
 
