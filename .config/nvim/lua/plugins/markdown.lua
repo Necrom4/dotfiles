@@ -50,12 +50,10 @@ return {
 			unchecked = {
 				icon = "󰄱",
 				highlight = "RenderMarkdownUnchecked",
-				scope_highlight = nil,
 			},
 			checked = {
 				icon = "󰡖",
 				highlight = "RenderMarkdownChecked",
-				scope_highlight = nil,
 			},
 			custom = {
 				todo = {
