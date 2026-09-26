@@ -104,27 +104,11 @@ vim.keymap.set("n", "<leader><tab>}", "<cmd>tablast<cr>", { desc = "Last Tab" })
 vim.keymap.set("n", "g<", "<", { noremap = true, desc = "Indent Left" })
 vim.keymap.set("n", "g>", ">", { noremap = true, desc = "Indent Right" })
 
--- single click indent
---
--- Skipped in filetypes that bind << / >> themselves (neorg's promote/demote).
--- These are `noremap`, so `>` -> `>>` would run the raw indent and neorg's
--- <Plug> mapping would never fire.
-local INDENT_MAP_SKIP_FT = { norg = true }
+-- single click indent (ftplugin/norg.lua overrides these with neorg's promote/demote)
+vim.keymap.set("n", "<", "<<", { desc = "Indent Left" })
+vim.keymap.set("n", ">", ">>", { desc = "Indent Right" })
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	group = vim.api.nvim_create_augroup("vimrc_single_click_indent", { clear = true }),
-	callback = function(ev)
-		if INDENT_MAP_SKIP_FT[vim.bo[ev.buf].filetype] then
-			pcall(vim.keymap.del, "n", "<", { buffer = ev.buf })
-			pcall(vim.keymap.del, "n", ">", { buffer = ev.buf })
-			return
-		end
-		vim.keymap.set("n", "<", "<<", { buffer = ev.buf, noremap = true, desc = "Indent Left" })
-		vim.keymap.set("n", ">", ">>", { buffer = ev.buf, noremap = true, desc = "Indent Right" })
-	end,
-})
-
-vim.keymap.set("n", "gJ", "J")
+vim.keymap.set({ "n", "x" }, "gJ", "J", { desc = "Join Lines" })
 
 -- default LazyVim disabled keymaps
 --
