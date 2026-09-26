@@ -40,6 +40,7 @@ return {
 	},
 	keys = {
 		{ "<leader>t", false },
+		{ "<leader>ta", false },
 		{ "<leader>tt", false },
 		{ "<leader>tT", false },
 		{ "<leader>tr", false },
@@ -50,6 +51,13 @@ return {
 		{ "<leader>tS", false },
 		{ "<leader>tw", false },
 		{ "<a-t>", "", desc = "+test" },
+		{
+			"<a-t>a",
+			function()
+				require("neotest").run.attach()
+			end,
+			desc = "Attach to Test",
+		},
 		{
 			"<a-t>t",
 			function()
