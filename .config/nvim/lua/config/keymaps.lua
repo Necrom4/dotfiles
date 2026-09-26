@@ -33,9 +33,19 @@ local function feedkeys(key)
 		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), "c", false)
 	end
 end
--- ESC key in terminal
-vim.keymap.set({ "t" }, "<esc>", "<s-esc>", { noremap = true, silent = true })
-vim.keymap.set({ "t" }, "<s-esc>", "<c-\\><c-n>", { noremap = true, silent = true })
+-- ESC key in terminal: the first <esc> reaches the program (lazygit, yazi, fzf...),
+-- a second one within 200ms leaves terminal mode. Same as Snacks' terminals.
+local term_esc_timer = assert(vim.uv.new_timer())
+vim.keymap.set("t", "<esc>", function()
+	if term_esc_timer:is_active() then
+		term_esc_timer:stop()
+		vim.cmd("stopinsert")
+	else
+		term_esc_timer:start(200, 0, function() end)
+		return "<esc>"
+	end
+end, { expr = true, desc = "Double escape to normal mode" })
+vim.keymap.set("t", "<s-esc>", "<c-\\><c-n>", { noremap = true, silent = true })
 -- cursor position
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
