@@ -1,6 +1,6 @@
 return {
 	"petertriho/nvim-scrollbar",
-	dependencies = { "kevinhwang91/nvim-hlslens" },
+	dependencies = { "kevinhwang91/nvim-hlslens", "lewis6991/gitsigns.nvim" },
 	event = { "BufNewFile", "BufReadPost" },
 	opts = {
 		handle = {
@@ -18,9 +18,12 @@ return {
 			GitChange = { text = "┃", highlight = "ScrollbarGitChange" },
 			GitDelete = { highlight = "ScrollbarGitDelete" },
 		},
-		handlers = { search = true },
+		handlers = { search = true, gitsigns = true },
 		excluded_buftypes = {
+			"terminal",
 			"nofile",
+			"prompt",
+			"quickfix",
 		},
 	},
 }
