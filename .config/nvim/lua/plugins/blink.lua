@@ -31,23 +31,27 @@ return {
 			end,
 			keymap = {
 				preset = "none",
-				["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
-				["<S-Tab>"] = { "fallback" },
+				["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
+				["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
 				["<C-j>"] = { "select_next", "fallback" },
 				["<C-k>"] = { "select_prev", "fallback" },
 				["<C-n>"] = {
 					function(cmp)
-						cmp.select_next({ jump_by = "source_id" })
+						return cmp.select_next({ jump_by = "source_id" })
 					end,
+					"fallback",
 				},
 				["<CR>"] = { "accept", "fallback" },
-				["<C-c>"] = { "cancel" },
-				["<C-e>"] = { "hide" },
-				["<C-d>"] = { "show", "show_documentation", "hide_documentation" },
+				["<C-c>"] = { "cancel", "fallback" },
+				["<C-e>"] = { "hide", "fallback" },
+				-- Keep manual completion available without swallowing native <C-d> indent.
+				["<C-Space>"] = { "show", "fallback" },
+				["<C-d>"] = { "show_documentation", "hide_documentation", "fallback" },
 				["<C-t>"] = {
 					function(cmp)
-						cmp.show({ providers = { "snippets" } })
+						return cmp.show({ providers = { "snippets" } })
 					end,
+					"fallback",
 				},
 			},
 			appearance = {
