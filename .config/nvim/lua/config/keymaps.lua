@@ -127,8 +127,30 @@ vim.keymap.set({ "n", "x" }, "gJ", "J", { desc = "Join Lines" })
 -- dropping every keymap defined below it. That happens whenever LazyVim renames
 -- one of these, or when a lazy.nvim `keys` handler claims the key first (which
 -- makes safe_keymap_set skip LazyVim's own definition).
-for _, lhs in ipairs({ "<leader>K", "<leader>L", "<leader>xl", "<leader>xq" }) do
+--
+-- Keys set with LazyVim's map() live here: `false` in a plugin's `keys` spec
+-- only removes keys that lazy.nvim manages, not these.
+for _, lhs in ipairs({
+	"<leader>K",
+	"<leader>L",
+	"<leader>xl",
+	"<leader>xq",
+	"<leader>ft",
+	"<leader>fT",
+	"<leader>gG",
+	"<leader>gL",
+	"<leader>gb",
+	"<leader>gf",
+	"<leader>gl",
+	-- prefixes of the camouflage (<leader>uc*) and dimming (<leader>uD*) groups
+	"<leader>uc",
+	"<leader>uD",
+}) do
 	pcall(vim.keymap.del, "n", lhs)
+end
+for _, lhs in ipairs({ "<leader>gB", "<leader>gY" }) do
+	pcall(vim.keymap.del, "n", lhs)
+	pcall(vim.keymap.del, "x", lhs)
 end
 
 -- location list
