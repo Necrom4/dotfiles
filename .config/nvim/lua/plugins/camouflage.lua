@@ -1,5 +1,6 @@
-local concealed = true
-local concealed_line = true
+local function camouflage()
+	return package.loaded.camouflage
+end
 
 return {
 	"zeybek/camouflage.nvim",
@@ -15,10 +16,9 @@ return {
 				id = "camouflage_toggle",
 				name = "values",
 				get = function()
-					return concealed
+					return not camouflage() or camouflage().is_enabled()
 				end,
 				set = function()
-					concealed = not concealed
 					vim.cmd("CamouflageToggle")
 				end,
 				icon = {
@@ -39,10 +39,9 @@ return {
 				id = "camouflage_follow_cursor",
 				name = "cursor line",
 				get = function()
-					return concealed_line
+					return not camouflage() or not camouflage().is_follow_cursor_enabled()
 				end,
 				set = function()
-					concealed_line = not concealed_line
 					vim.cmd("CamouflageFollowCursor")
 				end,
 				icon = {
@@ -60,10 +59,13 @@ return {
 			}):map("<leader>ucc")
 		end)
 	end,
+	cmd = { "CamouflageToggle", "CamouflageFollowCursor", "CamouflagePwnedCheckLine" },
 	opts = {
-		pwned = {
-			enabled = false,
-			sign_text = "",
+		checks = {
+			pwned = {
+				enabled = false,
+				sign_text = "",
+			},
 		},
 	},
 	keys = {

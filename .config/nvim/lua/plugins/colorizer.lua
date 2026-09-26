@@ -1,5 +1,3 @@
-local colored = true
-
 return {
 	"catgoose/nvim-colorizer.lua",
 	event = "LazyFile",
@@ -8,11 +6,14 @@ return {
 			id = "colorizer",
 			name = "Colorizer",
 			get = function()
-				return colored
+				return require("colorizer").is_buffer_attached(0)
 			end,
-			set = function()
-				colored = not colored
-				vim.cmd("ColorizerToggle")
+			set = function(state)
+				if state then
+					require("colorizer").attach_to_buffer(0)
+				else
+					require("colorizer").detach_from_buffer(0)
+				end
 			end,
 		}):map("<leader>uC")
 
