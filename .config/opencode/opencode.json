@@ -1,6 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["opencode-anthropic-oauth"],
+  "plugins": [
+    "@ex-machina/opencode-anthropic-auth@2.0.0-next.3"
+  ],
   "mcp": {
     "servers": {
       "context7": {
