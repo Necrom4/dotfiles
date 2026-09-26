@@ -9,7 +9,6 @@ return {
 	ft = "norg",
 	opts = {
 		load = {
-			["core.autocommands"] = {},
 			["core.completion"] = {
 				config = { engine = { module_name = "external.lsp-completion" } },
 			},
@@ -21,15 +20,10 @@ return {
 					default_workspace = "notes",
 				},
 			},
-			["core.esupports.indent"] = {},
 			["core.export"] = {},
 			["core.export.html"] = {},
 			["core.export.markdown"] = {},
 			["core.highlights"] = {},
-			["core.integrations.treesitter"] = {},
-			["core.itero"] = {},
-			["core.keybinds"] = {},
-			["core.promo"] = {},
 			["core.qol.todo_items"] = {},
 			["core.syntax"] = {},
 			["external.conceal-wrap"] = {},
@@ -91,7 +85,7 @@ return {
 			silent = true,
 		},
 		{
-			"<leader>cc",
+			"<leader>cM",
 			"<Plug>(neorg.looking-glass.magnify-code-block)",
 			ft = "norg",
 			desc = "Magnify code block to separate buffer",
@@ -101,7 +95,7 @@ return {
 			"gi",
 			"<Plug>(neorg.pivot.list.toggle)",
 			ft = "norg",
-			desc = "Invert list items",
+			desc = "Toggle list type",
 			silent = true,
 		},
 		{
