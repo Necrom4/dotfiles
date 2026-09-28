@@ -5,5 +5,7 @@ return {
 		-- untracked ones), not "entire buffer".
 		opts.custom_textobjects.g = false
 		opts.custom_textobjects.e = false
+		opts.custom_textobjects.d = false
+		opts.custom_textobjects._ = false
 	end,
 }
