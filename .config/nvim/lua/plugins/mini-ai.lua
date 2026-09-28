@@ -4,5 +4,6 @@ return {
 		-- `ig` is the git hunk textobject (gitsigns in tracked files, mini.diff in
 		-- untracked ones), not "entire buffer".
 		opts.custom_textobjects.g = false
+		opts.custom_textobjects.e = false
 	end,
 }
