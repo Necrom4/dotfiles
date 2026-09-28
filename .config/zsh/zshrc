@@ -320,10 +320,25 @@ command_not_found_handler() {
       [[ -d ${HOMEBREW_CELLAR:-/home/linuxbrew/.linuxbrew/Cellar}/$f ]] || formulae+=$f
     done
   fi
+
+  # Third-party taps aren't in the executables DB: match formula files named
+  # like the command, or installing a binary with that name.
+  local taps=${HOMEBREW_REPOSITORY:-/home/linuxbrew/.linuxbrew/Homebrew}/Library/Taps
+  local -a tapf=($taps/*/*/*.rb(N) $taps/*/*/(Formula|HomebrewFormula)/*.rb(N))
+  tapf=(${tapf:#$taps/homebrew/*})
+  if (( $#tapf )); then
+    for f in ${(M)tapf:#*/${(b)cmd}.rb} \
+        ${(f)"$(command grep -lF -e "bin.install \"$cmd\"" -e "=> \"$cmd\"" -- $tapf 2>/dev/null)"}; do
+      t=${f:t:r} f=${f#$taps/}
+      [[ -d ${HOMEBREW_CELLAR:-/home/linuxbrew/.linuxbrew/Cellar}/$t ]] ||
+        formulae+=${f%%/*}/${${f#*/homebrew-}%%/*}/$t
+    done
+  fi
+  formulae=(${(u)formulae})
   for f in $formulae; do suggestions+="brew install $f"; done
 
   if (( $+commands[mise] )); then
-    for t in ${(u)cmd} ${formulae:#$cmd}; do
+    for t in ${(u)cmd} ${${(u)formulae:t}:#$cmd}; do
       mise registry $t &>/dev/null && suggestions+="mise use -g $t"
     done
   fi
