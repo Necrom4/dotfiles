@@ -297,7 +297,10 @@ zinit wait"1b" lucid for \
 # Ubuntu's apt command-not-found DB. Only if none match, query PyPI, npm,
 # crates.io, RubyGems and pkg.go.dev in parallel for mise's pipx/npm/cargo/gem/go
 # backends. Go: tagged modules whose path ends in the command, highest version
-# first, verified to be a main package.
+# first, verified to be a main package. GitHub (mise's github: backend): repos
+# named like the command whose latest release has a binary for this Linux arch;
+# needs a gh/GH_TOKEN/GITHUB_TOKEN token, and is skipped for 10 minutes after
+# api.github.com fails to connect.
 # Set CNF_ONLINE=0 to disable the online lookups.
 command_not_found_handler() {
   local cmd=$1 db=${HOMEBREW_CACHE:-$HOME/.cache/Homebrew}/api/internal/executables.txt
@@ -351,6 +354,20 @@ command_not_found_handler() {
           wait
         } &
       fi
+      local ghdown=${XDG_CACHE_HOME:-$HOME/.cache}/zsh-cnf-github-down
+      local -a ghrecent=($ghdown(Nmm-10))
+      if (( $+commands[jq] && ! $#ghrecent )); then
+        {
+          local tok=${GH_TOKEN:-$GITHUB_TOKEN} tls
+          [[ -z $tok ]] && (( $+commands[gh] )) && tok=$(gh auth token 2>/dev/null)
+          [[ -n $tok ]] || exit
+          tls=$(jq -nc --arg s "$cmd in:name sort:stars" '{variables: {q: $s}, query:
+              "query($q:String!){search(query:$q,type:REPOSITORY,first:10){nodes{...on Repository{nameWithOwner name stargazerCount latestRelease{releaseAssets(first:80){nodes{name}}}}}}}"}' |
+            curl -sf --connect-timeout 1 -m 2.5 -H "Authorization: bearer $tok" -d @- \
+              -o $dir/github -w '%{time_appconnect}' https://api.github.com/graphql)
+          (( ${tls:-0} == 0 )) && mkdir -p ${ghdown:h} && touch $ghdown
+        } &
+      fi
       wait
     )
     [[ -s $dir/pypi ]] && suggestions+="mise use -g pipx:$cmd"
@@ -364,6 +381,17 @@ command_not_found_handler() {
     fi
     [[ -s $dir/gem ]] && suggestions+="mise use -g gem:$cmd"
     for f in $dir/go.*(Nn[1,2]); do suggestions+="mise use -g go:$(<$f)"; done
+    if [[ -s $dir/github ]]; then
+      local arch='x86_64|amd64|x64'
+      [[ $(uname -m) == (aarch64|arm64) ]] && arch='aarch64|arm64'
+      suggestions+=(${(f)"$(jq -r --arg c $cmd --arg arch $arch '
+        [.data.search.nodes[]
+          | select((.name | ascii_downcase) == ($c | ascii_downcase) and .stargazerCount >= 10)
+          | select(any(.latestRelease.releaseAssets.nodes[]?.name;
+              test("linux"; "i") and test($arch; "i")
+              and (test("\\.(sha256|sha512|md5|sig|asc|pem|sbom|json|txt|deb|rpm|apk)$|checksum"; "i") | not)))]
+        | .[:3][] | "mise use -g github:\(.nameWithOwner)  ( \(.stargazerCount))"' $dir/github 2>/dev/null)"})
+    fi
     rm -rf $dir
   fi
 
