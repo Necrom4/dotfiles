@@ -279,7 +279,6 @@ zinit wait"1" lucid for \
     atpull'%atclone' \
   OMZP::aliases \
   OMZP::colored-man-pages \
-  OMZP::command-not-found \
   OMZP::eza \
   OMZP::grc \
   OMZP::jsontools \
@@ -292,6 +291,88 @@ zinit wait"1" lucid for \
 zinit wait"1b" lucid for \
     atload"override_aliases" \
   zdharma-continuum/null
+
+# Fast install suggestions. Local sources first: brew's cached executables DB
+# (read directly, never triggers `brew update`), mise's built-in registry and
+# Ubuntu's apt command-not-found DB. Only if none match, query PyPI, npm,
+# crates.io, RubyGems and pkg.go.dev in parallel for mise's pipx/npm/cargo/gem/go
+# backends. Go: tagged modules whose path ends in the command, highest version
+# first, verified to be a main package.
+# Set CNF_ONLINE=0 to disable the online lookups.
+command_not_found_handler() {
+  local cmd=$1 db=${HOMEBREW_CACHE:-$HOME/.cache/Homebrew}/api/internal/executables.txt
+  local -a formulae suggestions match
+  local f t
+  print -u2 "zsh: command not found: $cmd"
+  [[ $cmd == -* || $cmd == */* || -z $cmd ]] && return 127
+
+  if [[ -r $db ]]; then
+    for f in ${(M)${(f)"$(<$db)"}:#(*[: ]${(b)cmd}|*[: ]${(b)cmd} *)}; do
+      f=${f%%[:(]*}
+      [[ -d ${HOMEBREW_CELLAR:-/home/linuxbrew/.linuxbrew/Cellar}/$f ]] || formulae+=$f
+    done
+  fi
+  for f in $formulae; do suggestions+="brew install $f"; done
+
+  if (( $+commands[mise] )); then
+    for t in ${(u)cmd} ${formulae:#$cmd}; do
+      mise registry $t &>/dev/null && suggestions+="mise use -g $t"
+    done
+  fi
+
+  if [[ -x /usr/lib/command-not-found ]]; then
+    for f in ${(f)"$(/usr/lib/command-not-found --no-failure-msg -- $cmd 2>&1)"}; do
+      [[ $f =~ 'apt +install +([^ #<]+)' ]] && suggestions+="sudo apt install $match[1]"
+    done
+  fi
+
+  if (( ! $#suggestions )) && [[ ${CNF_ONLINE:-1} != 0 && $cmd =~ '^[A-Za-z0-9._-]+$' ]] \
+      && (( $+commands[curl] && $+commands[mise] )); then
+    local dir=$(mktemp -d)
+    (
+      curl -sfL -m 1.5 -o $dir/pypi "https://pypi.org/pypi/$cmd/json" &
+      curl -sfL -m 1.5 -o $dir/npm "https://registry.npmjs.org/$cmd/latest" &
+      curl -sfL -m 1.5 -A 'zsh-command-not-found' -o $dir/cargo "https://crates.io/api/v1/crates/$cmd" &
+      curl -sfL -m 1.5 -o $dir/gem "https://rubygems.org/api/v1/gems/$cmd.json" &
+      if (( $+commands[jq] )); then
+        {
+          local i=0 p
+          curl -sfL -m 2 -G https://pkg.go.dev/v1beta/search --data-urlencode "q=$cmd" --data-urlencode limit=100 |
+            jq -r --arg c $cmd '[.items[]
+                | select((.packagePath | test("/" + $c + "(/v[0-9]+)?$"))
+                  and (.version | test("[0-9]{14}-[0-9a-f]{12}$") | not))]
+              | sort_by(.version | ltrimstr("v") | split("-")[0] | split(".") | map(tonumber? // 0))
+              | reverse | .[:5][].packagePath' 2>/dev/null |
+            while read -r p; do
+              (( i++ ))
+              curl -sfL -m 1 "https://pkg.go.dev/v1beta/package/$p" | jq -e '.name == "main"' &>/dev/null \
+                && print -r -- $p > $dir/go.$i &
+            done
+          wait
+        } &
+      fi
+      wait
+    )
+    [[ -s $dir/pypi ]] && suggestions+="mise use -g pipx:$cmd"
+    if [[ -s $dir/npm ]] && { (( ! $+commands[jq] )) ||
+        jq -e --arg c $cmd '.bin | if type == "string" then true else has($c) end' $dir/npm &>/dev/null }; then
+      suggestions+="mise use -g npm:$cmd"
+    fi
+    if [[ -s $dir/cargo ]] && { (( ! $+commands[jq] )) ||
+        jq -e --arg c $cmd '.versions[0].bin_names | index($c)' $dir/cargo &>/dev/null }; then
+      suggestions+="mise use -g cargo:$cmd"
+    fi
+    [[ -s $dir/gem ]] && suggestions+="mise use -g gem:$cmd"
+    for f in $dir/go.*(Nn[1,2]); do suggestions+="mise use -g go:$(<$f)"; done
+    rm -rf $dir
+  fi
+
+  if (( $#suggestions )); then
+    print -u2 "Install it with one of:"
+    print -u2 -l -- "  "$^suggestions
+  fi
+  return 127
+}
 
 # ============================================================================
 # ALIASES
