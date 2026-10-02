@@ -4,6 +4,7 @@ local languages = {
 	"embedded_template",
 	"lua_patterns",
 	"make",
+	"mermaid",
 	"passwd",
 	"pkl",
 	"scss",

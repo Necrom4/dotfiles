@@ -6,6 +6,7 @@ local packages = {
 	"debugpy",
 	"html-lsp",
 	"kube-linter",
+	"mmdc",
 	"pgformatter",
 	"pkl-lsp",
 	"postgres-language-server",
