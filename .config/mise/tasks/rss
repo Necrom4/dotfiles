@@ -201,6 +201,18 @@ class NewsBlur:
         response = self.request(f"/reader/feed/{feed_id}", params={"page": page, "read_filter": read_filter, "include_hidden": "false"})
         return response.get("stories", [])
 
+    def first_page_with_unread(self, feed_id: str, expected_unread: int = 0) -> list[dict]:
+        """Keep recent read entries while also showing unread entries beyond page one."""
+        recent = self.stories(feed_id, 1, "all")
+        if expected_unread and sum(story.get("read_status") == 0 for story in recent) >= expected_unread:
+            return recent
+        unread = self.stories(feed_id, 1, "unread")
+        hashes = {story["story_hash"] for story in recent}
+        for story in unread:
+            if story["story_hash"] not in hashes:
+                recent.append(story)
+                hashes.add(story["story_hash"])
+        return recent
 
     def mark(self, hashes: list[str], unread: bool) -> None:
         endpoint = "/reader/mark_story_hash_as_unread" if unread else "/reader/mark_story_hashes_as_read"
@@ -389,7 +401,9 @@ def run() -> None:
                 if cache_key not in story_cache:
                     try:
                         print(f"Loading {label(feed.get('feed_title'))}...", flush=True)
-                        story_cache[cache_key] = api.stories(feed_id, page, read_filter)
+                        story_cache[cache_key] = (api.first_page_with_unread(
+                            feed_id, expected_unread=unread_count(feed))
+                            if page == 1 and read_filter == "all" else api.stories(feed_id, page, read_filter))
                     except ReaderError as exc:
                         show_message(f"Could not load {label(feed.get('feed_title'))}: {exc}. Try this feed again later.")
                         break
