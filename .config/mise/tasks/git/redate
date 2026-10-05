@@ -29,9 +29,11 @@ Complexity score of a commit (= how long it plausibly took to write):
   - lines rewritten in place (min(adds, dels)) weigh the most, pure additions
     less (could be a paste), pure deletions very little;
   - lock files / generated / vendored paths barely count;
-  - sqrt() on size, so a 2000-line commit is not 100x a 20-line one;
-  - touching many files adds context-switching cost;
-  - a long commit message body means there was something to explain.
+  - size grows to the power of 0.85: large changes get substantially more time
+    than tiny edits, without assuming effort is exactly linear in line count;
+  - touching meaningful files adds a small context-switching cost;
+  - message bodies can increase the score by at most 30%, rather than adding
+    enough points to turn a trivial edit into a large one.
 Each gap before a commit is proportional to that commit's score, with some
 random jitter, then everything is scaled to fit between <start> and <end>.
 """
@@ -46,13 +48,16 @@ import subprocess
 import sys
 
 # ── Tunables ──────────────────────────────────────────────────────────────────
-BASE = 2.0            # fixed cost of any commit (stage, write message, …)
+BASE = 0.25           # small fixed cost; must not dominate one-line edits
 W_REWRITTEN = 2.0     # per line changed in place (a del paired with an add)
 W_ADDED = 1.0         # per extra added line
 W_DELETED = 0.3       # per extra deleted line
-W_FILES = 1.5         # × sqrt(files touched)
-W_MESSAGE = 1.0       # × log2(1 + words in message body)
-W_GENERATED = 0.05    # multiplier for lines in generated-looking files
+W_FILES = 0.35        # per meaningful file touched
+W_MESSAGE = 0.03      # × log2(1 + body words), as a bounded proportional boost
+W_GENERATED = 0.01    # multiplier for generated-file lines and file overhead
+MAX_GENERATED_EFFORT = 1.0  # per generated file, regardless of its size
+SIZE_EXPONENT = 0.85
+MAX_MESSAGE_BOOST = 0.30
 JITTER = 0.25         # each gap is scaled by a random factor in 1 ± JITTER
 GENERATED = re.compile(
     r"(^|/)(vendor|dist|node_modules|__snapshots__)/"
@@ -89,26 +94,34 @@ def to_epoch(text):
     return int(parsed.timestamp())
 
 
-def score(sha):
-    parents = git("rev-list", "--parents", "-n1", sha).split()[1:]
-    words = len(git("log", "-n1", "--format=%b", sha).split())
-    msg = W_MESSAGE * math.log2(1 + words)
-    if len(parents) > 1:  # merges are mostly a click
-        return BASE + msg, "merge"
+def complexity(stats, words=0, merge=False):
+    """Estimate relative effort from numstat rows, not actual elapsed work time."""
+    message_factor = 1 + min(MAX_MESSAGE_BOOST, W_MESSAGE * math.log2(1 + words))
+    if merge:  # merges are mostly a click; numstat cannot identify conflict work
+        return BASE * 2 * message_factor, "merge"
 
-    effort, files = 0.0, 0
-    for line in git("diff-tree", "--root", "--no-commit-id", "-r", "-M", "--numstat", sha).splitlines():
-        adds, dels, path = line.split("\t", 2)
+    effort, files, meaningful_files = 0.0, 0, 0.0
+    for adds, dels, path in stats:
+        generated = bool(GENERATED.search(path))
         files += 1
+        meaningful_files += W_GENERATED if generated else 1
         if adds == "-":  # binary
             continue
         adds, dels = int(adds), int(dels)
         rewritten = min(adds, dels)
         e = W_REWRITTEN * rewritten + W_ADDED * (adds - rewritten) + W_DELETED * (dels - rewritten)
-        effort += e * (W_GENERATED if GENERATED.search(path) else 1)
+        effort += min(MAX_GENERATED_EFFORT, e * W_GENERATED) if generated else e
 
-    s = BASE + math.sqrt(effort) + W_FILES * math.sqrt(files) + msg
+    s = (BASE + effort ** SIZE_EXPONENT + W_FILES * meaningful_files) * message_factor
     return s, f"{files} files, {effort:.0f} eff. lines, {words} words"
+
+
+def score(sha):
+    parents = git("rev-list", "--parents", "-n1", sha).split()[1:]
+    words = len(git("log", "-n1", "--format=%b", sha).split())
+    stats = [] if len(parents) > 1 else [line.split("\t", 2) for line in git(
+        "diff-tree", "--root", "--no-commit-id", "-r", "-M", "--numstat", sha).splitlines()]
+    return complexity(stats, words, merge=len(parents) > 1)
 
 
 def work_intervals(start, end, hours, no_weekends):
@@ -155,6 +168,14 @@ def humanize(t, lo, hi):
     while t % 60 in (0, 30) or t % 10 == 0:
         t += random.choice((-1, 1)) * random.randint(1, 9)
     return max(lo, min(hi, t))
+
+
+def gap_label(seconds):
+    """Show sub-minute spacing explicitly instead of displaying '+0m'."""
+    minutes, seconds = divmod(seconds, 60)
+    if minutes >= 60:
+        return f"+{minutes // 60}h{minutes % 60:02d}m"
+    return f"+{minutes}m{seconds:02d}s" if minutes else f"+{seconds}s"
 
 
 def main():
@@ -215,8 +236,7 @@ def main():
         subject = git("log", "-n1", "--format=%s", c)
         new_s = dt.datetime.fromtimestamp(t).astimezone().strftime(fmt)
         old_s = dt.datetime.fromtimestamp(old).astimezone().strftime("%Y-%m-%d %H:%M")
-        mins = (t - times[i - 1]) // 60 if i else 0
-        span = f"+{mins // 60}h{mins % 60:02d}m" if mins >= 60 else f"+{mins}m" if i else ""
+        span = gap_label(t - times[i - 1]) if i else ""
         print(f"  {CYAN}{c[:9]}{NC} {BOLD}{new_s}{NC} {DIM}{span:>7}  was {old_s}{NC}  {subject[:60]}")
         print(f"  {DIM}{'':9} score {s:5.1f}  ({why}){NC}")
 
@@ -249,4 +269,5 @@ def main():
     os.execvp("mise", ["mise", "run", "git:redate-apply", path])
 
 
-main()
+if __name__ == "__main__":
+    main()
