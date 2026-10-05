@@ -160,6 +160,15 @@ class ReaderTests(unittest.TestCase):
         open_browser.assert_called_once_with("https://example.com/post")
         fetch.assert_not_called()
 
+    def test_fzf_preview_renders_links_with_elinks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            preview = Path(directory) / "article.html"
+            result = reader.feed_preview({"story_title": "Post", "story_permalink": "https://example.com/post",
+                                          "story_content": '<p><a href="https://example.com/link">Linked text</a></p>'}, preview)
+        self.assertIn("Linked text", result)
+        if reader.shutil.which("elinks"):
+            self.assertIn("\x1b[", result)
+
 
     def test_elinks_uses_portable_clipboard_launcher(self):
         with patch.object(reader.shutil, "which", return_value="/usr/bin/tool"), \

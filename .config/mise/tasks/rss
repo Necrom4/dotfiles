@@ -300,7 +300,15 @@ def feed_preview(story: dict, html_file: Path | None = None) -> str:
     title = story_title(story)
     url = story.get("story_permalink", "")
     body = story.get("story_content") or "<p>(No RSS body supplied)</p>"
-    return f"{title}\n{url}\n\n{html_text(body)}"
+    if html_file and shutil.which("elinks"):
+        html_file.write_text(article_document(title, url, body))
+        result = subprocess.run(["elinks", "-no-connect", "-force-html", "-dump", "-dump-color-mode", "4",
+                                 "-dump-width", "72", "-no-numbering", "-no-references", html_file.as_uri()],
+                                text=True, capture_output=True, check=False)
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout
+    content = html_text(body)
+    return f"{title}\n{url}\n\n{content}"
 
 
 def safe_page_url(url: str) -> None:
