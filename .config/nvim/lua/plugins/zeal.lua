@@ -3,7 +3,8 @@ return {
 	event = "VeryLazy",
 	opts = {
 		docsets_path = vim.fn.expand("$HOME/.local/share/Zeal/Zeal/docsets"),
-		browser = "elinks",
+		-- Neovim jobs cannot use the interactive Zsh function; use its launcher.
+		browser = { "python3", vim.fn.expand("$HOME/.config/elinks/clipboard"), "open" },
 	},
 	keys = {
 		{
