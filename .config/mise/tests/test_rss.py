@@ -237,7 +237,13 @@ class ReaderTests(unittest.TestCase):
         self.assertIn("Linked text", result)
         if reader.shutil.which("elinks"):
             self.assertIn("\x1b[", result)
+            self.assertNotIn("\x1b[48;", result)
 
+    def test_preview_strips_background_but_preserves_foreground_and_style(self):
+        for background in ("40", "49", "107", "48;5;16", "48;2;0;0;0"):
+            with self.subTest(background=background):
+                source = f"\x1b[1;38;2;40;48;100;{background}mLink\x1b[0m"
+                self.assertEqual(reader.without_background(source), "\x1b[1;38;2;40;48;100mLink\x1b[0m")
 
     def test_elinks_uses_portable_clipboard_launcher(self):
         with patch.object(reader.shutil, "which", return_value="/usr/bin/tool"), \

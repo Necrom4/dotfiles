@@ -324,6 +324,28 @@ def story_title(story: dict) -> str:
     return clean(story.get("story_title")) or "(untitled)"
 
 
+def without_background(text: str) -> str:
+    """Keep ELinks' foreground colors but inherit the terminal background."""
+    def strip(match: re.Match) -> str:
+        codes = match.group(1).split(";")
+        kept = []
+        index = 0
+        while index < len(codes):
+            code = codes[index]
+            if code in {"38", "48", "58"} and index + 1 < len(codes):
+                length = {"2": 5, "5": 3}.get(codes[index + 1], 1)
+                if code != "48":
+                    kept.extend(codes[index:index + length])
+                index += length
+                continue
+            if not (code.isdigit() and (40 <= int(code) <= 49 or 100 <= int(code) <= 107)):
+                kept.append(code)
+            index += 1
+        return f"\x1b[{';'.join(kept)}m" if kept else ""
+
+    return re.sub(r"\x1b\[([\d;]*)m", strip, text)
+
+
 def feed_preview(story: dict, html_file: Path | None = None) -> str:
     title = story_title(story)
     url = story.get("story_permalink", "")
@@ -334,7 +356,7 @@ def feed_preview(story: dict, html_file: Path | None = None) -> str:
                                  "-dump-width", "72", "-no-numbering", "-no-references", html_file.as_uri()],
                                 text=True, capture_output=True, check=False)
         if result.returncode == 0 and result.stdout.strip():
-            return result.stdout
+            return without_background(result.stdout)
     content = html_text(body)
     return f"{title}\n{url}\n\n{content}"
 
