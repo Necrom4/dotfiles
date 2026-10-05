@@ -31,6 +31,14 @@ class ReaderTests(unittest.TestCase):
         self.assertEqual(reader.html_text(source, article_only=True), "Title\n\nArticle text")
 
 
+    def test_article_fragment_preserves_links_and_void_tags(self):
+        fragment = reader.ArticleFragment()
+        fragment.feed('<nav>Skip</nav><article><h1>Story</h1><p><a href="https://example.com">Link</a><br>Next</p></article><footer>Skip</footer>')
+        result = "".join(fragment.parts)
+        self.assertIn('href="https://example.com"', result)
+        self.assertIn("<br>", result)
+        self.assertNotIn("Skip", result)
+
     def test_mark_batches_read_and_unread(self):
         api = object.__new__(reader.NewsBlur)
         api.request = Mock(return_value={"code": 1})
@@ -60,6 +68,11 @@ class ReaderTests(unittest.TestCase):
         self.assertEqual(api.feeds()["feeds"]["4"]["id"], 4)
 
 
+    def test_rejects_private_or_non_http_story_urls(self):
+        for url in ("file:///etc/passwd", "http://127.0.0.1/", "http://user:pass@example.com/"):
+            with self.subTest(url=url), self.assertRaises(reader.ReaderError):
+                reader.safe_page_url(url)
+
     def test_chooser_handles_cancel_and_selected_action(self):
         with patch.object(reader.subprocess, "run", return_value=Mock(returncode=1, stdout="", stderr="")):
             self.assertEqual(reader.chooser(["0\tFirst"], header="Pick"), ("escape", []))
@@ -79,6 +92,35 @@ class ReaderTests(unittest.TestCase):
         self.assertFalse(any(arg.startswith("--height") for arg in run.call_args.args[0]))
 
 
+    def test_full_page_preserves_article_links_not_navigation(self):
+        response = io.BytesIO(b'<nav>Skip</nav><article><p>Read the <a href="/post">entire original story</a>.</p></article>')
+        response.headers = Mock()
+        response.headers.get_content_type.return_value = "text/html"
+        response.headers.get_content_charset.return_value = "utf-8"
+        opener = Mock()
+        opener.open.return_value = response
+        with patch.object(reader, "safe_page_url"), patch.object(reader.urllib.request, "build_opener", return_value=opener):
+            article = reader.page_text("https://example.com/post")
+        self.assertIn('href="/post"', article)
+        self.assertNotIn("Skip", article)
+
+    def test_open_marks_read_but_preview_does_not(self):
+        api = Mock()
+        api.login.return_value = None
+        api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog", "ps": 1}}, "folders": [4]}
+        api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post", "story_content": "<p>Body</p>"}]
+        api.stories.return_value = api.stories.return_value
+        choices = iter([("enter", ["0\tBlog"]),
+                        ("ctrl-o", ["0\tPost"]), ("escape", []), ("ctrl-q", [])])
+        with patch.object(reader, "NewsBlur", return_value=api), \
+             patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
+             patch.object(reader, "page_text", return_value="<p>Full original story</p>"), \
+             patch.object(reader, "article_viewer") as viewer, \
+             patch.object(reader.tempfile, "TemporaryDirectory", wraps=tempfile.TemporaryDirectory):
+            reader.run()
+        api.mark.assert_called_once_with(["4:a"], unread=False)
+        viewer.assert_called_once_with("Post", "", "<p>Full original story</p>")
+
     def test_enter_opens_rss_html_in_elinks(self):
         api = Mock()
         api.login.return_value = None
@@ -89,7 +131,7 @@ class ReaderTests(unittest.TestCase):
                         ("enter", ["0\tPost"]), ("escape", []), ("ctrl-q", [])])
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
-             patch.object(reader, "page_text", create=True) as fetch, \
+             patch.object(reader, "page_text") as fetch, \
              patch.object(reader, "article_viewer") as viewer:
             reader.run()
         fetch.assert_not_called()
@@ -106,7 +148,7 @@ class ReaderTests(unittest.TestCase):
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
              patch.object(reader.webbrowser, "open", return_value=True) as open_browser, \
-             patch.object(reader, "page_text", create=True) as fetch:
+             patch.object(reader, "page_text") as fetch:
             reader.run()
         open_browser.assert_called_once_with("https://example.com/post")
         fetch.assert_not_called()

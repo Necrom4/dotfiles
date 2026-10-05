@@ -9,10 +9,12 @@ import getpass
 import html
 from html.parser import HTMLParser
 import http.cookiejar
+import ipaddress
 import json
 import os
 from pathlib import Path
 import re
+import socket
 import subprocess
 import sys
 import tempfile
@@ -89,6 +91,44 @@ def html_text(source: str, article_only: bool = False) -> str:
     parser = ArticleHTML(article_only=article_only)
     parser.feed(source)
     return parser.text()
+
+
+class ArticleFragment(HTMLParser):
+    """Keep the first <article> or <main> fragment so links and formatting survive."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=False)
+        self.depth = 0
+        self.found = False
+        self.parts: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if self.depth or (not self.found and tag in ("article", "main")):
+            self.found = True
+            self.parts.append(self.get_starttag_text())
+            if tag not in {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}:
+                self.depth += 1
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if self.depth:
+            self.parts.append(self.get_starttag_text())
+
+    def handle_endtag(self, tag: str) -> None:
+        if self.depth:
+            self.parts.append(f"</{tag}>")
+            self.depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self.depth:
+            self.parts.append(data)
+
+    def handle_entityref(self, name: str) -> None:
+        if self.depth:
+            self.parts.append(f"&{name};")
+
+    def handle_charref(self, name: str) -> None:
+        if self.depth:
+            self.parts.append(f"&#{name};")
 
 
 class NewsBlur:
@@ -248,6 +288,49 @@ def feed_preview(story: dict, html_file: Path | None = None) -> str:
     return f"{title}\n{url}\n\n{html_text(body)}"
 
 
+def safe_page_url(url: str) -> None:
+    parts = urllib.parse.urlsplit(url)
+    if parts.scheme not in {"https", "http"} or not parts.hostname or parts.username or parts.password:
+        raise ReaderError("Story does not have a usable HTTP(S) URL")
+    try:
+        addresses = socket.getaddrinfo(parts.hostname, parts.port or (443 if parts.scheme == "https" else 80))
+    except (OSError, ValueError) as exc:
+        raise ReaderError(f"Could not resolve story URL: {exc}") from exc
+    if not addresses or any(not ipaddress.ip_address(address[4][0]).is_global for address in addresses):
+        raise ReaderError("Refusing to fetch a private or local network address")
+
+
+class SafeRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        safe_page_url(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def page_text(url: str) -> str:
+    safe_page_url(url)
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.build_opener(SafeRedirect()).open(request, timeout=15) as response:
+            content_type = response.headers.get_content_type()
+            if content_type not in ("text/html", "application/xhtml+xml"):
+                raise ReaderError(f"Page is {content_type}, not HTML; open in a browser instead")
+            data = response.read(3_000_001)
+            if len(data) > 3_000_000:
+                raise ReaderError("Page too large for text mode; open in a browser instead")
+            source = data.decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+    except (urllib.error.URLError, TimeoutError) as exc:
+        raise ReaderError(f"Could not fetch page: {exc}") from exc
+    fragment = ArticleFragment()
+    fragment.feed(source)
+    article = "".join(fragment.parts)
+    if len(html_text(article)) >= 20:
+        return article
+    text = html_text(source)
+    if len(text) < 20:
+        raise ReaderError("Could not extract readable page text; open in a browser instead")
+    return f"<pre>{html.escape(text)}</pre>"
+
+
 def run() -> None:
     api = NewsBlur()
     feeds_data = api.login() or api.feeds()
@@ -297,7 +380,7 @@ def run() -> None:
                     lines.append(f"{preview_file}\t{status} {title}")
                 header = f"{label(feed.get('feed_title'))} · {read_filter}, page {page}"
                 key, picked = chooser(lines, header=header, preview="cat {1}" if stories else None,
-                                      multi=True, keys="enter,alt-o,ctrl-r,ctrl-u,ctrl-f,alt-r,alt-n,alt-p,ctrl-s,ctrl-q")
+                                      multi=True, keys="enter,ctrl-o,alt-o,ctrl-r,ctrl-u,ctrl-f,alt-r,alt-n,alt-p,ctrl-s,ctrl-q")
                 if key == "ctrl-q":
                     return
                 if key == "escape":
@@ -352,6 +435,14 @@ def run() -> None:
                     if key == "enter":
                         body = story.get("story_content") or "<p>(No RSS body supplied)</p>"
                         article_viewer(story_title(story), story.get("story_permalink", ""), body)
+                        api.mark([story["story_hash"]], unread=False)
+                        changed = True
+                        update_read_status(story_cache, [story], unread=False)
+                        story_cache.pop((feed_id, page, "unread"), None)
+                    elif key == "ctrl-o":
+                        print("Fetching the story page...", flush=True)
+                        article = page_text(story.get("story_permalink", ""))
+                        article_viewer(story_title(story), story.get("story_permalink", ""), article)
                         api.mark([story["story_hash"]], unread=False)
                         changed = True
                         update_read_status(story_cache, [story], unread=False)
