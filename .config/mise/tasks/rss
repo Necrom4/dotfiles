@@ -155,7 +155,9 @@ class NewsBlur:
 
     def mark(self, hashes: list[str], unread: bool) -> None:
         endpoint = "/reader/mark_story_hash_as_unread" if unread else "/reader/mark_story_hashes_as_read"
-        self.request(endpoint, data=[("story_hash", value) for value in hashes])
+        # Batch selected stories, rather than sending a request per story.
+        for start in range(0, len(hashes), 50):
+            self.request(endpoint, data=[("story_hash", value) for value in hashes[start : start + 50]])
 
 
 def chooser(lines: list[str], *, header: str, preview: str | None = None, multi: bool = False, keys: str = "") -> tuple[str, list[str]]:
@@ -291,7 +293,7 @@ def run() -> None:
                     lines.append(f"{preview_file}\t{status} {title}")
                 header = f"{label(feed.get('feed_title'))} · {read_filter}, page {page}"
                 key, picked = chooser(lines, header=header, preview="cat {1}" if stories else None,
-                                      multi=True, keys="enter,ctrl-s,ctrl-q")
+                                      multi=True, keys="enter,ctrl-r,ctrl-u,ctrl-s,ctrl-q")
                 if key == "ctrl-q":
                     return
                 if key == "escape":
@@ -303,6 +305,15 @@ def run() -> None:
                     continue
                 indexes = [int(Path(row.split("\t", 1)[0]).name) for row in picked]
                 selected_stories = [stories[index] for index in indexes]
+                if key in ("ctrl-r", "ctrl-u"):
+                    try:
+                        api.mark([s["story_hash"] for s in selected_stories], unread=key == "ctrl-u")
+                        changed = True
+                        update_read_status(story_cache, selected_stories, unread=key == "ctrl-u")
+                        story_cache.pop((feed_id, page, "unread"), None)
+                    except ReaderError as exc:
+                        show_message(str(exc))
+                    continue
                 story = selected_stories[0]
                 try:
                     if key == "enter":

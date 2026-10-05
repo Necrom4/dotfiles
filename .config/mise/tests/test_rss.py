@@ -31,6 +31,16 @@ class ReaderTests(unittest.TestCase):
         self.assertEqual(reader.html_text(source, article_only=True), "Title\n\nArticle text")
 
 
+    def test_mark_batches_read_and_unread(self):
+        api = object.__new__(reader.NewsBlur)
+        api.request = Mock(return_value={"code": 1})
+        hashes = [f"1:{i}" for i in range(51)]
+        api.mark(hashes, unread=False)
+        self.assertEqual(api.request.call_count, 2)
+        self.assertEqual(len(api.request.call_args_list[0].kwargs["data"]), 50)
+        api.mark(["1:0", "1:1"], unread=True)
+        self.assertEqual(api.request.call_args.args[0], "/reader/mark_story_hash_as_unread")
+
     def test_story_page_request(self):
         api = object.__new__(reader.NewsBlur)
         api.request = Mock(return_value={"stories": [{"story_hash": "4:a"}]})
@@ -85,6 +95,26 @@ class ReaderTests(unittest.TestCase):
         fetch.assert_not_called()
         viewer.assert_called_once_with("Post", "", "<a href='/link'>Read more</a>")
 
+
+    def test_mark_read_keeps_story_visible_without_refetching(self):
+        api = Mock()
+        api.login.return_value = None
+        api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog", "ps": 1}}, "folders": [4]}
+        api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post", "story_content": "<p>Body</p>", "read_status": 0}]
+        api.stories.return_value = api.stories.return_value
+        choices = iter([("enter", ["0\tBlog"]),
+                        ("ctrl-r", ["0\tPost"]), ("escape", []), ("ctrl-q", [])])
+        headers = []
+
+        def choose(*args, **kwargs):
+            headers.append(kwargs["header"])
+            return next(choices)
+
+        with patch.object(reader, "NewsBlur", return_value=api), patch.object(reader, "chooser", side_effect=choose):
+            reader.run()
+        api.stories.assert_called_once_with("4", 1, "all")
+        self.assertEqual(api.stories.return_value[0]["read_status"], 1)
+        self.assertEqual(headers[1].splitlines()[0], "Blog · all, page 1")
 
     def test_ctrl_s_refreshes_feed_picker_and_ctrl_q_exits(self):
         api = Mock()
