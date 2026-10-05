@@ -126,6 +126,27 @@ class ReaderTests(unittest.TestCase):
             reader.run()
         self.assertEqual(api.feeds.call_count, 2)
 
+    def test_ctrl_f_toggles_unread_filter(self):
+        api = Mock()
+        api.login.return_value = None
+        api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
+        api.stories.return_value = []
+        api.stories.return_value = []
+        choices = iter([("enter", ["0\tBlog"]),
+                        ("ctrl-f", []), ("ctrl-f", []), ("ctrl-q", [])])
+        headers = []
+
+        def choose(*args, **kwargs):
+            headers.append(kwargs["header"])
+            return next(choices)
+
+        with patch.object(reader, "NewsBlur", return_value=api), patch.object(reader, "chooser", side_effect=choose):
+            reader.run()
+        api.stories.assert_any_call("4", 1, "unread")
+        self.assertEqual(headers[2].splitlines()[0], "Blog · unread, page 1")
+        self.assertEqual(headers[3].splitlines()[0], "Blog · all, page 1")
+        api.mark_feed.assert_not_called()
+
 
     def test_ctrl_q_exits_straight_from_story_picker(self):
         api = Mock()
