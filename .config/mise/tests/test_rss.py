@@ -152,6 +152,14 @@ class ReaderTests(unittest.TestCase):
         self.assertNotIn("env", run.call_args.kwargs)
         self.assertFalse(any(arg.startswith("--height") for arg in run.call_args.args[0]))
 
+    def test_chooser_wraps_hints_to_list_width(self):
+        with patch.object(reader.shutil, "get_terminal_size", return_value=reader.os.terminal_size((120, 40))), \
+             patch.object(reader.subprocess, "run", return_value=Mock(returncode=1, stdout="", stderr="")) as run:
+            reader.chooser(["0\tFirst"], header="ctrl-t RSS · ctrl-o browser · ctrl-r/u read/unread", preview="cat {1}")
+        args = run.call_args.args[0]
+        header = args[args.index("--header") + 1]
+        self.assertTrue(all(len(line) <= 42 for line in header.splitlines()))
+        self.assertIn("ctrl-r/u read/unread", " ".join(header.split()))
 
     def test_html_view_preserves_links_and_escapes_title(self):
         document = reader.article_document('News <Today>', 'https://example.com/a?x=1&y=2', '<p><a href="/read">Article</a></p>')
@@ -258,6 +266,11 @@ class ReaderTests(unittest.TestCase):
         api.first_page_with_unread.assert_called_once_with("4", expected_unread=1)
         self.assertEqual(api.stories.return_value[0]["read_status"], 1)
         self.assertEqual(headers[2].splitlines()[0], "Blog · all, page 1")
+        self.assertNotIn("Enter story", headers[2])
+        self.assertNotIn("ctrl-q", headers[2])
+        self.assertNotIn("Esc", headers[2])
+        self.assertNotIn("ctrl-space", headers[2])
+        self.assertIn("ctrl-r/u read/unread", headers[2])
 
     def test_ctrl_s_refreshes_feed_picker_and_ctrl_q_exits(self):
         api = Mock()
