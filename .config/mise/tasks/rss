@@ -279,6 +279,16 @@ def feed_label(feed: dict) -> str:
     return f"{label(feed.get('feed_title') or feed.get('title'))}  ({unread_count(feed)} unread)"
 
 
+def rows_for_folders(data: dict) -> list[tuple[str, list[dict]]]:
+    """Group feeds by folder path, keeping unfiled feeds in Top Level."""
+    folders: dict[str, list[dict]] = {}
+    for folder, feed in rows_for_feeds(data):
+        folders.setdefault(folder, []).append(feed)
+    if "" in folders:
+        return [("", folders.pop("")), *folders.items()]
+    return list(folders.items())
+
+
 def show_message(message: str) -> None:
     print(f"\n{message}")
     input("Press Enter to continue...")
@@ -372,16 +382,38 @@ def run() -> None:
     with tempfile.TemporaryDirectory(prefix="newsblur-fzf-") as scratch:
         previews = Path(scratch)
         story_cache: dict[tuple[str, int, str], list[dict]] = {}
+        selected_folder: str | None = None
         while True:
-            feed_rows = rows_for_feeds(feeds_data)
-            if not feed_rows:
+            folder_rows = rows_for_folders(feeds_data)
+            if not folder_rows:
                 show_message("No subscribed feeds found in NewsBlur.")
                 return
-            options = [f"{index}\t{label(folder or 'Top Level')} / {feed_label(feed)}"
-                       for index, (folder, feed) in enumerate(feed_rows)]
-            key, selected = chooser(options, header="NewsBlur · feeds\nctrl-s sync", keys="enter,ctrl-s,ctrl-q")
-            if key in ("escape", "ctrl-q"):
+            folders = dict(folder_rows)
+            if selected_folder not in folders:
+                selected_folder = None
+            options = []
+            if selected_folder is None:
+                for index, (folder, feeds) in enumerate(folder_rows):
+                    preview_file = previews / str(index)
+                    preview_file.write_text("\n".join([label(folder or "Top Level"), "",
+                                                       *(feed_label(feed) for feed in feeds)]) + "\n")
+                    count = sum(unread_count(feed) for feed in feeds)
+                    options.append(f"{preview_file}\t{label(folder or 'Top Level')}  ({count} unread)")
+                header = "NewsBlur · folders\nctrl-s sync"
+                preview = "cat {1}"
+            else:
+                feeds = folders[selected_folder]
+                options = [f"{index}\t{feed_label(feed)}" for index, feed in enumerate(feeds)]
+                header = f"NewsBlur · {label(selected_folder or 'Top Level')} · feeds\nctrl-s sync"
+                preview = None
+            key, selected = chooser(options, header=header, preview=preview, keys="enter,ctrl-s,ctrl-q")
+            if key == "ctrl-q":
                 return
+            if key == "escape":
+                if selected_folder is None:
+                    return
+                selected_folder = None
+                continue
             if key == "ctrl-s":
                 try:
                     feeds_data = api.feeds()
@@ -391,7 +423,11 @@ def run() -> None:
                 continue
             if not selected:
                 continue
-            folder, feed = feed_rows[int(selected[0].split("\t", 1)[0])]
+            index = int(Path(selected[0].split("\t", 1)[0]).name)
+            if selected_folder is None:
+                selected_folder = folder_rows[index][0]
+                continue
+            feed = feeds[index]
             feed_id = str(feed["id"])
             page = 1
             read_filter = "all"

@@ -30,6 +30,44 @@ class ReaderTests(unittest.TestCase):
         source = "<nav>Menu</nav><main><h1>Title</h1><p>Article text</p></main><footer>Ad</footer>"
         self.assertEqual(reader.html_text(source, article_only=True), "Title\n\nArticle text")
 
+    def test_folder_groups_keep_top_level_and_nested_paths_distinct(self):
+        data = {"feeds": {"2": {"id": 2}, "3": {"id": 3}, "4": {"id": 4}},
+                "folders": [{"Tech": [2, {"Deep": [3]}]}]}
+        self.assertEqual([(folder, [feed["id"] for feed in feeds])
+                          for folder, feeds in reader.rows_for_folders(data)],
+                         [("", [4]), ("Tech", [2]), ("Tech/Deep", [3])])
+
+    def test_folder_picker_previews_feeds_and_back_returns_to_folders(self):
+        api = Mock()
+        api.login.return_value = None
+        api.feeds.return_value = {
+            "feeds": {"2": {"id": 2, "feed_title": "Tech Blog", "nt": 2},
+                      "3": {"id": 3, "feed_title": "Other Blog", "ps": 1},
+                      "4": {"id": 4, "feed_title": "Unfiled Blog"}},
+            "folders": [{"Tech": [2, 3]}, 4],
+        }
+        actions = iter([("enter", 1), ("escape", None), ("enter", 0), ("ctrl-q", None)])
+        screens = []
+        previews = []
+
+        def choose(lines, **kwargs):
+            screens.append((lines, kwargs["header"]))
+            if kwargs["preview"]:
+                previews.append([Path(line.split("\t", 1)[0]).read_text() for line in lines])
+            key, index = next(actions)
+            return key, [lines[index]] if index is not None else []
+
+        with patch.object(reader, "NewsBlur", return_value=api), patch.object(reader, "chooser", side_effect=choose):
+            reader.run()
+        self.assertIn("Top Level", screens[0][0][0])
+        self.assertIn("Tech  (3 unread)", screens[0][0][1])
+        self.assertIn("Tech Blog  (2 unread)", previews[0][1])
+        self.assertIn("Other Blog  (1 unread)", previews[0][1])
+        self.assertEqual(screens[1][0], ["0\tTech Blog  (2 unread)", "1\tOther Blog  (1 unread)"])
+        self.assertEqual(screens[2][1].splitlines()[0], "NewsBlur · folders")
+        self.assertEqual(screens[3][0], ["0\tUnfiled Blog  (0 unread)"])
+        api.first_page_with_unread.assert_not_called()
+        api.mark.assert_not_called()
 
     def test_article_fragment_preserves_links_and_void_tags(self):
         fragment = reader.ArticleFragment()
@@ -140,7 +178,7 @@ class ReaderTests(unittest.TestCase):
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog", "ps": 1}}, "folders": [4]}
         api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post", "story_content": "<p>Body</p>"}]
         api.first_page_with_unread.return_value = api.stories.return_value
-        choices = iter([("enter", ["0\tBlog"]),
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]),
                         ("ctrl-o", ["0\tPost"]), ("escape", []), ("ctrl-q", [])])
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
@@ -157,7 +195,7 @@ class ReaderTests(unittest.TestCase):
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
         api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post", "story_content": "<a href='/link'>Read more</a>"}]
         api.first_page_with_unread.return_value = api.stories.return_value
-        choices = iter([("enter", ["0\tBlog"]),
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]),
                         ("enter", ["0\tPost"]), ("escape", []), ("ctrl-q", [])])
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
@@ -173,7 +211,7 @@ class ReaderTests(unittest.TestCase):
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
         api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post", "story_permalink": "https://example.com/post"}]
         api.first_page_with_unread.return_value = api.stories.return_value
-        choices = iter([("enter", ["0\tBlog"]),
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]),
                         ("alt-o", ["0\tPost"]), ("escape", []), ("ctrl-q", [])])
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
@@ -207,7 +245,7 @@ class ReaderTests(unittest.TestCase):
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog", "ps": 1}}, "folders": [4]}
         api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post", "story_content": "<p>Body</p>", "read_status": 0}]
         api.first_page_with_unread.return_value = api.stories.return_value
-        choices = iter([("enter", ["0\tBlog"]),
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]),
                         ("ctrl-r", ["0\tPost"]), ("escape", []), ("ctrl-q", [])])
         headers = []
 
@@ -219,7 +257,7 @@ class ReaderTests(unittest.TestCase):
             reader.run()
         api.first_page_with_unread.assert_called_once_with("4", expected_unread=1)
         self.assertEqual(api.stories.return_value[0]["read_status"], 1)
-        self.assertEqual(headers[1].splitlines()[0], "Blog · all, page 1")
+        self.assertEqual(headers[2].splitlines()[0], "Blog · all, page 1")
 
     def test_ctrl_s_refreshes_feed_picker_and_ctrl_q_exits(self):
         api = Mock()
@@ -237,7 +275,7 @@ class ReaderTests(unittest.TestCase):
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
         api.first_page_with_unread.return_value = []
         api.stories.return_value = []
-        choices = iter([("enter", ["0\tBlog"]),
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]),
                         ("ctrl-f", []), ("ctrl-f", []), ("ctrl-q", [])])
         headers = []
 
@@ -248,8 +286,8 @@ class ReaderTests(unittest.TestCase):
         with patch.object(reader, "NewsBlur", return_value=api), patch.object(reader, "chooser", side_effect=choose):
             reader.run()
         api.stories.assert_called_once_with("4", 1, "unread")
-        self.assertEqual(headers[2].splitlines()[0], "Blog · unread, page 1")
-        self.assertEqual(headers[3].splitlines()[0], "Blog · all, page 1")
+        self.assertEqual(headers[3].splitlines()[0], "Blog · unread, page 1")
+        self.assertEqual(headers[4].splitlines()[0], "Blog · all, page 1")
         api.mark_feed.assert_not_called()
 
     def test_alt_r_marks_whole_feed_only_after_confirmation(self):
@@ -259,7 +297,7 @@ class ReaderTests(unittest.TestCase):
                 api.login.return_value = None
                 api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
                 api.first_page_with_unread.return_value = []
-                choices = iter([("enter", ["0\tBlog"]),
+                choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]),
                                 ("alt-r", []), ("ctrl-q", [])])
                 with patch.object(reader, "NewsBlur", return_value=api), \
                      patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
@@ -276,7 +314,7 @@ class ReaderTests(unittest.TestCase):
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
         api.first_page_with_unread.return_value = []
         api.stories.return_value = []
-        choices = iter([("enter", ["0\tBlog"]),
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]),
                         ("alt-n", []), ("alt-p", []), ("alt-p", []), ("ctrl-q", [])])
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)):
@@ -289,7 +327,7 @@ class ReaderTests(unittest.TestCase):
         api.login.return_value = None
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog", "nt": 2}}, "folders": [4]}
         api.first_page_with_unread.return_value = [{"story_hash": "4:a", "story_title": "Post", "read_status": 1}]
-        choices = iter([("enter", ["0\tBlog"]), ("escape", []), ("ctrl-q", [])])
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]), ("escape", []), ("ctrl-q", [])])
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
              patch.object(reader, "feed_preview", return_value="Body"):
@@ -302,7 +340,7 @@ class ReaderTests(unittest.TestCase):
         api.login.return_value = None
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
         api.first_page_with_unread.return_value = [{"story_hash": "4:a", "story_title": "Post"}]
-        choices = iter([("enter", ["0\tBlog"]), ("ctrl-q", [])])
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]), ("ctrl-q", [])])
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)):
             reader.run()
@@ -312,7 +350,7 @@ class ReaderTests(unittest.TestCase):
         api.login.return_value = None
         api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Slow site", "nt": 2}}, "folders": [4]}
         api.first_page_with_unread.side_effect = reader.ReaderError("Network error: timed out")
-        choices = iter([("enter", ["0\tSlow site"]), ("ctrl-q", [])])
+        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tSlow site"]), ("ctrl-q", [])])
         with patch.object(reader, "NewsBlur", return_value=api), \
              patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
              patch.object(reader, "show_message") as message:
