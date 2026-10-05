@@ -195,7 +195,7 @@ class NewsBlur:
         return None
 
     def feeds(self) -> dict:
-        return self.request("/reader/feeds", params={"include_favicons": "false", "update_counts": "false"})
+        return self.request("/reader/feeds", params={"include_favicons": "false", "update_counts": "true"})
 
     def stories(self, feed_id: str, page: int, read_filter: str) -> list[dict]:
         response = self.request(f"/reader/feed/{feed_id}", params={"page": page, "read_filter": read_filter, "include_hidden": "false"})
@@ -480,7 +480,8 @@ def run() -> None:
                         story_cache.pop((feed_id, page, "unread"), None)
                 except ReaderError as exc:
                     show_message(str(exc))
-            if changed:
+            # Loading a feed can expose stale server counts even without marking stories.
+            if changed or (feed_id, page, read_filter) in story_cache:
                 try:
                     feeds_data = api.feeds()
                 except ReaderError as exc:

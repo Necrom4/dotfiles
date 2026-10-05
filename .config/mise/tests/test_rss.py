@@ -67,6 +67,13 @@ class ReaderTests(unittest.TestCase):
         api.opener = opener
         self.assertEqual(api.feeds()["feeds"]["4"]["id"], 4)
 
+    def test_feed_counts_are_recalculated(self):
+        api = object.__new__(reader.NewsBlur)
+        api.request = Mock(return_value={"feeds": {}})
+        api.feeds()
+        api.request.assert_called_once_with("/reader/feeds", params={
+            "include_favicons": "false", "update_counts": "true"
+        })
 
     def test_rejects_private_or_non_http_story_urls(self):
         for url in ("file:///etc/passwd", "http://127.0.0.1/", "http://user:pass@example.com/"):
@@ -261,6 +268,18 @@ class ReaderTests(unittest.TestCase):
         api.stories.assert_any_call("4", 1, "all")
         api.stories.assert_any_call("4", 2, "all")
 
+    def test_returning_to_feeds_updates_counts_without_marking_read(self):
+        api = Mock()
+        api.login.return_value = None
+        api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog", "nt": 2}}, "folders": [4]}
+        api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post", "read_status": 1}]
+        choices = iter([("enter", ["0\tBlog"]), ("escape", []), ("ctrl-q", [])])
+        with patch.object(reader, "NewsBlur", return_value=api), \
+             patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
+             patch.object(reader, "feed_preview", return_value="Body"):
+            reader.run()
+        self.assertEqual(api.feeds.call_count, 2)
+        api.mark.assert_not_called()
 
     def test_ctrl_q_exits_straight_from_story_picker(self):
         api = Mock()
