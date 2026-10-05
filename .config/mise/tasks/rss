@@ -131,6 +131,14 @@ class ArticleFragment(HTMLParser):
             self.parts.append(f"&#{name};")
 
 
+def article_document(title: str, url: str, body_html: str) -> str:
+    safe_url = html.escape(url, quote=True)
+    return ("<!doctype html><html><head><meta charset='utf-8'>"
+            f"<base href='{safe_url}'><title>{html.escape(title)}</title></head>"
+            f"<body><main><h1>{html.escape(title)}</h1><p><a href='{safe_url}'>{safe_url}</a></p>"
+            f"<hr>{body_html}</main></body></html>")
+
+
 class NewsBlur:
     def __init__(self) -> None:
         private_directory(STATE)
@@ -265,7 +273,14 @@ def show_message(message: str) -> None:
 
 
 def article_viewer(title: str, url: str, body_html: str) -> None:
-    pager(f"{title}\n{url}\n\n{html_text(body_html)}")
+    if not shutil.which("elinks"):
+        pager(f"{title}\n{url}\n\n{html_text(body_html)}")
+        return
+    with tempfile.TemporaryDirectory(prefix="newsblur-page-") as directory:
+        page = Path(directory) / "article.html"
+        page.write_text(article_document(title, url, body_html))
+        command = [str(Path.home() / ".config" / "elinks" / "clipboard"), "open", "-no-connect", "-force-html"]
+        subprocess.run([*command, page.as_uri()], check=False)
 
 
 def pager(text: str) -> None:

@@ -92,6 +92,13 @@ class ReaderTests(unittest.TestCase):
         self.assertFalse(any(arg.startswith("--height") for arg in run.call_args.args[0]))
 
 
+    def test_html_view_preserves_links_and_escapes_title(self):
+        document = reader.article_document('News <Today>', 'https://example.com/a?x=1&y=2', '<p><a href="/read">Article</a></p>')
+        self.assertIn('News &lt;Today&gt;', document)
+        self.assertIn('href="/read"', document)
+        self.assertIn('<base href=', document)
+        self.assertIn('x=1&amp;y=2', document)
+
     def test_full_page_preserves_article_links_not_navigation(self):
         response = io.BytesIO(b'<nav>Skip</nav><article><p>Read the <a href="/post">entire original story</a>.</p></article>')
         response.headers = Mock()
@@ -153,6 +160,14 @@ class ReaderTests(unittest.TestCase):
         open_browser.assert_called_once_with("https://example.com/post")
         fetch.assert_not_called()
 
+
+    def test_elinks_uses_portable_clipboard_launcher(self):
+        with patch.object(reader.shutil, "which", return_value="/usr/bin/tool"), \
+             patch.object(reader.subprocess, "run") as run:
+            reader.article_viewer("Post", "https://example.com/post", '<a href="/link">Link</a>')
+        command = run.call_args.args[0]
+        self.assertEqual(command[:2], [str(Path.home() / ".config/elinks/clipboard"), "open"])
+        self.assertNotIn("-eval", command)
 
     def test_mark_read_keeps_story_visible_without_refetching(self):
         api = Mock()
