@@ -54,6 +54,12 @@ fi
 export FZF_DEFAULT_OPTS_FILE=$HOME/.config/fzf/fzfrc
 export ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
 
+# Keep native text selection connected to the system clipboard on every launch.
+# The Python launcher calls the real executable directly, so this cannot recurse.
+elinks() {
+  python3 "$HOME/.config/elinks/clipboard" open "$@"
+}
+
 # Add $PR var that represents the path of the current project's root
 update_project_root_var() {
   if [[ -e .git ]] || git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
