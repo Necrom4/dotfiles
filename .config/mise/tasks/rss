@@ -19,6 +19,7 @@ import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
+import webbrowser
 import shutil
 
 
@@ -296,7 +297,7 @@ def run() -> None:
                     lines.append(f"{preview_file}\t{status} {title}")
                 header = f"{label(feed.get('feed_title'))} · {read_filter}, page {page}"
                 key, picked = chooser(lines, header=header, preview="cat {1}" if stories else None,
-                                      multi=True, keys="enter,ctrl-r,ctrl-u,ctrl-f,alt-r,alt-n,alt-p,ctrl-s,ctrl-q")
+                                      multi=True, keys="enter,alt-o,ctrl-r,ctrl-u,ctrl-f,alt-r,alt-n,alt-p,ctrl-s,ctrl-q")
                 if key == "ctrl-q":
                     return
                 if key == "escape":
@@ -351,6 +352,14 @@ def run() -> None:
                     if key == "enter":
                         body = story.get("story_content") or "<p>(No RSS body supplied)</p>"
                         article_viewer(story_title(story), story.get("story_permalink", ""), body)
+                        api.mark([story["story_hash"]], unread=False)
+                        changed = True
+                        update_read_status(story_cache, [story], unread=False)
+                        story_cache.pop((feed_id, page, "unread"), None)
+                    elif key == "alt-o":
+                        url = story.get("story_permalink", "")
+                        if not url or not webbrowser.open(url):
+                            raise ReaderError("Could not open the story in a browser")
                         api.mark([story["story_hash"]], unread=False)
                         changed = True
                         update_read_status(story_cache, [story], unread=False)

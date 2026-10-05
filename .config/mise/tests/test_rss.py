@@ -95,6 +95,22 @@ class ReaderTests(unittest.TestCase):
         fetch.assert_not_called()
         viewer.assert_called_once_with("Post", "", "<a href='/link'>Read more</a>")
 
+    def test_alt_o_opens_only_article_url_in_browser(self):
+        api = Mock()
+        api.login.return_value = None
+        api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
+        api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post", "story_permalink": "https://example.com/post"}]
+        api.stories.return_value = api.stories.return_value
+        choices = iter([("enter", ["0\tBlog"]),
+                        ("alt-o", ["0\tPost"]), ("escape", []), ("ctrl-q", [])])
+        with patch.object(reader, "NewsBlur", return_value=api), \
+             patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
+             patch.object(reader.webbrowser, "open", return_value=True) as open_browser, \
+             patch.object(reader, "page_text", create=True) as fetch:
+            reader.run()
+        open_browser.assert_called_once_with("https://example.com/post")
+        fetch.assert_not_called()
+
 
     def test_mark_read_keeps_story_visible_without_refetching(self):
         api = Mock()
