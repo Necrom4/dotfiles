@@ -148,6 +148,21 @@ class ReaderTests(unittest.TestCase):
         api.mark_feed.assert_not_called()
 
 
+    def test_page_navigation_reuses_cached_pages_and_stops_at_page_one(self):
+        api = Mock()
+        api.login.return_value = None
+        api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
+        api.stories.return_value = []
+        api.stories.return_value = []
+        choices = iter([("enter", ["0\tBlog"]),
+                        ("alt-n", []), ("alt-p", []), ("alt-p", []), ("ctrl-q", [])])
+        with patch.object(reader, "NewsBlur", return_value=api), \
+             patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)):
+            reader.run()
+        api.stories.assert_any_call("4", 1, "all")
+        api.stories.assert_any_call("4", 2, "all")
+
+
     def test_ctrl_q_exits_straight_from_story_picker(self):
         api = Mock()
         api.login.return_value = None
