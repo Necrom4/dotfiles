@@ -5,4 +5,5 @@
 --info='inline-right'
 --layout='reverse'
 --multi
+--cycle
 --style full
