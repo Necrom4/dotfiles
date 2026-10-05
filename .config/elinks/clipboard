@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
-"""Copy standard input to the system clipboard without an interactive shell."""
+"""System clipboard adapter and ELinks launcher; no interactive shell required.
+
+Usage: printf 'text' | ~/.config/elinks/clipboard copy
+       ~/.config/elinks/clipboard open [elinks options] [URL]
+"""
 
 import os
+from pathlib import Path
+import select
 import shutil
 import subprocess
 import sys
+
+
+# Reserved in the launched ELinks process; configured in elinks.conf.
+CLIPBOARD_FD = 9
 
 
 def copy(data: bytes) -> None:
@@ -27,12 +37,69 @@ def copy(data: bytes) -> None:
     subprocess.run(command, input=data, check=True, timeout=10)
 
 
+def listen() -> None:
+    """Forward native ELinks copies from a private pipe to the system clipboard."""
+    while True:
+        data = os.read(0, 65536)
+        if not data:
+            return
+        # ELinks writes no record delimiter; collect the complete write burst.
+        while select.select([0], [], [], 0.1)[0]:
+            chunk = os.read(0, 65536)
+            if not chunk:
+                break
+            data += chunk
+        try:
+            copy(data)
+        except (OSError, RuntimeError, UnicodeError, subprocess.SubprocessError) as exc:
+            # Keep draining the pipe even if a clipboard backend fails.
+            print(f"ELinks clipboard: {exc}", file=sys.stderr)
+
+
+def open_elinks(arguments: list[str]) -> int:
+    """Start the clipboard bridge only for the lifetime of this ELinks session."""
+    read_fd, write_fd = os.pipe()
+    # Avoid clobbering the read end if the caller already had several fds open.
+    if read_fd == CLIPBOARD_FD:
+        import fcntl
+        new_fd = fcntl.fcntl(read_fd, fcntl.F_DUPFD_CLOEXEC, CLIPBOARD_FD + 1)
+        os.close(read_fd)
+        read_fd = new_fd
+    if write_fd != CLIPBOARD_FD:
+        os.dup2(write_fd, CLIPBOARD_FD, inheritable=False)
+        os.close(write_fd)
+    listener = None
+    try:
+        listener = subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "listen"],
+                                    stdin=read_fd)
+        os.close(read_fd)
+        read_fd = -1
+        return subprocess.run(["elinks", *arguments], pass_fds=(CLIPBOARD_FD,), check=False).returncode
+    finally:
+        if read_fd >= 0:
+            os.close(read_fd)
+        os.close(CLIPBOARD_FD)
+        if listener:
+            try:
+                listener.wait(timeout=12)
+            except subprocess.TimeoutExpired:
+                listener.terminate()
+                listener.wait()
+
 
 if __name__ == "__main__":
     try:
-        if sys.argv[1:] != ["copy"]:
-            raise RuntimeError("Usage: clipboard copy")
-        copy(sys.stdin.buffer.read())
+        mode = sys.argv[1] if len(sys.argv) > 1 else ""
+        if mode == "copy":
+            copy(sys.stdin.buffer.read())
+        elif mode == "listen":
+            listen()
+        elif mode == "open":
+            sys.exit(open_elinks(sys.argv[2:]))
+        else:
+            raise RuntimeError("Usage: clipboard {copy|open [elinks options] [URL]}")
     except (OSError, RuntimeError, UnicodeError, subprocess.SubprocessError) as exc:
         print(f"ELinks clipboard: {exc}", file=sys.stderr)
         sys.exit(1)
+    except KeyboardInterrupt:
+        sys.exit(130)
