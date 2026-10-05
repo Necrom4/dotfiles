@@ -159,6 +159,9 @@ class NewsBlur:
         for start in range(0, len(hashes), 50):
             self.request(endpoint, data=[("story_hash", value) for value in hashes[start : start + 50]])
 
+    def mark_feed(self, feed_id: str) -> None:
+        self.request("/reader/mark_feed_as_read", data=[("feed_id", feed_id)])
+
 
 def chooser(lines: list[str], *, header: str, preview: str | None = None, multi: bool = False, keys: str = "") -> tuple[str, list[str]]:
     args = ["fzf", "--delimiter=\t", "--with-nth=2..", "--no-sort", "--header", header, "--expect", keys]
@@ -293,7 +296,7 @@ def run() -> None:
                     lines.append(f"{preview_file}\t{status} {title}")
                 header = f"{label(feed.get('feed_title'))} · {read_filter}, page {page}"
                 key, picked = chooser(lines, header=header, preview="cat {1}" if stories else None,
-                                      multi=True, keys="enter,ctrl-r,ctrl-u,ctrl-f,alt-n,alt-p,ctrl-s,ctrl-q")
+                                      multi=True, keys="enter,ctrl-r,ctrl-u,ctrl-f,alt-r,alt-n,alt-p,ctrl-s,ctrl-q")
                 if key == "ctrl-q":
                     return
                 if key == "escape":
@@ -313,6 +316,22 @@ def run() -> None:
                 if key == "ctrl-f":
                     read_filter = "all" if read_filter == "unread" else "unread"
                     page = 1
+                    continue
+                if key == "alt-r":
+                    answer = input(f"Mark ALL unread stories in {feed.get('feed_title')} read? [y/N] ")
+                    if answer.casefold() == "y":
+                        try:
+                            api.mark_feed(feed_id)
+                        except ReaderError as exc:
+                            show_message(str(exc))
+                            continue
+                        changed = True
+                        for cached_key, cached in story_cache.items():
+                            if cached_key[0] == feed_id:
+                                for item in cached:
+                                    item["read_status"] = 1
+                        story_cache = {key: value for key, value in story_cache.items() if key[0] != feed_id or key[2] != "unread"}
+                        page = 1
                     continue
                 if not picked:
                     continue

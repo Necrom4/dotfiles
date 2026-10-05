@@ -147,6 +147,23 @@ class ReaderTests(unittest.TestCase):
         self.assertEqual(headers[3].splitlines()[0], "Blog · all, page 1")
         api.mark_feed.assert_not_called()
 
+    def test_alt_r_marks_whole_feed_only_after_confirmation(self):
+        for answer in ("n", "y"):
+            with self.subTest(answer=answer):
+                api = Mock()
+                api.login.return_value = None
+                api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
+                api.stories.return_value = []
+                choices = iter([("enter", ["0\tBlog"]),
+                                ("alt-r", []), ("ctrl-q", [])])
+                with patch.object(reader, "NewsBlur", return_value=api), \
+                     patch.object(reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)), \
+                     patch("builtins.input", return_value=answer):
+                    reader.run()
+                if answer == "y":
+                    api.mark_feed.assert_called_once_with("4")
+                else:
+                    api.mark_feed.assert_not_called()
 
     def test_page_navigation_reuses_cached_pages_and_stops_at_page_one(self):
         api = Mock()
