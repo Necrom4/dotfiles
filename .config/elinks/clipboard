@@ -8,7 +8,6 @@ Usage: printf 'text' | ~/.config/elinks/clipboard copy
 import os
 from pathlib import Path
 import select
-import shutil
 import subprocess
 import sys
 
@@ -18,23 +17,11 @@ CLIPBOARD_FD = 9
 
 
 def copy(data: bytes) -> None:
-    if sys.platform == "darwin" and shutil.which("pbcopy"):
-        command = ["pbcopy"]
-    elif shutil.which("clip.exe"):
-        command = ["clip.exe"]
-        # Windows clip.exe understands UTF-16; UTF-8 can corrupt accented words.
-        data = data.decode("utf-8").encode("utf-16")
-    elif os.environ.get("WAYLAND_DISPLAY") and shutil.which("wl-copy"):
-        command = ["wl-copy"]
-    elif os.environ.get("DISPLAY") and shutil.which("xclip"):
-        command = ["xclip", "-selection", "clipboard", "-in"]
-    elif os.environ.get("DISPLAY") and shutil.which("xsel"):
-        command = ["xsel", "--clipboard", "--input"]
-    elif os.environ.get("TMUX") and shutil.which("tmux"):
-        command = ["tmux", "load-buffer", "-w", "-"]
-    else:
-        raise RuntimeError("No system clipboard tool found (pbcopy, clip.exe, wl-copy, xclip, xsel or tmux)")
-    subprocess.run(command, input=data, check=True, timeout=10)
+    # clipcopy is a Zsh function, not an executable. Source the same OMZ snippet
+    # loaded by zinit without starting the full interactive shell configuration.
+    command = ('source "$HOME/.local/share/zinit/snippets/OMZL::clipboard.zsh/OMZL::clipboard.zsh" '
+               '|| return 1; clipcopy')
+    subprocess.run(["zsh", "-c", command], input=data, check=True, timeout=10)
 
 
 def listen() -> None:
