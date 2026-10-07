@@ -24,6 +24,9 @@ import urllib.parse
 import urllib.request
 import webbrowser
 import shutil
+import shlex
+import threading
+from contextlib import ExitStack
 
 
 BASE = "https://www.newsblur.com"
@@ -34,6 +37,14 @@ USER_AGENT = "newsblur-fzf/1.0 (personal terminal reader)"
 
 class ReaderError(Exception):
     pass
+
+
+class StoryBatch(list):
+    """Retain paging metadata even when NewsBlur hides every story in a batch."""
+
+    def __init__(self, stories: list[dict], hidden_count: int = 0):
+        super().__init__(stories)
+        self.hidden_count = hidden_count
 
 
 def private_directory(path: Path) -> None:
@@ -214,7 +225,7 @@ class NewsBlur:
                     "NewsBlur rejected the session; restart the reader to sign in."
                 ) from exc
             raise ReaderError(f"NewsBlur HTTP {exc.code} on {path}") from exc
-        except (urllib.error.URLError, TimeoutError) as exc:
+        except (OSError, TimeoutError) as exc:
             raise ReaderError(f"Network error: {exc}") from exc
         except (ValueError, UnicodeError) as exc:
             raise ReaderError(
@@ -268,26 +279,22 @@ class NewsBlur:
                 "include_hidden": "false",
             },
         )
-        return response.get("stories", [])
-
-    def first_page_with_unread(
-        self, feed_id: str, expected_unread: int = 0
-    ) -> list[dict]:
-        """Keep recent read entries while also showing unread entries beyond page one."""
-        recent = self.stories(feed_id, 1, "all")
-        if (
-            expected_unread
-            and sum(story.get("read_status") == 0 for story in recent)
-            >= expected_unread
+        if not isinstance(response, dict) or not isinstance(
+            response.get("stories"), list
         ):
-            return recent
-        unread = self.stories(feed_id, 1, "unread")
-        hashes = {story["story_hash"] for story in recent}
-        for story in unread:
-            if story["story_hash"] not in hashes:
-                recent.append(story)
-                hashes.add(story["story_hash"])
-        return recent
+            raise ReaderError("NewsBlur returned an invalid story batch")
+        if any(
+            not isinstance(story, dict)
+            or not isinstance(story.get("story_hash"), str)
+            or not story["story_hash"]
+            for story in response["stories"]
+        ):
+            raise ReaderError("NewsBlur returned a story without a usable identity")
+        try:
+            hidden = max(0, int(response.get("hidden_stories_count") or 0))
+        except (TypeError, ValueError) as exc:
+            raise ReaderError("NewsBlur returned invalid paging metadata") from exc
+        return StoryBatch(response["stories"], hidden)
 
     def mark(self, hashes: list[str], unread: bool) -> None:
         endpoint = (
@@ -313,7 +320,10 @@ def chooser(
     preview: str | None = None,
     multi: bool = False,
     keys: str = "",
+    stream=None,
+    state: dict | None = None,
 ) -> tuple[str, list[str]]:
+    original_header = header
     columns = shutil.get_terminal_size().columns
     # The right-hand preview leaves 40% of the width for fzf's header/list.
     width = max(1, (int(columns * 0.4) if preview else columns) - 6)
@@ -335,18 +345,250 @@ def chooser(
         args.append("--multi")
     if preview:
         args.extend(["--preview", preview, "--preview-window", "right,60%,wrap"])
+    if state is not None:
+        args.extend(["--print-query", "--query", state.get("query", "")])
     # Let fzf load the user's defaults unchanged, including height and config file.
-    result = subprocess.run(
-        args, input="\n".join(lines) + "\n", text=True, capture_output=True, check=False
-    )
+    if stream is None:
+        result = subprocess.run(
+            args, input="\n".join(lines) + "\n", text=True, capture_output=True, check=False
+        )
+    else:
+        # fzf filters incrementally while stdin remains open. Explicitly disable
+        # sync/auto-exit defaults: an empty first batch is not an empty feed.
+        args.extend([
+            "--no-sync", "--no-select-1", "--no-exit-0", "--track", "--bind",
+            f"load:transform-header:cat {shlex.quote(str(stream.status_file))}",
+        ])
+        focus_file = stream.directory / "focus"
+        if state is not None:
+            args.extend([
+                "--bind",
+                f"focus:execute-silent:printf '%s' \"$FZF_POS\" > {shlex.quote(str(focus_file))}",
+            ])
+            if state.get("position"):
+                args.extend(["--bind", f"result:pos({int(state['position'])})+unbind(result)"])
+        process = subprocess.Popen(
+            args, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, text=True,
+        )
+        input_pipe = process.stdin
+        # The producer owns stdin. communicate() drains both output pipes without
+        # closing that descriptor or deadlocking on a full stderr pipe.
+        process.stdin = None
+        stop = threading.Event()
+
+        def write_rows():
+            try:
+                for row in stream.rows(stop, original_header, width):
+                    input_pipe.write(row + "\n")
+                    input_pipe.flush()
+            except (BrokenPipeError, OSError):
+                pass
+            finally:
+                try:
+                    input_pipe.close()
+                except OSError:
+                    pass
+
+        writer = threading.Thread(target=write_rows, daemon=True)
+        writer.start()
+        try:
+            stdout, stderr = process.communicate()
+            result = subprocess.CompletedProcess(args, process.wait(), stdout, stderr)
+        finally:
+            stop.set()
+            writer.join(timeout=1)
+            if process.poll() is None:
+                process.terminate()
+                process.wait()
+            process.stdout.close()
+            process.stderr.close()
+        if state is not None and focus_file.exists():
+            try:
+                state["position"] = int(focus_file.read_text())
+            except ValueError:
+                pass
     if result.returncode not in (0, 1, 130):
         raise ReaderError(result.stderr.strip() or "fzf failed")
     if result.returncode != 0:
         return "escape", []
     output = result.stdout.splitlines()
+    if state is not None and output:
+        state["query"] = output.pop(0)
     if not output:
         return "escape", []
     return output[0] or "enter", output[1:]
+
+
+class StoryCollection:
+    """One session-cached, append-only feed; only one sequential fetch at a time."""
+
+    def __init__(self, api, feed_id: str, initial: list[dict]) -> None:
+        self.api, self.feed_id = api, feed_id
+        self.stories: list[dict] = []
+        self.hashes: set[str] = set()
+        self.overrides: dict[str, int] = {}
+        self.all_read = False
+        self.condition = threading.Condition()
+        self.cancel = threading.Event()
+        self.paused = threading.Event()
+        self.worker = None
+        self.error = ""
+        self.complete = not initial and not getattr(initial, "hidden_count", 0)
+        self.next_page = 2
+        self.last_batch = None
+        self.add(initial)
+
+    def add(self, batch: list[dict]) -> int:
+        added = 0
+        for story in batch:
+            key = story.get("story_hash")
+            if not key or key in self.hashes:
+                continue
+            if key in self.overrides:
+                story["read_status"] = self.overrides[key]
+            elif self.all_read:
+                story["read_status"] = 1
+            self.hashes.add(key)
+            self.stories.append(story)
+            added += 1
+        return added
+
+    def start(self) -> None:
+        with self.condition:
+            self.paused.clear()
+            self.condition.notify_all()
+            if self.worker is None and not self.complete:
+                self.worker = threading.Thread(target=self.load, daemon=True)
+                self.worker.start()
+
+    def load(self) -> None:
+        try:
+            while not self.cancel.is_set():
+                with self.condition:
+                    while self.paused.is_set() and not self.cancel.is_set():
+                        self.condition.wait()
+                if self.cancel.is_set():
+                    return
+                batch = self.api.stories(self.feed_id, self.next_page, "all")
+                with self.condition:
+                    if self.cancel.is_set():
+                        return
+                    signature = tuple(story.get("story_hash") for story in batch)
+                    repeated = bool(batch) and signature == self.last_batch
+                    self.last_batch = signature
+                    self.add(batch)
+                    self.next_page += 1
+                    if not batch and not getattr(batch, "hidden_count", 0):
+                        self.complete = True
+                    elif repeated:
+                        self.error = "Server repeated a batch; partial history · ctrl-s retry"
+                    elif self.next_page > 400:
+                        self.error = "NewsBlur browsing limit reached; partial history"
+                    self.condition.notify_all()
+                    if self.complete or self.error:
+                        return
+                # Avoid hammering NewsBlur while still filling small batches quickly.
+                if self.cancel.wait(0.1):
+                    return
+        except ReaderError as exc:
+            with self.condition:
+                self.error = f"Partial history: {label(exc)} · ctrl-s retry"
+                self.condition.notify_all()
+
+    def mark(self, selected: list[dict], *, unread: bool) -> None:
+        with self.condition:
+            for story in selected:
+                self.overrides[story["story_hash"]] = 0 if unread else 1
+                story["read_status"] = 0 if unread else 1
+
+    def close(self) -> None:
+        self.cancel.set()
+        with self.condition:
+            self.condition.notify_all()
+
+    def mark_all_read(self) -> None:
+        with self.condition:
+            self.all_read = True
+            self.overrides.clear()
+            for story in self.stories:
+                story["read_status"] = 1
+
+    def pause(self) -> None:
+        """Keep cached batches on Back, but do not start more requests."""
+        self.paused.set()
+
+
+class StoryStream:
+    def __init__(self, collection: StoryCollection, directory: Path, read_filter: str):
+        self.collection = collection
+        self.directory = directory
+        self.read_filter = read_filter
+        directory.mkdir(exist_ok=True)
+        self.status_file = directory / "status"
+
+    def rows(self, stop: threading.Event, header: str, width: int = 80):
+        collection = self.collection
+        collection.start()
+        index = 0
+        while not stop.is_set() and not collection.cancel.is_set():
+            with collection.condition:
+                batch = list(enumerate(collection.stories[index:], start=index))
+                index = len(collection.stories)
+                done = collection.complete or bool(collection.error)
+                status = collection.error or (
+                    "Available history loaded" if done else "Loading more…"
+                )
+            for number, story in batch:
+                if stop.is_set():
+                    return
+                if self.read_filter == "unread" and story.get("read_status") != 0:
+                    continue
+                path = self.directory / str(number)
+                # JSON is cheap; ELinks rendering happens only for the focused item.
+                if not path.exists():
+                    path.write_text(json.dumps(story))
+                status_mark = "●" if story.get("read_status") == 0 else " "
+                date = label(story.get("story_date", ""))[:10]
+                # Do not truncate the title: fzf must search even the part that
+                # does not fit on screen, including unusually long headlines.
+                yield f"{path}\t{status_mark} {story_title(story)}  {date}"
+            if done:
+                count = sum(
+                    self.read_filter == "all" or s.get("read_status") == 0
+                    for s in collection.stories
+                )
+                final = header.replace("Loading more…", f"{count} stories · {status}")
+                if "Loading more…" not in header and collection.complete:
+                    final = header.replace(
+                        "Available history loaded",
+                        f"{count} stories · Available history loaded",
+                    )
+                self.status_file.write_text(
+                    "\n".join(
+                        textwrap.fill(
+                            line, width=width, break_long_words=False,
+                            break_on_hyphens=False,
+                        )
+                        for line in final.splitlines()
+                    )
+                )
+                return
+            with collection.condition:
+                collection.condition.wait(timeout=0.2)
+
+
+def lazy_preview(path: Path) -> str:
+    """Preview subprocess entry point; cache rendered output for revisits."""
+    rendered = path.with_suffix(".preview")
+    if rendered.exists():
+        return rendered.read_text()
+    story = json.loads(path.read_text())
+    text = feed_preview(story, path.with_suffix(".html"))
+    temporary = rendered.with_suffix(".tmp")
+    temporary.write_text(text)
+    temporary.replace(rendered)
+    return text
 
 
 def rows_for_feeds(data: dict) -> list[tuple[str, dict]]:
@@ -550,9 +792,12 @@ def page_text(url: str) -> str:
 def run() -> None:
     api = NewsBlur()
     feeds_data = api.login() or api.feeds()
-    with tempfile.TemporaryDirectory(prefix="newsblur-fzf-") as scratch:
+    with (
+        tempfile.TemporaryDirectory(prefix="newsblur-fzf-") as scratch,
+        ExitStack() as cleanup,
+    ):
         previews = Path(scratch)
-        story_cache: dict[tuple[str, int, str], list[dict]] = {}
+        story_cache: dict[str, StoryCollection] = {}
         selected_folder: str | None = None
         while True:
             folder_rows = rows_for_folders(feeds_data)
@@ -602,6 +847,8 @@ def run() -> None:
             if key == "ctrl-s":
                 try:
                     feeds_data = api.feeds()
+                    for collection in story_cache.values():
+                        collection.close()
                     story_cache.clear()
                 except ReaderError as exc:
                     show_message(
@@ -616,71 +863,70 @@ def run() -> None:
                 continue
             feed = feeds[index]
             feed_id = str(feed["id"])
-            page = 1
             read_filter = "all"
+            picker_state: dict = {}
             changed = False
+            collection = None
             while True:
-                cache_key = (feed_id, page, read_filter)
+                cache_key = feed_id
                 if cache_key not in story_cache:
                     try:
                         print(f"Loading {label(feed.get('feed_title'))}...", flush=True)
-                        story_cache[cache_key] = (
-                            api.first_page_with_unread(
-                                feed_id, expected_unread=unread_count(feed)
-                            )
-                            if page == 1 and read_filter == "all"
-                            else api.stories(feed_id, page, read_filter)
-                        )
+                        initial = api.stories(feed_id, 1, "all")
+                        story_cache[cache_key] = StoryCollection(api, feed_id, initial)
+                        cleanup.callback(story_cache[cache_key].close)
+                        directory = previews / f"feed-{feed_id}"
+                        if directory.exists():
+                            shutil.rmtree(directory)
                     except ReaderError as exc:
                         show_message(
                             f"Could not load {label(feed.get('feed_title'))}: {exc}. Try this feed again later."
                         )
                         break
-                stories = story_cache[cache_key]
-                lines = []
-                for index, story in enumerate(stories):
-                    preview_file = previews / str(index)
-                    preview_file.write_text(
-                        feed_preview(story, previews / f"{index}.html")
-                    )
-                    title = label(story_title(story))
-                    status = "●" if story.get("read_status") == 0 else " "
-                    lines.append(f"{preview_file}\t{status} {title}")
+                collection = story_cache[cache_key]
+                stories = collection.stories
+                directory = previews / f"feed-{feed_id}"
+                stream = StoryStream(collection, directory, read_filter)
+                status = collection.error or (
+                    "Available history loaded" if collection.complete else "Loading more…"
+                )
                 header = (
-                    f"{label(feed.get('feed_title') or feed.get('title'))} · {read_filter}, page {page}\n"
+                    f"{label(feed.get('feed_title') or feed.get('title'))} · {read_filter} · {status}\n"
                     "ctrl-o original page · alt-o browser · ctrl-r/u read/unread · "
-                    "ctrl-f all/unread · alt-r feed read · alt-n/p pages · ctrl-s sync"
+                    "ctrl-f all/unread · alt-r feed read · ctrl-s sync"
                 )
                 key, picked = chooser(
-                    lines,
+                    [],
                     header=header,
-                    preview="cat {1}" if stories else None,
+                    preview=f"{shlex.quote(sys.executable)} {shlex.quote(str(Path(__file__).resolve()))} --preview {{1}}",
                     multi=True,
-                    keys="enter,ctrl-o,alt-o,ctrl-r,ctrl-u,ctrl-f,alt-r,alt-n,alt-p,ctrl-s,ctrl-q",
+                    keys="enter,ctrl-o,alt-o,ctrl-r,ctrl-u,ctrl-f,alt-r,ctrl-s,ctrl-q",
+                    stream=stream,
+                    state=picker_state,
                 )
                 if key == "ctrl-q":
+                    for cached in story_cache.values():
+                        cached.close()
                     return
                 if key == "escape":
+                    collection.pause()
                     break
                 if key == "ctrl-s":
-                    story_cache = {
-                        key: value
-                        for key, value in story_cache.items()
-                        if key[0] != feed_id
-                    }
-                    continue
-                if key == "alt-n":
-                    if page < 400:
-                        page += 1
-                    else:
-                        show_message("NewsBlur limits feed browsing to 400 pages.")
-                    continue
-                if key == "alt-p":
-                    page = max(1, page - 1)
+                    collection.pause()
+                    try:
+                        initial = api.stories(feed_id, 1, "all")
+                    except ReaderError as exc:
+                        show_message(
+                            f"Could not sync: {exc}. Your current stories are still available."
+                        )
+                        continue
+                    collection.close()
+                    story_cache[feed_id] = StoryCollection(api, feed_id, initial)
+                    cleanup.callback(story_cache[feed_id].close)
+                    shutil.rmtree(directory)
                     continue
                 if key == "ctrl-f":
                     read_filter = "all" if read_filter == "unread" else "unread"
-                    page = 1
                     continue
                 if key == "alt-r":
                     answer = input(
@@ -693,16 +939,9 @@ def run() -> None:
                             show_message(str(exc))
                             continue
                         changed = True
-                        for cached_key, cached in story_cache.items():
-                            if cached_key[0] == feed_id:
-                                for item in cached:
-                                    item["read_status"] = 1
-                        story_cache = {
-                            key: value
-                            for key, value in story_cache.items()
-                            if key[0] != feed_id or key[2] != "unread"
-                        }
-                        page = 1
+                        # Also override flags in batches already in flight. No need
+                        # to discard history and download it again after marking.
+                        collection.mark_all_read()
                     continue
                 if not picked:
                     continue
@@ -715,10 +954,7 @@ def run() -> None:
                             unread=key == "ctrl-u",
                         )
                         changed = True
-                        update_read_status(
-                            story_cache, selected_stories, unread=key == "ctrl-u"
-                        )
-                        story_cache.pop((feed_id, page, "unread"), None)
+                        collection.mark(selected_stories, unread=key == "ctrl-u")
                     except ReaderError as exc:
                         show_message(str(exc))
                     continue
@@ -734,8 +970,7 @@ def run() -> None:
                         )
                         api.mark([story["story_hash"]], unread=False)
                         changed = True
-                        update_read_status(story_cache, [story], unread=False)
-                        story_cache.pop((feed_id, page, "unread"), None)
+                        collection.mark([story], unread=False)
                     elif key == "ctrl-o":
                         print("Fetching the story page...", flush=True)
                         article = page_text(story.get("story_permalink", ""))
@@ -746,20 +981,18 @@ def run() -> None:
                         )
                         api.mark([story["story_hash"]], unread=False)
                         changed = True
-                        update_read_status(story_cache, [story], unread=False)
-                        story_cache.pop((feed_id, page, "unread"), None)
+                        collection.mark([story], unread=False)
                     elif key == "alt-o":
                         url = story.get("story_permalink", "")
                         if not url or not webbrowser.open(url):
                             raise ReaderError("Could not open the story in a browser")
                         api.mark([story["story_hash"]], unread=False)
                         changed = True
-                        update_read_status(story_cache, [story], unread=False)
-                        story_cache.pop((feed_id, page, "unread"), None)
+                        collection.mark([story], unread=False)
                 except ReaderError as exc:
                     show_message(str(exc))
             # Loading a feed can expose stale server counts even without marking stories.
-            if changed or (feed_id, page, read_filter) in story_cache:
+            if changed or collection is not None:
                 try:
                     feeds_data = api.feeds()
                 except ReaderError as exc:
@@ -768,17 +1001,12 @@ def run() -> None:
                     )
 
 
-def update_read_status(cache: dict, selected: list[dict], *, unread: bool) -> None:
-    hashes = {story["story_hash"] for story in selected}
-    for stories in cache.values():
-        for story in stories:
-            if story.get("story_hash") in hashes:
-                story["read_status"] = 0 if unread else 1
-
-
 if __name__ == "__main__":
     try:
-        run()
+        if len(sys.argv) == 3 and sys.argv[1] == "--preview":
+            print(lazy_preview(Path(sys.argv[2])))
+        else:
+            run()
     except (ReaderError, KeyboardInterrupt, EOFError) as exc:
         print(f"\n{exc or 'Cancelled'}", file=sys.stderr)
         sys.exit(1)
