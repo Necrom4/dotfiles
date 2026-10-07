@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-#MISE description="Read NewsBlur feeds in an fzf terminal reader"
-#MISE quiet=true
+# MISE description="Read NewsBlur feeds in an fzf terminal reader"
+# MISE quiet=true
 """An fzf-based NewsBlur reader. Run with `mise run rss`."""
 
 from __future__ import annotations
@@ -49,7 +49,22 @@ def clean(value: object) -> str:
 class ArticleHTML(HTMLParser):
     """Small HTML-to-text fallback for feed bodies and locally fetched pages."""
 
-    BREAKS = {"p", "div", "section", "article", "main", "br", "li", "h1", "h2", "h3", "h4", "blockquote", "pre", "tr"}
+    BREAKS = {
+        "p",
+        "div",
+        "section",
+        "article",
+        "main",
+        "br",
+        "li",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "blockquote",
+        "pre",
+        "tr",
+    }
     SKIP = {"script", "style", "svg", "nav", "footer", "header", "aside", "form"}
 
     def __init__(self, article_only: bool = False):
@@ -107,7 +122,20 @@ class ArticleFragment(HTMLParser):
         if self.depth or (not self.found and tag in ("article", "main")):
             self.found = True
             self.parts.append(self.get_starttag_text())
-            if tag not in {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}:
+            if tag not in {
+                "area",
+                "base",
+                "br",
+                "col",
+                "embed",
+                "hr",
+                "img",
+                "input",
+                "link",
+                "meta",
+                "source",
+                "wbr",
+            }:
                 self.depth += 1
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -134,10 +162,12 @@ class ArticleFragment(HTMLParser):
 
 def article_document(title: str, url: str, body_html: str) -> str:
     safe_url = html.escape(url, quote=True)
-    return ("<!doctype html><html><head><meta charset='utf-8'>"
-            f"<base href='{safe_url}'><title>{html.escape(title)}</title></head>"
-            f"<body><main><h1>{html.escape(title)}</h1><p><a href='{safe_url}'>{safe_url}</a></p>"
-            f"<hr>{body_html}</main></body></html>")
+    return (
+        "<!doctype html><html><head><meta charset='utf-8'>"
+        f"<base href='{safe_url}'><title>{html.escape(title)}</title></head>"
+        f"<body><main><h1>{html.escape(title)}</h1><p><a href='{safe_url}'>{safe_url}</a></p>"
+        f"<hr>{body_html}</main></body></html>"
+    )
 
 
 class NewsBlur:
@@ -146,36 +176,62 @@ class NewsBlur:
         self.cookies = http.cookiejar.MozillaCookieJar(str(COOKIE_FILE))
         if COOKIE_FILE.exists():
             if COOKIE_FILE.is_symlink() or COOKIE_FILE.stat().st_mode & 0o077:
-                raise ReaderError(f"Unsafe cookie file permissions: {COOKIE_FILE} (expected 0600)")
+                raise ReaderError(
+                    f"Unsafe cookie file permissions: {COOKIE_FILE} (expected 0600)"
+                )
             self.cookies.load(ignore_discard=True, ignore_expires=True)
-        self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookies))
+        self.opener = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(self.cookies)
+        )
 
-    def request(self, path: str, *, params: dict | None = None, data: list[tuple[str, str]] | None = None) -> object:
+    def request(
+        self,
+        path: str,
+        *,
+        params: dict | None = None,
+        data: list[tuple[str, str]] | None = None,
+    ) -> object:
         url = BASE + path
         if params:
             url += "?" + urllib.parse.urlencode(params)
         body = urllib.parse.urlencode(data).encode() if data is not None else None
-        request = urllib.request.Request(url, data=body, headers={"User-Agent": USER_AGENT})
+        request = urllib.request.Request(
+            url, data=body, headers={"User-Agent": USER_AGENT}
+        )
         try:
             with self.opener.open(request, timeout=20) as response:
-                if urllib.parse.urlsplit(response.url).path in {"/", "/login"} and path != "/api/login":
-                    raise ReaderError("NewsBlur session expired; restart the reader to sign in.")
+                if (
+                    urllib.parse.urlsplit(response.url).path in {"/", "/login"}
+                    and path != "/api/login"
+                ):
+                    raise ReaderError(
+                        "NewsBlur session expired; restart the reader to sign in."
+                    )
                 result = json.load(response)
         except urllib.error.HTTPError as exc:
             if exc.code in (401, 403):
-                raise ReaderError("NewsBlur rejected the session; restart the reader to sign in.") from exc
+                raise ReaderError(
+                    "NewsBlur rejected the session; restart the reader to sign in."
+                ) from exc
             raise ReaderError(f"NewsBlur HTTP {exc.code} on {path}") from exc
         except (urllib.error.URLError, TimeoutError) as exc:
             raise ReaderError(f"Network error: {exc}") from exc
         except (ValueError, UnicodeError) as exc:
-            raise ReaderError(f"Unexpected NewsBlur response on {path} (possibly expired session)") from exc
+            raise ReaderError(
+                f"Unexpected NewsBlur response on {path} (possibly expired session)"
+            ) from exc
         if isinstance(result, dict) and result.get("code") in (-1, -2):
-            raise ReaderError(str(result.get("message") or "NewsBlur rejected the request"))
+            raise ReaderError(
+                str(result.get("message") or "NewsBlur rejected the request")
+            )
         return result
 
     def login(self) -> dict | None:
         # Check the cookie before requesting credentials; this endpoint needs authentication.
-        if any(cookie.name == "newsblur_sessionid" and not cookie.is_expired() for cookie in self.cookies):
+        if any(
+            cookie.name == "newsblur_sessionid" and not cookie.is_expired()
+            for cookie in self.cookies
+        ):
             try:
                 return self.feeds()
             except ReaderError:
@@ -184,7 +240,9 @@ class NewsBlur:
         password = getpass.getpass("NewsBlur password: ")
         if not username or not password:
             raise ReaderError("Username and password are required")
-        self.request("/api/login", data=[("username", username), ("password", password)])
+        self.request(
+            "/api/login", data=[("username", username), ("password", password)]
+        )
         if not any(cookie.name == "newsblur_sessionid" for cookie in self.cookies):
             raise ReaderError("Login did not return a NewsBlur session cookie")
         previous = os.umask(0o077)
@@ -196,16 +254,32 @@ class NewsBlur:
         return None
 
     def feeds(self) -> dict:
-        return self.request("/reader/feeds", params={"include_favicons": "false", "update_counts": "true"})
+        return self.request(
+            "/reader/feeds",
+            params={"include_favicons": "false", "update_counts": "true"},
+        )
 
     def stories(self, feed_id: str, page: int, read_filter: str) -> list[dict]:
-        response = self.request(f"/reader/feed/{feed_id}", params={"page": page, "read_filter": read_filter, "include_hidden": "false"})
+        response = self.request(
+            f"/reader/feed/{feed_id}",
+            params={
+                "page": page,
+                "read_filter": read_filter,
+                "include_hidden": "false",
+            },
+        )
         return response.get("stories", [])
 
-    def first_page_with_unread(self, feed_id: str, expected_unread: int = 0) -> list[dict]:
+    def first_page_with_unread(
+        self, feed_id: str, expected_unread: int = 0
+    ) -> list[dict]:
         """Keep recent read entries while also showing unread entries beyond page one."""
         recent = self.stories(feed_id, 1, "all")
-        if expected_unread and sum(story.get("read_status") == 0 for story in recent) >= expected_unread:
+        if (
+            expected_unread
+            and sum(story.get("read_status") == 0 for story in recent)
+            >= expected_unread
+        ):
             return recent
         unread = self.stories(feed_id, 1, "unread")
         hashes = {story["story_hash"] for story in recent}
@@ -216,28 +290,55 @@ class NewsBlur:
         return recent
 
     def mark(self, hashes: list[str], unread: bool) -> None:
-        endpoint = "/reader/mark_story_hash_as_unread" if unread else "/reader/mark_story_hashes_as_read"
+        endpoint = (
+            "/reader/mark_story_hash_as_unread"
+            if unread
+            else "/reader/mark_story_hashes_as_read"
+        )
         # Batch selected stories, rather than sending a request per story.
         for start in range(0, len(hashes), 50):
-            self.request(endpoint, data=[("story_hash", value) for value in hashes[start : start + 50]])
+            self.request(
+                endpoint,
+                data=[("story_hash", value) for value in hashes[start : start + 50]],
+            )
 
     def mark_feed(self, feed_id: str) -> None:
         self.request("/reader/mark_feed_as_read", data=[("feed_id", feed_id)])
 
 
-def chooser(lines: list[str], *, header: str, preview: str | None = None, multi: bool = False, keys: str = "") -> tuple[str, list[str]]:
+def chooser(
+    lines: list[str],
+    *,
+    header: str,
+    preview: str | None = None,
+    multi: bool = False,
+    keys: str = "",
+) -> tuple[str, list[str]]:
     columns = shutil.get_terminal_size().columns
     # The right-hand preview leaves 40% of the width for fzf's header/list.
     width = max(1, (int(columns * 0.4) if preview else columns) - 6)
-    header = "\n".join(textwrap.fill(line, width=width, break_long_words=False, break_on_hyphens=False)
-                       for line in header.splitlines())
-    args = ["fzf", "--delimiter=\t", "--with-nth=2..", "--no-sort", "--header", header, "--expect", keys]
+    header = "\n".join(
+        textwrap.fill(line, width=width, break_long_words=False, break_on_hyphens=False)
+        for line in header.splitlines()
+    )
+    args = [
+        "fzf",
+        "--delimiter=\t",
+        "--with-nth=2..",
+        "--no-sort",
+        "--header",
+        header,
+        "--expect",
+        keys,
+    ]
     if multi:
         args.append("--multi")
     if preview:
         args.extend(["--preview", preview, "--preview-window", "right,60%,wrap"])
     # Let fzf load the user's defaults unchanged, including height and config file.
-    result = subprocess.run(args, input="\n".join(lines) + "\n", text=True, capture_output=True, check=False)
+    result = subprocess.run(
+        args, input="\n".join(lines) + "\n", text=True, capture_output=True, check=False
+    )
     if result.returncode not in (0, 1, 130):
         raise ReaderError(result.stderr.strip() or "fzf failed")
     if result.returncode != 0:
@@ -307,7 +408,12 @@ def article_viewer(title: str, url: str, body_html: str) -> None:
     with tempfile.TemporaryDirectory(prefix="newsblur-page-") as directory:
         page = Path(directory) / "article.html"
         page.write_text(article_document(title, url, body_html))
-        command = [str(Path.home() / ".config" / "elinks" / "clipboard"), "open", "-no-connect", "-force-html"]
+        command = [
+            str(Path.home() / ".config" / "elinks" / "clipboard"),
+            "open",
+            "-no-connect",
+            "-force-html",
+        ]
         subprocess.run([*command, page.as_uri()], check=False)
 
 
@@ -326,6 +432,7 @@ def story_title(story: dict) -> str:
 
 def without_background(text: str) -> str:
     """Keep ELinks' foreground colors but inherit the terminal background."""
+
     def strip(match: re.Match) -> str:
         codes = match.group(1).split(";")
         kept = []
@@ -335,10 +442,12 @@ def without_background(text: str) -> str:
             if code in {"38", "48", "58"} and index + 1 < len(codes):
                 length = {"2": 5, "5": 3}.get(codes[index + 1], 1)
                 if code != "48":
-                    kept.extend(codes[index:index + length])
+                    kept.extend(codes[index : index + length])
                 index += length
                 continue
-            if not (code.isdigit() and (40 <= int(code) <= 49 or 100 <= int(code) <= 107)):
+            if not (
+                code.isdigit() and (40 <= int(code) <= 49 or 100 <= int(code) <= 107)
+            ):
                 kept.append(code)
             index += 1
         return f"\x1b[{';'.join(kept)}m" if kept else ""
@@ -352,9 +461,24 @@ def feed_preview(story: dict, html_file: Path | None = None) -> str:
     body = story.get("story_content") or "<p>(No RSS body supplied)</p>"
     if html_file and shutil.which("elinks"):
         html_file.write_text(article_document(title, url, body))
-        result = subprocess.run(["elinks", "-no-connect", "-force-html", "-dump", "-dump-color-mode", "4",
-                                 "-dump-width", "72", "-no-numbering", "-no-references", html_file.as_uri()],
-                                text=True, capture_output=True, check=False)
+        result = subprocess.run(
+            [
+                "elinks",
+                "-no-connect",
+                "-force-html",
+                "-dump",
+                "-dump-color-mode",
+                "4",
+                "-dump-width",
+                "72",
+                "-no-numbering",
+                "-no-references",
+                html_file.as_uri(),
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
         if result.returncode == 0 and result.stdout.strip():
             return without_background(result.stdout)
     content = html_text(body)
@@ -363,13 +487,22 @@ def feed_preview(story: dict, html_file: Path | None = None) -> str:
 
 def safe_page_url(url: str) -> None:
     parts = urllib.parse.urlsplit(url)
-    if parts.scheme not in {"https", "http"} or not parts.hostname or parts.username or parts.password:
+    if (
+        parts.scheme not in {"https", "http"}
+        or not parts.hostname
+        or parts.username
+        or parts.password
+    ):
         raise ReaderError("Story does not have a usable HTTP(S) URL")
     try:
-        addresses = socket.getaddrinfo(parts.hostname, parts.port or (443 if parts.scheme == "https" else 80))
+        addresses = socket.getaddrinfo(
+            parts.hostname, parts.port or (443 if parts.scheme == "https" else 80)
+        )
     except (OSError, ValueError) as exc:
         raise ReaderError(f"Could not resolve story URL: {exc}") from exc
-    if not addresses or any(not ipaddress.ip_address(address[4][0]).is_global for address in addresses):
+    if not addresses or any(
+        not ipaddress.ip_address(address[4][0]).is_global for address in addresses
+    ):
         raise ReaderError("Refusing to fetch a private or local network address")
 
 
@@ -383,14 +516,22 @@ def page_text(url: str) -> str:
     safe_page_url(url)
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
-        with urllib.request.build_opener(SafeRedirect()).open(request, timeout=15) as response:
+        with urllib.request.build_opener(SafeRedirect()).open(
+            request, timeout=15
+        ) as response:
             content_type = response.headers.get_content_type()
             if content_type not in ("text/html", "application/xhtml+xml"):
-                raise ReaderError(f"Page is {content_type}, not HTML; open in a browser instead")
+                raise ReaderError(
+                    f"Page is {content_type}, not HTML; open in a browser instead"
+                )
             data = response.read(3_000_001)
             if len(data) > 3_000_000:
-                raise ReaderError("Page too large for text mode; open in a browser instead")
-            source = data.decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+                raise ReaderError(
+                    "Page too large for text mode; open in a browser instead"
+                )
+            source = data.decode(
+                response.headers.get_content_charset() or "utf-8", errors="replace"
+            )
     except (urllib.error.URLError, TimeoutError) as exc:
         raise ReaderError(f"Could not fetch page: {exc}") from exc
     fragment = ArticleFragment()
@@ -400,7 +541,9 @@ def page_text(url: str) -> str:
         return article
     text = html_text(source)
     if len(text) < 20:
-        raise ReaderError("Could not extract readable page text; open in a browser instead")
+        raise ReaderError(
+            "Could not extract readable page text; open in a browser instead"
+        )
     return f"<pre>{html.escape(text)}</pre>"
 
 
@@ -423,18 +566,32 @@ def run() -> None:
             if selected_folder is None:
                 for index, (folder, feeds) in enumerate(folder_rows):
                     preview_file = previews / str(index)
-                    preview_file.write_text("\n".join([label(folder or "Top Level"), "",
-                                                       *(feed_label(feed) for feed in feeds)]) + "\n")
+                    preview_file.write_text(
+                        "\n".join(
+                            [
+                                label(folder or "Top Level"),
+                                "",
+                                *(feed_label(feed) for feed in feeds),
+                            ]
+                        )
+                        + "\n"
+                    )
                     count = sum(unread_count(feed) for feed in feeds)
-                    options.append(f"{preview_file}\t{label(folder or 'Top Level')}  ({count} unread)")
+                    options.append(
+                        f"{preview_file}\t{label(folder or 'Top Level')}  ({count} unread)"
+                    )
                 header = "NewsBlur · folders\nctrl-s sync"
                 preview = "cat {1}"
             else:
                 feeds = folders[selected_folder]
-                options = [f"{index}\t{feed_label(feed)}" for index, feed in enumerate(feeds)]
+                options = [
+                    f"{index}\t{feed_label(feed)}" for index, feed in enumerate(feeds)
+                ]
                 header = f"NewsBlur · {label(selected_folder or 'Top Level')} · feeds\nctrl-s sync"
                 preview = None
-            key, selected = chooser(options, header=header, preview=preview, keys="enter,ctrl-s,ctrl-q")
+            key, selected = chooser(
+                options, header=header, preview=preview, keys="enter,ctrl-s,ctrl-q"
+            )
             if key == "ctrl-q":
                 return
             if key == "escape":
@@ -447,7 +604,9 @@ def run() -> None:
                     feeds_data = api.feeds()
                     story_cache.clear()
                 except ReaderError as exc:
-                    show_message(f"Could not sync feeds: {exc}. Your current list is still available.")
+                    show_message(
+                        f"Could not sync feeds: {exc}. Your current list is still available."
+                    )
                 continue
             if not selected:
                 continue
@@ -465,31 +624,50 @@ def run() -> None:
                 if cache_key not in story_cache:
                     try:
                         print(f"Loading {label(feed.get('feed_title'))}...", flush=True)
-                        story_cache[cache_key] = (api.first_page_with_unread(
-                            feed_id, expected_unread=unread_count(feed))
-                            if page == 1 and read_filter == "all" else api.stories(feed_id, page, read_filter))
+                        story_cache[cache_key] = (
+                            api.first_page_with_unread(
+                                feed_id, expected_unread=unread_count(feed)
+                            )
+                            if page == 1 and read_filter == "all"
+                            else api.stories(feed_id, page, read_filter)
+                        )
                     except ReaderError as exc:
-                        show_message(f"Could not load {label(feed.get('feed_title'))}: {exc}. Try this feed again later.")
+                        show_message(
+                            f"Could not load {label(feed.get('feed_title'))}: {exc}. Try this feed again later."
+                        )
                         break
                 stories = story_cache[cache_key]
                 lines = []
                 for index, story in enumerate(stories):
                     preview_file = previews / str(index)
-                    preview_file.write_text(feed_preview(story, previews / f"{index}.html"))
+                    preview_file.write_text(
+                        feed_preview(story, previews / f"{index}.html")
+                    )
                     title = label(story_title(story))
                     status = "●" if story.get("read_status") == 0 else " "
                     lines.append(f"{preview_file}\t{status} {title}")
-                header = (f"{label(feed.get('feed_title') or feed.get('title'))} · {read_filter}, page {page}\n"
-                          "ctrl-o original page · alt-o browser · ctrl-r/u read/unread · "
-                          "ctrl-f all/unread · alt-r feed read · alt-n/p pages · ctrl-s sync")
-                key, picked = chooser(lines, header=header, preview="cat {1}" if stories else None,
-                                      multi=True, keys="enter,ctrl-o,alt-o,ctrl-r,ctrl-u,ctrl-f,alt-r,alt-n,alt-p,ctrl-s,ctrl-q")
+                header = (
+                    f"{label(feed.get('feed_title') or feed.get('title'))} · {read_filter}, page {page}\n"
+                    "ctrl-o original page · alt-o browser · ctrl-r/u read/unread · "
+                    "ctrl-f all/unread · alt-r feed read · alt-n/p pages · ctrl-s sync"
+                )
+                key, picked = chooser(
+                    lines,
+                    header=header,
+                    preview="cat {1}" if stories else None,
+                    multi=True,
+                    keys="enter,ctrl-o,alt-o,ctrl-r,ctrl-u,ctrl-f,alt-r,alt-n,alt-p,ctrl-s,ctrl-q",
+                )
                 if key == "ctrl-q":
                     return
                 if key == "escape":
                     break
                 if key == "ctrl-s":
-                    story_cache = {key: value for key, value in story_cache.items() if key[0] != feed_id}
+                    story_cache = {
+                        key: value
+                        for key, value in story_cache.items()
+                        if key[0] != feed_id
+                    }
                     continue
                 if key == "alt-n":
                     if page < 400:
@@ -505,7 +683,9 @@ def run() -> None:
                     page = 1
                     continue
                 if key == "alt-r":
-                    answer = input(f"Mark ALL unread stories in {feed.get('feed_title')} read? [y/N] ")
+                    answer = input(
+                        f"Mark ALL unread stories in {feed.get('feed_title')} read? [y/N] "
+                    )
                     if answer.casefold() == "y":
                         try:
                             api.mark_feed(feed_id)
@@ -517,7 +697,11 @@ def run() -> None:
                             if cached_key[0] == feed_id:
                                 for item in cached:
                                     item["read_status"] = 1
-                        story_cache = {key: value for key, value in story_cache.items() if key[0] != feed_id or key[2] != "unread"}
+                        story_cache = {
+                            key: value
+                            for key, value in story_cache.items()
+                            if key[0] != feed_id or key[2] != "unread"
+                        }
                         page = 1
                     continue
                 if not picked:
@@ -526,9 +710,14 @@ def run() -> None:
                 selected_stories = [stories[index] for index in indexes]
                 if key in ("ctrl-r", "ctrl-u"):
                     try:
-                        api.mark([s["story_hash"] for s in selected_stories], unread=key == "ctrl-u")
+                        api.mark(
+                            [s["story_hash"] for s in selected_stories],
+                            unread=key == "ctrl-u",
+                        )
                         changed = True
-                        update_read_status(story_cache, selected_stories, unread=key == "ctrl-u")
+                        update_read_status(
+                            story_cache, selected_stories, unread=key == "ctrl-u"
+                        )
                         story_cache.pop((feed_id, page, "unread"), None)
                     except ReaderError as exc:
                         show_message(str(exc))
@@ -536,8 +725,13 @@ def run() -> None:
                 story = selected_stories[0]
                 try:
                     if key == "enter":
-                        body = story.get("story_content") or "<p>(No RSS body supplied)</p>"
-                        article_viewer(story_title(story), story.get("story_permalink", ""), body)
+                        body = (
+                            story.get("story_content")
+                            or "<p>(No RSS body supplied)</p>"
+                        )
+                        article_viewer(
+                            story_title(story), story.get("story_permalink", ""), body
+                        )
                         api.mark([story["story_hash"]], unread=False)
                         changed = True
                         update_read_status(story_cache, [story], unread=False)
@@ -545,7 +739,11 @@ def run() -> None:
                     elif key == "ctrl-o":
                         print("Fetching the story page...", flush=True)
                         article = page_text(story.get("story_permalink", ""))
-                        article_viewer(story_title(story), story.get("story_permalink", ""), article)
+                        article_viewer(
+                            story_title(story),
+                            story.get("story_permalink", ""),
+                            article,
+                        )
                         api.mark([story["story_hash"]], unread=False)
                         changed = True
                         update_read_status(story_cache, [story], unread=False)
@@ -565,7 +763,9 @@ def run() -> None:
                 try:
                     feeds_data = api.feeds()
                 except ReaderError as exc:
-                    show_message(f"Could not update feed counts: {exc}. Ctrl-S will retry.")
+                    show_message(
+                        f"Could not update feed counts: {exc}. Ctrl-S will retry."
+                    )
 
 
 def update_read_status(cache: dict, selected: list[dict], *, unread: bool) -> None:

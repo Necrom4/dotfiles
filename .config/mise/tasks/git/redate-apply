@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-#MISE description="Apply a plan written by git:redate"
-#MISE quiet=true
-#MISE hide=true
-#MISE dir="{{cwd}}"
-#MISE confirm="Rewrite these commits with the dates shown above?"
-#USAGE arg "<plan>" help="Plan file written by git:redate"
+# MISE description="Apply a plan written by git:redate"
+# MISE quiet=true
+# MISE hide=true
+# MISE dir="{{cwd}}"
+# MISE confirm="Rewrite these commits with the dates shown above?"
+# USAGE arg "<plan>" help="Plan file written by git:redate"
 
 """Rewrite commits with git plumbing only: the working tree and index are never
 touched, messages are kept byte for byte, and later commits are re-parented."""
@@ -33,7 +33,9 @@ def git(*args, input=None):
 
 
 def tz(epoch):
-    off = dt.datetime.fromtimestamp(epoch).astimezone().utcoffset().total_seconds() // 60
+    off = (
+        dt.datetime.fromtimestamp(epoch).astimezone().utcoffset().total_seconds() // 60
+    )
     return f"{'-' if off < 0 else '+'}{int(abs(off)) // 60:02d}{int(abs(off)) % 60:02d}".encode()
 
 
@@ -67,10 +69,16 @@ def main():
 
     exclude = [f"^{plan['base'][0]}"] if plan["base"] else []
     mapping = {}
-    for sha in git("rev-list", "--reverse", "--topo-order", head, *exclude).decode().split():
+    for sha in (
+        git("rev-list", "--reverse", "--topo-order", head, *exclude).decode().split()
+    ):
         raw = git("cat-file", "commit", sha)
         new = rewrite(raw, mapping, dates.get(sha))
-        mapping[sha] = sha if new == raw else git("hash-object", "-t", "commit", "-w", "--stdin", input=new).decode()
+        mapping[sha] = (
+            sha
+            if new == raw
+            else git("hash-object", "-t", "commit", "-w", "--stdin", input=new).decode()
+        )
 
     new_head = mapping[head]
     if ref == "HEAD":
@@ -80,7 +88,9 @@ def main():
     os.remove(path)
 
     changed = sum(old != new for old, new in mapping.items())
-    print(f"{GREEN}{BOLD}Rewrote {changed} commits.{NC} {DIM}{head[:9]} → {new_head[:9]}{NC}")
+    print(
+        f"{GREEN}{BOLD}Rewrote {changed} commits.{NC} {DIM}{head[:9]} → {new_head[:9]}{NC}"
+    )
     print(f"{DIM}Undo with: git update-ref {ref} {head}{NC}")
 
 

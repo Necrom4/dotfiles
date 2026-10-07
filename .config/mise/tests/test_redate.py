@@ -9,7 +9,9 @@ from unittest.mock import patch
 
 
 task_path = Path(__file__).parents[1] / "tasks/git/redate"
-spec = importlib.util.spec_from_loader("redate", SourceFileLoader("redate", str(task_path)))
+spec = importlib.util.spec_from_loader(
+    "redate", SourceFileLoader("redate", str(task_path))
+)
 redate = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(redate)
 
@@ -46,7 +48,9 @@ class ComplexityTests(unittest.TestCase):
         self.assertEqual(generated, self.points(adds=1000000, path="package-lock.json"))
         code = [("10", "0", "src/main.py")]
         with_lock = code + [("100000", "0", "package-lock.json")]
-        self.assertLess(redate.complexity(with_lock)[0], redate.complexity(code)[0] * 1.1)
+        self.assertLess(
+            redate.complexity(with_lock)[0], redate.complexity(code)[0] * 1.1
+        )
 
     def test_real_files_still_add_context_switching_cost(self):
         one_file = redate.complexity([("20", "0", "main.py")])[0]
@@ -67,13 +71,23 @@ class ComplexityTests(unittest.TestCase):
         self.assertGreater(allocated[1], allocated[0] * 60)
 
     def test_score_reads_git_stats_and_message_body(self):
-        with patch.object(redate, "git", side_effect=[
-            "abc parent", "Explain the new behavior", "1\t0\tconfig.toml\n10000\t0\tpackage-lock.json"
-        ]) as git:
+        with patch.object(
+            redate,
+            "git",
+            side_effect=[
+                "abc parent",
+                "Explain the new behavior",
+                "1\t0\tconfig.toml\n10000\t0\tpackage-lock.json",
+            ],
+        ) as git:
             result = redate.score("abc")
-        self.assertEqual(result, redate.complexity([
-            ("1", "0", "config.toml"), ("10000", "0", "package-lock.json")
-        ], words=4))
+        self.assertEqual(
+            result,
+            redate.complexity(
+                [("1", "0", "config.toml"), ("10000", "0", "package-lock.json")],
+                words=4,
+            ),
+        )
         self.assertEqual(git.call_count, 3)
 
     def test_gap_labels_make_seconds_visible(self):
