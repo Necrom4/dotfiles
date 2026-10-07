@@ -38,62 +38,91 @@ local function render_obsidian_block_id(ctx)
 end
 
 return {
-	"MeanderingProgrammer/render-markdown.nvim",
-	opts = {
-		bullet = {
-			left_pad = 4,
+	{
+		"MeanderingProgrammer/render-markdown.nvim",
+		opts = {
+			bullet = {
+				left_pad = 4,
+			},
+			checkbox = {
+				enabled = true,
+				left_pad = 4,
+				right_pad = 1,
+				unchecked = {
+					icon = "󰄱",
+					highlight = "RenderMarkdownUnchecked",
+				},
+				checked = {
+					icon = "󰡖",
+					highlight = "RenderMarkdownChecked",
+				},
+				custom = {
+					todo = {
+						rendered = "󰥔",
+					},
+					important = {
+						raw = "[!]",
+						rendered = "",
+						highlight = "Error",
+					},
+					delete = {
+						raw = "[_]",
+						rendered = "",
+						highlight = "NonText",
+					},
+					pause = {
+						raw = "[=]",
+						rendered = "",
+						highlight = "String",
+					},
+					redo = {
+						raw = "[+]",
+						rendered = "",
+						highlight = "@keyword",
+					},
+					unsure = {
+						raw = "[?]",
+						rendered = "",
+						highlight = "@boolean",
+					},
+				},
+			},
+			custom_handlers = {
+				markdown_inline = {
+					extends = true,
+					parse = render_obsidian_block_id,
+				},
+			},
+			heading = {
+				icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
+			},
 		},
-		checkbox = {
-			enabled = true,
-			left_pad = 4,
-			right_pad = 1,
-			unchecked = {
-				icon = "󰄱",
-				highlight = "RenderMarkdownUnchecked",
+	},
+	{
+		"iamcco/markdown-preview.nvim",
+		enabled = false,
+	},
+	{
+		"selimacerbas/mdkite.nvim",
+		dependencies = { "selimacerbas/kitehost.nvim" },
+		ft = { "markdown", "mermaid" },
+		config = function()
+			require("mdkite").setup({
+				-- all optional; sane defaults shown
+				instance_mode = "takeover", -- "takeover" (one tab) or "multi" (tab per instance)
+				port = 0, -- 0 = auto (8421 for takeover, OS-assigned for multi)
+				open_browser = true,
+				default_theme = "dark", -- "dark" or "light"; initial preview theme
+				debounce_ms = 300,
+			})
+		end,
+		keys = {
+			{
+				"<leader>cp",
+				ft = { "markdown", "mermaid" },
+				"<cmd>MdKite toggle<cr>",
+				desc = "Markdown Preview",
 			},
-			checked = {
-				icon = "󰡖",
-				highlight = "RenderMarkdownChecked",
-			},
-			custom = {
-				todo = {
-					rendered = "󰥔",
-				},
-				important = {
-					raw = "[!]",
-					rendered = "",
-					highlight = "Error",
-				},
-				delete = {
-					raw = "[_]",
-					rendered = "",
-					highlight = "NonText",
-				},
-				pause = {
-					raw = "[=]",
-					rendered = "",
-					highlight = "String",
-				},
-				redo = {
-					raw = "[+]",
-					rendered = "",
-					highlight = "@keyword",
-				},
-				unsure = {
-					raw = "[?]",
-					rendered = "",
-					highlight = "@boolean",
-				},
-			},
-		},
-		custom_handlers = {
-			markdown_inline = {
-				extends = true,
-				parse = render_obsidian_block_id,
-			},
-		},
-		heading = {
-			icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
 		},
 	},
 }
