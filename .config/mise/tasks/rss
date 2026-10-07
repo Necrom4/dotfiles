@@ -1,42 +1,66 @@
 #!/usr/bin/env python3
 # MISE description="Read NewsBlur feeds in an fzf terminal reader"
 # MISE quiet=true
-"""An fzf-based NewsBlur reader. Run with `mise run rss`."""
+"""An fzf-based NewsBlur reader. Run with `mise run rss`.
+
+Each feed visit loads fresh stories from NewsBlur. Preview files exist only for
+that visit and are removed on exit; only authentication cookies persist.
+Read-state actions run serially in the background of a single live fzf process.
+
+NewsBlur validates API responses; StoryCollection owns paging and read state;
+FeedSession owns visit-scoped resources; StoryStream presents snapshots;
+ReadStateActions serializes mutations; LivePicker owns fzf and its updater.
+"""
 
 from __future__ import annotations
 
+import argparse
 import getpass
 import html
-from html.parser import HTMLParser
 import http.cookiejar
 import ipaddress
 import json
 import os
-from pathlib import Path
+import queue
 import re
+import shlex
+import shutil
 import socket
 import subprocess
 import sys
 import tempfile
 import textwrap
+import threading
 import urllib.error
 import urllib.parse
 import urllib.request
 import webbrowser
-import shutil
-import shlex
-import threading
-from contextlib import ExitStack
-
+from html.parser import HTMLParser
+from pathlib import Path
+from typing import NamedTuple, Self
 
 BASE = "https://www.newsblur.com"
 STATE = Path.home() / ".local" / "state" / "newsblur-fzf"
 COOKIE_FILE = STATE / "cookies.txt"
 USER_AGENT = "newsblur-fzf/1.0 (personal terminal reader)"
+MARK_BATCH_SIZE = 50
+MAX_STORY_PAGE = 400
+POLL_INTERVAL = 0.1
+STORY_KEYS = "enter,ctrl-o,alt-o,ctrl-f,alt-r,ctrl-s,ctrl-q"
+STORY_HINTS = (
+    "ctrl-o original page · alt-o browser · ctrl-r/u read/unread · "
+    "ctrl-f all/unread · alt-r feed read · ctrl-s sync"
+)
 
 
 class ReaderError(Exception):
     pass
+
+
+class MarkError(ReaderError):
+    def __init__(self, message: str, confirmed: list[str]):
+        super().__init__(message)
+        self.confirmed = confirmed
 
 
 class StoryBatch(list):
@@ -57,26 +81,59 @@ def clean(value: object) -> str:
     return re.sub(r"\s+", " ", html.unescape(str(value or ""))).strip()
 
 
+def story_count(count: int) -> str:
+    return f"{count} {'story' if count == 1 else 'stories'}"
+
+
+def wrap_header(header: str, width: int) -> str:
+    return "\n".join(
+        textwrap.fill(line, width=width, break_long_words=False, break_on_hyphens=False)
+        for line in header.splitlines()
+    )
+
+
+def atomic_write(path: Path, text: str) -> None:
+    """Publish a complete file, including when fzf interrupts a preview process."""
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        encoding="utf-8",
+        dir=path.parent,
+        prefix=path.name + ".",
+        delete=False,
+    ) as temporary:
+        pending = Path(temporary.name)
+        try:
+            temporary.write(text)
+            temporary.close()
+            pending.replace(path)
+        finally:
+            pending.unlink(missing_ok=True)
+
+
 class ArticleHTML(HTMLParser):
     """Small HTML-to-text fallback for feed bodies and locally fetched pages."""
 
-    BREAKS = {
-        "p",
-        "div",
-        "section",
-        "article",
-        "main",
-        "br",
-        "li",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "blockquote",
-        "pre",
-        "tr",
-    }
-    SKIP = {"script", "style", "svg", "nav", "footer", "header", "aside", "form"}
+    BREAKS = frozenset(
+        {
+            "p",
+            "div",
+            "section",
+            "article",
+            "main",
+            "br",
+            "li",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "blockquote",
+            "pre",
+            "tr",
+        }
+    )
+    SKIP = frozenset(
+        {"script", "style", "svg", "nav", "footer", "header", "aside", "form"}
+    )
 
     def __init__(self, article_only: bool = False):
         super().__init__(convert_charrefs=True)
@@ -84,14 +141,12 @@ class ArticleHTML(HTMLParser):
         self.skipped: list[str] = []
         self.depth = 0
         self.article_only = article_only
-        self.found_article = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if tag in self.SKIP:
             self.skipped.append(tag)
         if tag in {"article", "main"}:
             self.depth += 1
-            self.found_article = True
         if tag in self.BREAKS and not self.skipped:
             self.chunks.append("\n" if tag != "li" else "\n• ")
 
@@ -182,6 +237,8 @@ def article_document(title: str, url: str, body_html: str) -> str:
 
 
 class NewsBlur:
+    """Authenticated API access; no story content or library data persists."""
+
     def __init__(self) -> None:
         private_directory(STATE)
         self.cookies = http.cookiejar.MozillaCookieJar(str(COOKIE_FILE))
@@ -194,6 +251,30 @@ class NewsBlur:
         self.opener = urllib.request.build_opener(
             urllib.request.HTTPCookieProcessor(self.cookies)
         )
+
+    def body(self, story: dict) -> str:
+        if "story_content" in story:
+            return story["story_content"] or ""
+        response = self.request(
+            "/reader/river_stories", params={"h": story["story_hash"]}
+        )
+        matches = response.get("stories", []) if isinstance(response, dict) else []
+        if not isinstance(matches, list):
+            raise ReaderError("NewsBlur returned invalid story content")
+        match = next(
+            (
+                s
+                for s in matches
+                if isinstance(s, dict) and s.get("story_hash") == story["story_hash"]
+            ),
+            None,
+        )
+        if match is None or not isinstance(match.get("story_content"), str):
+            raise ReaderError(
+                "NewsBlur no longer returned this story's content; Ctrl-S will refresh the list"
+            )
+        body = match["story_content"]
+        return body
 
     def request(
         self,
@@ -265,19 +346,30 @@ class NewsBlur:
         return None
 
     def feeds(self) -> dict:
-        return self.request(
+        result = self.request(
             "/reader/feeds",
             params={"include_favicons": "false", "update_counts": "true"},
         )
+        if not isinstance(result, dict) or not isinstance(
+            result.get("feeds"), (dict, list)
+        ):
+            raise ReaderError("NewsBlur returned an invalid library")
+        feeds = (
+            result["feeds"].values()
+            if isinstance(result["feeds"], dict)
+            else result["feeds"]
+        )
+        if any(not isinstance(feed, dict) or "id" not in feed for feed in feeds):
+            raise ReaderError("NewsBlur returned invalid feed metadata")
+        if not isinstance(result.get("folders", []), list):
+            raise ReaderError("NewsBlur returned an invalid folder layout")
+        return result
 
     def stories(self, feed_id: str, page: int, read_filter: str) -> list[dict]:
+        params = {"page": page, "read_filter": read_filter, "include_hidden": "false"}
         response = self.request(
             f"/reader/feed/{feed_id}",
-            params={
-                "page": page,
-                "read_filter": read_filter,
-                "include_hidden": "false",
-            },
+            params=params,
         )
         if not isinstance(response, dict) or not isinstance(
             response.get("stories"), list
@@ -296,21 +388,68 @@ class NewsBlur:
             raise ReaderError("NewsBlur returned invalid paging metadata") from exc
         return StoryBatch(response["stories"], hidden)
 
-    def mark(self, hashes: list[str], unread: bool) -> None:
+    def mark(self, hashes: list[str], unread: bool) -> list[str]:
+        """Confirm every batch, carrying acknowledged IDs through partial failures."""
         endpoint = (
             "/reader/mark_story_hash_as_unread"
             if unread
             else "/reader/mark_story_hashes_as_read"
         )
-        # Batch selected stories, rather than sending a request per story.
-        for start in range(0, len(hashes), 50):
-            self.request(
-                endpoint,
-                data=[("story_hash", value) for value in hashes[start : start + 50]],
-            )
+        hashes = list(dict.fromkeys(hashes))
+        confirmed: list[str] = []
+        for start in range(0, len(hashes), MARK_BATCH_SIZE):
+            batch = hashes[start : start + MARK_BATCH_SIZE]
+            try:
+                result = self.request(
+                    endpoint, data=[("story_hash", value) for value in batch]
+                )
+            except ReaderError as exc:
+                raise MarkError(str(exc), confirmed) from exc
+            accepted, error = self.mark_acknowledgments(result, batch)
+            confirmed.extend(accepted)
+            if error:
+                raise MarkError(error, confirmed)
+        return confirmed
+
+    @staticmethod
+    def mark_acknowledgments(
+        result: object, requested: list[str]
+    ) -> tuple[list[str], str]:
+        """Normalize batch-level and per-story acknowledgments conservatively."""
+        fallback = "NewsBlur did not confirm every read-state change"
+        if isinstance(result, dict) and result.get("code") == 1:
+            return requested, ""
+        if not isinstance(result, list):
+            return [], fallback
+
+        requested_hashes = set(requested)
+        succeeded: set[str] = set()
+        failed: set[str] = set()
+        error = ""
+        for row in result:
+            if not isinstance(row, dict):
+                error = error or fallback
+                continue
+            story_hash = row.get("story_hash")
+            if not isinstance(story_hash, str) or story_hash not in requested_hashes:
+                error = error or fallback
+                continue
+            if row.get("code") == 1:
+                succeeded.add(story_hash)
+            else:
+                failed.add(story_hash)
+                error = error or str(row.get("message") or fallback)
+
+        # Contradictory responses must not turn a rejection into apparent success.
+        accepted = [key for key in requested if key in succeeded and key not in failed]
+        if len(accepted) != len(requested):
+            error = error or fallback
+        return accepted, error
 
     def mark_feed(self, feed_id: str) -> None:
-        self.request("/reader/mark_feed_as_read", data=[("feed_id", feed_id)])
+        result = self.request("/reader/mark_feed_as_read", data=[("feed_id", feed_id)])
+        if not isinstance(result, dict) or result.get("code") != 1:
+            raise ReaderError("NewsBlur did not confirm marking the feed read")
 
 
 def chooser(
@@ -320,17 +459,13 @@ def chooser(
     preview: str | None = None,
     multi: bool = False,
     keys: str = "",
-    stream=None,
+    stream: StoryStream | None = None,
     state: dict | None = None,
 ) -> tuple[str, list[str]]:
-    original_header = header
     columns = shutil.get_terminal_size().columns
     # The right-hand preview leaves 40% of the width for fzf's header/list.
     width = max(1, (int(columns * 0.4) if preview else columns) - 6)
-    header = "\n".join(
-        textwrap.fill(line, width=width, break_long_words=False, break_on_hyphens=False)
-        for line in header.splitlines()
-    )
+    header = wrap_header(header, width)
     args = [
         "fzf",
         "--delimiter=\t",
@@ -350,67 +485,20 @@ def chooser(
     # Let fzf load the user's defaults unchanged, including height and config file.
     if stream is None:
         result = subprocess.run(
-            args, input="\n".join(lines) + "\n", text=True, capture_output=True, check=False
+            args,
+            input="\n".join(lines) + "\n",
+            text=True,
+            capture_output=True,
+            check=False,
         )
     else:
-        # fzf filters incrementally while stdin remains open. Explicitly disable
-        # sync/auto-exit defaults: an empty first batch is not an empty feed.
-        args.extend([
-            "--no-sync", "--no-select-1", "--no-exit-0", "--track", "--bind",
-            f"load:transform-header:cat {shlex.quote(str(stream.status_file))}",
-        ])
-        focus_file = stream.directory / "focus"
-        if state is not None:
-            args.extend([
-                "--bind",
-                f"focus:execute-silent:printf '%s' \"$FZF_POS\" > {shlex.quote(str(focus_file))}",
-            ])
-            if state.get("position"):
-                args.extend(["--bind", f"result:pos({int(state['position'])})+unbind(result)"])
-        process = subprocess.Popen(
-            args, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE, text=True,
-        )
-        input_pipe = process.stdin
-        # The producer owns stdin. communicate() drains both output pipes without
-        # closing that descriptor or deadlocking on a full stderr pipe.
-        process.stdin = None
-        stop = threading.Event()
-
-        def write_rows():
-            try:
-                for row in stream.rows(stop, original_header, width):
-                    input_pipe.write(row + "\n")
-                    input_pipe.flush()
-            except (BrokenPipeError, OSError):
-                pass
-            finally:
-                try:
-                    input_pipe.close()
-                except OSError:
-                    pass
-
-        writer = threading.Thread(target=write_rows, daemon=True)
-        writer.start()
-        try:
-            stdout, stderr = process.communicate()
-            result = subprocess.CompletedProcess(args, process.wait(), stdout, stderr)
-        finally:
-            stop.set()
-            writer.join(timeout=1)
-            if process.poll() is None:
-                process.terminate()
-                process.wait()
-            process.stdout.close()
-            process.stderr.close()
-        if state is not None and focus_file.exists():
-            try:
-                state["position"] = int(focus_file.read_text())
-            except ValueError:
-                pass
+        live = LivePicker(stream, width)
+        result = live.run(args, keys, state)
     if result.returncode not in (0, 1, 130):
         raise ReaderError(result.stderr.strip() or "fzf failed")
-    if result.returncode != 0:
+    # With no matching rows fzf returns 1 even for an --expect action. Preserve
+    # actions such as Ctrl-Q rather than confusing them with Back.
+    if result.returncode == 130:
         return "escape", []
     output = result.stdout.splitlines()
     if state is not None and output:
@@ -420,15 +508,34 @@ def chooser(
     return output[0] or "enter", output[1:]
 
 
+class StorySnapshot(NamedTuple):
+    revision: int
+    complete: bool
+    error: str
+    stories: tuple[tuple[int, dict], ...]
+
+    @property
+    def status(self) -> str:
+        if self.error:
+            return self.error
+        return "Available history loaded" if self.complete else "Loading more…"
+
+
 class StoryCollection:
-    """One session-cached, append-only feed; only one sequential fetch at a time."""
+    """Fresh, append-only feed history with one sequential background loader.
+
+    Stable indexes identify stories throughout one visit. All shared story/read
+    state belongs here; the picker works from snapshots rather than holding this
+    lock while rendering files or sending socket requests.
+    """
 
     def __init__(self, api, feed_id: str, initial: list[dict]) -> None:
-        self.api, self.feed_id = api, feed_id
+        self.api = api
+        self.feed_id = feed_id
         self.stories: list[dict] = []
         self.hashes: set[str] = set()
         self.overrides: dict[str, int] = {}
-        self.all_read = False
+        self.all_read_revision = 0
         self.condition = threading.Condition()
         self.cancel = threading.Event()
         self.paused = threading.Event()
@@ -437,28 +544,62 @@ class StoryCollection:
         self.complete = not initial and not getattr(initial, "hidden_count", 0)
         self.next_page = 2
         self.last_batch = None
+        self.revision = 0
         self.add(initial)
 
     def add(self, batch: list[dict]) -> int:
-        added = 0
-        for story in batch:
-            key = story.get("story_hash")
-            if not key or key in self.hashes:
-                continue
-            if key in self.overrides:
-                story["read_status"] = self.overrides[key]
-            elif self.all_read:
-                story["read_status"] = 1
-            self.hashes.add(key)
-            self.stories.append(story)
-            added += 1
-        return added
+        with self.condition:
+            added = 0
+            for story in batch:
+                key = story.get("story_hash")
+                if not key or key in self.hashes:
+                    continue
+                if key in self.overrides:
+                    story["read_status"] = self.overrides[key]
+                self.hashes.add(key)
+                self.stories.append(story)
+                added += 1
+            if added:
+                self.revision += 1
+            return added
+
+    def snapshot(self, read_filter: str) -> StorySnapshot:
+        """Copy shared state under the lock; consumers do I/O after releasing it."""
+        with self.condition:
+            stories = tuple(
+                (index, dict(story))
+                for index, story in enumerate(self.stories)
+                if read_filter == "all" or story.get("read_status") == 0
+            )
+            return StorySnapshot(self.revision, self.complete, self.error, stories)
+
+    def select(self, indexes: list[int]) -> list[dict]:
+        with self.condition:
+            return [
+                self.stories[index]
+                for index in dict.fromkeys(indexes)
+                if 0 <= index < len(self.stories)
+            ]
+
+    def mark_confirmed(self, selected: list[dict], *, unread: bool) -> None:
+        """The API owns batching; even partial acknowledgments update local state."""
+        try:
+            self.api.mark([story["story_hash"] for story in selected], unread=unread)
+        except MarkError as exc:
+            confirmed = set(exc.confirmed)
+            self.mark(
+                [story for story in selected if story["story_hash"] in confirmed],
+                unread=unread,
+            )
+            raise
+        self.mark(selected, unread=unread)
 
     def start(self) -> None:
         with self.condition:
-            self.paused.clear()
-            self.condition.notify_all()
-            if self.worker is None and not self.complete:
+            if self.cancel.is_set():
+                return
+            self.resume()
+            if self.worker is None and not self.complete and not self.error:
                 self.worker = threading.Thread(target=self.load, daemon=True)
                 self.worker.start()
 
@@ -468,6 +609,7 @@ class StoryCollection:
                 with self.condition:
                     while self.paused.is_set() and not self.cancel.is_set():
                         self.condition.wait()
+                    read_revision = self.all_read_revision
                 if self.cancel.is_set():
                     return
                 batch = self.api.stories(self.feed_id, self.next_page, "all")
@@ -477,23 +619,33 @@ class StoryCollection:
                     signature = tuple(story.get("story_hash") for story in batch)
                     repeated = bool(batch) and signature == self.last_batch
                     self.last_batch = signature
+                    # Only a request already in flight when "mark feed read"
+                    # happened can have stale flags. Later requests are authoritative
+                    # and may legitimately contain a newly published unread story.
+                    if read_revision != self.all_read_revision:
+                        for story in batch:
+                            story["read_status"] = 1
                     self.add(batch)
                     self.next_page += 1
                     if not batch and not getattr(batch, "hidden_count", 0):
                         self.complete = True
                     elif repeated:
-                        self.error = "Server repeated a batch; partial history · ctrl-s retry"
-                    elif self.next_page > 400:
+                        self.error = (
+                            "Server repeated a batch; partial history · ctrl-s retry"
+                        )
+                    elif self.next_page > MAX_STORY_PAGE:
                         self.error = "NewsBlur browsing limit reached; partial history"
                     self.condition.notify_all()
+                    self.revision += 1
                     if self.complete or self.error:
                         return
                 # Avoid hammering NewsBlur while still filling small batches quickly.
-                if self.cancel.wait(0.1):
+                if self.cancel.wait(POLL_INTERVAL):
                     return
-        except ReaderError as exc:
+        except (ReaderError, OSError) as exc:
             with self.condition:
                 self.error = f"Partial history: {label(exc)} · ctrl-s retry"
+                self.revision += 1
                 self.condition.notify_all()
 
     def mark(self, selected: list[dict], *, unread: bool) -> None:
@@ -501,93 +653,416 @@ class StoryCollection:
             for story in selected:
                 self.overrides[story["story_hash"]] = 0 if unread else 1
                 story["read_status"] = 0 if unread else 1
+            if selected:
+                self.revision += 1
 
     def close(self) -> None:
+        # urllib requests cannot be interrupted. The loader may finish its current
+        # bounded request, but cancellation prevents it from publishing results.
         self.cancel.set()
         with self.condition:
             self.condition.notify_all()
 
     def mark_all_read(self) -> None:
         with self.condition:
-            self.all_read = True
+            self.all_read_revision += 1
             self.overrides.clear()
             for story in self.stories:
                 story["read_status"] = 1
+            self.revision += 1
 
     def pause(self) -> None:
-        """Keep cached batches on Back, but do not start more requests."""
+        """Pause paging while a refresh is being attempted; start() resumes it."""
         self.paused.set()
+
+    def resume(self) -> None:
+        with self.condition:
+            self.paused.clear()
+            self.condition.notify_all()
 
 
 class StoryStream:
-    def __init__(self, collection: StoryCollection, directory: Path, read_filter: str):
+    """Present one collection as stable fzf rows and temporary preview payloads."""
+
+    def __init__(
+        self,
+        collection: StoryCollection,
+        directory: Path,
+        read_filter: str,
+        title: str = "Stories",
+        hints: str = STORY_HINTS,
+    ):
         self.collection = collection
         self.directory = directory
         self.read_filter = read_filter
+        self.title = title
+        self.hints = hints
         directory.mkdir(exist_ok=True)
-        self.status_file = directory / "status"
 
-    def rows(self, stop: threading.Event, header: str, width: int = 80):
-        collection = self.collection
-        collection.start()
-        index = 0
-        while not stop.is_set() and not collection.cancel.is_set():
-            with collection.condition:
-                batch = list(enumerate(collection.stories[index:], start=index))
-                index = len(collection.stories)
-                done = collection.complete or bool(collection.error)
-                status = collection.error or (
-                    "Available history loaded" if done else "Loading more…"
-                )
-            for number, story in batch:
-                if stop.is_set():
+    def row(self, number: int, story: dict) -> str:
+        path = self.directory / str(number)
+        if not path.exists():
+            atomic_write(path, json.dumps(story))
+        status_mark = "●" if story.get("read_status") == 0 else " "
+        date = label(story.get("story_date", ""))[:10]
+        return f"{path}\t{status_mark} {story_title(story)}  {date}"
+
+    def header(self, status: str, count: int | None = None, message: str = "") -> str:
+        details = status if count is None else f"{story_count(count)} · {status}"
+        lines = [f"{self.title} · {self.read_filter} · {details}"]
+        if message:
+            lines.append(message)
+        lines.append(self.hints)
+        return "\n".join(lines)
+
+
+class FeedSession:
+    """Own one visit's history and previews; replace both only after successful sync."""
+
+    def __init__(self, api, feed_id: str, initial: list[dict], scratch: Path):
+        self.api = api
+        self.feed_id = feed_id
+        self.scratch = scratch
+        self.previews = tempfile.TemporaryDirectory(prefix="feed-", dir=scratch)
+        self.collection = StoryCollection(api, feed_id, initial)
+
+    @property
+    def directory(self) -> Path:
+        return Path(self.previews.name)
+
+    def refresh(self) -> None:
+        # Preserve usable history/previews until the request and allocation of
+        # the replacement's files have both succeeded.
+        self.collection.pause()
+        try:
+            initial = self.api.stories(self.feed_id, 1, "all")
+            previews = tempfile.TemporaryDirectory(prefix="feed-", dir=self.scratch)
+        except (ReaderError, OSError):
+            self.collection.resume()
+            raise
+        previous_collection = self.collection
+        previous_previews = self.previews
+        self.collection = StoryCollection(self.api, self.feed_id, initial)
+        self.previews = previews
+        previous_collection.close()
+        previous_previews.cleanup()
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, *exc) -> None:
+        self.collection.close()
+        self.previews.cleanup()
+
+
+class ReadStateActions:
+    """Serialize accepted mutations without blocking the picker or its updater."""
+
+    def __init__(self, collection: StoryCollection):
+        self.collection = collection
+        self.commands: queue.Queue = queue.Queue()
+        self.lock = threading.Lock()
+        self.message = ""
+        self.failed = False
+        self.worker: threading.Thread | None = None
+
+    def status(self) -> tuple[str, bool]:
+        with self.lock:
+            return self.message, self.failed
+
+    def set_status(self, message: str, *, failed: bool = False) -> None:
+        with self.lock:
+            self.message = message
+            self.failed = failed
+
+    def apply(self, key: str, indexes: list[int]) -> None:
+        selected = self.collection.select(indexes)
+        if not selected:
+            return
+        unread = key == "ctrl-u"
+        action = "unread" if unread else "read"
+        self.set_status(f"Saving {story_count(len(selected))} as {action}…")
+        try:
+            self.collection.mark_confirmed(selected, unread=unread)
+        except MarkError as exc:
+            selected_hashes = {story["story_hash"] for story in selected}
+            count = len(selected_hashes.intersection(exc.confirmed))
+            message = (
+                f"{count} confirmed; could not finish: {label(exc)}"
+                if count
+                else f"Could not save read state: {label(exc)}"
+            )
+            self.set_status(message, failed=True)
+        except (ReaderError, OSError) as exc:
+            self.set_status(f"Could not save read state: {label(exc)}", failed=True)
+        else:
+            self.set_status(f"Marked {story_count(len(selected))} {action}")
+
+    def work(self) -> None:
+        while True:
+            command = self.commands.get()
+            try:
+                if command is None:
                     return
-                if self.read_filter == "unread" and story.get("read_status") != 0:
-                    continue
-                path = self.directory / str(number)
-                # JSON is cheap; ELinks rendering happens only for the focused item.
-                if not path.exists():
-                    path.write_text(json.dumps(story))
-                status_mark = "●" if story.get("read_status") == 0 else " "
-                date = label(story.get("story_date", ""))[:10]
-                # Do not truncate the title: fzf must search even the part that
-                # does not fit on screen, including unusually long headlines.
-                yield f"{path}\t{status_mark} {story_title(story)}  {date}"
-            if done:
-                count = sum(
-                    self.read_filter == "all" or s.get("read_status") == 0
-                    for s in collection.stories
-                )
-                final = header.replace("Loading more…", f"{count} stories · {status}")
-                if "Loading more…" not in header and collection.complete:
-                    final = header.replace(
-                        "Available history loaded",
-                        f"{count} stories · Available history loaded",
+                try:
+                    self.apply(*command)
+                except Exception as exc:  # noqa: BLE001 - worker boundary reports failures
+                    # A failed action must not kill the worker and strand later
+                    # accepted commands. Keep failures visible rather than silent.
+                    self.set_status(
+                        f"Could not finish read-state change: {label(exc)}", failed=True
                     )
-                self.status_file.write_text(
-                    "\n".join(
-                        textwrap.fill(
-                            line, width=width, break_long_words=False,
-                            break_on_hyphens=False,
-                        )
-                        for line in final.splitlines()
-                    )
+            finally:
+                self.commands.task_done()
+
+    def start(self) -> None:
+        if self.worker is None:
+            self.worker = threading.Thread(target=self.work, daemon=True)
+            self.worker.start()
+
+    def close(self) -> None:
+        if self.worker is None:
+            return
+        pending = bool(self.commands.unfinished_tasks)
+        self.commands.put(None)
+        if pending:
+            print("Finishing pending read-state changes…", flush=True)
+        self.worker.join()
+        message, failed = self.status()
+        if pending and failed:
+            print(message, file=sys.stderr)
+        self.worker = None
+
+
+class LivePicker:
+    """Keep one fzf process alive; queue mutations and reload local snapshots only."""
+
+    def __init__(self, stream: StoryStream, width: int):
+        self.stream = stream
+        self.width = width
+        self.directory = Path(tempfile.mkdtemp(prefix="live-", dir=stream.directory))
+        self.socket = self.directory / "fzf.sock"
+        self.list_file = self.directory / "stories"
+        self.header_file = self.directory / "header"
+        self.stop = threading.Event()
+        self.actions = ReadStateActions(stream.collection)
+        self.signature = None
+        self.updater = None
+        self.closed = False
+        self.error = ""
+        self.refresh()
+
+    def run(
+        self, args: list[str], keys: str, state: dict | None
+    ) -> subprocess.CompletedProcess:
+        """Own fzf, its workers, and cleanup for one uninterrupted picker session."""
+        live_keys = {"ctrl-r", "ctrl-u", "ctrl-f"}
+        expected = ",".join(key for key in keys.split(",") if key not in live_keys)
+        args = [
+            *args,
+            "--no-sync",
+            "--no-select-1",
+            "--no-exit-0",
+            "--track",
+            "--id-nth=1",
+            "--no-expect",
+            "--expect",
+            expected,
+            "--listen",
+            str(self.socket),
+            "--bind",
+            f"load:transform-header:cat {shlex.quote(str(self.header_file))}",
+        ]
+        for key in sorted(live_keys):
+            args.extend(["--bind", self.binding(key)])
+        focus_file = self.stream.directory / "focus"
+        if state is not None:
+            args.extend(
+                [
+                    "--bind",
+                    f"focus:execute-silent:printf '%s' \"$FZF_POS\" > {shlex.quote(str(focus_file))}",
+                ]
+            )
+            if state.get("position"):
+                args.extend(
+                    ["--bind", f"result:pos({int(state['position'])})+unbind(result)"]
                 )
-                return
-            with collection.condition:
-                collection.condition.wait(timeout=0.2)
+
+        process = None
+        try:
+            with self.list_file.open() as source:
+                process = subprocess.Popen(
+                    args,
+                    stdin=source,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
+            self.start()
+            stdout, stderr = process.communicate()
+            result = subprocess.CompletedProcess(args, process.wait(), stdout, stderr)
+        finally:
+            try:
+                if process is not None and process.poll() is None:
+                    process.terminate()
+                    process.wait()
+                self.close()
+            finally:
+                if process is not None:
+                    process.stdout.close()
+                    process.stderr.close()
+
+        if self.error:
+            raise ReaderError(self.error)
+        if state is not None and focus_file.exists():
+            try:
+                state["position"] = int(focus_file.read_text())
+            except ValueError:
+                pass
+        return result
+
+    def binding(self, key: str) -> str:
+        # The shell does only an atomic queue write, never a network request.
+        # {+1} is safely quoted by fzf and includes selected rows or the focus.
+        # Row placeholders prevent execution on an empty list. Filtering must
+        # remain available there, so its command deliberately has none.
+        template = shlex.quote(str(self.directory / "action.XXXXXX"))
+        values = shlex.quote(key)
+        if key != "ctrl-f":
+            values += " {+1}"
+        return (
+            f"{key}:execute-silent:event=$(mktemp {template}) && "
+            f"printf '%s\\n' {values} > \"$event\" && "
+            'mv "$event" "$event.ready"'
+        )
+
+    def gather(self) -> None:
+        for path in sorted(
+            self.directory.glob("action.*.ready"), key=lambda p: p.stat().st_mtime_ns
+        ):
+            lines = path.read_text().splitlines()
+            path.unlink()
+            if not lines:
+                continue
+            if lines[0] == "ctrl-f":
+                self.stream.read_filter = (
+                    "unread" if self.stream.read_filter == "all" else "all"
+                )
+                continue
+            if lines[0] not in ("ctrl-r", "ctrl-u"):
+                continue
+            indexes = []
+            for value in lines[1:]:
+                story_path = Path(value)
+                if (
+                    story_path.parent == self.stream.directory
+                    and story_path.name.isdigit()
+                ):
+                    indexes.append(int(story_path.name))
+            if indexes:
+                self.actions.commands.put((lines[0], indexes))
+
+    def refresh(self) -> bool:
+        collection = self.stream.collection
+        message, _ = self.actions.status()
+        with collection.condition:
+            signature = (
+                collection.revision,
+                collection.complete,
+                collection.error,
+                self.stream.read_filter,
+                message,
+            )
+            if signature == self.signature:
+                return False
+            snapshot = collection.snapshot(self.stream.read_filter)
+        rows = [self.stream.row(index, story) for index, story in snapshot.stories]
+        header = self.stream.header(snapshot.status, count=len(rows), message=message)
+        atomic_write(self.list_file, "\n".join(rows) + ("\n" if rows else ""))
+        atomic_write(self.header_file, wrap_header(header, self.width))
+        self.signature = signature
+        return True
+
+    def notify(self, action: str | None = None) -> bool:
+        # Private Unix socket; no listening TCP port, daemon or clipboard access.
+        if action is None:
+            action = (
+                f"reload-sync(cat {shlex.quote(str(self.list_file))})+"
+                f"transform-header(cat {shlex.quote(str(self.header_file))})"
+            )
+        payload = action.encode()
+        key = os.environ.get("FZF_API_KEY", "")
+        auth = (
+            f"x-api-key: {key}\r\n"
+            if key and "\n" not in key and "\r" not in key
+            else ""
+        )
+        request = (
+            f"POST / HTTP/1.1\r\nHost: localhost\r\n{auth}"
+            f"Content-Length: {len(payload)}\r\nConnection: close\r\n\r\n"
+        ).encode() + payload
+        try:
+            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
+                sock.settimeout(0.5)
+                sock.connect(str(self.socket))
+                sock.sendall(request)
+                return b" 200 " in sock.recv(4096).split(b"\r\n", 1)[0]
+        except OSError:
+            return False
+
+    def update(self) -> None:
+        try:
+            pending = True
+            while not self.stop.is_set():
+                self.gather()
+                pending = self.refresh() or pending
+                if pending and self.notify():
+                    pending = False
+                self.stop.wait(POLL_INTERVAL)
+        except Exception as exc:  # noqa: BLE001 - worker boundary aborts the stale UI
+            # A dead updater would leave an apparently healthy but stale UI.
+            # Abort fzf and report the failure in the foreground after cleanup.
+            self.error = f"Could not update the story picker: {label(exc)}"
+            while not self.stop.is_set():
+                if self.notify("abort"):
+                    return
+                self.stop.wait(POLL_INTERVAL)
+
+    def start(self) -> None:
+        self.stream.collection.start()
+        self.actions.start()
+        self.updater = threading.Thread(target=self.update, daemon=True)
+        self.updater.start()
+
+    def close(self) -> None:
+        if self.closed:
+            return
+        self.closed = True
+        self.stop.set()
+        if self.updater:
+            self.updater.join()
+        # Explicit exit must not silently discard accepted read-state changes.
+        try:
+            self.gather()
+        except (OSError, ValueError) as exc:
+            self.error = (
+                self.error or f"Could not collect pending actions: {label(exc)}"
+            )
+        finally:
+            try:
+                self.actions.close()
+            finally:
+                shutil.rmtree(self.directory)
 
 
 def lazy_preview(path: Path) -> str:
-    """Preview subprocess entry point; cache rendered output for revisits."""
+    """Render on demand and reuse output only within this feed visit."""
     rendered = path.with_suffix(".preview")
     if rendered.exists():
         return rendered.read_text()
     story = json.loads(path.read_text())
     text = feed_preview(story, path.with_suffix(".html"))
-    temporary = rendered.with_suffix(".tmp")
-    temporary.write_text(text)
-    temporary.replace(rendered)
+    atomic_write(rendered, text)
     return text
 
 
@@ -789,15 +1264,91 @@ def page_text(url: str) -> str:
     return f"<pre>{html.escape(text)}</pre>"
 
 
+def open_story(api, story: dict, key: str) -> None:
+    """Display content; the caller confirms and records the subsequent read action."""
+    url = story.get("story_permalink", "")
+    if key == "alt-o":
+        if not url or not webbrowser.open(url):
+            raise ReaderError("Could not open the story in a browser")
+    else:
+        if key == "ctrl-o":
+            print("Fetching the story page...", flush=True)
+            body = page_text(url)
+        else:
+            body = (
+                story.get("story_content")
+                if "story_content" in story
+                else api.body(story)
+            )
+        article_viewer(story_title(story), url, body or "<p>(No RSS body supplied)</p>")
+
+
+def browse_feed(api, feed: dict, scratch: Path) -> str:
+    """Browse fresh feed history; all preview files belong to this visit."""
+    feed_id = str(feed["id"])
+    title = label(feed.get("feed_title") or feed.get("title"))
+    try:
+        print(f"Loading {title}...", flush=True)
+        initial = api.stories(feed_id, 1, "all")
+    except ReaderError as exc:
+        show_message(f"Could not load {title}: {exc}. Try this feed again later.")
+        return "load-error"
+    with FeedSession(api, feed_id, initial, scratch) as session:
+        read_filter = "all"
+        state: dict = {}
+        preview = (
+            shlex.join([sys.executable, str(Path(__file__).resolve()), "--preview"])
+            + " {1}"
+        )
+        while True:
+            collection = session.collection
+            stream = StoryStream(
+                collection, session.directory, read_filter, title=title
+            )
+            status = collection.snapshot(read_filter).status
+            key, picked = chooser(
+                [],
+                header=stream.header(status),
+                preview=preview,
+                multi=True,
+                keys=STORY_KEYS,
+                stream=stream,
+                state=state,
+            )
+            read_filter = stream.read_filter
+            if key in ("escape", "ctrl-q"):
+                return key
+            try:
+                if key == "ctrl-s":
+                    session.refresh()
+                elif key == "ctrl-f":
+                    read_filter = "all" if read_filter == "unread" else "unread"
+                elif key == "alt-r":
+                    if (
+                        input(
+                            f"Mark ALL unread stories in {title} read? [y/N] "
+                        ).casefold()
+                        == "y"
+                    ):
+                        api.mark_feed(feed_id)
+                        collection.mark_all_read()
+                elif picked and key in ("enter", "ctrl-o", "alt-o"):
+                    indexes = [int(Path(picked[0].split("\t", 1)[0]).name)]
+                    selected = collection.select(indexes)
+                    if not selected:
+                        continue
+                    story = selected[0]
+                    open_story(api, story, key)
+                    collection.mark_confirmed([story], unread=False)
+            except (ReaderError, OSError) as exc:
+                show_message(f"{exc}. Your current stories are still available.")
+
+
 def run() -> None:
     api = NewsBlur()
     feeds_data = api.login() or api.feeds()
-    with (
-        tempfile.TemporaryDirectory(prefix="newsblur-fzf-") as scratch,
-        ExitStack() as cleanup,
-    ):
-        previews = Path(scratch)
-        story_cache: dict[str, StoryCollection] = {}
+    with tempfile.TemporaryDirectory(prefix="newsblur-fzf-") as scratch:
+        scratch = Path(scratch)
         selected_folder: str | None = None
         while True:
             folder_rows = rows_for_folders(feeds_data)
@@ -810,20 +1361,13 @@ def run() -> None:
             options = []
             if selected_folder is None:
                 for index, (folder, feeds) in enumerate(folder_rows):
-                    preview_file = previews / str(index)
-                    preview_file.write_text(
-                        "\n".join(
-                            [
-                                label(folder or "Top Level"),
-                                "",
-                                *(feed_label(feed) for feed in feeds),
-                            ]
-                        )
-                        + "\n"
+                    path = scratch / str(index)
+                    name = label(folder or "Top Level")
+                    path.write_text(
+                        name + "\n\n" + "\n".join(feed_label(f) for f in feeds) + "\n"
                     )
-                    count = sum(unread_count(feed) for feed in feeds)
                     options.append(
-                        f"{preview_file}\t{label(folder or 'Top Level')}  ({count} unread)"
+                        f"{path}\t{name}  ({sum(unread_count(f) for f in feeds)} unread)"
                     )
                 header = "NewsBlur · folders\nctrl-s sync"
                 preview = "cat {1}"
@@ -837,176 +1381,48 @@ def run() -> None:
             key, selected = chooser(
                 options, header=header, preview=preview, keys="enter,ctrl-s,ctrl-q"
             )
-            if key == "ctrl-q":
+            if key == "ctrl-q" or (key == "escape" and selected_folder is None):
                 return
             if key == "escape":
-                if selected_folder is None:
-                    return
                 selected_folder = None
-                continue
-            if key == "ctrl-s":
+            elif key == "ctrl-s":
                 try:
                     feeds_data = api.feeds()
-                    for collection in story_cache.values():
-                        collection.close()
-                    story_cache.clear()
                 except ReaderError as exc:
                     show_message(
                         f"Could not sync feeds: {exc}. Your current list is still available."
                     )
-                continue
-            if not selected:
-                continue
-            index = int(Path(selected[0].split("\t", 1)[0]).name)
-            if selected_folder is None:
-                selected_folder = folder_rows[index][0]
-                continue
-            feed = feeds[index]
-            feed_id = str(feed["id"])
-            read_filter = "all"
-            picker_state: dict = {}
-            changed = False
-            collection = None
-            while True:
-                cache_key = feed_id
-                if cache_key not in story_cache:
-                    try:
-                        print(f"Loading {label(feed.get('feed_title'))}...", flush=True)
-                        initial = api.stories(feed_id, 1, "all")
-                        story_cache[cache_key] = StoryCollection(api, feed_id, initial)
-                        cleanup.callback(story_cache[cache_key].close)
-                        directory = previews / f"feed-{feed_id}"
-                        if directory.exists():
-                            shutil.rmtree(directory)
-                    except ReaderError as exc:
-                        show_message(
-                            f"Could not load {label(feed.get('feed_title'))}: {exc}. Try this feed again later."
-                        )
-                        break
-                collection = story_cache[cache_key]
-                stories = collection.stories
-                directory = previews / f"feed-{feed_id}"
-                stream = StoryStream(collection, directory, read_filter)
-                status = collection.error or (
-                    "Available history loaded" if collection.complete else "Loading more…"
-                )
-                header = (
-                    f"{label(feed.get('feed_title') or feed.get('title'))} · {read_filter} · {status}\n"
-                    "ctrl-o original page · alt-o browser · ctrl-r/u read/unread · "
-                    "ctrl-f all/unread · alt-r feed read · ctrl-s sync"
-                )
-                key, picked = chooser(
-                    [],
-                    header=header,
-                    preview=f"{shlex.quote(sys.executable)} {shlex.quote(str(Path(__file__).resolve()))} --preview {{1}}",
-                    multi=True,
-                    keys="enter,ctrl-o,alt-o,ctrl-r,ctrl-u,ctrl-f,alt-r,ctrl-s,ctrl-q",
-                    stream=stream,
-                    state=picker_state,
-                )
-                if key == "ctrl-q":
-                    for cached in story_cache.values():
-                        cached.close()
+            elif selected:
+                index = int(Path(selected[0].split("\t", 1)[0]).name)
+                if selected_folder is None:
+                    selected_folder = folder_rows[index][0]
+                    continue
+                result = browse_feed(api, feeds[index], scratch)
+                if result == "ctrl-q":
                     return
-                if key == "escape":
-                    collection.pause()
-                    break
-                if key == "ctrl-s":
-                    collection.pause()
+                if result == "escape":
                     try:
-                        initial = api.stories(feed_id, 1, "all")
+                        feeds_data = api.feeds()
                     except ReaderError as exc:
                         show_message(
-                            f"Could not sync: {exc}. Your current stories are still available."
+                            f"Could not update feed counts: {exc}. Ctrl-S will retry."
                         )
-                        continue
-                    collection.close()
-                    story_cache[feed_id] = StoryCollection(api, feed_id, initial)
-                    cleanup.callback(story_cache[feed_id].close)
-                    shutil.rmtree(directory)
-                    continue
-                if key == "ctrl-f":
-                    read_filter = "all" if read_filter == "unread" else "unread"
-                    continue
-                if key == "alt-r":
-                    answer = input(
-                        f"Mark ALL unread stories in {feed.get('feed_title')} read? [y/N] "
-                    )
-                    if answer.casefold() == "y":
-                        try:
-                            api.mark_feed(feed_id)
-                        except ReaderError as exc:
-                            show_message(str(exc))
-                            continue
-                        changed = True
-                        # Also override flags in batches already in flight. No need
-                        # to discard history and download it again after marking.
-                        collection.mark_all_read()
-                    continue
-                if not picked:
-                    continue
-                indexes = [int(Path(row.split("\t", 1)[0]).name) for row in picked]
-                selected_stories = [stories[index] for index in indexes]
-                if key in ("ctrl-r", "ctrl-u"):
-                    try:
-                        api.mark(
-                            [s["story_hash"] for s in selected_stories],
-                            unread=key == "ctrl-u",
-                        )
-                        changed = True
-                        collection.mark(selected_stories, unread=key == "ctrl-u")
-                    except ReaderError as exc:
-                        show_message(str(exc))
-                    continue
-                story = selected_stories[0]
-                try:
-                    if key == "enter":
-                        body = (
-                            story.get("story_content")
-                            or "<p>(No RSS body supplied)</p>"
-                        )
-                        article_viewer(
-                            story_title(story), story.get("story_permalink", ""), body
-                        )
-                        api.mark([story["story_hash"]], unread=False)
-                        changed = True
-                        collection.mark([story], unread=False)
-                    elif key == "ctrl-o":
-                        print("Fetching the story page...", flush=True)
-                        article = page_text(story.get("story_permalink", ""))
-                        article_viewer(
-                            story_title(story),
-                            story.get("story_permalink", ""),
-                            article,
-                        )
-                        api.mark([story["story_hash"]], unread=False)
-                        changed = True
-                        collection.mark([story], unread=False)
-                    elif key == "alt-o":
-                        url = story.get("story_permalink", "")
-                        if not url or not webbrowser.open(url):
-                            raise ReaderError("Could not open the story in a browser")
-                        api.mark([story["story_hash"]], unread=False)
-                        changed = True
-                        collection.mark([story], unread=False)
-                except ReaderError as exc:
-                    show_message(str(exc))
-            # Loading a feed can expose stale server counts even without marking stories.
-            if changed or collection is not None:
-                try:
-                    feeds_data = api.feeds()
-                except ReaderError as exc:
-                    show_message(
-                        f"Could not update feed counts: {exc}. Ctrl-S will retry."
-                    )
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--preview", type=Path, help=argparse.SUPPRESS)
+    args = parser.parse_args(argv)
+    try:
+        if args.preview is not None:
+            print(lazy_preview(args.preview))
+        else:
+            run()
+    except (ReaderError, OSError, KeyboardInterrupt, EOFError) as exc:
+        print(f"\n{exc or 'Cancelled'}", file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    try:
-        if len(sys.argv) == 3 and sys.argv[1] == "--preview":
-            print(lazy_preview(Path(sys.argv[2])))
-        else:
-            run()
-    except (ReaderError, KeyboardInterrupt, EOFError) as exc:
-        print(f"\n{exc or 'Cancelled'}", file=sys.stderr)
-        sys.exit(1)
+    sys.exit(main())

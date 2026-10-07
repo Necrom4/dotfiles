@@ -1,14 +1,13 @@
-"""Offline checks for the NewsBlur fzf reader; no account is needed."""
+"""Account-free regression checks for the NewsBlur fzf reader."""
 
 import importlib.util
-from importlib.machinery import SourceFileLoader
 import io
-from pathlib import Path
 import tempfile
 import threading
 import unittest
+from importlib.machinery import SourceFileLoader
+from pathlib import Path
 from unittest.mock import Mock, patch
-
 
 task_path = Path(__file__).parents[1] / "tasks" / "rss"
 spec = importlib.util.spec_from_loader(
@@ -128,15 +127,20 @@ class ReaderTests(unittest.TestCase):
         api = Mock()
         api.stories.side_effect = [
             [{"story_hash": "4:new"}, {"story_hash": "4:older", "read_status": 0}],
-            [{"story_hash": "4:oldest", "read_status": 0}], [],
+            [{"story_hash": "4:oldest", "read_status": 0}],
+            [],
         ]
         collection = reader.StoryCollection(api, "4", [{"story_hash": "4:new"}])
         collection.load()
-        self.assertEqual([s["story_hash"] for s in collection.stories],
-                         ["4:new", "4:older", "4:oldest"])
+        self.assertEqual(
+            [s["story_hash"] for s in collection.stories],
+            ["4:new", "4:older", "4:oldest"],
+        )
         self.assertTrue(collection.complete)
-        self.assertEqual([call.args for call in api.stories.call_args_list],
-                         [("4", 2, "all"), ("4", 3, "all"), ("4", 4, "all")])
+        self.assertEqual(
+            [call.args for call in api.stories.call_args_list],
+            [("4", 2, "all"), ("4", 3, "all"), ("4", 4, "all")],
+        )
 
     def test_empty_initial_batch_does_not_fetch_more(self):
         api = Mock()
@@ -147,10 +151,14 @@ class ReaderTests(unittest.TestCase):
 
     def test_hidden_only_batches_do_not_end_visible_history(self):
         api = Mock()
-        api.stories.side_effect = [reader.StoryBatch([], hidden_count=5),
-                                  reader.StoryBatch([{"story_hash": "4:older"}]),
-                                  reader.StoryBatch([])]
-        collection = reader.StoryCollection(api, "4", reader.StoryBatch([], hidden_count=6))
+        api.stories.side_effect = [
+            reader.StoryBatch([], hidden_count=5),
+            reader.StoryBatch([{"story_hash": "4:older"}]),
+            reader.StoryBatch([]),
+        ]
+        collection = reader.StoryCollection(
+            api, "4", reader.StoryBatch([], hidden_count=6)
+        )
         self.assertFalse(collection.complete)
         collection.load()
         self.assertTrue(collection.complete)
@@ -166,18 +174,24 @@ class ReaderTests(unittest.TestCase):
             return []
 
         api.stories.side_effect = fetch
-        collection = reader.StoryCollection(api, "4", [{"story_hash": "4:a", "story_title": "Now"}])
+        collection = reader.StoryCollection(
+            api, "4", [{"story_hash": "4:a", "story_title": "Now"}]
+        )
         with tempfile.TemporaryDirectory() as directory:
             stream = reader.StoryStream(collection, Path(directory), "all")
-            rows = stream.rows(threading.Event(), "Blog · Loading more…")
+            live = reader.LivePicker(stream, 80)
             with patch.object(reader, "feed_preview") as render:
-                first = next(rows)
-                self.assertIn("Now", first)
+                self.assertIn("Now", live.list_file.read_text())
+                collection.start()
                 self.assertTrue(requested.wait(1))
                 render.assert_not_called()
                 release.set()
-                self.assertEqual(list(rows), [])
-            self.assertIn("1 stories · Available history loaded", stream.status_file.read_text())
+                collection.worker.join(1)
+                live.refresh()
+            self.assertIn(
+                "1 story · Available history loaded", live.header_file.read_text()
+            )
+            live.close()
         collection.close()
         collection.worker.join(1)
 
@@ -192,8 +206,10 @@ class ReaderTests(unittest.TestCase):
             # No second loader: this collection already attempted its load.
             collection.worker = Mock()
             stream = reader.StoryStream(collection, Path(directory), "all")
-            self.assertEqual(len(list(stream.rows(threading.Event(), "Loading more…"))), 1)
-            self.assertIn("Partial history", stream.status_file.read_text())
+            live = reader.LivePicker(stream, 80)
+            self.assertEqual(len(live.list_file.read_text().splitlines()), 1)
+            self.assertIn("Partial history", live.header_file.read_text())
+            live.close()
 
     def test_repeating_server_batches_stop_instead_of_looping(self):
         api = Mock()
@@ -227,41 +243,54 @@ class ReaderTests(unittest.TestCase):
 
     def test_unread_filter_keeps_stable_ids_and_does_not_refetch(self):
         api = Mock()
-        stories = [{"story_hash": "4:a", "read_status": 1},
-                   {"story_hash": "4:b", "read_status": 0}]
+        stories = [
+            {"story_hash": "4:a", "read_status": 1},
+            {"story_hash": "4:b", "read_status": 0},
+        ]
         collection = reader.StoryCollection(api, "4", stories)
         collection.complete = True
         with tempfile.TemporaryDirectory() as directory:
             stream = reader.StoryStream(collection, Path(directory), "unread")
-            rows = list(stream.rows(threading.Event(), "Loading more…"))
+            live = reader.LivePicker(stream, 80)
+            rows = live.list_file.read_text().splitlines()
             self.assertEqual(len(rows), 1)
             self.assertEqual(Path(rows[0].split("\t")[0]).name, "1")
             collection.mark([stories[1]], unread=False)
-            self.assertEqual(list(stream.rows(threading.Event(), "Loading more…")), [])
+            live.refresh()
+            self.assertEqual(live.list_file.read_text(), "")
+            live.close()
         api.stories.assert_not_called()
 
     def test_lazy_preview_is_rendered_once_and_cached(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "0"
             path.write_text('{"story_hash": "4:a", "story_title": "Post"}')
-            with patch.object(reader, "feed_preview", return_value="Rendered") as render:
+            with patch.object(
+                reader, "feed_preview", return_value="Rendered"
+            ) as render:
                 self.assertEqual(reader.lazy_preview(path), "Rendered")
                 self.assertEqual(reader.lazy_preview(path), "Rendered")
                 render.assert_called_once()
 
     def test_chooser_preserves_query_without_changing_action_output(self):
         state = {"query": "old"}
-        with patch.object(reader.subprocess, "run", return_value=Mock(
-            returncode=0, stdout="new query\nctrl-r\n0\tPost\n", stderr=""
-        )) as run:
-            self.assertEqual(reader.chooser(["0\tPost"], header="Pick", state=state),
-                             ("ctrl-r", ["0\tPost"]))
+        with patch.object(
+            reader.subprocess,
+            "run",
+            return_value=Mock(
+                returncode=0, stdout="new query\nctrl-r\n0\tPost\n", stderr=""
+            ),
+        ) as run:
+            self.assertEqual(
+                reader.chooser(["0\tPost"], header="Pick", state=state),
+                ("ctrl-r", ["0\tPost"]),
+            )
         self.assertEqual(state["query"], "new query")
         self.assertIn("--print-query", run.call_args.args[0])
 
     def test_mark_whole_feed_updates_incoming_batches_without_refetching(self):
         api = Mock()
-        api.stories.side_effect = [[{"story_hash": "4:b", "read_status": 0}], []]
+        api.stories.side_effect = [[{"story_hash": "4:b", "read_status": 1}], []]
         first = {"story_hash": "4:a", "read_status": 0}
         collection = reader.StoryCollection(api, "4", [first])
         collection.mark_all_read()
@@ -269,7 +298,7 @@ class ReaderTests(unittest.TestCase):
         collection.load()
         self.assertEqual([s["read_status"] for s in collection.stories], [0, 1])
 
-    def test_back_pauses_downloads_and_return_resumes_same_worker(self):
+    def test_pause_and_resume_keep_the_same_paging_worker(self):
         first_request, release, second_request = (threading.Event() for _ in range(3))
         api = Mock()
 
@@ -306,18 +335,32 @@ class ReaderTests(unittest.TestCase):
         collection.complete = True
         with tempfile.TemporaryDirectory() as directory:
             stream = reader.StoryStream(collection, Path(directory), "all")
-            list(stream.rows(threading.Event(), "Blog · all · Loading more…\nctrl-s sync", width=30))
-            status = stream.status_file.read_text()
+            live = reader.LivePicker(stream, 30)
+            status = live.header_file.read_text()
             self.assertTrue(all(len(line) <= 30 for line in status.splitlines()))
             self.assertIn("Available history loaded", " ".join(status.split()))
+            live.close()
 
     def test_failed_story_sync_preserves_current_collection(self):
         api = Mock()
         api.login.return_value = None
-        api.feeds.return_value = {"feeds": {"4": {"id": 4, "feed_title": "Blog"}}, "folders": [4]}
-        api.stories.side_effect = [[{"story_hash": "4:a"}], reader.ReaderError("offline")]
-        choices = iter([("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]),
-                        ("ctrl-s", []), ("escape", []), ("ctrl-q", [])])
+        api.feeds.return_value = {
+            "feeds": {"4": {"id": 4, "feed_title": "Blog"}},
+            "folders": [4],
+        }
+        api.stories.side_effect = [
+            [{"story_hash": "4:a"}],
+            reader.ReaderError("offline"),
+        ]
+        choices = iter(
+            [
+                ("enter", ["0\tTop Level"]),
+                ("enter", ["0\tBlog"]),
+                ("ctrl-s", []),
+                ("escape", []),
+                ("ctrl-q", []),
+            ]
+        )
         collections = []
 
         def choose(*args, **kwargs):
@@ -325,9 +368,11 @@ class ReaderTests(unittest.TestCase):
                 collections.append(kwargs["stream"].collection)
             return next(choices)
 
-        with patch.object(reader, "NewsBlur", return_value=api), \
-             patch.object(reader, "chooser", side_effect=choose), \
-             patch.object(reader, "show_message") as message:
+        with (
+            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "chooser", side_effect=choose),
+            patch.object(reader, "show_message") as message,
+        ):
             reader.run()
         self.assertIs(collections[0], collections[1])
         self.assertEqual(len(collections[1].stories), 1)
@@ -338,8 +383,11 @@ class ReaderTests(unittest.TestCase):
         api = object.__new__(reader.NewsBlur)
         api.request = Mock(return_value={"stories": [], "hidden_stories_count": 6})
         self.assertEqual(api.stories("4", 1, "all").hidden_count, 6)
-        for response in ({"stories": None}, {"stories": [{}]},
-                         {"stories": [], "hidden_stories_count": "invalid"}):
+        for response in (
+            {"stories": None},
+            {"stories": [{}]},
+            {"stories": [], "hidden_stories_count": "invalid"},
+        ):
             api.request.return_value = response
             with self.assertRaises(reader.ReaderError):
                 api.stories("4", 1, "all")
@@ -395,26 +443,28 @@ class ReaderTests(unittest.TestCase):
             config.write_text(
                 '--bind "tab:down,ctrl-space:toggle"\n--color=dark\n--height="30%"\n--style full\n'
             )
-            with patch.dict(
-                reader.os.environ,
-                {
-                    "FZF_DEFAULT_OPTS": "--ignore-case --height 40%",
-                    "FZF_DEFAULT_OPTS_FILE": str(config),
-                },
-            ):
-                with patch.object(
+            with (
+                patch.dict(
+                    reader.os.environ,
+                    {
+                        "FZF_DEFAULT_OPTS": "--ignore-case --height 40%",
+                        "FZF_DEFAULT_OPTS_FILE": str(config),
+                    },
+                ),
+                patch.object(
                     reader.subprocess,
                     "run",
                     return_value=Mock(returncode=1, stdout="", stderr=""),
-                ) as run:
-                    reader.chooser(["0\tFirst"], header="Pick")
-                    self.assertEqual(
-                        reader.os.environ["FZF_DEFAULT_OPTS"],
-                        "--ignore-case --height 40%",
-                    )
-                    self.assertEqual(
-                        reader.os.environ["FZF_DEFAULT_OPTS_FILE"], str(config)
-                    )
+                ) as run,
+            ):
+                reader.chooser(["0\tFirst"], header="Pick")
+                self.assertEqual(
+                    reader.os.environ["FZF_DEFAULT_OPTS"],
+                    "--ignore-case --height 40%",
+                )
+                self.assertEqual(
+                    reader.os.environ["FZF_DEFAULT_OPTS_FILE"], str(config)
+                )
         self.assertNotIn("env", run.call_args.kwargs)
         self.assertFalse(
             any(arg.startswith("--height") for arg in run.call_args.args[0])
@@ -644,7 +694,14 @@ class ReaderTests(unittest.TestCase):
 
         def choose(*args, **kwargs):
             headers.append(kwargs["header"])
-            return next(choices)
+            key, picked = next(choices)
+            if key == "ctrl-r":
+                # Real fzf dispatches this in place; it no longer returns ctrl-r.
+                live = reader.LivePicker(kwargs["stream"], 80)
+                live.actions.apply(key, [0])
+                live.close()
+                return choose(*args, **kwargs)
+            return key, picked
 
         with (
             patch.object(reader, "NewsBlur", return_value=api),
@@ -706,8 +763,12 @@ class ReaderTests(unittest.TestCase):
         ):
             reader.run()
         api.stories.assert_called_once_with("4", 1, "all")
-        self.assertEqual(headers[3].splitlines()[0], "Blog · unread · Available history loaded")
-        self.assertEqual(headers[4].splitlines()[0], "Blog · all · Available history loaded")
+        self.assertEqual(
+            headers[3].splitlines()[0], "Blog · unread · Available history loaded"
+        )
+        self.assertEqual(
+            headers[4].splitlines()[0], "Blog · all · Available history loaded"
+        )
         api.mark_feed.assert_not_called()
 
     def test_alt_r_marks_whole_feed_only_after_confirmation(self):
@@ -733,7 +794,9 @@ class ReaderTests(unittest.TestCase):
                     patch.object(
                         reader,
                         "chooser",
-                        side_effect=lambda *args, **kwargs: next(choices),
+                        side_effect=lambda *args, choices=choices, **kwargs: next(
+                            choices
+                        ),
                     ),
                     patch("builtins.input", return_value=answer),
                 ):
@@ -813,9 +876,7 @@ class ReaderTests(unittest.TestCase):
             "feeds": {"4": {"id": 4, "feed_title": "Blog"}},
             "folders": [4],
         }
-        api.stories.return_value = [
-            {"story_hash": "4:a", "story_title": "Post"}
-        ]
+        api.stories.return_value = [{"story_hash": "4:a", "story_title": "Post"}]
         choices = iter(
             [("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]), ("ctrl-q", [])]
         )
@@ -834,9 +895,7 @@ class ReaderTests(unittest.TestCase):
             "feeds": {"4": {"id": 4, "feed_title": "Slow site", "nt": 2}},
             "folders": [4],
         }
-        api.stories.side_effect = reader.ReaderError(
-            "Network error: timed out"
-        )
+        api.stories.side_effect = reader.ReaderError("Network error: timed out")
         choices = iter(
             [("enter", ["0\tTop Level"]), ("enter", ["0\tSlow site"]), ("ctrl-q", [])]
         )
