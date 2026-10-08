@@ -1,14 +1,13 @@
 """Offline checks for complexity-based commit spacing; never rewrite history."""
 
 import importlib.util
-from importlib.machinery import SourceFileLoader
-from pathlib import Path
 import random
 import unittest
+from importlib.machinery import SourceFileLoader
+from pathlib import Path
 from unittest.mock import patch
 
-
-task_path = Path(__file__).parents[1] / "tasks/git/redate"
+task_path = Path(__file__).parents[2] / "tasks/git/redate"
 spec = importlib.util.spec_from_loader(
     "redate", SourceFileLoader("redate", str(task_path))
 )

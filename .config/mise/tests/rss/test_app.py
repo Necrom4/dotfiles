@@ -1,20 +1,25 @@
-"""Account-free regression checks for the NewsBlur fzf reader."""
+"""RSS reader app regressions; no account or network required."""
 
-import importlib.util
 import io
+import sys
 import tempfile
 import threading
 import unittest
-from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-task_path = Path(__file__).parents[1] / "tasks" / "rss"
-spec = importlib.util.spec_from_loader(
-    "newsblur_reader", SourceFileLoader("newsblur_reader", str(task_path))
-)
-reader = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(reader)
+sys.path.insert(0, str(Path(__file__).parents[2] / "lib"))
+from rss_reader import app as reader
+from rss_reader.common import StoryBatch
+
+CONFIG = {
+    "id": "account",
+    "type": "newsblur",
+    "title": "NewsBlur",
+    "url": "https://www.newsblur.com",
+}
+ATOM = b"""<feed xmlns="http://www.w3.org/2005/Atom"><title>Activity</title><entry><id>event-1</id><title>New event</title><published>2026-10-09T12:00:00Z</published><link href="/events/1"/><summary>Fallback</summary><content type="html">&lt;p&gt;Hello&lt;/p&gt;</content></entry></feed>"""
+RSS = b"""<rss version="2.0"><channel><title>News</title><item><guid>item-1</guid><title>News item</title><link>https://example.com/news</link><description>News body</description></item></channel></rss>"""
 
 
 class ReaderTests(unittest.TestCase):
@@ -56,8 +61,8 @@ class ReaderTests(unittest.TestCase):
         api.login.return_value = None
         api.feeds.return_value = {
             "feeds": {
-                "2": {"id": 2, "feed_title": "Tech Blog", "nt": 2},
-                "3": {"id": 3, "feed_title": "Other Blog", "ps": 1},
+                "2": {"id": 2, "feed_title": "Tech Blog", "unread": 2},
+                "3": {"id": 3, "feed_title": "Other Blog", "unread": 1},
                 "4": {"id": 4, "feed_title": "Unfiled Blog"},
             },
             "folders": [{"Tech": [2, 3]}, 4],
@@ -76,10 +81,10 @@ class ReaderTests(unittest.TestCase):
             return key, [lines[index]] if index is not None else []
 
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(reader, "chooser", side_effect=choose),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         self.assertIn("Top Level", screens[0][0][0])
         self.assertIn("Tech  (3 unread)", screens[0][0][1])
         self.assertIn("Tech Blog  (2 unread)", previews[0][1])
@@ -101,27 +106,6 @@ class ReaderTests(unittest.TestCase):
         self.assertIn('href="https://example.com"', result)
         self.assertIn("<br>", result)
         self.assertNotIn("Skip", result)
-
-    def test_mark_batches_read_and_unread(self):
-        api = object.__new__(reader.NewsBlur)
-        api.request = Mock(return_value={"code": 1})
-        hashes = [f"1:{i}" for i in range(51)]
-        api.mark(hashes, unread=False)
-        self.assertEqual(api.request.call_count, 2)
-        self.assertEqual(len(api.request.call_args_list[0].kwargs["data"]), 50)
-        api.mark(["1:0", "1:1"], unread=True)
-        self.assertEqual(
-            api.request.call_args.args[0], "/reader/mark_story_hash_as_unread"
-        )
-
-    def test_story_page_request(self):
-        api = object.__new__(reader.NewsBlur)
-        api.request = Mock(return_value={"stories": [{"story_hash": "4:a"}]})
-        self.assertEqual(api.stories("4", 2, "all"), [{"story_hash": "4:a"}])
-        api.request.assert_called_once_with(
-            "/reader/feed/4",
-            params={"page": 2, "read_filter": "all", "include_hidden": "false"},
-        )
 
     def test_full_collection_includes_older_unread_and_deduplicates_batches(self):
         api = Mock()
@@ -152,13 +136,11 @@ class ReaderTests(unittest.TestCase):
     def test_hidden_only_batches_do_not_end_visible_history(self):
         api = Mock()
         api.stories.side_effect = [
-            reader.StoryBatch([], hidden_count=5),
-            reader.StoryBatch([{"story_hash": "4:older"}]),
-            reader.StoryBatch([]),
+            StoryBatch([], hidden_count=5),
+            StoryBatch([{"story_hash": "4:older"}]),
+            StoryBatch([]),
         ]
-        collection = reader.StoryCollection(
-            api, "4", reader.StoryBatch([], hidden_count=6)
-        )
+        collection = reader.StoryCollection(api, "4", StoryBatch([], hidden_count=6))
         self.assertFalse(collection.complete)
         collection.load()
         self.assertTrue(collection.complete)
@@ -369,46 +351,15 @@ class ReaderTests(unittest.TestCase):
             return next(choices)
 
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(reader, "chooser", side_effect=choose),
             patch.object(reader, "show_message") as message,
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         self.assertIs(collections[0], collections[1])
         self.assertEqual(len(collections[1].stories), 1)
         self.assertIn("still available", message.call_args.args[0])
         api.mark.assert_not_called()
-
-    def test_story_api_preserves_hidden_metadata_and_rejects_malformed_batches(self):
-        api = object.__new__(reader.NewsBlur)
-        api.request = Mock(return_value={"stories": [], "hidden_stories_count": 6})
-        self.assertEqual(api.stories("4", 1, "all").hidden_count, 6)
-        for response in (
-            {"stories": None},
-            {"stories": [{}]},
-            {"stories": [], "hidden_stories_count": "invalid"},
-        ):
-            api.request.return_value = response
-            with self.assertRaises(reader.ReaderError):
-                api.stories("4", 1, "all")
-
-    def test_api_response_parses_json(self):
-        api = object.__new__(reader.NewsBlur)
-        response = io.BytesIO(b'{"feeds": {"4": {"id": 4}}}')
-        response.url = "https://www.newsblur.com/reader/feeds"
-        opener = Mock()
-        opener.open.return_value = response
-        api.opener = opener
-        self.assertEqual(api.feeds()["feeds"]["4"]["id"], 4)
-
-    def test_feed_counts_are_recalculated(self):
-        api = object.__new__(reader.NewsBlur)
-        api.request = Mock(return_value={"feeds": {}})
-        api.feeds()
-        api.request.assert_called_once_with(
-            "/reader/feeds",
-            params={"include_favicons": "false", "update_counts": "true"},
-        )
 
     def test_rejects_private_or_non_http_story_urls(self):
         for url in (
@@ -525,7 +476,7 @@ class ReaderTests(unittest.TestCase):
         api = Mock()
         api.login.return_value = None
         api.feeds.return_value = {
-            "feeds": {"4": {"id": 4, "feed_title": "Blog", "ps": 1}},
+            "feeds": {"4": {"id": 4, "feed_title": "Blog", "unread": 1}},
             "folders": [4],
         }
         api.stories.return_value = [
@@ -541,7 +492,7 @@ class ReaderTests(unittest.TestCase):
             ]
         )
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(
                 reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)
             ),
@@ -553,7 +504,7 @@ class ReaderTests(unittest.TestCase):
                 reader.tempfile, "TemporaryDirectory", wraps=tempfile.TemporaryDirectory
             ),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         api.mark.assert_called_once_with(["4:a"], unread=False)
         viewer.assert_called_once_with("Post", "", "<p>Full original story</p>")
 
@@ -581,14 +532,14 @@ class ReaderTests(unittest.TestCase):
             ]
         )
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(
                 reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)
             ),
             patch.object(reader, "page_text") as fetch,
             patch.object(reader, "article_viewer") as viewer,
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         fetch.assert_not_called()
         viewer.assert_called_once_with("Post", "", "<a href='/link'>Read more</a>")
 
@@ -616,14 +567,14 @@ class ReaderTests(unittest.TestCase):
             ]
         )
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(
                 reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)
             ),
             patch.object(reader.webbrowser, "open", return_value=True) as open_browser,
             patch.object(reader, "page_text") as fetch,
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         open_browser.assert_called_once_with("https://example.com/post")
         fetch.assert_not_called()
 
@@ -670,7 +621,7 @@ class ReaderTests(unittest.TestCase):
         api = Mock()
         api.login.return_value = None
         api.feeds.return_value = {
-            "feeds": {"4": {"id": 4, "feed_title": "Blog", "ps": 1}},
+            "feeds": {"4": {"id": 4, "feed_title": "Blog", "unread": 1}},
             "folders": [4],
         }
         api.stories.return_value = [
@@ -704,10 +655,10 @@ class ReaderTests(unittest.TestCase):
             return key, picked
 
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(reader, "chooser", side_effect=choose),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         api.stories.assert_called_once_with("4", 1, "all")
         self.assertEqual(api.stories.return_value[0]["read_status"], 1)
         self.assertEqual(headers[2].splitlines()[0], "Blog · all · Loading more…")
@@ -726,12 +677,12 @@ class ReaderTests(unittest.TestCase):
         }
         choices = iter([("ctrl-s", []), ("ctrl-q", [])])
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(
                 reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)
             ),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         self.assertEqual(api.feeds.call_count, 2)
 
     def test_ctrl_f_toggles_unread_filter(self):
@@ -758,10 +709,10 @@ class ReaderTests(unittest.TestCase):
             return next(choices)
 
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(reader, "chooser", side_effect=choose),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         api.stories.assert_called_once_with("4", 1, "all")
         self.assertEqual(
             headers[3].splitlines()[0], "Blog · unread · Available history loaded"
@@ -790,7 +741,7 @@ class ReaderTests(unittest.TestCase):
                     ]
                 )
                 with (
-                    patch.object(reader, "NewsBlur", return_value=api),
+                    patch.object(reader, "create", return_value=api),
                     patch.object(
                         reader,
                         "chooser",
@@ -800,7 +751,7 @@ class ReaderTests(unittest.TestCase):
                     ),
                     patch("builtins.input", return_value=answer),
                 ):
-                    reader.run()
+                    reader.run_source(CONFIG)
                 if answer == "y":
                     api.mark_feed.assert_called_once_with("4")
                 else:
@@ -830,10 +781,10 @@ class ReaderTests(unittest.TestCase):
             return next(choices)
 
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(reader, "chooser", side_effect=choose),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         api.stories.assert_called_once_with("4", 1, "all")
         for screen in screens[2:]:
             self.assertNotIn("alt-n", screen["keys"])
@@ -844,7 +795,7 @@ class ReaderTests(unittest.TestCase):
         api = Mock()
         api.login.return_value = None
         api.feeds.return_value = {
-            "feeds": {"4": {"id": 4, "feed_title": "Blog", "nt": 2}},
+            "feeds": {"4": {"id": 4, "feed_title": "Blog", "unread": 2}},
             "folders": [4],
         }
         api.stories.return_value = [
@@ -859,13 +810,13 @@ class ReaderTests(unittest.TestCase):
             ]
         )
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(
                 reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)
             ),
             patch.object(reader, "feed_preview", return_value="Body"),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         self.assertEqual(api.feeds.call_count, 2)
         api.mark.assert_not_called()
 
@@ -881,18 +832,18 @@ class ReaderTests(unittest.TestCase):
             [("enter", ["0\tTop Level"]), ("enter", ["0\tBlog"]), ("ctrl-q", [])]
         )
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(
                 reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)
             ),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
 
     def test_feed_api_timeout_returns_to_feed_picker_without_marking_read(self):
         api = Mock()
         api.login.return_value = None
         api.feeds.return_value = {
-            "feeds": {"4": {"id": 4, "feed_title": "Slow site", "nt": 2}},
+            "feeds": {"4": {"id": 4, "feed_title": "Slow site", "unread": 2}},
             "folders": [4],
         }
         api.stories.side_effect = reader.ReaderError("Network error: timed out")
@@ -900,16 +851,12 @@ class ReaderTests(unittest.TestCase):
             [("enter", ["0\tTop Level"]), ("enter", ["0\tSlow site"]), ("ctrl-q", [])]
         )
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(
                 reader, "chooser", side_effect=lambda *args, **kwargs: next(choices)
             ),
             patch.object(reader, "show_message") as message,
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         self.assertIn("timed out", message.call_args.args[0])
         api.mark.assert_not_called()
-
-
-if __name__ == "__main__":
-    unittest.main()

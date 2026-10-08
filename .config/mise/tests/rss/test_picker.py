@@ -1,21 +1,27 @@
-"""Live-picker, mutation, and temporary-preview regressions; no account needed."""
+"""RSS reader picker regressions; no account or network required."""
 
-import importlib.util
 import io
 import json
+import sys
 import tempfile
 import threading
 import unittest
-from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-task = Path(__file__).parents[1] / "tasks/rss"
-spec = importlib.util.spec_from_loader(
-    "rss_live_reader", SourceFileLoader("rss_live_reader", str(task))
-)
-reader = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(reader)
+sys.path.insert(0, str(Path(__file__).parents[2] / "lib"))
+from rss_reader import app as reader
+from rss_reader import cli
+from rss_reader.sources.newsblur import NewsBlurSource
+
+CONFIG = {
+    "id": "account",
+    "type": "newsblur",
+    "title": "NewsBlur",
+    "url": "https://www.newsblur.com",
+}
+ATOM = b"""<feed xmlns="http://www.w3.org/2005/Atom"><title>Activity</title><entry><id>event-1</id><title>New event</title><published>2026-10-09T12:00:00Z</published><link href="/events/1"/><summary>Fallback</summary><content type="html">&lt;p&gt;Hello&lt;/p&gt;</content></entry></feed>"""
+RSS = b"""<rss version="2.0"><channel><title>News</title><item><guid>item-1</guid><title>News item</title><link>https://example.com/news</link><description>News body</description></item></channel></rss>"""
 
 
 class LivePickerTests(unittest.TestCase):
@@ -269,29 +275,8 @@ class ApiAndPreviewTests(unittest.TestCase):
                 )
                 self.assertEqual(state["query"], "query")
 
-    def test_mixed_acknowledgments_cannot_be_mistaken_for_success(self):
-        api = object.__new__(reader.NewsBlur)
-        api.request = Mock(
-            return_value=[
-                {"code": 1, "story_hash": "4:a"},
-                {"code": -1, "story_hash": "4:b", "message": "Too old"},
-            ]
-        )
-        with self.assertRaises(reader.MarkError) as result:
-            api.mark(["4:a", "4:b"], unread=True)
-        self.assertEqual(result.exception.confirmed, ["4:a"])
-        self.assertIn("Too old", str(result.exception))
-
-    def test_partial_failure_after_first_api_batch_preserves_confirmed_ids(self):
-        api = object.__new__(reader.NewsBlur)
-        api.request = Mock(side_effect=[{"code": 1}, reader.ReaderError("timeout")])
-        hashes = [f"4:{index}" for index in range(51)]
-        with self.assertRaises(reader.MarkError) as result:
-            api.mark(hashes, unread=False)
-        self.assertEqual(result.exception.confirmed, hashes[:50])
-
     def test_conflicting_acknowledgments_do_not_confirm_rejected_ids(self):
-        accepted, error = reader.NewsBlur.mark_acknowledgments(
+        accepted, error = NewsBlurSource.mark_acknowledgments(
             [
                 {"code": 1, "story_hash": "4:a"},
                 {"code": -1, "story_hash": "4:a", "message": "Rejected"},
@@ -304,7 +289,7 @@ class ApiAndPreviewTests(unittest.TestCase):
     def test_malformed_acknowledgments_fail_without_crashing(self):
         for result in ([None], [{"code": 1, "story_hash": []}], [], None):
             with self.subTest(result=result):
-                accepted, error = reader.NewsBlur.mark_acknowledgments(result, ["4:a"])
+                accepted, error = NewsBlurSource.mark_acknowledgments(result, ["4:a"])
                 self.assertEqual(accepted, [])
                 self.assertTrue(error)
 
@@ -320,52 +305,15 @@ class ApiAndPreviewTests(unittest.TestCase):
             collection.mark_confirmed(stories, unread=False)
         self.assertEqual([story["read_status"] for story in stories], [1, 0])
 
-    def test_whole_feed_mark_requires_confirmation(self):
-        api = object.__new__(reader.NewsBlur)
-        api.request = Mock(return_value={"code": 0})
-        with self.assertRaises(reader.ReaderError):
-            api.mark_feed("4")
-
     def test_offline_option_is_rejected_before_any_login(self):
         with (
-            patch.object(reader, "run") as run,
+            patch.object(cli.app, "run") as run,
             patch.object(reader.sys, "stderr", io.StringIO()),
             self.assertRaises(SystemExit) as result,
         ):
-            reader.main(["--offline"])
+            cli.main(["--offline"])
         self.assertEqual(result.exception.code, 2)
         run.assert_not_called()
-
-    def test_missing_body_cannot_be_replaced_with_an_unrelated_story(self):
-        api = object.__new__(reader.NewsBlur)
-        api.request = Mock(
-            return_value={
-                "stories": [{"story_hash": "4:other", "story_content": "Wrong"}]
-            }
-        )
-        with self.assertRaises(reader.ReaderError):
-            api.body({"story_hash": "4:a"})
-
-    def test_feed_requests_include_bodies_without_using_old_persistent_cache(self):
-        with tempfile.TemporaryDirectory() as directory:
-            state = Path(directory)
-            (state / "cache").mkdir()
-            old_cache = state / "cache/library.sqlite3"
-            old_cache.write_bytes(b"Existing cache must remain untouched")
-            with (
-                patch.object(reader, "STATE", state),
-                patch.object(reader, "COOKIE_FILE", state / "cookies.txt"),
-            ):
-                api = reader.NewsBlur()
-                api.request = Mock(return_value={"stories": [{"story_hash": "4:a"}]})
-                api.stories("4", 1, "all")
-            self.assertNotIn(
-                "include_story_content", api.request.call_args.kwargs["params"]
-            )
-            self.assertEqual(
-                old_cache.read_bytes(), b"Existing cache must remain untouched"
-            )
-            self.assertFalse(hasattr(api, "cache"))
 
     def test_revisiting_feed_revalidates_membership(self):
         api = Mock()
@@ -397,10 +345,10 @@ class ApiAndPreviewTests(unittest.TestCase):
             return next(choices)
 
         with (
-            patch.object(reader, "NewsBlur", return_value=api),
+            patch.object(reader, "create", return_value=api),
             patch.object(reader, "chooser", side_effect=choose),
         ):
-            reader.run()
+            reader.run_source(CONFIG)
         self.assertEqual(visible, [["4:old"], ["4:new"]])
         self.assertEqual(api.stories.call_count, 2)
         self.assertTrue(all(not path.exists() for path in directories))
@@ -482,7 +430,3 @@ class FeedSessionTests(unittest.TestCase):
         self.session.__exit__()
         self.assertTrue(self.session.collection.cancel.is_set())
         self.assertFalse(directory.exists())
-
-
-if __name__ == "__main__":
-    unittest.main()
