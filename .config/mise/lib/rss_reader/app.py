@@ -252,11 +252,15 @@ class StorySnapshot(NamedTuple):
     def status(self) -> str:
         if self.error:
             return self.error
-        return "Available history loaded" if self.complete else "Loading more…"
+        return (
+            "Available history loaded"
+            if self.complete
+            else "Scroll down for more history"
+        )
 
 
 class StoryCollection:
-    """Fresh, append-only feed history with one sequential background loader.
+    """Append-only history; fetch one page only when the user requests it.
 
     Stable indexes identify stories throughout one visit. All shared story/read
     state belongs here; the picker works from snapshots rather than holding this
@@ -269,11 +273,8 @@ class StoryCollection:
         self.stories: list[dict] = []
         self.hashes: set[str] = set()
         self.overrides: dict[str, int] = {}
-        self.all_read_revision = 0
         self.condition = threading.Condition()
         self.cancel = threading.Event()
-        self.paused = threading.Event()
-        self.worker = None
         self.error = ""
         self.complete = not has_more(initial)
         self.next_page = 2
@@ -328,52 +329,27 @@ class StoryCollection:
             raise
         self.mark(selected, unread=unread)
 
-    def start(self) -> None:
-        with self.condition:
-            if self.cancel.is_set():
-                return
-            self.resume()
-            if self.worker is None and not self.complete and not self.error:
-                self.worker = threading.Thread(target=self.load, daemon=True)
-                self.worker.start()
-
     def load(self) -> None:
+        """Fetch exactly one batch in the foreground, retaining usable history."""
+        if self.cancel.is_set() or self.complete or self.error:
+            return
         try:
-            while not self.cancel.is_set():
-                with self.condition:
-                    while self.paused.is_set() and not self.cancel.is_set():
-                        self.condition.wait()
-                    read_revision = self.all_read_revision
+            batch = self.api.stories(self.feed_id, self.next_page, "all")
+            with self.condition:
                 if self.cancel.is_set():
                     return
-                batch = self.api.stories(self.feed_id, self.next_page, "all")
-                with self.condition:
-                    if self.cancel.is_set():
-                        return
-                    signature = tuple(story.get("story_hash") for story in batch)
-                    repeated = bool(batch) and signature == self.last_batch
-                    self.last_batch = signature
-                    # Only a request already in flight when "mark feed read"
-                    # happened can have stale flags. Later requests are authoritative
-                    # and may legitimately contain a newly published unread story.
-                    if read_revision != self.all_read_revision:
-                        for story in batch:
-                            story["read_status"] = 1
-                    self.add(batch)
-                    self.next_page += 1
-                    if not has_more(batch):
-                        self.complete = True
-                    elif repeated:
-                        self.error = (
-                            "Server repeated a batch; partial history · ctrl-s retry"
-                        )
-                    self.condition.notify_all()
-                    self.revision += 1
-                    if self.complete or self.error:
-                        return
-                # Pace requests while filling small batches quickly.
-                if self.cancel.wait(POLL_INTERVAL):
-                    return
+                signature = tuple(story.get("story_hash") for story in batch)
+                repeated = bool(batch) and signature == self.last_batch
+                self.last_batch = signature
+                self.add(batch)
+                self.next_page += 1
+                if not has_more(batch):
+                    self.complete = True
+                elif repeated:
+                    self.error = (
+                        "Server repeated a batch; partial history · ctrl-s retry"
+                    )
+                self.revision += 1
         except (ReaderError, OSError) as exc:
             with self.condition:
                 self.error = f"Partial history: {label(exc)} · ctrl-s retry"
@@ -389,28 +365,18 @@ class StoryCollection:
                 self.revision += 1
 
     def close(self) -> None:
-        # urllib requests cannot be interrupted. The loader may finish its current
-        # bounded request, but cancellation prevents it from publishing results.
         self.cancel.set()
         with self.condition:
             self.condition.notify_all()
 
-    def mark_all_read(self) -> None:
+    def mark_loaded_read(self) -> None:
+        """Confirm read changes for loaded unread stories, never scan the source."""
         with self.condition:
-            self.all_read_revision += 1
-            self.overrides.clear()
-            for story in self.stories:
-                story["read_status"] = 1
-            self.revision += 1
-
-    def pause(self) -> None:
-        """Pause paging while a refresh is being attempted; start() resumes it."""
-        self.paused.set()
-
-    def resume(self) -> None:
-        with self.condition:
-            self.paused.clear()
-            self.condition.notify_all()
+            selected = [
+                story for story in self.stories if story.get("read_status", 0) == 0
+            ]
+        if selected:
+            self.mark_confirmed(selected, unread=False)
 
 
 class StoryStream:
@@ -465,13 +431,8 @@ class FeedSession:
     def refresh(self) -> None:
         # Preserve usable history/previews until the request and allocation of
         # the replacement's files have both succeeded.
-        self.collection.pause()
-        try:
-            initial = foreground_stories(self.api, self.feed_id)
-            previews = tempfile.TemporaryDirectory(prefix="feed-", dir=self.scratch)
-        except (ReaderError, OSError):
-            self.collection.resume()
-            raise
+        initial = foreground_stories(self.api, self.feed_id)
+        previews = tempfile.TemporaryDirectory(prefix="feed-", dir=self.scratch)
         previous_collection = self.collection
         previous_previews = self.previews
         self.collection = StoryCollection(self.api, self.feed_id, initial)
@@ -578,6 +539,8 @@ class LivePicker:
         self.header_file = self.directory / "header"
         self.stop = threading.Event()
         self.actions = ReadStateActions(stream.collection)
+        self.page_requested = threading.Event()
+        self.loading = threading.Event()
         self.signature = None
         self.updater = None
         self.closed = False
@@ -595,6 +558,9 @@ class LivePicker:
             "--no-sync",
             "--no-select-1",
             "--no-exit-0",
+            "--no-cycle",
+            "--layout=reverse",
+            "--no-tac",
             "--track",
             "--id-nth=1",
             "--no-expect",
@@ -607,6 +573,14 @@ class LivePicker:
         ]
         for key in sorted(live_keys):
             args.extend(["--bind", self.binding(key)])
+        for key, action in (
+            ("down", "down"),
+            ("ctrl-j", "down"),
+            ("pgdn", "page-down"),
+            ("scroll-down", "down"),
+            ("tab", "toggle+down"),
+        ):
+            args.extend(["--bind", self.page_binding(key, action)])
         focus_file = self.stream.directory / "focus"
         if state is not None:
             args.extend(
@@ -631,7 +605,19 @@ class LivePicker:
                     text=True,
                 )
             self.start()
-            stdout, stderr = process.communicate()
+            while True:
+                try:
+                    stdout, stderr = process.communicate(timeout=POLL_INTERVAL)
+                    break
+                except subprocess.TimeoutExpired:
+                    if self.page_requested.is_set():
+                        self.page_requested.clear()
+                        self.loading.set()
+                        try:
+                            self.stream.collection.load()
+                        finally:
+                            self.page_requested.clear()
+                            self.loading.clear()
             result = subprocess.CompletedProcess(args, process.wait(), stdout, stderr)
         finally:
             try:
@@ -668,6 +654,14 @@ class LivePicker:
             'mv "$event" "$event.ready"'
         )
 
+    def page_binding(self, key: str, action: str) -> str:
+        template = shlex.quote(str(self.directory / "action.XXXXXX"))
+        return (
+            f"{key}:{action}+execute-silent:event=$(mktemp {template}) && "
+            f'printf \'%s\\n\' page "$FZF_POS" "$FZF_MATCH_COUNT" > "$event" && '
+            'mv "$event" "$event.ready"'
+        )
+
     def gather(self) -> None:
         for path in sorted(
             self.directory.glob("action.*.ready"), key=lambda p: p.stat().st_mtime_ns
@@ -675,6 +669,18 @@ class LivePicker:
             lines = path.read_text().splitlines()
             path.unlink()
             if not lines:
+                continue
+            if lines[0] == "page":
+                if len(lines) == 3 and all(value.isdigit() for value in lines[1:]):
+                    position, count = map(int, lines[1:])
+                    collection = self.stream.collection
+                    if (
+                        not self.loading.is_set()
+                        and not collection.complete
+                        and not collection.error
+                        and (count == 0 or position >= max(1, count - 2))
+                    ):
+                        self.page_requested.set()
                 continue
             if lines[0] == "ctrl-f":
                 self.stream.read_filter = (
@@ -704,12 +710,14 @@ class LivePicker:
                 collection.error,
                 self.stream.read_filter,
                 message,
+                self.loading.is_set(),
             )
             if signature == self.signature:
                 return False
             snapshot = collection.snapshot(self.stream.read_filter)
         rows = [self.stream.row(index, story) for index, story in snapshot.stories]
-        header = self.stream.header(snapshot.status, count=len(rows), message=message)
+        status = "Loading next page…" if self.loading.is_set() else snapshot.status
+        header = self.stream.header(status, count=len(rows), message=message)
         atomic_write(self.list_file, "\n".join(rows) + ("\n" if rows else ""))
         atomic_write(self.header_file, wrap_header(header, self.width))
         self.signature = signature
@@ -761,7 +769,6 @@ class LivePicker:
                 self.stop.wait(POLL_INTERVAL)
 
     def start(self) -> None:
-        self.stream.collection.start()
         self.actions.start()
         self.updater = threading.Thread(target=self.update, daemon=True)
         self.updater.start()
@@ -1055,12 +1062,11 @@ def browse_feed(api, feed: dict, scratch: Path) -> str:
                 elif key == "alt-r":
                     if (
                         input(
-                            f"Mark ALL unread stories in {title} read? [y/N] "
+                            f"Mark all LOADED unread stories in {title} read? [y/N] "
                         ).casefold()
                         == "y"
                     ):
-                        api.mark_feed(feed_id)
-                        collection.mark_all_read()
+                        collection.mark_loaded_read()
                 elif picked and key in ("enter", "ctrl-o", "alt-o"):
                     indexes = [int(Path(picked[0].split("\t", 1)[0]).name)]
                     selected = collection.select(indexes)

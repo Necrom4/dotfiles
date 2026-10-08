@@ -51,6 +51,77 @@ class LivePickerTests(unittest.TestCase):
         self.assertEqual(self.live.actions.commands.get_nowait(), ("ctrl-r", [0]))
         self.live.actions.commands.task_done()
 
+    def test_start_does_not_prefetch_history(self):
+        self.collection.complete = False
+        with patch.object(self.live, "notify", return_value=True):
+            self.live.start()
+            self.live.close()
+        self.api.stories.assert_not_called()
+
+    def test_scroll_only_requests_one_page_when_near_bottom(self):
+        self.collection.complete = False
+        path = self.live.directory / "action.scroll.ready"
+        path.write_text("page\n2\n20\n")
+        self.live.gather()
+        self.assertFalse(self.live.page_requested.is_set())
+        for _ in range(3):
+            path.write_text("page\n18\n20\n")
+            self.live.gather()
+        self.assertTrue(self.live.page_requested.is_set())
+        self.api.stories.assert_not_called()
+
+    def test_scroll_during_fetch_or_after_exhaustion_does_not_request_more(self):
+        self.collection.complete = False
+        self.live.loading.set()
+        path = self.live.directory / "action.scroll.ready"
+        path.write_text("page\n20\n20\n")
+        self.live.gather()
+        self.assertFalse(self.live.page_requested.is_set())
+        self.live.loading.clear()
+        self.collection.complete = True
+        path.write_text("page\n20\n20\n")
+        self.live.gather()
+        self.assertFalse(self.live.page_requested.is_set())
+
+    def test_empty_unread_or_search_results_can_request_more_on_scroll(self):
+        self.collection.complete = False
+        path = self.live.directory / "action.scroll.ready"
+        path.write_text("page\n0\n0\n")
+        self.live.gather()
+        self.assertTrue(self.live.page_requested.is_set())
+
+    def test_scroll_binding_does_not_require_a_row_or_accept_fzf(self):
+        binding = self.live.page_binding("down", "down")
+        self.assertIn("down:down+execute-silent", binding)
+        self.assertIn("FZF_MATCH_COUNT", binding)
+        self.assertNotIn("{1}", binding)
+        self.assertNotIn("accept", binding)
+
+    def test_foreground_pump_loads_one_page_and_disables_wraparound(self):
+        self.collection.complete = False
+        self.api.stories.return_value = [{"story_hash": "4:b", "read_status": 0}]
+        self.live.page_requested.set()
+        process = Mock()
+        process.communicate.side_effect = [
+            reader.subprocess.TimeoutExpired("fzf", 0.1),
+            ("ctrl-q\n", ""),
+        ]
+        process.wait.return_value = 0
+        process.poll.return_value = 0
+        with (
+            patch.object(reader.subprocess, "Popen", return_value=process) as launch,
+            patch.object(self.live, "start"),
+        ):
+            self.live.run(["fzf"], "enter,ctrl-q", {})
+        self.api.stories.assert_called_once_with("4", 2, "all")
+        self.assertEqual(len(self.collection.stories), 2)
+        self.assertFalse(self.live.page_requested.is_set())
+        args = launch.call_args.args[0]
+        self.assertIn("--no-cycle", args)
+        self.assertIn("--layout=reverse", args)
+        self.assertIn("--no-tac", args)
+        self.assertFalse(any("focus:" in arg and "page" in arg for arg in args))
+
     def test_confirmed_mark_updates_snapshot_without_refetching(self):
         self.live.actions.apply("ctrl-r", [0])
         self.api.mark.assert_called_once_with(["4:a"], unread=False)
@@ -224,36 +295,39 @@ class LivePickerTests(unittest.TestCase):
         self.assertFalse(self.live.directory.exists())
         self.assertIn("disk error", self.live.error)
 
-    def test_whole_feed_action_preserves_newly_published_unread_stories(self):
+    def test_mark_loaded_preserves_newly_published_unread_stories(self):
         self.collection.complete = False
-        self.collection.mark_all_read()
+        self.collection.mark_loaded_read()
         self.api.stories.side_effect = [[{"story_hash": "4:new", "read_status": 0}], []]
         self.collection.load()
         self.assertEqual(self.collection.stories[1]["read_status"], 0)
 
-    def test_whole_feed_action_overrides_only_an_already_inflight_batch(self):
-        requested, release = threading.Event(), threading.Event()
+    def test_mark_loaded_read_leaves_later_history_unread(self):
         self.collection.complete = False
+        self.collection.mark_loaded_read()
+        self.api.mark.assert_called_once_with(["4:a"], unread=False)
+        self.api.stories.assert_not_called()
+        self.api.stories.return_value = [{"story_hash": "4:older", "read_status": 0}]
+        self.collection.load()
+        self.assertEqual(self.collection.stories[1]["read_status"], 0)
 
-        def fetch(feed, page, read_filter):
-            if page == 2:
-                requested.set()
-                release.wait(2)
-                return [{"story_hash": "4:older", "read_status": 0}]
-            return []
+    def test_mark_loaded_read_only_sends_unread_loaded_ids(self):
+        self.collection.add([{"story_hash": "4:read", "read_status": 1}])
+        self.collection.mark_loaded_read()
+        self.api.mark.assert_called_once_with(["4:a"], unread=False)
+        self.api.stories.assert_not_called()
+        self.api.mark_feed.assert_not_called()
+        self.collection.mark_loaded_read()
+        self.assertEqual(self.api.mark.call_count, 1)
 
-        self.api.stories.side_effect = fetch
-        self.collection.start()
-        try:
-            self.assertTrue(requested.wait(1))
-            self.collection.mark_all_read()
-            release.set()
-            self.collection.worker.join(2)
-            self.assertEqual(self.collection.stories[1]["read_status"], 1)
-        finally:
-            release.set()
-            self.collection.close()
-            self.collection.worker.join(2)
+    def test_mark_loaded_read_retains_only_confirmed_changes_on_failure(self):
+        self.collection.add([{"story_hash": "4:b", "read_status": 0}])
+        self.api.mark.side_effect = reader.MarkError("Rejected second story", ["4:a"])
+        with self.assertRaises(reader.MarkError):
+            self.collection.mark_loaded_read()
+        self.assertEqual(
+            [story["read_status"] for story in self.collection.stories], [1, 0]
+        )
 
 
 class ApiAndPreviewTests(unittest.TestCase):
@@ -398,7 +472,7 @@ class FeedSessionTests(unittest.TestCase):
         self.assertNotEqual(self.session.directory, directory)
         self.assertEqual(self.session.collection.stories, [{"story_hash": "4:new"}])
 
-    def test_failed_refresh_preserves_history_previews_and_resumes_loader(self):
+    def test_failed_refresh_preserves_history_and_previews(self):
         previous = self.session.collection
         directory = self.session.directory
         preview = directory / "0.preview"
@@ -407,7 +481,6 @@ class FeedSessionTests(unittest.TestCase):
         with self.assertRaises(reader.ReaderError):
             self.session.refresh()
         self.assertIs(self.session.collection, previous)
-        self.assertFalse(previous.paused.is_set())
         self.assertFalse(previous.cancel.is_set())
         self.assertEqual(preview.read_text(), "Usable preview")
 
@@ -423,9 +496,8 @@ class FeedSessionTests(unittest.TestCase):
             self.session.refresh()
         self.assertIs(self.session.collection, previous)
         self.assertTrue(self.session.directory.exists())
-        self.assertFalse(previous.paused.is_set())
 
-    def test_exit_cancels_loader_and_removes_visit_files(self):
+    def test_exit_closes_history_and_removes_visit_files(self):
         directory = self.session.directory
         self.session.__exit__()
         self.assertTrue(self.session.collection.cancel.is_set())

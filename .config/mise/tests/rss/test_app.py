@@ -3,7 +3,6 @@
 import io
 import sys
 import tempfile
-import threading
 import unittest
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -116,6 +115,9 @@ class ReaderTests(unittest.TestCase):
         ]
         collection = reader.StoryCollection(api, "4", [{"story_hash": "4:new"}])
         collection.load()
+        self.assertEqual(api.stories.call_count, 1)
+        collection.load()
+        collection.load()
         self.assertEqual(
             [s["story_hash"] for s in collection.stories],
             ["4:new", "4:older", "4:oldest"],
@@ -129,7 +131,7 @@ class ReaderTests(unittest.TestCase):
     def test_empty_initial_batch_does_not_fetch_more(self):
         api = Mock()
         collection = reader.StoryCollection(api, "4", [])
-        collection.start()
+        collection.load()
         self.assertTrue(collection.complete)
         api.stories.assert_not_called()
 
@@ -143,19 +145,15 @@ class ReaderTests(unittest.TestCase):
         collection = reader.StoryCollection(api, "4", StoryBatch([], hidden_count=6))
         self.assertFalse(collection.complete)
         collection.load()
+        self.assertFalse(collection.complete)
+        collection.load()
+        collection.load()
         self.assertTrue(collection.complete)
         self.assertEqual([s["story_hash"] for s in collection.stories], ["4:older"])
 
-    def test_stream_shows_initial_batch_before_network_finishes(self):
-        requested, release = threading.Event(), threading.Event()
+    def test_stream_shows_initial_batch_without_prefetching(self):
         api = Mock()
-
-        def fetch(*args):
-            requested.set()
-            release.wait(2)
-            return []
-
-        api.stories.side_effect = fetch
+        api.stories.return_value = []
         collection = reader.StoryCollection(
             api, "4", [{"story_hash": "4:a", "story_title": "Now"}]
         )
@@ -164,18 +162,15 @@ class ReaderTests(unittest.TestCase):
             live = reader.LivePicker(stream, 80)
             with patch.object(reader, "feed_preview") as render:
                 self.assertIn("Now", live.list_file.read_text())
-                collection.start()
-                self.assertTrue(requested.wait(1))
+                api.stories.assert_not_called()
                 render.assert_not_called()
-                release.set()
-                collection.worker.join(1)
+                collection.load()
                 live.refresh()
             self.assertIn(
                 "1 story · Available history loaded", live.header_file.read_text()
             )
             live.close()
         collection.close()
-        collection.worker.join(1)
 
     def test_partial_error_keeps_loaded_stories_and_is_visible(self):
         api = Mock()
@@ -185,8 +180,6 @@ class ReaderTests(unittest.TestCase):
         self.assertFalse(collection.complete)
         self.assertIn("timed out", collection.error)
         with tempfile.TemporaryDirectory() as directory:
-            # No second loader: this collection already attempted its load.
-            collection.worker = Mock()
             stream = reader.StoryStream(collection, Path(directory), "all")
             live = reader.LivePicker(stream, 80)
             self.assertEqual(len(live.list_file.read_text().splitlines()), 1)
@@ -198,6 +191,7 @@ class ReaderTests(unittest.TestCase):
         api.stories.return_value = [{"story_hash": "4:a"}]
         collection = reader.StoryCollection(api, "4", [{"story_hash": "4:a"}])
         collection.load()
+        collection.load()
         self.assertEqual(api.stories.call_count, 2)
         self.assertEqual(len(collection.stories), 1)
         self.assertIn("repeated", collection.error)
@@ -206,6 +200,8 @@ class ReaderTests(unittest.TestCase):
         api = Mock()
         api.stories.side_effect = [[{"story_hash": "4:a"}], [{"story_hash": "4:b"}], []]
         collection = reader.StoryCollection(api, "4", [{"story_hash": "4:a"}])
+        collection.load()
+        collection.load()
         collection.load()
         self.assertTrue(collection.complete)
         self.assertEqual(len(collection.stories), 2)
@@ -270,47 +266,28 @@ class ReaderTests(unittest.TestCase):
         self.assertEqual(state["query"], "new query")
         self.assertIn("--print-query", run.call_args.args[0])
 
-    def test_mark_whole_feed_updates_incoming_batches_without_refetching(self):
+    def test_loaded_read_changes_and_later_individual_changes_are_preserved(self):
         api = Mock()
         api.stories.side_effect = [[{"story_hash": "4:b", "read_status": 1}], []]
         first = {"story_hash": "4:a", "read_status": 0}
         collection = reader.StoryCollection(api, "4", [first])
-        collection.mark_all_read()
+        collection.mark_loaded_read()
         collection.mark([first], unread=True)  # a later individual action wins
         collection.load()
         self.assertEqual([s["read_status"] for s in collection.stories], [0, 1])
 
-    def test_pause_and_resume_keep_the_same_paging_worker(self):
-        first_request, release, second_request = (threading.Event() for _ in range(3))
+    def test_each_scroll_request_fetches_only_one_page_without_a_worker(self):
         api = Mock()
-
-        def fetch(feed, page, read_filter):
-            if page == 2:
-                first_request.set()
-                release.wait(2)
-                return [{"story_hash": "4:b"}]
-            second_request.set()
-            return []
-
-        api.stories.side_effect = fetch
+        api.stories.side_effect = [[{"story_hash": "4:b"}], []]
         collection = reader.StoryCollection(api, "4", [{"story_hash": "4:a"}])
-        try:
-            collection.start()
-            self.assertTrue(first_request.wait(1))
-            worker = collection.worker
-            collection.pause()
-            release.set()
-            self.assertFalse(second_request.wait(0.25))
-            collection.start()
-            self.assertIs(collection.worker, worker)
-            self.assertTrue(second_request.wait(1))
-            worker.join(1)
-            self.assertTrue(collection.complete)
-            self.assertEqual(len(collection.stories), 2)
-        finally:
-            release.set()
-            collection.close()
-            collection.worker.join(1)
+        api.stories.assert_not_called()
+        collection.load()
+        api.stories.assert_called_once_with("4", 2, "all")
+        self.assertFalse(collection.complete)
+        self.assertFalse(hasattr(collection, "worker"))
+        collection.load()
+        self.assertTrue(collection.complete)
+        self.assertEqual(len(collection.stories), 2)
 
     def test_final_status_wraps_to_list_width(self):
         collection = reader.StoryCollection(Mock(), "4", [{"story_hash": "4:a"}])
@@ -661,7 +638,9 @@ class ReaderTests(unittest.TestCase):
             reader.run_source(CONFIG)
         api.stories.assert_called_once_with("4", 1, "all")
         self.assertEqual(api.stories.return_value[0]["read_status"], 1)
-        self.assertEqual(headers[2].splitlines()[0], "Blog · all · Loading more…")
+        self.assertEqual(
+            headers[2].splitlines()[0], "Blog · all · Scroll down for more history"
+        )
         self.assertNotIn("Enter story", headers[2])
         self.assertNotIn("ctrl-q", headers[2])
         self.assertNotIn("Esc", headers[2])
@@ -722,7 +701,7 @@ class ReaderTests(unittest.TestCase):
         )
         api.mark_feed.assert_not_called()
 
-    def test_alt_r_marks_whole_feed_only_after_confirmation(self):
+    def test_alt_r_marks_only_loaded_stories_after_confirmation(self):
         for answer in ("n", "y"):
             with self.subTest(answer=answer):
                 api = Mock()
@@ -731,7 +710,9 @@ class ReaderTests(unittest.TestCase):
                     "feeds": {"4": {"id": 4, "feed_title": "Blog"}},
                     "folders": [4],
                 }
-                api.stories.return_value = []
+                api.stories.return_value = [
+                    {"story_hash": "4:loaded", "read_status": 0}
+                ]
                 choices = iter(
                     [
                         ("enter", ["0\tTop Level"]),
@@ -753,9 +734,11 @@ class ReaderTests(unittest.TestCase):
                 ):
                     reader.run_source(CONFIG)
                 if answer == "y":
-                    api.mark_feed.assert_called_once_with("4")
+                    api.mark.assert_called_once_with(["4:loaded"], unread=False)
                 else:
-                    api.mark_feed.assert_not_called()
+                    api.mark.assert_not_called()
+                api.mark_feed.assert_not_called()
+                api.stories.assert_called_once_with("4", 1, "all")
 
     def test_story_picker_has_no_manual_pages_and_reuses_collection(self):
         api = Mock()

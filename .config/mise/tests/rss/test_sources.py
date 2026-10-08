@@ -148,7 +148,8 @@ class SourceContractTests(unittest.TestCase):
         initial = common.StoryBatch([{"story_hash": "1"}], has_more=True)
         collection = app.StoryCollection(source, "feed", initial)
         with patch.object(app, "POLL_INTERVAL", 0):
-            collection.load()
+            while not collection.complete and not collection.error:
+                collection.load()
         self.assertTrue(collection.complete)
         self.assertFalse(collection.error)
         self.assertEqual(len(collection.stories), 402)
@@ -179,7 +180,12 @@ class SourceContractTests(unittest.TestCase):
                 def load(source=source, results=results, errors=errors):
                     try:
                         results.append(source.stories(source.feed_id, 4, "all"))
-                    except (KeyError, common.ReaderError, AssertionError, OSError) as exc:
+                    except (
+                        KeyError,
+                        common.ReaderError,
+                        AssertionError,
+                        OSError,
+                    ) as exc:
                         errors.append(exc)
 
                 worker = threading.Thread(target=load)
@@ -231,9 +237,9 @@ class SourceContractTests(unittest.TestCase):
             collection = app.StoryCollection(
                 source, source.feed_id, source.stories(source.feed_id, 1, "all")
             )
-            collection.start()
+            collection.load()
         self.assertTrue(collection.complete)
-        self.assertIsNone(collection.worker)
+        self.assertFalse(hasattr(collection, "worker"))
         self.assertEqual(opened.call_count, 1)
 
     def test_authenticated_next_link_cannot_cross_origin(self):
