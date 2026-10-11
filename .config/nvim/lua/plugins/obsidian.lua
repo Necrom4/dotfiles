@@ -24,6 +24,17 @@ return {
 
 		return {
 			legacy_commands = false, -- this will be removed in 4.0.0
+			note_id_func = function(title, dir)
+				if title and vim.trim(title) ~= "" then
+					return vim.trim(title)
+				end
+				local name, suffix = "Untitled", 0
+				while dir and (dir / (name .. ".md")):exists() do
+					suffix = suffix + 1
+					name = "Untitled " .. suffix
+				end
+				return name
+			end,
 			-- Alt-x is the task editor; Enter remains for links/tags/folds.
 			checkbox = {
 				enabled = false,
