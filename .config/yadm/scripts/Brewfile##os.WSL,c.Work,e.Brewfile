@@ -1,7 +1,7 @@
 tap "bjarneo/cliamp"
 tap "janosmiko/tap"
 tap "mutagen-io/mutagen"
-tap "necrom4/tap"
+tap "necrom4/tap", trusted: true
 tap "tlipinski/tap"
 tap "tripstack-corp/tap", "https://github.com/Tripstack-Corp/homebrew-tap"
 tap "zingzy/tap", "https://github.com/Zingzy/homebrew-tap"
@@ -150,7 +150,7 @@ brew "janosmiko/tap/lfk", trusted: true
 # Fast file synchronization and network forwarding for remote development
 brew "mutagen-io/mutagen/mutagen", trusted: true
 # Swiss SBB/CFF/FFS timetable app for the terminal
-brew "necrom4/tap/sbb-tui", trusted: true
+brew "necrom4/tap/sbb-tui"
 # Interactive TUI pipeline editor built for rapid iteration
 brew "tlipinski/tap/rura", trusted: true
 # Digital rain for modern terminals
