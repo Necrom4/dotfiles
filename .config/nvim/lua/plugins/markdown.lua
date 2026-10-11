@@ -58,7 +58,9 @@ return {
 				},
 				custom = {
 					todo = {
+						raw = "[/]",
 						rendered = "󰥔",
+						highlight = "RenderMarkdownTodo",
 					},
 					important = {
 						raw = "[!]",
@@ -66,7 +68,7 @@ return {
 						highlight = "Error",
 					},
 					delete = {
-						raw = "[_]",
+						raw = "[-]",
 						rendered = "",
 						highlight = "NonText",
 					},
