@@ -24,6 +24,12 @@ return {
 
 		return {
 			legacy_commands = false, -- this will be removed in 4.0.0
+			-- Alt-x is the task editor; Enter remains for links/tags/folds.
+			checkbox = {
+				enabled = false,
+				create_new = false,
+				order = { " ", "/", "x" },
+			},
 			ui = {
 				enable = false,
 			},
