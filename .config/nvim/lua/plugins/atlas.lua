@@ -7,6 +7,7 @@ return {
 	cmd = { "Atlas", "AtlasDiff" },
 	opts = {
 		providers = {
+			github = {},
 			gitlab = {
 				base_url = vim.env.GITLAB_URL,
 				token = vim.env.GITLAB_TOKEN,
