@@ -13,10 +13,12 @@ return {
 			},
 		},
 		pulls = {
-			-- diff = {
-			-- 	open_cmd = "CodeDiff",
-			-- 	show_review_panel = true,
-			-- },
+			diff = {
+				open_cmd = "CodeDiff",
+				review_panel = {
+					hidden = false,
+				},
+			},
 			gitlab = {
 				views = {
 					{
