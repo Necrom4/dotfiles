@@ -90,8 +90,7 @@ end
 
 local function project(s, n)
 	local camera = s.camera or { cx = s.cx, cy = s.cy, zoom = s.zoom }
-	return (n.x - camera.cx) * camera.zoom + s.width / 2,
-		(n.y - camera.cy) * camera.zoom / 2 + (s.height - 2) / 2 + 1
+	return (n.x - camera.cx) * camera.zoom + s.width / 2, (n.y - camera.cy) * camera.zoom / 2 + (s.height - 2) / 2 + 1
 end
 
 local function clipped(text, width)
@@ -131,7 +130,9 @@ local function render(s)
 		s.camera_pending = true
 		vim.defer_fn(function()
 			s.camera_pending = false
-			if alive(s) then render(s) end
+			if alive(s) then
+				render(s)
+			end
 		end, 16)
 	end
 	local cells, colors = {}, {}
@@ -161,7 +162,9 @@ local function render(s)
 					end
 				end
 				cells[y][x] = char
-				for c = x, x + width - 1 do colors[y][c] = hl end
+				for c = x, x + width - 1 do
+					colors[y][c] = hl
+				end
 				for c = x + 1, x + width - 1 do
 					cells[y][c] = ""
 				end
@@ -267,13 +270,19 @@ local function render(s)
 			local label = labels[i]
 			local free = true
 			for col = label.x + 1, label.x + label.width do
-				if occupied[label.y .. ":" .. col] then free = false end
+				if occupied[label.y .. ":" .. col] then
+					free = false
+				end
 			end
 			if free then
 				put(label.x + 1, label.y, label.text, label.hl)
-				for col = label.x + 1, label.x + label.width do occupied[label.y .. ":" .. col] = true end
+				for col = label.x + 1, label.x + label.width do
+					occupied[label.y .. ":" .. col] = true
+				end
 				for _, hit in ipairs(s.screen) do
-					if hit.node == label.node then hit.last = label.x + label.width end
+					if hit.node == label.node then
+						hit.last = label.x + label.width
+					end
 				end
 			end
 		end
@@ -310,10 +319,14 @@ local function render(s)
 		while x <= s.width do
 			local hl, first = colors[y][x], x
 			x = x + 1
-			while x <= s.width and colors[y][x] == hl do x = x + 1 end
+			while x <= s.width and colors[y][x] == hl do
+				x = x + 1
+			end
 			if hl and offsets[y][x] > offsets[y][first] then
 				api.nvim_buf_set_extmark(s.buf, ns, y - 1, offsets[y][first], {
-					end_col = offsets[y][x], hl_group = hl, priority = 110,
+					end_col = offsets[y][x],
+					hl_group = hl,
+					priority = 110,
 				})
 			end
 		end
@@ -580,7 +593,9 @@ local function mappings(s)
 	map("r", function()
 		refresh(s)
 	end, "Refresh graph")
-	map("<Space>", function() s.paused = not s.paused end, "Pause/resume graph physics")
+	map("<Space>", function()
+		s.paused = not s.paused
+	end, "Pause/resume graph physics")
 	map("?", function()
 		popup(s, help, "text")
 	end, "Graph help")
@@ -616,7 +631,9 @@ local function mappings(s)
 		mouse(true)
 	end, "Open graph node")
 	map("<LeftDrag>", function()
-		if not s.drag then return end
+		if not s.drag then
+			return
+		end
 		local pos = vim.fn.getmousepos()
 		local zoom = s.camera and s.camera.zoom or s.zoom
 		local dx, dy = (pos.screencol - s.drag.x) / zoom, (pos.screenrow - s.drag.y) * 2 / zoom
@@ -629,7 +646,9 @@ local function mappings(s)
 		s.drag.x, s.drag.y, s.interacted = pos.screencol, pos.screenrow, true
 		render(s)
 	end, "Drag node or pan graph")
-	map("<LeftRelease>", function() s.drag = nil end, "Release graph drag")
+	map("<LeftRelease>", function()
+		s.drag = nil
+	end, "Release graph drag")
 end
 
 function M.open(opts)

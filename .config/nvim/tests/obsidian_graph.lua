@@ -102,7 +102,12 @@ local ok, err = xpcall(function()
 		mapping.callback()
 	end
 	local before_x = s.view.nodes[1].x
-	assert(vim.wait(1000, function() return s.view.nodes[1].x ~= before_x end), "Physics advances across visible frames")
+	assert(
+		vim.wait(1000, function()
+			return s.view.nodes[1].x ~= before_x
+		end),
+		"Physics advances across visible frames"
+	)
 	press("<Space>")
 	local paused_x = s.view.nodes[1].x
 	vim.wait(80)
@@ -110,7 +115,12 @@ local ok, err = xpcall(function()
 	press("<Space>")
 	press("h")
 	assert(s.camera.cx ~= s.cx, "Camera pans progressively")
-	assert(vim.wait(1500, function() return math.abs(s.camera.cx - s.cx) < 0.02 end), "Camera reaches pan target")
+	assert(
+		vim.wait(1500, function()
+			return math.abs(s.camera.cx - s.cx) < 0.02
+		end),
+		"Camera reaches pan target"
+	)
 	local ns = vim.api.nvim_get_namespaces().obsidian_graph
 	local ends = {}
 	for _, mark in ipairs(vim.api.nvim_buf_get_extmarks(s.buf, ns, 0, -1, { details = true })) do
