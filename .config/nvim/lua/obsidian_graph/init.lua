@@ -354,15 +354,25 @@ local function rebuild_view(s)
 	s.generation = s.generation + 1
 	local generation = s.generation
 	s.physics_pending = false
+	local frame_ms = #s.view.nodes <= 500 and 16 or 33
+	s.last_physics = nil
+	s.step_physics = function()
+		if s.paused or api.nvim_get_current_win() ~= s.win then
+			return false
+		end
+		local now = vim.uv.hrtime()
+		if s.last_physics and now - s.last_physics < frame_ms * 1000000 then
+			return false
+		end
+		s.last_physics = now
+		return layout.step(s.view, nil, s.drag and s.drag.node)
+	end
 	local function tick()
 		if not alive(s) or s.generation ~= generation then
 			return
 		end
 		s.physics_pending = false
-		local moved = false
-		if not s.paused and api.nvim_get_current_win() == s.win then
-			moved = layout.step(s.view, nil, s.drag and s.drag.node)
-		end
+		local moved = s.step_physics()
 		if moved and not s.interacted then
 			fit(s)
 		end
@@ -371,7 +381,7 @@ local function rebuild_view(s)
 		end
 		if #s.view.nodes > 0 and not s.view.settled then
 			s.physics_pending = true
-			vim.defer_fn(tick, #s.view.nodes <= 500 and 16 or 33)
+			vim.defer_fn(tick, frame_ms)
 		end
 	end
 	s.wake_physics = function()
@@ -649,7 +659,7 @@ local function mappings(s)
 	map("<2-LeftMouse>", function()
 		mouse(true)
 	end, "Open graph node")
-	map("<LeftDrag>", function()
+	local function drag_move(final)
 		if not s.drag then
 			return
 		end
@@ -667,9 +677,20 @@ local function mappings(s)
 			s.cx, s.cy = s.cx - dx, s.cy - dy
 		end
 		s.drag.x, s.drag.y, s.interacted = pos.screencol, pos.screenrow, true
-		render(s)
+		-- Input queues can starve scheduled timers during a quick drag. Advance
+		-- the same clock-gated simulation here, not only in the timer callback.
+		if s.step_physics then
+			s.step_physics()
+		end
+		if final or not s.last_frame or vim.uv.hrtime() - s.last_frame >= 16000000 then
+			render(s)
+		end
+	end
+	map("<LeftDrag>", function()
+		drag_move(false)
 	end, "Drag node or pan graph")
 	map("<LeftRelease>", function()
+		drag_move(true)
 		if s.drag and s.drag.node and s.wake_physics then
 			s.wake_physics()
 		end

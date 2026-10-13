@@ -33,6 +33,9 @@ local ok, err = xpcall(function()
 		"nvim_exec_lua",
 		[[
 		graph.paused = true
+		-- Disable the timer loop to model event-loop starvation under fast input.
+		-- Drag events must advance physics themselves, without relying on it.
+		graph.generation = graph.generation + 1
 		vim.cmd("redraw")
 		for _, hit in ipairs(graph.screen) do
 			if hit.node ~= graph.selected then
@@ -68,6 +71,22 @@ local ok, err = xpcall(function()
 			return rpc("nvim_exec_lua", "return graph.selected.x", {}) ~= original_x
 		end),
 		"Dragging moves the selected node"
+	)
+	local burst_start = rpc("nvim_exec_lua", "return neighbor.x", {})
+	for i = 1, 12 do
+		local col = hit.col + 3 + i
+		rpc("nvim_input_mouse", "left", "drag", "", 0, hit.row + 2, col)
+		assert(
+			vim.wait(1000, function()
+				return rpc("nvim_exec_lua", "return graph.drag.x", {}) == col + 1
+			end),
+			"Fast drag event processed"
+		)
+		vim.wait(8)
+	end
+	assert(
+		math.abs(rpc("nvim_exec_lua", "return neighbor.x", {}) - burst_start) > 0.05,
+		"Neighbours animate during rapid drag even without timer callbacks"
 	)
 	assert(
 		vim.wait(1500, function()
