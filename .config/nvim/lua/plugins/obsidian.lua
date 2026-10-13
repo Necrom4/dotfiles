@@ -53,10 +53,8 @@ return {
 		require("obsidian").setup(opts)
 		require("obsidian_graph").setup()
 	end,
-	cmd = { "Obsidian", "ObsidianGraph" },
+	cmd = { "Obsidian" },
 	keys = {
 		{ "<leader>fo", "<cmd>Obsidian<cr>", desc = "Obsidian" },
-		{ "<leader>oG", "<cmd>ObsidianGraph<cr>", desc = "Obsidian vault graph" },
-		{ "<leader>og", "<cmd>ObsidianGraph local<cr>", desc = "Obsidian local graph" },
 	},
 }

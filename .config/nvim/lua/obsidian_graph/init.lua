@@ -6,8 +6,6 @@ local ns = api.nvim_create_namespace("obsidian_graph")
 local active
 
 local help = {
-	"Obsidian graph — native Neovim canvas",
-	"",
 	"h j k l / arrows    Pan (counts supported)",
 	"+ / = / -          Zoom in / out",
 	"f                  Fit graph",
@@ -32,6 +30,10 @@ local help = {
 	"",
 	"Links are undirected; only existing Markdown notes are shown.",
 	"Hidden folders and symlinks are excluded. r includes unsaved buffers.",
+	"Wikilinks, Markdown links, frontmatter IDs and aliases are resolved.",
+	"Attachments, tags and unresolved links are not displayed.",
+	"Physics runs continuously up to 1,000 nodes; larger graphs settle.",
+	"Animations pause behind previews/pickers. Space freezes physics.",
 }
 
 local function dimensions()
@@ -714,19 +716,12 @@ function M.open(opts)
 end
 
 function M.setup()
-	api.nvim_create_user_command("ObsidianGraph", function(args)
-		if args.args ~= "" and args.args ~= "local" then
-			vim.notify("Usage: ObsidianGraph [local]", vim.log.levels.ERROR)
-			return
-		end
-		M.open({ local_view = args.args == "local" })
-	end, {
-		nargs = "?",
-		complete = function()
-			return { "local" }
+	-- The registry drives both :Obsidian completion and its command picker.
+	require("obsidian").register_command("graph", {
+		nargs = 0,
+		func = function()
+			M.open()
 		end,
-		desc = "Interactive Obsidian note graph",
-		force = true,
 	})
 end
 

@@ -87,7 +87,6 @@ local ok, err = xpcall(function()
 	vim.api.nvim_set_current_buf(buf)
 	local origin = vim.api.nvim_get_current_win()
 	local ui = require("obsidian_graph")
-	ui.setup()
 	local s = ui.open({ root = root, local_view = true })
 	assert(
 		vim.wait(5000, function()
