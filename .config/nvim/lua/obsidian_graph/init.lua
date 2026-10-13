@@ -2,6 +2,7 @@ local M = {}
 local api = vim.api
 local index = require("obsidian_graph.index")
 local layout = require("obsidian_graph.layout")
+local navigation = require("obsidian_graph.navigation")
 local ns = api.nvim_create_namespace("obsidian_graph")
 local active
 
@@ -478,21 +479,17 @@ local function mappings(s)
 			if not s.selected or not s.view then
 				return
 			end
-			local best, score
-			for _, node in ipairs(s.view.nodes) do
-				local dx, dy = node.x - s.selected.x, node.y - s.selected.y
-				local forward, sideways = dx * delta[1] + dy * delta[2], math.abs(dx * delta[2] - dy * delta[1])
-				local distance = math.sqrt(dx * dx + dy * dy) + sideways * 2
-				if forward > 0 and (not score or distance < score) then
-					best, score = node, distance
+			local zoom = s.camera and s.camera.zoom or s.zoom
+			for _ = 1, vim.v.count1 do
+				local best = navigation.next(s.view.nodes, s.selected, delta, zoom)
+				if not best then
+					break
 				end
-			end
-			if best then
 				s.selected = best
-				s.interacted = true
-				center(s)
-				render(s)
 			end
+			s.interacted = true
+			center(s)
+			render(s)
 		end, "Select directional node")
 	end
 	local function zoom(factor)
