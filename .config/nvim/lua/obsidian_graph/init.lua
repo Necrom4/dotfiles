@@ -457,7 +457,14 @@ local function mappings(s)
 	for key, delta in pairs({ h = { -1, 0 }, j = { 0, 1 }, k = { 0, -1 }, l = { 1, 0 } }) do
 		map({ key, ({ h = "<Left>", j = "<Down>", k = "<Up>", l = "<Right>" })[key] }, function()
 			s.interacted = true
+			-- Keyboard panning is discrete, not an accumulating camera tween.
+			if s.camera then
+				s.cx, s.cy, s.zoom = s.camera.cx, s.camera.cy, s.camera.zoom
+			end
 			s.cx, s.cy = s.cx + delta[1] * 4 * vim.v.count1 / s.zoom, s.cy + delta[2] * 8 * vim.v.count1 / s.zoom
+			if s.camera then
+				s.camera.cx, s.camera.cy = s.cx, s.cy
+			end
 			render(s)
 		end, "Pan graph")
 		map(key:upper(), function()

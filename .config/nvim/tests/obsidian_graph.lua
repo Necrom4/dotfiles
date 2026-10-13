@@ -114,7 +114,7 @@ local ok, err = xpcall(function()
 	eq(s.view.nodes[1].x, paused_x, "Pause freezes simulation")
 	press("<Space>")
 	press("h")
-	assert(s.camera.cx ~= s.cx, "Camera pans progressively")
+	eq(s.camera.cx, s.cx, "Keyboard pan is immediate, without acceleration")
 	assert(
 		vim.wait(1500, function()
 			return math.abs(s.camera.cx - s.cx) < 0.02
