@@ -1,5 +1,4 @@
 -- A real attached UI is needed for getmousepos(), borders and mouse dispatch.
-local api = vim.api
 local child = vim.fn.jobstart({ vim.v.progpath, "--embed", "--headless", "-u", "NONE" }, { rpc = true })
 local function rpc(method, ...)
 	return vim.rpcrequest(child, method, ...)
@@ -23,6 +22,12 @@ local ok, err = xpcall(function()
 	assert(vim.wait(5000, function()
 		return rpc("nvim_exec_lua", "return graph.view ~= nil", {})
 	end))
+	assert(
+		vim.wait(2000, function()
+			return rpc("nvim_exec_lua", "return math.abs(graph.camera.zoom - graph.zoom) < 0.001", {})
+		end),
+		"Initial camera settles"
+	)
 	-- Freeze layout, select a known nonselected node, then use actual screen coordinates.
 	local hit = rpc(
 		"nvim_exec_lua",
@@ -46,7 +51,14 @@ local ok, err = xpcall(function()
 		end),
 		"Real click selects node"
 	)
+	local original_x = rpc("nvim_exec_lua", "return graph.selected.x", {})
 	rpc("nvim_input_mouse", "left", "drag", "", 0, hit.row + 2, hit.col + 3)
+	assert(
+		vim.wait(1000, function()
+			return rpc("nvim_exec_lua", "return graph.selected.x", {}) ~= original_x
+		end),
+		"Dragging moves the selected node"
+	)
 	rpc("nvim_input_mouse", "left", "release", "", 0, hit.row + 2, hit.col + 3)
 	assert(
 		vim.wait(1000, function()
@@ -54,7 +66,37 @@ local ok, err = xpcall(function()
 		end),
 		"Release handled"
 	)
-	rpc("nvim_input", "q")
+	-- Click a label (not the glyph), then double-click to open its note.
+	local label = rpc(
+		"nvim_exec_lua",
+		[[
+		vim.cmd("redraw")
+		for _, hit in ipairs(graph.screen) do
+			if hit.last > hit.x + 1 then
+				local pos = vim.fn.screenpos(graph.win, hit.y, 1)
+				return {row=pos.row-1, col=pos.col+hit.x, path=hit.node.path}
+			end
+		end
+	]],
+		{}
+	)
+	assert(label, "Visible label")
+	rpc("nvim_input_mouse", "left", "press", "", 0, label.row, label.col)
+	assert(
+		vim.wait(1000, function()
+			return rpc("nvim_exec_lua", "return graph.selected.path", {}) == label.path
+		end),
+		"Label click selects note"
+	)
+	rpc("nvim_input_mouse", "left", "release", "", 0, label.row, label.col)
+	vim.wait(30)
+	rpc("nvim_input_mouse", "left", "press", "", 0, label.row, label.col)
+	assert(
+		vim.wait(1000, function()
+			return rpc("nvim_exec_lua", "return vim.api.nvim_buf_get_name(0)", {}) == label.path
+		end),
+		"Double click opens note"
+	)
 end, debug.traceback)
 vim.fn.jobstop(child)
 vim.fn.delete(root, "rf")
