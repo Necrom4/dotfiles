@@ -5,12 +5,14 @@ function M.seed(graph)
 	for i, node in ipairs(graph.nodes) do
 		local angle = i * 2.3999632297287
 		local distance = radius * math.sqrt(i / #graph.nodes)
-		node.x, node.y = math.cos(angle) * distance, math.sin(angle) * distance
+		node.x = node.x or math.cos(angle) * distance
+		node.y = node.y or math.sin(angle) * distance
+		node.vx, node.vy = 0, 0
 	end
 end
 
 -- Spatially bucket repulsion so large vaults do not need all-pairs physics.
-function M.step(graph, temperature)
+function M.step(graph, temperature, pinned)
 	local cells, forces = {}, {}
 	local size = math.max(25, math.sqrt(#graph.nodes) * 3)
 	for _, n in ipairs(graph.nodes) do
@@ -57,7 +59,13 @@ function M.step(graph, temperature)
 		local f = forces[n]
 		local length = math.sqrt(f[1] * f[1] + f[2] * f[2])
 		local scale = math.min(temperature / math.max(length, 0.001), 1)
-		n.x, n.y = n.x + f[1] * scale, n.y + f[2] * scale
+		n.vx = ((n.vx or 0) + f[1] * scale * 0.18) * 0.78
+		n.vy = ((n.vy or 0) + f[2] * scale * 0.18) * 0.78
+		if n == pinned then
+			n.vx, n.vy = 0, 0
+		else
+			n.x, n.y = n.x + n.vx, n.y + n.vy
+		end
 	end
 end
 

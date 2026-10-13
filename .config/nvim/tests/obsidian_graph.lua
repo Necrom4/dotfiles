@@ -102,6 +102,16 @@ local ok, err = xpcall(function()
 		assert(type(mapping.callback) == "function", "Mapped " .. key)
 		mapping.callback()
 	end
+	local before_x = s.view.nodes[1].x
+	assert(vim.wait(1000, function() return s.view.nodes[1].x ~= before_x end), "Physics advances across visible frames")
+	press("<Space>")
+	local paused_x = s.view.nodes[1].x
+	vim.wait(80)
+	eq(s.view.nodes[1].x, paused_x, "Pause freezes simulation")
+	press("<Space>")
+	press("h")
+	assert(s.camera.cx ~= s.cx, "Camera pans progressively")
+	assert(vim.wait(1500, function() return math.abs(s.camera.cx - s.cx) < 0.02 end), "Camera reaches pan target")
 	press("+")
 	press("h")
 	press("f")

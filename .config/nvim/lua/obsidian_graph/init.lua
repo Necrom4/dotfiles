@@ -22,6 +22,7 @@ local help = {
 	"[ / ]              Decrease / increase local depth (1–5)",
 	"L is directional; b toggles labels",
 	"r                  Reindex notes and rebuild layout",
+	"Space              Pause/resume physics animation",
 	"Left click         Select node or label",
 	"Double click       Open node",
 	"Left drag          Move node; drag background to pan",
@@ -86,7 +87,9 @@ local function fit(s)
 end
 
 local function project(s, n)
-	return math.floor((n.x - s.cx) * s.zoom + s.width / 2), math.floor((n.y - s.cy) * s.zoom / 2 + (s.height - 2) / 2) + 1
+	local camera = s.camera or { cx = s.cx, cy = s.cy, zoom = s.zoom }
+	return (n.x - camera.cx) * camera.zoom + s.width / 2,
+		(n.y - camera.cy) * camera.zoom / 2 + (s.height - 2) / 2 + 1
 end
 
 local function clipped(text, width)
@@ -107,6 +110,28 @@ local function render(s)
 		return
 	end
 	s.width, s.height = api.nvim_win_get_width(s.win), api.nvim_win_get_height(s.win)
+	local now = vim.uv.hrtime()
+	local dt = math.min(0.1, (now - (s.last_frame or now)) / 1e9)
+	s.last_frame = now
+	s.camera = s.camera or { cx = s.cx, cy = s.cy, zoom = s.zoom }
+	local moving = false
+	for _, key in ipairs({ "cx", "cy", "zoom" }) do
+		local diff = s[key] - s.camera[key]
+		local tolerance = key == "zoom" and 0.0001 or 0.01
+		if math.abs(diff) > tolerance then
+			s.camera[key] = s.camera[key] + diff * (s.drag and 1 or (1 - math.exp(-dt * 14)))
+			moving = true
+		else
+			s.camera[key] = s[key]
+		end
+	end
+	if moving and not s.camera_pending then
+		s.camera_pending = true
+		vim.defer_fn(function()
+			s.camera_pending = false
+			if alive(s) then render(s) end
+		end, 16)
+	end
 	local cells, marks = {}, {}
 	for y = 1, s.height do
 		cells[y] = {}
@@ -218,6 +243,7 @@ local function render(s)
 		local occupied = {}
 		for _, n in ipairs(ordered) do
 			local x, y = project(s, n)
+			x, y = math.floor(x), math.floor(y)
 			if x >= 1 and x <= s.width and y > 1 and y < s.height then
 				local hl = n == selected and "ObsidianGraphSelected"
 					or selected and selected.neighbors[n] and "ObsidianGraphNeighbor"
@@ -308,17 +334,16 @@ local function rebuild_view(s)
 		if not alive(s) or s.generation ~= generation then
 			return
 		end
-		local deadline = vim.uv.hrtime() + 6000000
-		repeat
+		if not s.paused and api.nvim_get_current_win() == s.win then
 			iteration = iteration + 1
-			layout.step(s.view, 2 * (1 - iteration / 160) + 0.05)
-		until iteration >= 160 or vim.uv.hrtime() >= deadline
+			layout.step(s.view, math.max(0.08, 2 * math.exp(-iteration / 120)), s.drag and s.drag.node)
+		end
 		if not s.interacted then
 			fit(s)
 		end
 		render(s)
-		if iteration < 160 then
-			vim.defer_fn(tick, 25)
+		if #s.view.nodes > 0 and (#s.view.nodes <= 1000 or iteration < 160) then
+			vim.defer_fn(tick, #s.view.nodes <= 500 and 16 or 33)
 		end
 	end
 	render(s)
@@ -540,6 +565,7 @@ local function mappings(s)
 	map("r", function()
 		refresh(s)
 	end, "Refresh graph")
+	map("<Space>", function() s.paused = not s.paused end, "Pause/resume graph physics")
 	map("?", function()
 		popup(s, help, "text")
 	end, "Graph help")
@@ -577,7 +603,8 @@ local function mappings(s)
 	map("<LeftDrag>", function()
 		if not s.drag then return end
 		local pos = vim.fn.getmousepos()
-		local dx, dy = (pos.screencol - s.drag.x) / s.zoom, (pos.screenrow - s.drag.y) * 2 / s.zoom
+		local zoom = s.camera and s.camera.zoom or s.zoom
+		local dx, dy = (pos.screencol - s.drag.x) / zoom, (pos.screenrow - s.drag.y) * 2 / zoom
 		if s.drag.node then
 			local n = s.drag.node
 			n.x, n.y = n.x + dx, n.y + dy
