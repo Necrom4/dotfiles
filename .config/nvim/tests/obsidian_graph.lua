@@ -113,7 +113,7 @@ local ok, err = xpcall(function()
 	vim.wait(80)
 	eq(s.view.nodes[1].x, paused_x, "Pause freezes simulation")
 	press("<Space>")
-	press("h")
+	press("H")
 	eq(s.camera.cx, s.cx, "Keyboard pan is immediate, without acceleration")
 	assert(
 		vim.wait(1500, function()
@@ -129,7 +129,7 @@ local ok, err = xpcall(function()
 		ends[row] = details.end_col
 	end
 	press("+")
-	press("h")
+	press("H")
 	press("f")
 	press("b")
 	press("<Tab>")

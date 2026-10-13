@@ -6,19 +6,19 @@ local ns = api.nvim_create_namespace("obsidian_graph")
 local active
 
 local help = {
-	"h j k l / arrows    Pan (counts supported)",
+	"H J K L / arrows    Pan (counts supported)",
 	"+ / = / -          Zoom in / out",
 	"f                  Fit graph",
 	"c                  Centre selected note",
 	"Tab / Shift-Tab    Select next / previous note",
-	"H J K L            Select nearest node in that direction",
+	"h j k l            Select nearest node in that direction",
 	"/                  Find/select a note (path and aliases)",
 	"Enter              Close graph and open selected note",
 	"s / v / t          Open note in split / vsplit / tab",
 	"p                  Preview selected note",
 	"g                  Toggle vault / local graph",
 	"[ / ]              Decrease / increase local depth (1–5)",
-	"L is directional; b toggles labels",
+	"b                  Toggle labels",
 	"r                  Reindex notes and rebuild layout",
 	"Space              Pause/resume physics animation",
 	"Left click         Select node or label",
@@ -462,7 +462,7 @@ local function mappings(s)
 		end
 	end
 	for key, delta in pairs({ h = { -1, 0 }, j = { 0, 1 }, k = { 0, -1 }, l = { 1, 0 } }) do
-		map({ key, ({ h = "<Left>", j = "<Down>", k = "<Up>", l = "<Right>" })[key] }, function()
+		map({ key:upper(), ({ h = "<Left>", j = "<Down>", k = "<Up>", l = "<Right>" })[key] }, function()
 			s.interacted = true
 			-- Keyboard panning is discrete, not an accumulating camera tween.
 			if s.camera then
@@ -474,7 +474,7 @@ local function mappings(s)
 			end
 			render(s)
 		end, "Pan graph")
-		map(key:upper(), function()
+		map(key, function()
 			if not s.selected or not s.view then
 				return
 			end
