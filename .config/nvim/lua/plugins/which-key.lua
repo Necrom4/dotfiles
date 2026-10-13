@@ -10,6 +10,7 @@ return {
 				{ "<leader>cP", desc = "Pwned?", icon = { icon = " ", color = "red" } },
 				{ "<leader>d", group = "diff", icon = { icon = " ", color = "yellow" } },
 				{ "<leader>dh", icon = { icon = " ", color = "green" } },
+				{ "<leader>fo", icon = { icon = " ", color = "purple" } },
 				{ "<leader>gg", desc = "Neogit", icon = { icon = "󰊢 ", color = "orange" } },
 				{ "<leader>h", group = "history", icon = { icon = " ", color = "green" } },
 				{ "<leader>n", group = "notes", icon = { icon = "󰠮 ", color = "blue" } },
