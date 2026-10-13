@@ -132,9 +132,9 @@ local function render(s)
 			if alive(s) then render(s) end
 		end, 16)
 	end
-	local cells, marks = {}, {}
+	local cells, colors = {}, {}
 	for y = 1, s.height do
-		cells[y] = {}
+		cells[y], colors[y] = {}, {}
 		for x = 1, s.width do
 			cells[y][x] = " "
 		end
@@ -143,7 +143,6 @@ local function render(s)
 		if y < 1 or y > s.height then
 			return
 		end
-		local start = x
 		for _, char in ipairs(vim.fn.split(text, "\\zs")) do
 			local width = vim.fn.strdisplaywidth(char)
 			if x >= 1 and x + width - 1 <= s.width and width > 0 then
@@ -156,17 +155,16 @@ local function render(s)
 					local old_width = vim.fn.strdisplaywidth(cells[y][first])
 					for c = first, math.min(s.width, first + old_width - 1) do
 						cells[y][c] = " "
+						colors[y][c] = nil
 					end
 				end
 				cells[y][x] = char
+				for c = x, x + width - 1 do colors[y][c] = hl end
 				for c = x + 1, x + width - 1 do
 					cells[y][c] = ""
 				end
 			end
 			x = x + width
-		end
-		if hl then
-			table.insert(marks, { y = y, x = math.max(1, start), last = math.min(x, s.width + 1), hl = hl })
 		end
 	end
 	local selected = s.selected
@@ -240,7 +238,11 @@ local function render(s)
 		if selected then
 			table.insert(ordered, selected)
 		end
-		local occupied = {}
+		local occupied, labels = {}, {}
+		for _, n in ipairs(ordered) do
+			local x, y = project(s, n)
+			occupied[math.floor(y) .. ":" .. math.floor(x)] = true
+		end
 		for _, n in ipairs(ordered) do
 			local x, y = project(s, n)
 			x, y = math.floor(x), math.floor(y)
@@ -253,21 +255,24 @@ local function render(s)
 				if s.labels or n == selected then
 					local label = clipped(" " .. n.label, math.min(30, s.width - x))
 					local width = vim.fn.strdisplaywidth(label)
-					local free = true
-					for col = x, x + width do
-						if occupied[y .. ":" .. col] then
-							free = false
-						end
-					end
-					if free or n == selected then
-						put(x + 1, y, label, hl)
-						last = x + width
-						for col = x, last do
-							occupied[y .. ":" .. col] = true
-						end
-					end
+					table.insert(labels, { x = x, y = y, width = width, text = label, hl = hl, node = n })
 				end
 				table.insert(s.screen, { node = n, x = x, y = y, last = last })
+			end
+		end
+		-- Selected label gets first choice; later labels cannot overwrite it.
+		for i = #labels, 1, -1 do
+			local label = labels[i]
+			local free = true
+			for col = label.x + 1, label.x + label.width do
+				if occupied[label.y .. ":" .. col] then free = false end
+			end
+			if free then
+				put(label.x + 1, label.y, label.text, label.hl)
+				for col = label.x + 1, label.x + label.width do occupied[label.y .. ":" .. col] = true end
+				for _, hit in ipairs(s.screen) do
+					if hit.node == label.node then hit.last = label.x + label.width end
+				end
 			end
 		end
 	end
@@ -297,10 +302,18 @@ local function render(s)
 	api.nvim_buf_set_lines(s.buf, 0, -1, false, lines)
 	vim.bo[s.buf].modifiable = false
 	api.nvim_buf_clear_namespace(s.buf, ns, 0, -1)
-	for _, mark in ipairs(marks) do
-		local start, finish = offsets[mark.y][mark.x], offsets[mark.y][mark.last]
-		if finish > start then
-			api.nvim_buf_set_extmark(s.buf, ns, mark.y - 1, start, { end_col = finish, hl_group = mark.hl, priority = 110 })
+	-- Highlight only the final composited cells, never overlapping edge/label ranges.
+	for y = 1, s.height do
+		local x = 1
+		while x <= s.width do
+			local hl, first = colors[y][x], x
+			x = x + 1
+			while x <= s.width and colors[y][x] == hl do x = x + 1 end
+			if hl and offsets[y][x] > offsets[y][first] then
+				api.nvim_buf_set_extmark(s.buf, ns, y - 1, offsets[y][first], {
+					end_col = offsets[y][x], hl_group = hl, priority = 110,
+				})
+			end
 		end
 	end
 	for _, n in ipairs(s.screen) do

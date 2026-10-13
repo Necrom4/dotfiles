@@ -112,6 +112,13 @@ local ok, err = xpcall(function()
 	press("h")
 	assert(s.camera.cx ~= s.cx, "Camera pans progressively")
 	assert(vim.wait(1500, function() return math.abs(s.camera.cx - s.cx) < 0.02 end), "Camera reaches pan target")
+	local ns = vim.api.nvim_get_namespaces().obsidian_graph
+	local ends = {}
+	for _, mark in ipairs(vim.api.nvim_buf_get_extmarks(s.buf, ns, 0, -1, { details = true })) do
+		local row, col, details = mark[2], mark[3], mark[4]
+		assert(col >= (ends[row] or 0), "Final graph highlight ranges never overlap")
+		ends[row] = details.end_col
+	end
 	press("+")
 	press("h")
 	press("f")
