@@ -10,10 +10,7 @@ return {
 
 		local class = vim.trim(string.lower(utils.yadm_config("local.class")))
 		if class == "" then
-			vim.notify(
-				"obsidian.nvim: yadm config `local.class` is not set; falling back to 'default'",
-				vim.log.levels.WARN
-			)
+			vim.notify("obsidian.nvim: yadm config `local.class` is not set; falling back to 'default'", vim.log.levels.WARN)
 			class = "default"
 		end
 
@@ -52,8 +49,14 @@ return {
 			},
 		}
 	end,
-	cmd = { "Obsidian" },
+	config = function(_, opts)
+		require("obsidian").setup(opts)
+		require("obsidian_graph").setup()
+	end,
+	cmd = { "Obsidian", "ObsidianGraph" },
 	keys = {
 		{ "<leader>fo", "<cmd>Obsidian<cr>", desc = "Obsidian" },
+		{ "<leader>oG", "<cmd>ObsidianGraph<cr>", desc = "Obsidian vault graph" },
+		{ "<leader>og", "<cmd>ObsidianGraph local<cr>", desc = "Obsidian local graph" },
 	},
 }
