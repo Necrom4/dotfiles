@@ -29,4 +29,28 @@ for _, zoom in ipairs({ 0.01, 0.1, 1, 5, 20 }) do
 		"Navigation ranking is independent of zoom"
 	)
 end
+local almost_up = { x = 0.5, y = -4 }
+local almost_right = { x = 5, y = 1 }
+for _, zoom in ipairs({ 0.01, 0.1, 1, 5, 20 }) do
+	local example = { origin, almost_up, almost_right }
+	assert(navigation.next(example, origin, { 0, -1 }, zoom) == almost_up, "Up selects the node 4 units up and 0.5 right")
+	assert(
+		navigation.next(example, origin, { 1, 0 }, zoom) == almost_right,
+		"Right selects the node 5 units right and 1 down, not the node above"
+	)
+	local slightly_further_right = { x = 5.1, y = 1.1 }
+	assert(
+		navigation.next({ origin, almost_up, slightly_further_right }, origin, { 1, 0 }, zoom) == slightly_further_right,
+		"Small spacing changes must not switch rightward navigation to the node above"
+	)
+	assert(
+		navigation.next({ origin, almost_up }, origin, { 1, 0 }, zoom) == nil,
+		"No rightward candidate must not fall back to an almost vertical node"
+	)
+end
+-- Mirror the example to cover left/down as well, without depending on node order.
+local almost_down = { x = -0.5, y = 4 }
+local almost_left = { x = -5, y = -1 }
+assert(navigation.next({ almost_left, origin, almost_down }, origin, { -1, 0 }, 1) == almost_left)
+assert(navigation.next({ almost_left, origin, almost_down }, origin, { 0, 1 }, 1) == almost_down)
 print("Graph directional navigation tests passed")
