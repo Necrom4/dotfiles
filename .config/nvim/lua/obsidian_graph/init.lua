@@ -24,6 +24,7 @@ local help = {
 	"r                  Reindex notes and rebuild layout",
 	"Left click         Select node or label",
 	"Double click       Open node",
+	"Left drag          Move node; drag background to pan",
 	"Mouse wheel        Zoom",
 	"?                  Show this help",
 	"q / Esc            Close graph without changing your note",
@@ -547,12 +548,16 @@ local function mappings(s)
 	end, "Close graph")
 	local function mouse(open)
 		local pos = vim.fn.getmousepos()
-		if pos.winid ~= s.win then
+		if pos.winid ~= s.win or pos.line < 1 then
 			return
 		end
+		local line = api.nvim_buf_get_lines(s.buf, pos.line - 1, pos.line, false)[1] or ""
+		local x = vim.fn.strdisplaywidth(line:sub(1, pos.column - 1)) + 1 + (pos.coladd or 0)
+		s.drag = { x = pos.screencol, y = pos.screenrow }
 		for i = #s.screen, 1, -1 do
 			local hit = s.screen[i]
-			if pos.winrow == hit.y and pos.wincol >= hit.x and pos.wincol <= hit.last then
+			if pos.line == hit.y and x >= hit.x and x <= hit.last then
+				s.drag.node = hit.node
 				s.selected, s.interacted = hit.node, true
 				if open then
 					open_note(s, "edit")
@@ -569,6 +574,20 @@ local function mappings(s)
 	map("<2-LeftMouse>", function()
 		mouse(true)
 	end, "Open graph node")
+	map("<LeftDrag>", function()
+		if not s.drag then return end
+		local pos = vim.fn.getmousepos()
+		local dx, dy = (pos.screencol - s.drag.x) / s.zoom, (pos.screenrow - s.drag.y) * 2 / s.zoom
+		if s.drag.node then
+			local n = s.drag.node
+			n.x, n.y = n.x + dx, n.y + dy
+		else
+			s.cx, s.cy = s.cx - dx, s.cy - dy
+		end
+		s.drag.x, s.drag.y, s.interacted = pos.screencol, pos.screenrow, true
+		render(s)
+	end, "Drag node or pan graph")
+	map("<LeftRelease>", function() s.drag = nil end, "Release graph drag")
 end
 
 function M.open(opts)
