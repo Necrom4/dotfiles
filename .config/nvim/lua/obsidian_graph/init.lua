@@ -182,7 +182,7 @@ local function render(s)
 		-- Braille edge raster: 2×4 subpixels per terminal cell.
 		local dots = {}
 		local bits = { { 1, 2, 4, 64 }, { 8, 16, 32, 128 } }
-		local function dot(px, py, focused)
+		local function dot(px, py, connected)
 			local x, y = math.floor(px / 2) + 1, math.floor(py / 4) + 1
 			if x < 1 or x > s.width or y < 2 or y >= s.height then
 				return
@@ -190,7 +190,8 @@ local function render(s)
 			local id = y * s.width + x
 			local d = dots[id] or { x = x, y = y, mask = 0 }
 			d.mask = bit.bor(d.mask, bits[px % 2 + 1][py % 4 + 1])
-			d.focused = d.focused or focused
+			-- Selected edges win where multiple lines share a braille cell.
+			d.connected = d.connected or connected
 			dots[id] = d
 		end
 		for _, edge in ipairs(s.view.edges) do
@@ -226,7 +227,7 @@ local function render(s)
 			end
 		end
 		for _, d in pairs(dots) do
-			put(d.x, d.y, vim.fn.nr2char(0x2800 + d.mask), d.focused and "ObsidianGraphLink" or "Comment")
+			put(d.x, d.y, vim.fn.nr2char(0x2800 + d.mask), d.connected and "ObsidianGraphLink" or "ObsidianGraphInactiveLink")
 		end
 		local ordered = {}
 		for _, n in ipairs(s.view.nodes) do
@@ -745,15 +746,21 @@ function M.open(opts)
 	vim.wo[s.win].list = false
 	vim.wo[s.win].spell, vim.wo[s.win].cursorcolumn, vim.wo[s.win].foldenable = false, false, false
 	active = s
-	for name, link in pairs({
-		ObsidianGraphNode = "Identifier",
-		ObsidianGraphNeighbor = "String",
-		ObsidianGraphSelected = "IncSearch",
-		ObsidianGraphLink = "Special",
-	}) do
-		api.nvim_set_hl(0, name, { default = true, link = link })
+	local function highlights()
+		for name, color in pairs({
+			ObsidianGraphNode = "#787E93",
+			ObsidianGraphNeighbor = "#C099FF",
+			ObsidianGraphSelected = "#FF966C",
+			ObsidianGraphLink = "#C099FF",
+			ObsidianGraphInactiveLink = "#787E93",
+		}) do
+			-- Explicit foreground-only colours avoid inherited selection backgrounds.
+			api.nvim_set_hl(0, name, { fg = color })
+		end
 	end
+	highlights()
 	s.group = api.nvim_create_augroup("ObsidianGraphView" .. s.buf, { clear = true })
+	api.nvim_create_autocmd("ColorScheme", { group = s.group, callback = highlights })
 	api.nvim_create_autocmd("VimResized", {
 		group = s.group,
 		callback = function()

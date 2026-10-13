@@ -95,6 +95,23 @@ local ok, err = xpcall(function()
 		"UI indexed"
 	)
 	assert(vim.api.nvim_win_is_valid(s.win), "Graph window exists")
+	local function check_colors()
+		for group, color in pairs({
+			ObsidianGraphNode = 0x787E93,
+			ObsidianGraphNeighbor = 0xC099FF,
+			ObsidianGraphSelected = 0xFF966C,
+			ObsidianGraphLink = 0xC099FF,
+			ObsidianGraphInactiveLink = 0x787E93,
+		}) do
+			local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
+			eq(hl.fg, color, group .. " foreground")
+			assert(not hl.bg, group .. " has no background")
+		end
+	end
+	check_colors()
+	vim.api.nvim_set_hl(0, "ObsidianGraphSelected", { bg = "#FF0000" })
+	vim.api.nvim_exec_autocmds("ColorScheme", {})
+	check_colors()
 	eq(#s.view.nodes, 2, "Local view contains current note and neighbor")
 	local function press(key)
 		local mapping = vim.fn.maparg(key, "n", false, true)
@@ -135,6 +152,32 @@ local ok, err = xpcall(function()
 	press("<Tab>")
 	press("g")
 	eq(#s.view.nodes, 3, "Global toggle")
+	s.paused, s.interacted = true, true
+	local na, nb, nc = s.view.nodes[1], s.view.nodes[2], s.view.nodes[3]
+	na.x, na.y, nb.x, nb.y, nc.x, nc.y = -15, -8, 15, -8, 0, 8
+	s.cx, s.cy, s.zoom = 0, 0, 1
+	s.camera = { cx = 0, cy = 0, zoom = 1 }
+	s.selected = na
+	press("b")
+	local function edges_by_color()
+		local colors = {}
+		for _, mark in ipairs(vim.api.nvim_buf_get_extmarks(s.buf, ns, 0, -1, { details = true })) do
+			local hl = mark[4].hl_group
+			if hl == "ObsidianGraphLink" or hl == "ObsidianGraphInactiveLink" then
+				colors[hl] = colors[hl] or {}
+				table.insert(colors[hl], { mark[2], mark[3], mark[4].end_col })
+			end
+		end
+		return colors
+	end
+	local before = edges_by_color()
+	assert(before.ObsidianGraphLink and before.ObsidianGraphInactiveLink, "Selected edges purple, others gray")
+	press("l")
+	eq(s.selected, nb, "Navigation changes selected endpoint")
+	local after = edges_by_color()
+	assert(after.ObsidianGraphLink and after.ObsidianGraphInactiveLink, "Both edge colours remain after selection")
+	assert(not vim.deep_equal(before.ObsidianGraphLink, after.ObsidianGraphLink), "Purple edges follow selection")
+	s.paused = false
 	press("r")
 	press("g")
 	assert(
