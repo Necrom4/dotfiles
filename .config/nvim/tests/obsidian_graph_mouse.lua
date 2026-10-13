@@ -89,9 +89,11 @@ local ok, err = xpcall(function()
 		[[
 		vim.cmd("redraw")
 		for _, hit in ipairs(graph.screen) do
-			if hit.last > hit.x + 1 then
-				local pos = vim.fn.screenpos(graph.win, hit.y, 1)
-				return {row=pos.row-1, col=pos.col+hit.x, path=hit.node.path}
+			if hit.label_y then
+				assert(hit.label_y == hit.y + 1, "Filename is below its dot")
+				assert(hit.label_x <= hit.x and hit.label_last >= hit.x, "Filename is centred under dot")
+				local pos = vim.fn.screenpos(graph.win, hit.label_y, 1)
+				return {row=pos.row-1, col=pos.col+hit.label_x-2, path=hit.node.path}
 			end
 		end
 	]],

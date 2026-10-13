@@ -250,10 +250,11 @@ local function render(s)
 					or "ObsidianGraphNode"
 				put(x, y, n == selected and "◆" or "●", hl)
 				local last = x
-				if s.labels or n == selected then
-					local label = clipped(" " .. n.label, math.min(30, s.width - x))
+				if (s.labels or n == selected) and y + 1 < s.height then
+					local label = clipped(n.label, math.min(30, s.width))
 					local width = vim.fn.strdisplaywidth(label)
-					table.insert(labels, { x = x, y = y, width = width, text = label, hl = hl, node = n })
+					local left = math.max(1, math.min(s.width - width + 1, x - math.floor((width - 1) / 2)))
+					table.insert(labels, { x = left, y = y + 1, width = width, text = label, hl = hl, node = n })
 				end
 				table.insert(s.screen, { node = n, x = x, y = y, last = last })
 			end
@@ -262,19 +263,19 @@ local function render(s)
 		for i = #labels, 1, -1 do
 			local label = labels[i]
 			local free = true
-			for col = label.x + 1, label.x + label.width do
+			for col = label.x, label.x + label.width - 1 do
 				if occupied[label.y .. ":" .. col] then
 					free = false
 				end
 			end
 			if free then
-				put(label.x + 1, label.y, label.text, label.hl)
-				for col = label.x + 1, label.x + label.width do
+				put(label.x, label.y, label.text, label.hl)
+				for col = label.x, label.x + label.width - 1 do
 					occupied[label.y .. ":" .. col] = true
 				end
 				for _, hit in ipairs(s.screen) do
 					if hit.node == label.node then
-						hit.last = label.x + label.width
+						hit.label_x, hit.label_y, hit.label_last = label.x, label.y, label.x + label.width - 1
 					end
 				end
 			end
@@ -628,7 +629,9 @@ local function mappings(s)
 		s.drag = { x = pos.screencol, y = pos.screenrow }
 		for i = #s.screen, 1, -1 do
 			local hit = s.screen[i]
-			if pos.line == hit.y and x >= hit.x and x <= hit.last then
+			local dot_hit = pos.line == hit.y and x >= hit.x and x <= hit.last
+			local label_hit = pos.line == hit.label_y and x >= hit.label_x and x <= hit.label_last
+			if dot_hit or label_hit then
 				s.drag.node = hit.node
 				if s.wake_physics then
 					s.wake_physics()
