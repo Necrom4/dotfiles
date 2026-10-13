@@ -27,13 +27,6 @@ local help = {
 	"Mouse wheel        Zoom",
 	"?                  Show this help",
 	"q / Esc            Close graph without changing your note",
-	"",
-	"Links are undirected; only existing Markdown notes are shown.",
-	"Hidden folders and symlinks are excluded. r includes unsaved buffers.",
-	"Wikilinks, Markdown links, frontmatter IDs and aliases are resolved.",
-	"Attachments, tags and unresolved links are not displayed.",
-	"Physics runs continuously up to 1,000 nodes; larger graphs settle.",
-	"Animations pause behind previews/pickers. Space freezes physics.",
 }
 
 local function dimensions()
@@ -357,24 +350,37 @@ local function rebuild_view(s)
 	layout.seed(s.view)
 	fit(s)
 	s.generation = s.generation + 1
-	local generation, iteration = s.generation, 0
+	local generation = s.generation
+	s.physics_pending = false
 	local function tick()
 		if not alive(s) or s.generation ~= generation then
 			return
 		end
+		s.physics_pending = false
+		local moved = false
 		if not s.paused and api.nvim_get_current_win() == s.win then
-			iteration = iteration + 1
-			layout.step(s.view, math.max(0.08, 2 * math.exp(-iteration / 120)), s.drag and s.drag.node)
+			moved = layout.step(s.view, nil, s.drag and s.drag.node)
 		end
-		if not s.interacted then
+		if moved and not s.interacted then
 			fit(s)
 		end
-		render(s)
-		if #s.view.nodes > 0 and (#s.view.nodes <= 1000 or iteration < 160) then
+		if moved then
+			render(s)
+		end
+		if #s.view.nodes > 0 and not s.view.settled then
+			s.physics_pending = true
 			vim.defer_fn(tick, #s.view.nodes <= 500 and 16 or 33)
 		end
 	end
+	s.wake_physics = function()
+		layout.reheat(s.view)
+		if not s.physics_pending then
+			s.physics_pending = true
+			vim.schedule(tick)
+		end
+	end
 	render(s)
+	s.physics_pending = true
 	vim.schedule(tick)
 end
 
@@ -602,6 +608,9 @@ local function mappings(s)
 	end, "Refresh graph")
 	map("<Space>", function()
 		s.paused = not s.paused
+		if not s.paused and s.wake_physics then
+			s.wake_physics()
+		end
 	end, "Pause/resume graph physics")
 	map("?", function()
 		popup(s, help, "text")
@@ -621,6 +630,9 @@ local function mappings(s)
 			local hit = s.screen[i]
 			if pos.line == hit.y and x >= hit.x and x <= hit.last then
 				s.drag.node = hit.node
+				if s.wake_physics then
+					s.wake_physics()
+				end
 				s.selected, s.interacted = hit.node, true
 				if open then
 					open_note(s, "edit")
@@ -647,6 +659,10 @@ local function mappings(s)
 		if s.drag.node then
 			local n = s.drag.node
 			n.x, n.y = n.x + dx, n.y + dy
+			n.vx, n.vy = 0, 0
+			if s.wake_physics then
+				s.wake_physics()
+			end
 		else
 			s.cx, s.cy = s.cx - dx, s.cy - dy
 		end
@@ -654,6 +670,9 @@ local function mappings(s)
 		render(s)
 	end, "Drag node or pan graph")
 	map("<LeftRelease>", function()
+		if s.drag and s.drag.node and s.wake_physics then
+			s.wake_physics()
+		end
 		s.drag = nil
 	end, "Release graph drag")
 end

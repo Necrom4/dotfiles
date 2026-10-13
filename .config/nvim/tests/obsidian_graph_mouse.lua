@@ -32,7 +32,7 @@ local ok, err = xpcall(function()
 	local hit = rpc(
 		"nvim_exec_lua",
 		[[
-		graph.generation = graph.generation + 1
+		graph.paused = true
 		vim.cmd("redraw")
 		for _, hit in ipairs(graph.screen) do
 			if hit.node ~= graph.selected then
@@ -52,6 +52,16 @@ local ok, err = xpcall(function()
 		"Real click selects node"
 	)
 	local original_x = rpc("nvim_exec_lua", "return graph.selected.x", {})
+	local neighbor_x = rpc(
+		"nvim_exec_lua",
+		[[
+		graph.paused = false
+		for _, n in ipairs(graph.view.nodes) do
+			if n ~= graph.selected then _G.neighbor = n; return n.x end
+		end
+	]],
+		{}
+	)
 	rpc("nvim_input_mouse", "left", "drag", "", 0, hit.row + 2, hit.col + 3)
 	assert(
 		vim.wait(1000, function()
@@ -59,6 +69,13 @@ local ok, err = xpcall(function()
 		end),
 		"Dragging moves the selected node"
 	)
+	assert(
+		vim.wait(1500, function()
+			return math.abs(rpc("nvim_exec_lua", "return neighbor.x", {}) - neighbor_x) > 0.05
+		end),
+		"Connected neighbour responds while a node is held"
+	)
+	rpc("nvim_exec_lua", "graph.paused = true", {})
 	rpc("nvim_input_mouse", "left", "release", "", 0, hit.row + 2, hit.col + 3)
 	assert(
 		vim.wait(1000, function()
