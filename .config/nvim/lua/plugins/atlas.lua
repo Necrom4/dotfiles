@@ -23,18 +23,25 @@ return {
 			gitlab = {
 				views = {
 					{
-						name = "Reviewing",
+						name = "Waiting for review",
 						key = "1",
+						scope = "reviews_for_me",
+						state = "opened",
+						review_states = { "UNREVIEWED", "REVIEW_STARTED" },
+					},
+					{
+						name = "Reviewing",
+						key = "2",
 						scope = "reviews_for_me",
 					},
 					{
 						name = "Assigned",
-						key = "2",
+						key = "3",
 						scope = "assigned_to_me",
 					},
 					{
 						name = "Created",
-						key = "3",
+						key = "4",
 						scope = "created_by_me",
 					},
 				},
