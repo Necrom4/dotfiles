@@ -1118,7 +1118,7 @@ def run_source(config: dict) -> str:
             key, selected = chooser(
                 options, header=header, preview=preview, keys="enter,ctrl-s,ctrl-q"
             )
-            if key == "ctrl-q" or (key == "escape" and selected_folder is None):
+            if key == "escape" or (key == "ctrl-q" and selected_folder is None):
                 return key
             if key == "escape":
                 selected_folder = None
@@ -1135,9 +1135,9 @@ def run_source(config: dict) -> str:
                     selected_folder = folder_rows[index][0]
                     continue
                 result = browse_feed(api, feeds[index], scratch)
-                if result == "ctrl-q":
-                    return result
                 if result == "escape":
+                    return result
+                if result == "ctrl-q":
                     try:
                         feeds_data = authenticated(api, api.feeds)
                     except ReaderError as exc:
@@ -1158,7 +1158,7 @@ def run() -> None:
         ]
         key, selected = chooser(
             options,
-            header="RSS sources\nctrl-q quit",
+            header="RSS sources",
             keys="enter,ctrl-q",
         )
         if key in ("escape", "ctrl-q") or not selected:
@@ -1168,5 +1168,5 @@ def run() -> None:
         except ReaderError as exc:
             show_message(str(exc))
             continue
-        if result == "ctrl-q":
+        if result == "escape":
             return
