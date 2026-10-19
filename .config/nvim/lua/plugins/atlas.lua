@@ -6,6 +6,16 @@ return {
 	},
 	cmd = { "Atlas", "AtlasDiff" },
 	opts = {
+		keymaps = {
+			ui = {
+				show_details = "gK",
+			},
+			pulls = {
+				review = {
+					show_details = "gK",
+				},
+			},
+		},
 		providers = {
 			github = {},
 			gitlab = {

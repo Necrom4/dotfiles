@@ -8,6 +8,15 @@ return {
 		history = {
 			view_mode = "tree",
 		},
+		keymaps = {
+			explorer = {
+				hover = "gK",
+			},
+			view = {
+				next_hunk = "]g",
+				prev_hunk = "[g",
+			},
+		},
 	},
 	cmd = "CodeDiff",
 	keys = {
