@@ -1,10 +1,13 @@
 return {
 	"petertriho/nvim-scrollbar",
-	dependencies = { "kevinhwang91/nvim-hlslens", "lewis6991/gitsigns.nvim" },
+	branch = "refactor/v2", -- drop this line once v2 lands on main (2026-11-16)
+	dependencies = { "lewis6991/gitsigns.nvim" },
 	event = { "BufNewFile", "BufReadPost" },
 	opts = {
-		handle = {
-			highlight = "Cursor",
+		scrollbar = {
+			thumb = {
+				highlight = "Cursor",
+			},
 		},
 		marks = {
 			Cursor = { text = "▒" },
@@ -18,12 +21,14 @@ return {
 			GitChange = { text = "┃", highlight = "ScrollbarGitChange" },
 			GitDelete = { highlight = "ScrollbarGitDelete" },
 		},
-		handlers = { search = true, gitsigns = true },
-		excluded_buftypes = {
-			"terminal",
-			"nofile",
-			"prompt",
-			"quickfix",
+		providers = { search = true, gitsigns = true },
+		exclude = {
+			buftypes = {
+				"terminal",
+				"nofile",
+				"prompt",
+				"quickfix",
+			},
 		},
 	},
 }
