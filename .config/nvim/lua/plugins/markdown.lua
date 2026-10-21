@@ -110,13 +110,18 @@ return {
 		ft = { "markdown", "mermaid" },
 		config = function()
 			require("mdkite").setup({
-				-- all optional; sane defaults shown
-				instance_mode = "takeover", -- "takeover" (one tab) or "multi" (tab per instance)
-				port = 0, -- 0 = auto (8421 for takeover, OS-assigned for multi)
-				open_browser = true,
-				default_theme = "dark", -- "dark" or "light"; initial preview theme
-				debounce_ms = 300,
+				mermaid_elk = true,
 			})
+
+			local util = require("mdkite.util")
+			local read_text = util.read_text
+			util.read_text = function(path, ...)
+				local s = read_text(path, ...)
+				if type(s) == "string" and tostring(path):match("index%.html$") then
+					s = (s:gsub("startOnLoad: false,", "startOnLoad: false, layout: 'elk',", 1))
+				end
+				return s
+			end
 		end,
 		keys = {
 			{
