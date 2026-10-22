@@ -56,7 +56,7 @@ return {
 
 		-- Branch: shortened.
 		opts.sections.lualine_b = {
-			{ "branch", fmt = short_branch, icon = "" },
+			{ "branch", fmt = short_branch, icon = "" },
 		}
 
 		-- Only the root dir and the diagnostics counts are gated on width; the
