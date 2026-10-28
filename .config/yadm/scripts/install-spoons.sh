@@ -3,12 +3,13 @@
 # Install/update the Hammerspoon Spoons directly under ~/.hammerspoon/Spoons/,
 # as real <name>.spoon directories (no symlinks, no staging dirs).
 #
-# Each repo is fetched into a temporary clone, the actual Spoon directory (the
-# one containing init.lua) is located, and its contents are copied into
-# ~/.hammerspoon/Spoons/<name>.spoon. This handles repos that keep init.lua at
-# the root (e.g. ClipboardHistory) as well as those that nest it in a
-# subdirectory. The destination is replaced on every run, so it works whether
-# the Spoon is missing, present and up to date, or outdated.
+# If a Spoon is already a git checkout it is updated with `git pull`. Otherwise
+# (or if the pull fails) the repo is fetched into a temporary clone and the
+# actual Spoon directory (the one containing init.lua) is installed:
+#   - init.lua at the repo root (e.g. ClipboardHistory): the clone itself is
+#     moved into place, .git included, so later runs can just pull.
+#   - init.lua in a subdirectory (e.g. MiroWindowsManager): its contents are
+#     copied in without git metadata, so it is reinstalled on every run.
 #
 # Usage:
 #   install-spoons.sh          # install missing Spoons and update existing ones
@@ -59,6 +60,13 @@ sync() {
     echo "Installing $name..."
   fi
 
+  if [ -d "$dest/.git" ]; then
+    if git -C "$dest" pull --ff-only --quiet; then
+      return 0
+    fi
+    echo "  ! git pull failed for $name; reinstalling" >&2
+  fi
+
   local tmp
   tmp=$(mktemp -d)
   # shellcheck disable=SC2064
@@ -75,9 +83,13 @@ sync() {
 
   mkdir -p "$spoons_dir"
   rm -rf "$dest"
-  mkdir -p "$dest"
-  # Copy the Spoon's files, dropping git metadata.
-  (cd "$spoon_dir" && tar --exclude='.git' -cf - .) | (cd "$dest" && tar -xf -)
+  if [ "$spoon_dir" = "$tmp/repo" ]; then
+    mv "$tmp/repo" "$dest"
+  else
+    mkdir -p "$dest"
+    # Copy the Spoon's files, dropping git metadata.
+    (cd "$spoon_dir" && tar --exclude='.git' -cf - .) | (cd "$dest" && tar -xf -)
+  fi
 }
 
 sync ClipboardHistory https://github.com/necrom4/ClipboardHistory.spoon
