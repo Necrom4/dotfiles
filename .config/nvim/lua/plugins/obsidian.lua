@@ -49,20 +49,6 @@ return {
 		}
 	end,
 	config = function(_, opts)
-		-- Workaround for obsidian.nvim v3.16.9: with only `collect_blocks`, section.lua
-		-- never splits consecutive list items, so `gd` on `[[Note#^id]]` resolves every
-		-- `^id` in a list to the whole list and lands on its first item. Splitting only
-		-- happens when block candidates are collected too, so always collect them.
-		-- Safe to drop once upstream fixes it.
-		local section = require("obsidian.section")
-		local parse = section.parse
-		section.parse = function(lines, parse_opts)
-			if parse_opts and parse_opts.collect_blocks and not parse_opts.collect_block_candidates then
-				parse_opts = vim.tbl_extend("force", parse_opts, { collect_block_candidates = true })
-			end
-			return parse(lines, parse_opts)
-		end
-
 		require("obsidian").setup(opts)
 		require("obsidian_graph").setup()
 	end,
