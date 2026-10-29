@@ -1,7 +1,45 @@
+local function is_mise_config(bufnr)
+	local name = vim.api.nvim_buf_get_name(bufnr)
+	local base = vim.fs.basename(name)
+	return base:match("^%.?mise%.toml$") ~= nil
+		or base:match("^%.?mise%.[%w_%-]+%.toml$") ~= nil
+		or name:match("/%.?mise/config%.toml$") ~= nil
+		or name:match("/%.?mise/config%.[%w_%-]+%.toml$") ~= nil
+		or name:match("/%.?mise/conf%.d/[^/]+%.toml$") ~= nil
+		or name:match("/%.config/mise/[^/]*%.toml$") ~= nil
+end
+
 return {
 	"neovim/nvim-lspconfig",
 	opts = function(_, opts)
 		opts.servers = vim.tbl_deep_extend("force", opts.servers, {
+			-- https://mise.jdx.dev/cli/lsp.html (ships with mise, not mason)
+			mise = {
+				mason = false,
+				cmd = { "mise", "lsp" },
+				filetypes = { "toml" },
+				-- Only attach to mise config files so Cargo.toml, pyproject.toml, ... don't spawn a server.
+				root_dir = function(bufnr, on_dir)
+					if is_mise_config(bufnr) then
+						local name = vim.api.nvim_buf_get_name(bufnr)
+						on_dir(
+							vim.fs.root(bufnr, { "mise.toml", ".mise.toml", "mise.local.toml", ".git" })
+								or vim.fs.dirname(name)
+						)
+					end
+				end,
+			},
+			-- taplo duplicates (and, with its own completion, shadows) mise's server on mise configs, so skip those.
+			taplo = {
+				root_dir = function(bufnr, on_dir)
+					if not is_mise_config(bufnr) then
+						on_dir(
+							vim.fs.root(bufnr, { ".taplo.toml", "taplo.toml", ".git" })
+								or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr))
+						)
+					end
+				end,
+			},
 			jinja_lsp = {
 				filetypes = { "jinja", "yamljinja" },
 			},
