@@ -11,6 +11,22 @@ description = "Remove packages not listed in Brewfile"
 run = "brew bundle cleanup --file=$BREWFILE --force"
 quiet = true
 
+[tasks."brew:untap-unused"]
+description = "Untap third-party taps with no installed formulae or casks"
+usage = 'flag "-n --dry-run" help="List unused taps without untapping them"'
+run = '''
+installed=$(brew list --full-name 2>/dev/null)
+for tap in $(brew tap | grep -v '^homebrew/'); do
+  printf '%s\n' "$installed" | grep -q "^${tap}/" && continue
+  if [ "$usage_dry_run" = true ]; then
+    echo "$tap"
+  else
+    brew untap "$tap"
+  fi
+done
+'''
+quiet = true
+
 [tasks."clean:apt"]
 run = ["sudo apt autoremove -y", "sudo apt autoclean"]
 quiet = true
