@@ -20,10 +20,10 @@ return {
 		},
 		providers = {
 			github = {},
-			gitlab = {
+			gitlab = vim.env.GITLAB_URL and vim.env.GITLAB_TOKEN and {
 				base_url = "https://" .. vim.env.GITLAB_URL,
 				token = vim.env.GITLAB_TOKEN,
-			},
+			} or nil,
 		},
 		pulls = {
 			diff = {
