@@ -19,7 +19,7 @@ return {
 		providers = {
 			github = {},
 			gitlab = {
-				base_url = vim.env.GITLAB_URL,
+				base_url = "https://" .. vim.env.GITLAB_URL,
 				token = vim.env.GITLAB_TOKEN,
 			},
 		},
