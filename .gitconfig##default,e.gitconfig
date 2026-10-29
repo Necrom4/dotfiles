@@ -42,3 +42,5 @@
 	whitespace-error-style = "red reverse"
 [delta "side-by-side"]
 	side-by-side = true
+[include]
+	path = ~/.gitconfig.local
