@@ -11,5 +11,3 @@ Linux)
   done
   ;;
 esac
-
-[[ -f "$HOME/.config/zsh/profile.local" ]] && source "$HOME/.config/zsh/profile.local"
