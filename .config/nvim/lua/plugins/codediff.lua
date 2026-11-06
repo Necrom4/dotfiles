@@ -2,6 +2,9 @@ return {
 	"esmuellert/codediff.nvim",
 	dependencies = { "MunifTanjim/nui.nvim" },
 	opts = {
+		diff = {
+			layout = "inline",
+		},
 		explorer = {
 			view_mode = "tree",
 		},
