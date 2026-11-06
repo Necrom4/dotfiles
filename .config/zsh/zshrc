@@ -121,6 +121,14 @@ add-zsh-hook chpwd update_project_root_var
 add-zsh-hook chpwd project_enter_print
 
 # ============================================================================
+# COMPLETIONS
+# ============================================================================
+
+# Completions for tools whose package does not install one. Add a tool by
+# saving its script as `_<command>` in this directory.g.
+fpath=("${0:A:h}/completions" $fpath)
+
+# ============================================================================
 # ZINIT CONFIGURATION
 # ============================================================================
 
