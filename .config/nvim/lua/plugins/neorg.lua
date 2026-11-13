@@ -126,6 +126,21 @@ return {
 			desc = "[neorg] Demote object (Non-Recursively)",
 			silent = true,
 		},
+		-- the global < / > are noremap, so they would bypass the << / >> above
+		{
+			">",
+			"<Plug>(neorg.promo.promote)",
+			ft = "norg",
+			desc = "[neorg] Promote object",
+			silent = true,
+		},
+		{
+			"<",
+			"<Plug>(neorg.promo.demote)",
+			ft = "norg",
+			desc = "[neorg] Demote object",
+			silent = true,
+		},
 		{
 			">",
 			"<Plug>(neorg.promo.promote.range)",

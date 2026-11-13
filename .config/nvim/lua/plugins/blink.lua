@@ -94,7 +94,6 @@ return {
 				-- Spell sources are available in every filetype, but their providers
 				-- remain disabled until spelling is toggled on with <leader>us.
 				default = function()
-					local utils = require("utils.general")
 					local base = {
 						"buffer",
 						"calc",
@@ -109,7 +108,7 @@ return {
 						"thesaurus",
 						"yank",
 					}
-					if not utils.is_yadm_repo() then
+					if not require("utils.git").is_yadm_repo() then
 						table.insert(base, "ripgrep")
 					end
 					return base

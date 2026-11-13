@@ -14,20 +14,6 @@ function M.term_cmd(cmd)
 	return vim.fn.system(wrapped_cmd):gsub("%s+$", "")
 end
 
-function M.yadm_config(key)
-	local home = vim.fn.expand("$HOME")
-	local git_dir = home .. "/.local/share/yadm/repo.git"
-
-	return M.term_cmd(
-		string.format(
-			"GIT_DIR=%s GIT_WORK_TREE=%s git config %s",
-			vim.fn.shellescape(git_dir),
-			vim.fn.shellescape(home),
-			vim.fn.shellescape(key)
-		)
-	)
-end
-
 -- GET OS (memoized -- OS does not change during a session)
 local _system_type_cache = nil
 
@@ -53,45 +39,6 @@ function M.system_type()
 	end
 
 	return _system_type_cache
-end
-
--- YADM
-function M.is_yadm_repo(path)
-	local home = vim.fn.expand("~")
-	local config = home .. "/.config"
-
-	path = path or vim.fn.getcwd()
-
-	if path == home or path == config or vim.startswith(path, config .. "/") then
-		return true
-	end
-
-	return false
-end
-
-M.original_git_dir = nil
-
-function M.switch_git_dir()
-	local yadm_repo = vim.fn.expand("$HOME/.local/share/yadm/repo.git")
-
-	if vim.env.GIT_DIR == yadm_repo then
-		vim.env.GIT_DIR = M.original_git_dir
-		M.original_git_dir = nil
-		print("In Project Repo")
-	else
-		M.original_git_dir = vim.env.GIT_DIR or nil
-		vim.env.GIT_DIR = yadm_repo
-		print("In Yadm Repo")
-	end
-end
-
-function M.pick_yadm_files()
-	local home = vim.fn.expand("$HOME")
-
-	Snacks.dashboard.pick("git_files", {
-		cwd = home,
-		args = { "--git-dir=" .. home .. "/.local/share/yadm/repo.git", "--work-tree=" .. home },
-	})
 end
 
 -- MANIFESTS

@@ -44,13 +44,6 @@ return {
 			"nvim-treesitter/nvim-treesitter",
 		},
 		event = { "BufReadPost", "BufNewFile" },
-		init = function()
-			vim.opt.foldcolumn = "1"
-			vim.opt.foldlevelstart = 99
-			vim.opt.foldnestmax = 6
-			vim.opt.foldenable = true
-			vim.opt.foldopen = "block,insert,jump,mark,percent,quickfix,search,tag,undo"
-		end,
 		keys = {
 			{
 				"zR",
@@ -81,7 +74,7 @@ return {
 			},
 		},
 		opts = function()
-			local Fold = require("modules.ufo")
+			local Fold = require("utils.ufo")
 			return {
 				open_fold_hl_timeout = 150,
 				enable_get_fold_virt_text = true,

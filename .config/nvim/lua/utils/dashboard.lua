@@ -1,4 +1,5 @@
 local utils = require("utils.general")
+local git = require("utils.git")
 local system_type = utils.system_type()
 
 local has_fastfetch
@@ -212,7 +213,7 @@ local function disk()
 	if uname ~= "darwin" then
 		flag = "-h"
 	end
-	local mount_path = utils.yadm_config("local.class") == "42" and "~" or "/"
+	local mount_path = git.yadm_config("local.class") == "42" and "~" or "/"
 	if uname == "wsl" then
 		mount_path = "/mnt/c"
 	elseif uname == "darwin" then
@@ -393,7 +394,7 @@ local system_info = {
 		"│  │ %-15s %8s %21s │",
 		utils.term_cmd("users | tr ' ' '\\n' | sort -u | wc -l | tr -d ' '")
 			.. "  "
-			.. utils.yadm_config("local.class"),
+			.. git.yadm_config("local.class"),
 		" " .. processes(),
 		"󰩠 " .. local_ip_address()
 	),

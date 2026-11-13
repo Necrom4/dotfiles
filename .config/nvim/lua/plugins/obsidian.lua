@@ -2,9 +2,7 @@ return {
 	"obsidian-nvim/obsidian.nvim",
 	version = "*",
 	opts = function()
-		local utils = require("utils.general")
-
-		local class = vim.trim(string.lower(utils.yadm_config("local.class")))
+		local class = vim.trim(string.lower(require("utils.git").yadm_config("local.class")))
 		if class == "" then
 			vim.notify(
 				"obsidian.nvim: yadm config `local.class` is not set; falling back to 'default'",

@@ -1,15 +1,3 @@
-local function git(args)
-	if not args[#args] or args[#args] == "" then
-		return
-	end
-	local out = vim.system(vim.list_extend({ "git" }, args), { text = true }):wait()
-	if out.code ~= 0 then
-		Snacks.notify.error(vim.trim(out.stderr or ""), { title = "git " .. args[1] })
-	elseif vim.trim(out.stdout or "") ~= "" then
-		Snacks.notify.info(vim.trim(out.stdout), { title = "git " .. args[1] })
-	end
-end
-
 return {
 	"folke/snacks.nvim",
 	keys = {
@@ -19,6 +7,7 @@ return {
 		{ "<leader>:", false },
 		{ "<leader>e", false },
 		{ "<leader>E", false },
+		{ "<leader>fc", false },
 		{ "<leader>gD", false },
 		{ "<leader>gI", false },
 		{ "<leader>gP", false },
@@ -69,14 +58,6 @@ return {
 			silent = true,
 		},
 		{
-			"<leader>fc",
-			function()
-				require("utils.general").pick_yadm_files()
-			end,
-			desc = "Find Config File",
-			silent = true,
-		},
-		{
 			"<leader>fy",
 			function()
 				-- yanky registers the snacks source in its setup
@@ -84,22 +65,6 @@ return {
 				Snacks.picker.yanky()
 			end,
 			desc = "Yanky Picker",
-			silent = true,
-		},
-		{
-			"<leader>ga",
-			function()
-				git({ "add", "--", vim.api.nvim_buf_get_name(0) })
-			end,
-			desc = "Add file",
-			silent = true,
-		},
-		{
-			"<leader>gy",
-			function()
-				require("utils.general").switch_git_dir()
-			end,
-			desc = "Toggle Repo",
 			silent = true,
 		},
 		{
@@ -233,7 +198,6 @@ return {
 			desc = "Toggle maximize",
 			silent = true,
 		},
-		-- OTHER
 		{
 			"<leader>.d",
 			function()
@@ -340,7 +304,7 @@ return {
 						key = "c",
 						desc = "Config",
 						action = function()
-							require("utils.general").pick_yadm_files()
+							require("utils.git").pick_yadm_files()
 						end,
 					},
 					{
@@ -358,7 +322,7 @@ return {
 			sections = {
 				function()
 					return {
-						header = require("modules.dashboard").header,
+						header = require("utils.dashboard").header,
 						padding = 1,
 						pane = 1,
 					}
@@ -464,7 +428,7 @@ return {
 							action = function(picker)
 								local path = Snacks.picker.util.path(picker:current())
 								if path then
-									git({ "add", "--", path })
+									require("utils.git").run({ "add", "--", path })
 								end
 							end,
 						},
@@ -472,7 +436,7 @@ return {
 							action = function(picker)
 								local path = Snacks.picker.util.path(picker:current())
 								if path then
-									git({ "rm", "--cached", "--", path })
+									require("utils.git").run({ "rm", "--cached", "--", path })
 								end
 							end,
 						},
@@ -552,11 +516,8 @@ return {
 		words = { enabled = false },
 	},
 	init = function()
-		vim.api.nvim_create_autocmd("User", {
-			pattern = "VeryLazy",
-			callback = function()
-				Snacks.toggle.dim():map("<leader>uDt")
-			end,
-		})
+		require("utils.general").on_very_lazy(function()
+			Snacks.toggle.dim():map("<leader>uDt")
+		end)
 	end,
 }

@@ -1,5 +1,8 @@
 return {
 	"folke/noice.nvim",
+	dependencies = {
+		{ "rcarriga/nvim-notify", lazy = true, opts = {} },
+	},
 	opts = {
 		lsp = {
 			progress = { enabled = false },
