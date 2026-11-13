@@ -112,21 +112,7 @@ return {
 			desc = "[neorg] Demote object (Recursively)",
 			silent = true,
 		},
-		{
-			">>",
-			"<Plug>(neorg.promo.promote)",
-			ft = "norg",
-			desc = "[neorg] Promote object (Non-Recursively)",
-			silent = true,
-		},
-		{
-			"<<",
-			"<Plug>(neorg.promo.demote)",
-			ft = "norg",
-			desc = "[neorg] Demote object (Non-Recursively)",
-			silent = true,
-		},
-		-- the global < / > are noremap, so they would bypass the << / >> above
+		-- single < / >, without >> / << which would make them wait for timeoutlen
 		{
 			">",
 			"<Plug>(neorg.promo.promote)",

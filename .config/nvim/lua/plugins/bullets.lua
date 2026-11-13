@@ -1,13 +1,17 @@
 return {
 	"bullets-vim/bullets.nvim",
 	ft = { "markdown", "text", "gitcommit", "scratch" },
+	init = function()
+		-- its plugin/ file would run setup() with the defaults (incl. >> / << maps) before ours
+		vim.g.loaded_bullets_nvim = true
+	end,
 	opts = {
 		enabled_file_types = { "markdown", "text", "gitcommit", "scratch" },
 		checkbox_markers = " /x",
 		-- Remove defaults that nest into a. / A. / i. / I., which Markdown doesn't
 		-- render.
 		outline_levels = { "num", "std-", "std*", "std+" },
-		-- Alt-x owns task mutation; keep list helpers without stealing <leader>x.
+		-- Alt-x owns task mutation; < / > are in config/keymaps.lua
 		set_mappings = false,
 		nested_checkboxes = false,
 		custom_mappings = {
@@ -31,24 +35,6 @@ return {
 				function()
 					if not require("bullets.actions").promote() then
 						vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-d>", true, false, true), "in", false)
-					end
-				end,
-			},
-			{
-				"n",
-				">>",
-				function()
-					if not require("bullets.actions").demote() then
-						vim.cmd("normal! >>")
-					end
-				end,
-			},
-			{
-				"n",
-				"<<",
-				function()
-					if not require("bullets.actions").promote() then
-						vim.cmd("normal! <<")
 					end
 				end,
 			},

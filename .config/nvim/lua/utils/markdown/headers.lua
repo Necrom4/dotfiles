@@ -1,4 +1,4 @@
--- Promote/demote ATX headers (# Title). Lines that are not headers fall through
+-- Promote/demote ATX headers (# Title) in markdown. Other lines fall through
 -- to bullets.nvim's list promote/demote, then to plain << / >>.
 local M = {}
 
@@ -31,7 +31,7 @@ end
 
 ---@param delta 1|-1 1 = demote (add a #), -1 = promote (remove a #)
 function M.shift(delta)
-	local level = header_level(vim.fn.line("."))
+	local level = vim.bo.filetype == "markdown" and header_level(vim.fn.line("."))
 	if not level then
 		local ok, actions = pcall(require, "bullets.actions")
 		if ok and actions[delta > 0 and "demote" or "promote"]() then

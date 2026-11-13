@@ -178,41 +178,45 @@ map("n", "<leader>fc", function()
 	require("utils.git").pick_yadm_files()
 end, { desc = "Find Config File", silent = true })
 
--- MARKDOWN
--- buffer-local; also applied to markdown buffers opened before this file loads (VeryLazy)
-local function markdown_keymaps(buf)
-	local function bmap(mode, lhs, rhs, desc)
-		map(mode, lhs, rhs, { buffer = buf, silent = true, desc = desc })
+-- MARKDOWN / LISTS
+-- buffer-local; also applied to buffers opened before this file loads (VeryLazy)
+local function filetype_keymaps(filetypes, set)
+	vim.api.nvim_create_autocmd("FileType", {
+		group = vim.api.nvim_create_augroup("keymaps_" .. table.concat(filetypes, "_"), { clear = true }),
+		pattern = filetypes,
+		callback = function(event)
+			set(event.buf)
+		end,
+	})
+	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+		if vim.api.nvim_buf_is_loaded(buf) and vim.tbl_contains(filetypes, vim.bo[buf].filetype) then
+			set(buf)
+		end
 	end
-	-- URL from: "x prefix register > clipboard (if it is a URL) > register picker
-	bmap({ "x", "n" }, "gsl", function()
-		require("utils.markdown.link").link()
-	end, "Surround with markdown link (clipboard)")
-	bmap({ "x", "n" }, "gsL", function()
-		require("utils.markdown.link").link({ pick = true })
-	end, "Surround with markdown link (pick register)")
-	bmap("n", ">", function()
+end
+
+-- same filetypes as bullets.nvim's enabled_file_types
+filetype_keymaps({ "markdown", "text", "gitcommit", "scratch" }, function(buf)
+	map("n", ">", function()
 		require("utils.markdown.headers").shift(1)
-	end, "Demote header / list item / indent")
-	bmap("n", "<", function()
+	end, { buffer = buf, silent = true, desc = "Demote header / list item / indent" })
+	map("n", "<", function()
 		require("utils.markdown.headers").shift(-1)
-	end, "Promote header / list item / indent")
-	bmap("n", "<a-x>", function()
+	end, { buffer = buf, silent = true, desc = "Promote header / list item / indent" })
+end)
+
+filetype_keymaps({ "markdown" }, function(buf)
+	-- URL from: "x prefix register > clipboard (if it is a URL) > register picker
+	map({ "x", "n" }, "gsl", function()
+		require("utils.markdown.link").link()
+	end, { buffer = buf, silent = true, desc = "Surround with markdown link (clipboard)" })
+	map({ "x", "n" }, "gsL", function()
+		require("utils.markdown.link").link({ pick = true })
+	end, { buffer = buf, silent = true, desc = "Surround with markdown link (pick register)" })
+	map("n", "<a-x>", function()
 		require("utils.markdown.tasks").cycle()
-	end, "Cycle task and update parent/child tasks")
-end
-vim.api.nvim_create_autocmd("FileType", {
-	group = vim.api.nvim_create_augroup("markdown_keymaps", { clear = true }),
-	pattern = "markdown",
-	callback = function(event)
-		markdown_keymaps(event.buf)
-	end,
-})
-for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-	if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype == "markdown" then
-		markdown_keymaps(buf)
-	end
-end
+	end, { buffer = buf, silent = true, desc = "Cycle task and update parent/child tasks" })
+end)
 
 -- OTHER
 map("n", "<leader>.s", function()
