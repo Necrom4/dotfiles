@@ -4,6 +4,9 @@ return {
 	opts = {
 		enabled_file_types = { "markdown", "text", "gitcommit", "scratch" },
 		checkbox_markers = " /x",
+		-- Remove defaults that nest into a. / A. / i. / I., which Markdown doesn't
+		-- render.
+		outline_levels = { "num", "std-", "std*", "std+" },
 		-- Alt-x owns task mutation; keep list helpers without stealing <leader>x.
 		set_mappings = false,
 		nested_checkboxes = false,
