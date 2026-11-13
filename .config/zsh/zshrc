@@ -487,8 +487,6 @@ alias ll='ls -la --total-size'
 alias la='ls -a'
 alias lt='ls --tree'
 
-alias rm='rm -Iv'
-
 alias d="lazydocker"
 
 alias watch="viddy -d -n 1 --shell zsh"
