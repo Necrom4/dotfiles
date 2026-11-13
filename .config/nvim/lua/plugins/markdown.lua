@@ -108,21 +108,21 @@ return {
 		"selimacerbas/mdkite.nvim",
 		dependencies = { "selimacerbas/kitehost.nvim" },
 		ft = { "markdown", "mermaid" },
-		config = function()
-			require("mdkite").setup({
-				mermaid_elk = true,
-			})
-
-			local util = require("mdkite.util")
-			local read_text = util.read_text
-			util.read_text = function(path, ...)
-				local s = read_text(path, ...)
-				if type(s) == "string" and tostring(path):match("index%.html$") then
-					s = (s:gsub("startOnLoad: false,", "startOnLoad: false, layout: 'elk',", 1))
-				end
-				return s
-			end
-		end,
+		-- config = function()
+		-- 	require("mdkite").setup({
+		-- 		mermaid_elk = true,
+		-- 	})
+		--
+		-- 	local util = require("mdkite.util")
+		-- 	local read_text = util.read_text
+		-- 	util.read_text = function(path, ...)
+		-- 		local s = read_text(path, ...)
+		-- 		if type(s) == "string" and tostring(path):match("index%.html$") then
+		-- 			s = (s:gsub("startOnLoad: false,", "startOnLoad: false, layout: 'elk',", 1))
+		-- 		end
+		-- 		return s
+		-- 	end
+		-- end,
 		keys = {
 			{
 				"<leader>cp",

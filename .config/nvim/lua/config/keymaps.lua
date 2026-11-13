@@ -114,7 +114,8 @@ vim.keymap.set("n", "<leader><tab>}", "<cmd>tablast<cr>", { desc = "Last Tab" })
 vim.keymap.set("n", "g<", "<", { noremap = true, desc = "Indent Left" })
 vim.keymap.set("n", "g>", ">", { noremap = true, desc = "Indent Right" })
 
--- single click indent (ftplugin/norg.lua overrides these with neorg's promote/demote)
+-- single click indent (overridden by ftplugin/norg.lua with neorg's promote/demote,
+-- and by the MARKDOWN section below with header/list promote/demote)
 vim.keymap.set("n", "<", "<<", { desc = "Indent Left" })
 vim.keymap.set("n", ">", ">>", { desc = "Indent Right" })
 
@@ -217,4 +218,43 @@ if vim.g.neovide then
 	vim.keymap.set("c", c_v, paste_in_prompt, { noremap = true, silent = true })
 	vim.keymap.set("t", c_v, paste_in_prompt, { noremap = true, silent = true })
 	vim.keymap.set("v", c_c, '"+y', { noremap = true, silent = true })
+end
+
+-- MARKDOWN
+-- Buffer-local, so they are set from a FileType autocmd. This file is loaded on
+-- VeryLazy, i.e. after the FileType event of a file passed on the command line,
+-- hence also applying them to the markdown buffers that are already open.
+local function markdown_keymaps(buf)
+	local function map(mode, lhs, rhs, desc)
+		vim.keymap.set(mode, lhs, rhs, { buffer = buf, silent = true, desc = desc })
+	end
+	-- URL from: "x prefix register > clipboard (if it is a URL) > register picker
+	map({ "x", "n" }, "gsl", function()
+		require("utils.markdown.link").link()
+	end, "Surround with markdown link (clipboard)")
+	map({ "x", "n" }, "gsL", function()
+		require("utils.markdown.link").link({ pick = true })
+	end, "Surround with markdown link (pick register)")
+	-- headers, falling back to list items (bullets.nvim) and plain indent
+	map("n", ">", function()
+		require("utils.markdown.headers").shift(1)
+	end, "Demote header / list item / indent")
+	map("n", "<", function()
+		require("utils.markdown.headers").shift(-1)
+	end, "Promote header / list item / indent")
+	map("n", "<a-x>", function()
+		require("utils.markdown.tasks").cycle()
+	end, "Cycle task and update parent/child tasks")
+end
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("markdown_keymaps", { clear = true }),
+	pattern = "markdown",
+	callback = function(event)
+		markdown_keymaps(event.buf)
+	end,
+})
+for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+	if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype == "markdown" then
+		markdown_keymaps(buf)
+	end
 end

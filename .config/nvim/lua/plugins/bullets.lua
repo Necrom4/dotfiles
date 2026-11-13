@@ -54,15 +54,4 @@ return {
 			},
 		},
 	},
-	keys = {
-		{
-			"<a-x>",
-			function()
-				require("utils.markdown_tasks").cycle()
-			end,
-			ft = "markdown",
-			desc = "Cycle task and update parent/child tasks",
-			silent = true,
-		},
-	},
 }
