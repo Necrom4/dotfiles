@@ -1,5 +1,5 @@
 return {
-	"bullets-vim/bullets.nvim",
+	"necrom4/bullets.nvim",
 	ft = { "markdown", "text", "gitcommit", "scratch" },
 	init = function()
 		-- its plugin/ file would run setup() with the defaults (incl. >> / << maps) before ours
@@ -11,9 +11,10 @@ return {
 		-- Remove defaults that nest into a. / A. / i. / I., which Markdown doesn't
 		-- render.
 		outline_levels = { "num", "std-", "std*", "std+" },
-		-- Alt-x owns task mutation; < / > are in config/keymaps.lua
+		-- Alt-x (cycle checkbox) and < / > (promote/demote) are in config/keymaps.lua
 		set_mappings = false,
-		nested_checkboxes = false,
+		nested_checkboxes = true,
+		markdown_headings = true,
 		custom_mappings = {
 			{ "i", "<CR>", "<Plug>(bullets-newline)" },
 			{ "i", "<C-CR>", "<CR>" },
