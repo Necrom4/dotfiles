@@ -31,6 +31,8 @@ brew "colima", restart_service: :changed
 brew "container"
 # Securely send things from one computer to another
 brew "croc"
+# Diff that understands syntax
+brew "difftastic"
 # Cross-platform disk diagnostics TUI
 brew "diskwatch"
 # Pack, ship and run any application as a lightweight container
