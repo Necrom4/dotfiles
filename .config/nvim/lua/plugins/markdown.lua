@@ -105,7 +105,9 @@ return {
 		enabled = false,
 	},
 	{
-		"yousefhadder/markdown-plus.nvim",
+		-- Fork branch merging the checkbox sync and checkbox cycle PRs
+		"necrom4/markdown-plus.nvim",
+		branch = "all-features",
 		ft = { "markdown" },
 		init = function()
 			vim.api.nvim_create_autocmd("FileType", {
@@ -118,6 +120,10 @@ return {
 			})
 		end,
 		opts = {
+			list = {
+				checkbox_sync = true,
+				checkbox_states = { " ", "/", "x" },
+			},
 			code_block = {
 				languages = {
 					"bash",
@@ -141,6 +147,16 @@ return {
 					"txt",
 					"yaml",
 				},
+			},
+		},
+		keys = {
+			{
+				"<a-x>",
+				"<Plug>(MarkdownPlusCycleCheckbox)",
+				ft = "markdown",
+				desc = "Cycle task and update parent/child tasks",
+				mode = { "n", "x" },
+				silent = true,
 			},
 		},
 	},
