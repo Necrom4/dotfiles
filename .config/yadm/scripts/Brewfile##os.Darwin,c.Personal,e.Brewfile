@@ -1,5 +1,6 @@
 tap "anomalyco/tap", trusted: true
 tap "bjarneo/cliamp"
+tap "d12frosted/emacs-plus", trusted: true
 tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
 tap "janosmiko/tap", trusted: true
@@ -209,6 +210,8 @@ cask "anki"
 cask "dash"
 # Voice and text chat software
 cask "discord"
+# GNU Emacs text editor with patches
+cask "d12frosted/emacs-plus/emacs-plus-app", trusted: true
 # System-wide audio equaliser
 cask "eqmac"
 cask "font-commit-mono-nerd-font"
