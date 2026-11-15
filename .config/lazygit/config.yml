@@ -94,7 +94,7 @@ git:
       command: "delta --paging=never --features='-side-by-side'"
     - type: extDiff
       name: difftastic
-      command: "difft --color=always --background={{colorScheme}} --width={{width}} --context={{diffContext}}"
+      command: "difft --color=always --background={{colorScheme}} --width={{width}} --context={{diffContext}} --syntax-highlight=off"
   commit:
     signOff: false
     autoWrapCommitMessage: true
