@@ -195,35 +195,11 @@ local function filetype_keymaps(filetypes, set)
 	end
 end
 
--- same filetypes as bullets.nvim's enabled_file_types
--- bullets.nvim handles list items and (markdown_headings) headers; anything else is plain << / >>
-filetype_keymaps({ "markdown", "text", "gitcommit", "scratch" }, function(buf)
-	map("n", ">", function()
-		if not require("bullets.actions").demote() then
-			vim.cmd("normal! " .. vim.v.count1 .. ">>")
-		end
-	end, { buffer = buf, silent = true, desc = "Demote header / list item / indent" })
-	map("n", "<", function()
-		if not require("bullets.actions").promote() then
-			vim.cmd("normal! " .. vim.v.count1 .. "<<")
-		end
-	end, { buffer = buf, silent = true, desc = "Promote header / list item / indent" })
-end)
-
+-- markdown-plus only toggles [ ] / [x]; this cycles [ ] -> [/] -> [x] and updates parent/child tasks
 filetype_keymaps({ "markdown" }, function(buf)
-	-- URL from: "x prefix register > clipboard (if it is a URL) > register picker
-	map({ "x", "n" }, "gsl", function()
-		require("utils.markdown.link").link()
-	end, { buffer = buf, silent = true, desc = "Surround with markdown link (clipboard)" })
-	map({ "x", "n" }, "gsL", function()
-		require("utils.markdown.link").link({ pick = true })
-	end, { buffer = buf, silent = true, desc = "Surround with markdown link (pick register)" })
-	map("n", "<a-x>", "<Plug>(bullets-cycle-checkbox)", {
-		buffer = buf,
-		remap = true,
-		silent = true,
-		desc = "Cycle task and update parent/child tasks",
-	})
+	map("n", "<a-x>", function()
+		require("utils.markdown.tasks").cycle()
+	end, { buffer = buf, silent = true, desc = "Cycle task and update parent/child tasks" })
 end)
 
 -- OTHER
