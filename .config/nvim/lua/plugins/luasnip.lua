@@ -43,47 +43,6 @@ return {
 
 		local snippets = {}
 
-		-- Fenced code blocks: `;lua`, `;bash`, `;go`, ...
-		local function create_code_block_snippet(lang)
-			return s({
-				trig = lang,
-				name = "Codeblock",
-				desc = lang .. " codeblock",
-			}, {
-				t({ "```" .. lang, "" }),
-				i(1),
-				t({ "", "```" }),
-			})
-		end
-
-		local languages = {
-			"bash",
-			"cpp",
-			"css",
-			"csv",
-			"dockerfile",
-			"go",
-			"html",
-			"java",
-			"javascript",
-			"json",
-			"jsonc",
-			"lua",
-			"markdown",
-			"markdown_inline",
-			"php",
-			"python",
-			"regex",
-			"sql",
-			"templ",
-			"txt",
-			"yaml",
-		}
-
-		for _, lang in ipairs(languages) do
-			table.insert(snippets, create_code_block_snippet(lang))
-		end
-
 		table.insert(
 			snippets,
 			s({
@@ -135,22 +94,6 @@ return {
 				t("<!-- TODO: "),
 				i(1),
 				t(" -->"),
-			})
-		)
-
-		-- Paste clipboard contents as the link target, cursor lands on the label
-		table.insert(
-			snippets,
-			s({
-				trig = "linkc",
-				name = "Paste clipboard as .md link",
-				desc = "Paste clipboard as .md link",
-			}, {
-				t("["),
-				i(1),
-				t("]("),
-				f(clipboard, {}),
-				t(")"),
 			})
 		)
 
