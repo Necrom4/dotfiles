@@ -178,30 +178,6 @@ map("n", "<leader>fc", function()
 	require("utils.git").pick_yadm_files()
 end, { desc = "Find Config File", silent = true })
 
--- MARKDOWN / LISTS
--- buffer-local; also applied to buffers opened before this file loads (VeryLazy)
-local function filetype_keymaps(filetypes, set)
-	vim.api.nvim_create_autocmd("FileType", {
-		group = vim.api.nvim_create_augroup("keymaps_" .. table.concat(filetypes, "_"), { clear = true }),
-		pattern = filetypes,
-		callback = function(event)
-			set(event.buf)
-		end,
-	})
-	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.api.nvim_buf_is_loaded(buf) and vim.tbl_contains(filetypes, vim.bo[buf].filetype) then
-			set(buf)
-		end
-	end
-end
-
--- markdown-plus only toggles [ ] / [x]; this cycles [ ] -> [/] -> [x] and updates parent/child tasks
-filetype_keymaps({ "markdown" }, function(buf)
-	map("n", "<a-x>", function()
-		require("utils.markdown.tasks").cycle()
-	end, { buffer = buf, silent = true, desc = "Cycle task and update parent/child tasks" })
-end)
-
 -- OTHER
 map("n", "<leader>.s", function()
 	local output = require("utils.general").term_cmd("zsh -i -c 'source ~/.zshrc'")
