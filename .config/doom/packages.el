@@ -51,3 +51,16 @@
 ;; (unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
+
+;; s/S belong to avy and expreg (flash.nvim), like in Neovim
+(package! evil-snipe :disable t)
+
+(package! tokyonight-themes
+  :recipe (:host github :repo "xuchengpeng/tokyonight-themes"))
+(package! auto-dim-other-buffers)
+(package! blamer)
+(package! expreg)
+(package! mise)
+(package! obsidian)
+(package! rainbow-mode)
+(package! string-inflection)
