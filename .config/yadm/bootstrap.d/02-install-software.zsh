@@ -30,6 +30,13 @@ if brew list | grep tmux >/dev/null 2>&1 && [ ! -d "$HOME/.config/tmux/plugins/t
   git clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm"
 fi
 
+if (( $+commands[emacs] )) && [[ ! -d $HOME/.config/emacs ]]; then
+  echo "Installing Doom Emacs..."
+  git clone --depth 1 https://github.com/doomemacs/core "$HOME/.config/emacs"
+  # ~/.config/doom is tracked by yadm, so don't let Doom generate its templates
+  "$HOME/.config/emacs/bin/doom" install --no-config --env --force
+fi
+
 # Hammerspoon Spoons: clone into ~/.hammerspoon/Spoons/ (clone-only mode, so
 # existing repos aren't touched). Kept in sync afterwards via the
 # `mise run update:spoons` task.

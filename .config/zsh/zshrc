@@ -42,6 +42,7 @@ if [[ -n "$BREW_PREFIX" ]]; then
 fi
 
 path+=("$HOME/.local/bin")
+[[ -d "$HOME/.config/emacs/bin" ]] && path+=("$HOME/.config/emacs/bin")
 
 if (( $+commands[nvim] )); then
   export EDITOR="nvim"

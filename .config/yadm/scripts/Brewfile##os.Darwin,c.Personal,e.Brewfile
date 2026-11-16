@@ -30,6 +30,8 @@ brew "cmatrix"
 brew "colima", restart_service: :changed
 # Create and run Linux containers using lightweight virtual machines
 brew "container"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
 # Securely send things from one computer to another
 brew "croc"
 # Diff that understands syntax
@@ -215,6 +217,7 @@ cask "d12frosted/emacs-plus/emacs-plus-app", trusted: true
 # System-wide audio equaliser
 cask "eqmac"
 cask "font-commit-mono-nerd-font"
+cask "font-symbols-only-nerd-font"
 # Free and open-source image editor
 cask "gimp"
 # Desktop automation application
