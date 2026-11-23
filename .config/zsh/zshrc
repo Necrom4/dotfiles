@@ -74,7 +74,7 @@ last_PR=""
 project_enter_print() {
   if [[ -n "$PR" && "$PR" != "$last_PR" ]]; then
     if (( $+commands[onefetch] )); then
-      onefetch --no-title --no-color-palette --nerd-fonts --type prose programming markup data
+      onefetch --no-title --no-color-palette --nerd-fonts -T prose programming markup data
     fi
     if (( $+commands[mise] )); then
       local files
