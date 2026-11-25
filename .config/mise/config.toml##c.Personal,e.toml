@@ -1,5 +1,6 @@
 [env]
 BREWFILE = "$HOME/.config/yadm/scripts/Brewfile"
+MEZURA_DATA_DIR = "$HOME/.local/share/mezura"
 
 # [hooks]
 # enter = """
@@ -124,6 +125,7 @@ uv = "latest"
 rust = "latest"
 "pipx:ghgrab" = "latest"
 "cargo:Kohei-Wada/ttymap" = "latest"
+"cargo:mezura" = "latest"
 
 [settings]
 env_shell_expand = true

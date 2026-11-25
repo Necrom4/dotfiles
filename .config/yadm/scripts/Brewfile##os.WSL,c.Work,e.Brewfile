@@ -101,8 +101,6 @@ brew "poppler"
 brew "resvg"
 # Wrapper around ripgrep that adds multiple rich file types
 brew "ripgrep-all"
-# Fast and accurate code counter with complexity and COCOMO estimates
-brew "scc"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
