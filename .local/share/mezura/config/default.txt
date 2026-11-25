@@ -22,3 +22,7 @@ The number of previous runs of a configuration, that every subsequent run should
 showing differences between stats. Use value of 0 to disable.
 ===> compare
 1
+
+Keep YAML out of code-only counts. Use --no-default-config to include it.
+===> exclude-languages
+yaml

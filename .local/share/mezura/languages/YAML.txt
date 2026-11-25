@@ -1,0 +1,21 @@
+Language
+YAML
+
+Extensions
+yaml yml
+
+String symbols
+"
+
+Paired string openers
+'
+Paired string closers
+'
+Paired strings escaped by doubling
+'
+
+Escape character
+\
+
+Comment symbols
+#
