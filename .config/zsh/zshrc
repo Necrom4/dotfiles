@@ -318,7 +318,7 @@ zinit wait"1b" lucid for \
 # the prompt, never in scripts or $(...), so those fail instantly.
 # Set CNF_ONLINE=0 to disable the online lookups.
 command_not_found_handler() {
-  local cmd=$1 db=${HOMEBREW_CACHE:-$HOME/.cache/Homebrew}/api/internal/executables.txt
+  local cmd=$1
   local -a formulae suggestions match
   local f t
   print -u2 "zsh: command not found: $cmd"
@@ -328,6 +328,9 @@ command_not_found_handler() {
   # redirected.
   [[ -o interactive && $ZSH_SUBSHELL -le 1 && -t 2 ]] || return 127
 
+  local brew_cache=${HOMEBREW_XDG_CACHE_HOME:-$HOME/.cache}/Homebrew
+  [[ $OSTYPE == darwin* ]] && brew_cache=$HOME/Library/Caches/Homebrew
+  local db=${HOMEBREW_CACHE:-$brew_cache}/api/internal/executables.txt
   if [[ -r $db ]]; then
     for f in ${(M)${(f)"$(command grep -F -- $cmd $db)"}:#(*[: ]${(b)cmd}|*[: ]${(b)cmd} *)}; do
       f=${f%%[:(]*}
