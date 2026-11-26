@@ -3,6 +3,7 @@ tap "bjarneo/cliamp"
 tap "domcyrus/rustnet"
 tap "homebrew/command-not-found"
 tap "janosmiko/tap", trusted: true
+tap "libracoder/kiri"
 tap "mutagen-io/mutagen", trusted: true
 tap "necrom4/tap", trusted: true
 tap "tlipinski/tap", trusted: true
@@ -25,8 +26,6 @@ brew "bttf"
 brew "clippy"
 # Console Matrix
 brew "cmatrix"
-# Container runtimes on MacOS (and Linux) with minimal setup
-brew "colima", restart_service: :changed
 # Create and run Linux containers using lightweight virtual machines
 brew "container"
 # Securely send things from one computer to another
@@ -216,6 +215,8 @@ cask "gimp"
 cask "hammerspoon"
 # Trading software
 cask "ibkr"
+# Container runtime compatible with the Docker CLI, Compose and buildx
+cask "libracoder/kiri/kiri", trusted: true
 # App to write, plan, collaborate, and get organised
 cask "notion"
 cask "ovim"
