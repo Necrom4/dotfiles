@@ -107,6 +107,7 @@ rust = "latest"
 argocd = "3.5.2"
 helm = "4.2.4"
 "cargo:mezura" = "latest"
+"github:backnotprop/plannotator" = "latest"
 
 [settings]
 env_shell_expand = true
